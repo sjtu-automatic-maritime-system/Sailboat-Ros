@@ -1,0 +1,11 @@
+float64 X
+float64 Y
+float64 roll
+float64 pitch
+float64 yaw
+float64 roll_a
+float64 pitch_a
+float64 yaw_a
+---
+float64 motor
+float64 servo
