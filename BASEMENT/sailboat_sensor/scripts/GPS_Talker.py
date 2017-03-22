@@ -252,7 +252,7 @@ def console_logger():
 def talker():#ros message publish
     pub = rospy.Publisher('GPS', GPS_msg, queue_size=5)
     rospy.init_node('GPS_Talker', anonymous=True)
-    rate = rospy.Rate(20) # 20hz
+    rate = rospy.Rate(5) # 5hz
 
     logger = console_logger() #todo write in Class GNSS
     gnss = GNSS(GNSS_URL, BAUDRATE, TIMEOUT, INIT_COMMANDS, logger) 
@@ -262,6 +262,7 @@ def talker():#ros message publish
             gnss.update()
             gnss.update()
             if gnss.isGetData == True:
+                GPS_msg.GPSFlag = 1
                 GPS_msg.GPStime = rospy.time
                 GPS_msg.satn = gnss.satn
                 GPS_msg.posx = gnss.posx

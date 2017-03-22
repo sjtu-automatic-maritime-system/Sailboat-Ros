@@ -53,6 +53,7 @@ add_message_files(
   Mach_msg.msg
   GPS_msg.msg
   Ahrs_msg.msg
+  WTST_msg.msg
   TestCtrl.msg
 #   Message1.msg
 #   Message2.msg

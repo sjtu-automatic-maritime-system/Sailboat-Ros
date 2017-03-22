@@ -1,3 +1,4 @@
+int16 GPSFlag
 time GPStime
 float64 satn
 float64 posx

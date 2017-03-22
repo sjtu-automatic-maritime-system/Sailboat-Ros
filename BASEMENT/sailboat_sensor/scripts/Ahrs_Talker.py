@@ -10,7 +10,7 @@ import logging
 
 Data_Show = False
 
-ahrs_port = '/dev/ttyUSB0'
+ahrs_port = '/dev/ttyUSB1'
 
 
 def hexShow(argv):
@@ -162,24 +162,28 @@ def talker():#ros message publish
     rate = rospy.Rate(20) # 20hz
 
     ahrs = AHRS()
+    ahrs_msg = Ahrs_msg()
     try:
         while not rospy.is_shutdown():
             ahrs.update()
-            Ahrs_msg.roll = ahrs.Roll
-            Ahrs_msg.pitch = ahrs.Pitch
-            Ahrs_msg.yaw = ahrs.Yaw
-            Ahrs_msg.gx = ahrs.gx
-            Ahrs_msg.gy = ahrs.gy
-            Ahrs_msg.gz = ahrs.gz
-            Ahrs_msg.wx = ahrs.wx
-            Ahrs_msg.wy = ahrs.wy
-            Ahrs_msg.wz  = ahrs.wz
+            ahrs_msg.AhrsFlag = 1
+            ahrs_msg.roll = ahrs.Roll
+            ahrs_msg.pitch = ahrs.Pitch
+            ahrs_msg.yaw = ahrs.Yaw
+            ahrs_msg.gx = ahrs.gx
+            ahrs_msg.gy = ahrs.gy
+            ahrs_msg.gz = ahrs.gz
+            ahrs_msg.wx = ahrs.wx
+            ahrs_msg.wy = ahrs.wy
+            ahrs_msg.wz  = ahrs.wz
 
-            rospy.loginfo(Ahrs_msg.roll)
-            pub.publish(Ahrs_msg)
+            rospy.loginfo(ahrs_msg.roll)
+            pub.publish(ahrs_msg)
             rate.sleep()            
     except rospy.ROSInterruptException:
         pass
+    finally:
+        ahrs.close()
 
 
 if __name__ == '__main__':
