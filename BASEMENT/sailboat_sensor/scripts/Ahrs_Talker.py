@@ -10,7 +10,7 @@ import logging
 
 Data_Show = False
 
-ahrs_port = '/dev/ttyUSB1'
+ahrs_port = '/dev/ttyUSB0'
 
 
 def hexShow(argv):
