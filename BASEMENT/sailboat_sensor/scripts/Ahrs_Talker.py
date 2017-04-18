@@ -10,7 +10,7 @@ import logging
 
 Data_Show = False
 
-ahrs_port = '/dev/ttyUSB0'
+ahrs_port = '/dev/ahrs'
 
 
 def hexShow(argv):
@@ -89,6 +89,7 @@ class AHRS():
 
     def read_data(self):
         self.buf += self.ahrs_ser.read(44-len(self.buf))
+        #print(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
             self.buf = ''
@@ -159,10 +160,12 @@ class AHRS():
 def talker():#ros message publish
     pub = rospy.Publisher('Ahrs', Ahrs_msg, queue_size=5)
     rospy.init_node('Ahrs_Talker', anonymous=True)
-    rate = rospy.Rate(20) # 20hz
+    rate = rospy.Rate(20) # 10hz
 
     ahrs = AHRS()
     ahrs_msg = Ahrs_msg()
+    for ii in range(10):
+        ahrs.update()
     try:
         while not rospy.is_shutdown():
             ahrs.update()
@@ -176,7 +179,7 @@ def talker():#ros message publish
             ahrs_msg.wx = ahrs.wx
             ahrs_msg.wy = ahrs.wy
             ahrs_msg.wz  = ahrs.wz
-
+            #show data
             rospy.loginfo(ahrs_msg.roll)
             pub.publish(ahrs_msg)
             rate.sleep()            

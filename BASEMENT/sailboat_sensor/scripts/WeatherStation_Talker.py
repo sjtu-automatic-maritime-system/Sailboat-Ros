@@ -5,6 +5,7 @@ from math import *
 import serial
 import struct
 import logging
+import time
 
 import rospy
 from std_msgs.msg import String
@@ -12,12 +13,16 @@ from sailboat_message.msg import WTST_msg
 
 
 # if using serial port, set it something like to "COM1" or "/dev/tty1"
-WTST_URL = "/dev/ttyUSB0"
+WTST_URL = "/dev/wtrt"
 # serial port baudrate
 BAUDRATE = 4800
+BAUDRATE_change=38400
 # connection timeout in seconds
 TIMEOUT = 2
 
+# commands sent to GNSS receiver
+INIT_COMMANDS = """$PAMTC,BAUD,38400
+"""
 # XOR checksum 
 # example data = "$WIMWV,43.1,R,0.4,N,A"  
 # rentun Types of int 
@@ -46,9 +51,10 @@ class WTST_ERROR(Exception):
     pass
 
 class WTST:
-    def __init__(self,url,baudrate,timeout):
+    def __init__(self,url,baudrate,timeout,cmds):
         self.url = url
         self.logger = console_logger('WTST')
+        self.cmds = cmds
         self.ser = serial.serial_for_url(url,do_not_open=True, baudrate=baudrate, timeout=timeout)
         self.open()
 
@@ -60,6 +66,14 @@ class WTST:
         self.logger.info('WTST open: '+self.url)
         self.line = ''
         self.ser.open()
+        #if self.cmds!=None and self.cmds!= "":
+        self.ser.write(self.cmds.replace("\r","").replace("\n","\r\n"))
+        time.sleep(2)
+        #self.ser.write(self.cmds)
+        print('send cmds')
+        self.ser.baudrate = 38400
+        print('set baudrate')
+
 
     def update(self):
         l = self.ser.readline()
@@ -132,7 +146,7 @@ class WTST:
             self.Longitude = float(self.parsedata[4])
             self.Altitude = float(self.parsedata[9])
             self.NumSata = int(self.parsedata[7])
-        print (self.GPGGAFlag, self.Latitude, self.Longitude, self.Altitude, self.NumSata)
+        #print (self.GPGGAFlag, self.Latitude, self.Longitude, self.Altitude, self.NumSata)
 
     def parse_GPVTG(self):
         if len(self.parsedata) != 10:
@@ -149,7 +163,7 @@ class WTST:
             self.DegreeMagmetic = float(self.parsedata[3])
             self.SpeedKnots = float(self.parsedata[5])
             self.SpeedKmhr = float(self.parsedata[7])
-        print (self.GPVTGFlag, self.DegreeTrue, self.DegreeMagmetic, self.SpeedKnots, self.SpeedKmhr)
+        #print (self.GPVTGFlag, self.DegreeTrue, self.DegreeMagmetic, self.SpeedKnots, self.SpeedKmhr)
 
     def parse_GPZDA(self):
         if len(self.parsedata) != 5: # different from the UserManual
@@ -164,7 +178,7 @@ class WTST:
             self.UTCTime = int(self.parsedata[1])
             self.UTCDay = int(self.parsedata[2])
             self.UTCMonth = int(self.parsedata[3])
-        print (self.GPZDAFlag,self.UTCTime,self.UTCDay,self.UTCMonth)
+        #print (self.GPZDAFlag,self.UTCTime,self.UTCDay,self.UTCMonth)
 
     def parse_WIMDA(self):
         if len(self.parsedata) != 21:
@@ -187,7 +201,7 @@ class WTST:
             self.WindDirectionMagnetic = float(self.parsedata[15]) 
             self.WindSpeedKnots = float(self.parsedata[17])
             self.WindSpeedMs = float(self.parsedata[19])
-        print(self.WIMDAFlag, self.BarometricPressureMercury, self.AirTemperature,self.WindDirectionTrue, self.WindDirectionMagnetic, self.WindSpeedKnots, self.WindSpeedMs)
+        #print(self.WIMDAFlag, self.BarometricPressureMercury, self.AirTemperature,self.WindDirectionTrue, self.WindDirectionMagnetic, self.WindSpeedKnots, self.WindSpeedMs)
 
     def parse_WIMWV(self):
         if len(self.parsedata) != 6:
@@ -204,7 +218,7 @@ class WTST:
             self.WindReference = self.parsedata[2]
             self.WindSpeed = float(self.parsedata[3])
             self.WindSpeedUnit = self.parsedata[4]
-        print(self.WIMWVFlag, self.WindAngle, self.WindReference, self.WindSpeed, self.WindSpeedUnit)
+        #print(self.WIMWVFlag, self.WindAngle, self.WindReference, self.WindSpeed, self.WindSpeedUnit)
 
     def parse_TIROT(self):
         #print ('len(TIROT) = ',len(self.parsedata[0]))
@@ -217,21 +231,24 @@ class WTST:
         else:
             self.TIROTFlag = 1
             self.RateTurn = float(self.parsedata[1])
-        print (self.TIROTFlag, self.RateTurn)
+        #print (self.TIROTFlag, self.RateTurn)
 
     def parse_YXXDR(self):
-        print('YXXDR')
+        self.YXXDR = 1
+        #print('YXXDR')
         #if len(self.parsedata) != 17 :
             #raise WTST_ERROR('invalid YXXDR '+self.line_list[0])
 
 def talker():#ros message publish
     pub = rospy.Publisher('WTST', WTST_msg, queue_size=5)
     rospy.init_node('WTST_Talker', anonymous=True)
-    rate = rospy.Rate(10) # 2hz
+    rate = rospy.Rate(10) # 10hz
 
-    wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT) 
+    wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT,INIT_COMMANDS) 
     wtst_msg = WTST_msg()
     try:
+        for ii in range(32):
+            wtst.update()
         while not rospy.is_shutdown():
             wtst.update()
             wtst.update()

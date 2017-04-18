@@ -6,8 +6,8 @@ from sailboat_message.msg import WTST_msg
 
 def callback(data):
     #print ('start')
-    rospy.loginfo("I heard %f", data.roll)
-    #rospy.loginfo("I heard %f", data.WindAngle)
+    #rospy.loginfo("I heard %f", data.roll)
+    rospy.loginfo("I heard %f", data.WindAngle)
 
 class SensorListener:
     def __init__(self,nodeName,topicName):
@@ -19,10 +19,10 @@ class SensorListener:
         rospy.init_node(self.NodeName, anonymous=True)
 
         #rospy.Subscriber("Ahrs", Ahrs_msg, callback)
-        rospy.Subscriber(self.TopicName, Ahrs_msg, callback)
+        rospy.Subscriber(self.TopicName, WTST_msg, callback)
         # spin() simply keeps python from exiting until this node is stopped
         rospy.spin()
 
 if __name__ == '__main__':
-    ahrs = SensorListener('Ahrslistener','Ahrs')
+    ahrs = SensorListener('Ahrslistener','WTST')
     ahrs.listener()

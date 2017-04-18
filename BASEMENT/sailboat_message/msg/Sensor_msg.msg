@@ -1,0 +1,9 @@
+float64 roll
+float64 pitch
+float64 yaw
+float64 Latitude
+float64 Longitude
+float64 Altitude
+int64 NumSata
+float64 WindAngle
+float64 WindSpeed

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(sailboat_message)
+project(sailboat_model)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 # add_definitions(-std=c++11)
@@ -8,10 +8,16 @@ project(sailboat_message)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  map_server
+  robot_state_publisher
   roscpp
   rospy
   std_msgs
-  message_generation
+  tf
+  urdf
+  xacro
+  turtlesim
+  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -48,19 +54,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  Mach_msg.msg
-  GPS_msg.msg
-  Ahrs_msg.msg
-  WTST_msg.msg
-  Sensor_msg.msg
-  Sensor_Simulation_msg.msg
-  Sailboat_Simulation_msg.msg
-  TestCtrl.msg
+# add_message_files(
+#   FILES
 #   Message1.msg
 #   Message2.msg
-)
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -77,10 +75,10 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -97,10 +95,11 @@ generate_messages(
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
+generate_dynamic_reconfigure_options(
+  cfg/Sailboat_Mach_Simulation.cfg
 #   cfg/DynReconf1.cfg
 #   cfg/DynReconf2.cfg
-# )
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -113,8 +112,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES sailboat_message
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+#  LIBRARIES sailboat_model
+#  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -131,7 +130,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/sailboat_message.cpp
+#   src/${PROJECT_NAME}/sailboat_model.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -142,7 +141,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sailboat_message_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/sailboat_model_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -154,55 +153,25 @@ include_directories(
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
 
-#############
-## Install ##
-#############
+add_executable(turtle_tf_broadcaster src/tf_broadcaster.cpp)
+target_link_libraries(turtle_tf_broadcaster ${catkin_LIBRARIES})
 
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+add_executable(turtle_tf_listener src/tf_listener.cpp)
+target_link_libraries(turtle_tf_listener ${catkin_LIBRARIES})
 
-## Mark executable scripts (Python etc.) for installation
-## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+add_executable(frame_tf_broadcaster src/frame_tf_broadcaster.cpp)
+target_link_libraries(frame_tf_broadcaster ${catkin_LIBRARIES})
 
-## Mark executables and/or libraries for installation
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+add_executable(Sensor_Simulation_Pub src/Sensor_Simulation_Pub.cpp)
+target_link_libraries(Sensor_Simulation_Pub ${catkin_LIBRARIES})
 
-## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
-
-## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
-
-#############
-## Testing ##
-#############
-
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sailboat_message.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+add_executable(Mach_Simulation_Pub src/Mach_Simulation_Pub.cpp)
+#add_dependencies(Mach_Simulation_Pub chapter2_tutorials_gencfg)
+add_dependencies(Mach_Simulation_Pub sailboat_model_gencfg)
+target_link_libraries(Mach_Simulation_Pub ${catkin_LIBRARIES})

@@ -1,0 +1,1 @@
+KERNEL=="ttyUSB*",DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb1/1-9*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="0777", SYMLINK+="ahrs"

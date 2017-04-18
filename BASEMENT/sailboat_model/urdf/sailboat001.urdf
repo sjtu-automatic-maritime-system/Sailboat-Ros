@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<robot name="sailboat001">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="1.5 0.4 0.4"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 0.8 0.5"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="sail">
+    <visual>
+      <geometry>
+        <box size="0.4 0.1 1.5"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.75"/>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="rudder">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.2"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="-0.05 0 -0.1"/>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="GPS">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="AHRS">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="WTST">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="boat_to_sail" type="continuous">
+    <parent link="base_link"/>
+    <child link="sail"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0.2 0 .3"/>
+  </joint>
+
+  <joint name="boat_to_rudder" type="continuous">
+    <parent link="base_link"/>
+    <child link="rudder"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="-0.75 0 -0.1"/>
+  </joint>
+
+  <joint name="boat_to_GPS" type="fixed">
+    <parent link="base_link"/>
+    <child link="GPS"/>
+    <origin xyz="-0.75 0 0.2"/>
+  </joint>
+
+  <joint name="boat_to_AHRS" type="fixed">
+    <parent link="base_link"/>
+    <child link="AHRS"/>
+    <origin xyz="0 0 0.2"/>
+  </joint>
+
+    <joint name="boat_to_WTST" type="fixed">
+    <parent link="base_link"/>
+    <child link="WTST"/>
+    <origin xyz="0.75 0 0.2"/>
+  </joint>
+
+</robot>

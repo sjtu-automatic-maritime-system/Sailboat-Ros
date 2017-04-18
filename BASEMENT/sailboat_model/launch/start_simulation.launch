@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="sailboat_model" type="Sensor_Simulation_Pub" name="Sensor_Simulation_Pub"/>
+    <node pkg="sailboat_model" type="Mach_Simulation_Pub" name="Mach_Simulation_Pub" output="screen"/>
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure_mach"/>
+</launch> 

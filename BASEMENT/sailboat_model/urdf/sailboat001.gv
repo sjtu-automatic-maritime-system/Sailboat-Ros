@@ -1,0 +1,20 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"AHRS" [label="AHRS"];
+"GPS" [label="GPS"];
+"WTST" [label="WTST"];
+"rudder" [label="rudder"];
+"sail" [label="sail"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "boat_to_AHRS" [label="xyz: 0 0 0.2 \nrpy: 0 -0 0"]
+"boat_to_AHRS" -> "AHRS"
+"base_link" -> "boat_to_GPS" [label="xyz: -0.75 0 0.2 \nrpy: 0 -0 0"]
+"boat_to_GPS" -> "GPS"
+"base_link" -> "boat_to_WTST" [label="xyz: 0.75 0 0.2 \nrpy: 0 -0 0"]
+"boat_to_WTST" -> "WTST"
+"base_link" -> "boat_to_rudder" [label="xyz: -0.75 0 -0.1 \nrpy: 0 -0 0"]
+"boat_to_rudder" -> "rudder"
+"base_link" -> "boat_to_sail" [label="xyz: 0.2 0 0.3 \nrpy: 0 -0 0"]
+"boat_to_sail" -> "sail"
+}
