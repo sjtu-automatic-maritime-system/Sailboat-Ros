@@ -4,4 +4,4 @@ test/
 *.[oa]
 cmake-build-debug/*
 /CMakeLists.txt
-.idea/*
+.idea/
