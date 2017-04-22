@@ -16,10 +16,8 @@ void callback(sailboat_model::sailboat_mach_simulation_Config &config, uint32_t 
   sail = config.Sail_Angle;
 }
 
-
 int main(int argc, char **argv)
 {
-
   ros::init(argc, argv, "Mach_Simulation_Talker");
   ros::NodeHandle n;
   ros::Publisher Mach_pub = n.advertise<sailboat_message::Mach_msg>("Mach", 10);
@@ -35,8 +33,6 @@ int main(int argc, char **argv)
   {
     f = boost::bind(&callback, _1, _2);
     server.setCallback(f);
-
-
   //   // int16 MachFlag
   //   // float64 motor
   //   // float64 rudder
@@ -46,12 +42,9 @@ int main(int argc, char **argv)
     msg.motor = 0;
     msg.rudder = rudder;
     msg.sail = sail;
-
-    ROS_INFO("I talk: [%f]", msg.rudder);
+    
+    ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
     Mach_pub.publish(msg);
-
-
-
     ros::spinOnce();
     loop_rate.sleep();
   }

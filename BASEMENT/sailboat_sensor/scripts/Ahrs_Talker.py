@@ -12,7 +12,6 @@ Data_Show = False
 
 ahrs_port = '/dev/ahrs'
 
-
 def hexShow(argv):
     result = ''
     hLen = len(argv)
@@ -62,14 +61,11 @@ class AHRS():
         self.logger = console_logger('AHRS')
         self.ser_open_flag = self.ser_open()
         self.DataShow_count = 0
-
         self.header = chr(0xff)+chr(0x02)
         self.fst = struct.Struct("<9fH")
         self.buf = ''
-
         self.attrs = ['Roll', 'Pitch', 'Yaw', 'gx', 'gy', 'gz',
                       'wx', 'wy', 'wz', 'devicestatus']
-
 
     def ser_open(self):
         try:

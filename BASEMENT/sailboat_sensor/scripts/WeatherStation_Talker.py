@@ -3,13 +3,14 @@
 
 from math import *
 import serial
-import struct
-import logging
+# import struct
+# import logging
 import time
 
 import rospy
-from std_msgs.msg import String
+# from std_msgs.msg import String
 from sailboat_message.msg import WTST_msg
+from sailboat_message.msg import WTST_Pro_msg
 
 
 # if using serial port, set it something like to "COM1" or "/dev/tty1"
@@ -23,6 +24,11 @@ TIMEOUT = 2
 # commands sent to GNSS receiver
 INIT_COMMANDS = """$PAMTC,BAUD,38400
 """
+
+# lat/lon of original point, use to caculate posx/posy (north and east are positive)
+ORIGIN_LAT = 31.0231632
+ORIGIN_LON = 121.4251289
+
 # XOR checksum 
 # example data = "$WIMWV,43.1,R,0.4,N,A"  
 # rentun Types of int 
@@ -32,20 +38,8 @@ def xor_BCC(data):
          result ^= ord(data[i])
     return result
 
-def console_logger(name):
-    # create logger
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # add formatter to ch
-    ch.setFormatter(formatter)
-    # add ch to logger
-    logger.addHandler(ch)
-    return logger
+def d2r(d):
+    return d/180.0*pi
 
 class WTST_ERROR(Exception):
     pass
@@ -53,33 +47,56 @@ class WTST_ERROR(Exception):
 class WTST:
     def __init__(self,url,baudrate,timeout,cmds):
         self.url = url
-        self.logger = console_logger('WTST')
         self.cmds = cmds
         self.ser = serial.serial_for_url(url,do_not_open=True, baudrate=baudrate, timeout=timeout)
         self.open()
+        time.sleep(1)
+        #self.close()
+        #time.sleep(1)
+        #self.open()
+        #self.GPVTGFlag = 0
+
+    def set_origin(self, lat,lon):
+        self.lat = d2r(lat)
+        self.lon = d2r(lon)
+
+    def w84_calc_ne(self, lat2, lon2):
+        lat1,lon1 = self.lat,self.lon
+        lat2,lon2 = d2r(lat2),d2r(lon2)
+        d_lat = lat2-lat1
+        d_lon = lon2-lon1
+
+        a = 6378137.0
+        e_2 = 6.69437999014e-3
+        r1 = a*(1-e_2)/(1-e_2*(sin(lat1))**2)**1.5
+        r2 = a/sqrt(1-e_2*(sin(lat1))**2)
+
+        north = r1*d_lat
+        east = r2*cos(lat1)*d_lon
+        return north,east
 
     def close(self):
-        self.logger.info('WTST close: '+self.url)
         self.ser.close()
+        rospy.loginfo('WTST close')
 
     def open(self):
-        self.logger.info('WTST open: '+self.url)
         self.line = ''
         self.ser.open()
+        rospy.loginfo('WTST open')
         #if self.cmds!=None and self.cmds!= "":
         self.ser.write(self.cmds.replace("\r","").replace("\n","\r\n"))
         time.sleep(2)
         #self.ser.write(self.cmds)
-        print('send cmds')
+        rospy.loginfo('WTST send cmds')
         self.ser.baudrate = 38400
-        print('set baudrate')
+        rospy.loginfo('WTST set 38400 baudrate')
 
 
     def update(self):
         l = self.ser.readline()
         #print l
         if l == '':
-            self.logger.warning('WTST timeout, reconnect')
+            rospy.logwarn('WTST timeout, reconnect')
             self.close()
             self.open()
         self.line = self.line + l
@@ -90,6 +107,11 @@ class WTST:
 
     def parse_line(self):
         if not self.line.startswith('$'):
+            self.ser.flush()
+            rospy.logwarn("header not started with '$'")
+            #self.ser.close()
+            #time.sleep(1)
+            #self.ser.open()
             return
         self.line = self.line.rstrip('\r\n')
         # XOR checksum  
@@ -97,9 +119,15 @@ class WTST:
         result = xor_BCC(self.line_list[0])
         #print (int(self.line_list[1], 16))
         #print ('result = ',result)
-        if result != int(self.line_list[1], 16):
-            self.logger.warning('invalid novatel cksum: '+self.line)
-            return
+        try:
+            if result != int(self.line_list[1], 16):
+                rospy.logwarn('invalid novatel cksum: '+self.line)
+                return
+        except:
+            rospy.logwarn('invalid novatel cksum error')
+            self.ser.close()
+            time.sleep(1)
+            self.ser.open()
         #print (self.line_list)
         #parse
         self.parse_content()
@@ -108,146 +136,295 @@ class WTST:
         self.parsedata = self.line_list[0].split(',')
         self.parsehead = self.parsedata[0]
         #print (self.parsehead)
-        # $GPGGA,,,,,,0,,,,,,,,*66  
-        # $GPVTG,,,,,,,,,N*30
-        # $GPZDA, , , , *48
-        # $WIMDA,29.9227,I,1.0133,B,21.2,C,,,,,,,,,,,,,,*34 
-        # $WIMWV,43.1,R,0.4,N,A*11
-        # $TIROT,-22.0,A*26
-        # $YXXDR,C,,C,WCHR,C,,C,WCHT,C,,C,HINX,P,1.0133,B,STNP*4B
-        # $YXXDR*4F
+        # $GPGGA,, , , , , 0,, , , , , , , *66
+        # $HCHDT, 65.0, T * 1A
+        # $WIMDA, 29.9168, I, 1.0131, B, 24.9, C,, , , , , , , , , , , , , *30
+        # $GPVTG,, , , , , , , , N * 30
+        # $HCHDG, 70.4, 0.0, E, 5.5, W * 63
+        # $WIMWV,311.8,R,0.7,N,A*2F
+        # $YXXDR, A, 5.3, D, PTCH, A, 2.7, D, ROLL * 5E
         if self.parsehead == '$GPGGA':
             self.parse_GPGGA()
         elif self.parsehead == '$GPVTG':
             self.parse_GPVTG()
-        elif self.parsehead == '$GPZDA':
-            self.parse_GPZDA()
+        elif self.parsehead == '$HCHDG':
+            self.parse_HCHDG()
+        elif self.parsehead == '$HCHDT':
+            self.parse_HCHDT()
         elif self.parsehead == '$WIMDA':
             self.parse_WIMDA()
         elif self.parsehead == '$WIMWV':
             self.parse_WIMWV()
-        elif self.parsehead == '$TIROT':
-            self.parse_TIROT()
         elif self.parsehead == '$YXXDR':
             self.parse_YXXDR()
 
     def parse_GPGGA(self):
         if len(self.parsedata) != 15:
             raise WTST_ERROR('invalid GPGGA '+self.line_list[0])
-        if int(self.parsedata[6]) == 0:
-            self.GPGGAFlag = 0
-            self.Latitude = 0
-            self.Longitude = 0
-            self.Altitude = 0
-            self.NumSata = 0
-        else:
-            self.GPGGAFlag = int(self.parsedata[6])
+        if int(self.parsedata[6]) != 0:
+            #     self.Latitude = 0
+            #     self.Longitude = 0
+            #     self.Altitude = 0
+            #     self.NumSata = 0
+            # GPS quality indicator:
+            # 0 = Fix not available or invalid          1 = GPS SPS Mode, fix valid
+            # 2 = Differential GPS, SPS Mode, fix valid 3 = GPS PPS Mode, fix valid
+            # 4 = Real Time Kinematic (RTK)             5 = Float RTK
+            # 6 = Estimated (dead reckoning) Mode       7 = Manual Input Mode
+            # 8 = Simulator Mode
+            self.GPSIndicator = int(self.parsedata[6])
+            # Latitude, to the nearest .0001 minute
             self.Latitude = float(self.parsedata[2])
+            # Longitude, to the nearest .0001 minute
             self.Longitude = float(self.parsedata[4])
-            self.Altitude = float(self.parsedata[9])
+            #
+            self.PosX, self.PosY = self.w84_calc_ne(self.Latitude, self.Longitude)
+            # Number of satellites in use, 0-12
             self.NumSata = int(self.parsedata[7])
+        else:
+            self.GPSIndicator = int(self.parsedata[6])
         #print (self.GPGGAFlag, self.Latitude, self.Longitude, self.Altitude, self.NumSata)
 
     def parse_GPVTG(self):
         if len(self.parsedata) != 10:
             raise WTST_ERROR('invalid GPVTG '+self.line_list[0])
-        if self.parsedata[9] == 'N' :
-            self.GPVTGFlag = 0
-            self.DegreeTrue = 0
-            self.DegreeMagmetic = 0
-            self.SpeedKnots = 0
-            self.SpeedKmhr = 0
-        else:
-            self.GPVTGFlag = 1
+        if self.parsedata[9] != 'N' :
+            # self.DegreeTrue = 0
+            # self.DegreeMagmetic = 0
+            # self.SpeedKnots = 0
+            # self.SpeedKmhr = 0
+            # Mode indicator:
+            # A = Autonomous mode    D = Differential mode  E = Estimated (dead reckoning) mode
+            # M = Manual input mode  S = Simulator mode     N = Data not valid
+            self.VTGIndicator = self.parsedata[9]
+            # Course Over Ground, degrees True, to the nearest 0.1 degree
             self.DegreeTrue = float(self.parsedata[1])
-            self.DegreeMagmetic = float(self.parsedata[3])
+            # Course Over Ground, degrees Magnetic, to the nearest 0.1 degree
+            self.DegreeMagnetic = float(self.parsedata[3])
+            # Speed Over Ground, knots, to the nearest 0.1 knot
             self.SpeedKnots = float(self.parsedata[5])
-            self.SpeedKmhr = float(self.parsedata[7])
+        else:
+            self.VTGIndicator = self.parsedata[9]
+            # Speed Over Ground, km/hr, to the nearest 0.1 km/hr
+            #self.SpeedKmhr = float(self.parsedata[7])
         #print (self.GPVTGFlag, self.DegreeTrue, self.DegreeMagmetic, self.SpeedKnots, self.SpeedKmhr)
 
-    def parse_GPZDA(self):
-        if len(self.parsedata) != 5: # different from the UserManual
-            raise WTST_ERROR('invalid GPZDA '+self.line_list[0])
-        if  self.parsedata[1] == '':
-            self.GPZDAFlag = 0
-            self.UTCTime = 0
-            self.UTCDay = 0
-            self.UTCMonth = 0
-        else:
-            self.GPZDAFlag = 1
-            self.UTCTime = int(self.parsedata[1])
-            self.UTCDay = int(self.parsedata[2])
-            self.UTCMonth = int(self.parsedata[3])
-        #print (self.GPZDAFlag,self.UTCTime,self.UTCDay,self.UTCMonth)
+    def parse_HCHDT(self):
+        if len(self.parsedata) != 3:
+            raise WTST_ERROR('invalid HCHDT '+self.line_list[0])
+        if self.parsedata[2] == 'T' :
+            # Heading relative to True North, degrees
+            self.HeadingTrueNorth = float(self.parsedata[1])
+            #print(self.HeadingTrueNorth)
+
+    def parse_HCHDG(self):
+        if len(self.parsedata) != 6:
+            raise WTST_ERROR('invalid HCHDG '+self.line_list[0])
+        if self.parsedata[1] != '' :
+
+            # Magnetic sensor heading, degrees, to the nearest 0.1 degree
+            #print(self.parsedata[1])
+            self.HeadingMagneticSenor = float(self.parsedata[1])
+            # Magnetic deviation, degrees east or west, to the nearest 0.1 degree.
+            self.MagneticDeviation = float(self.parsedata[2])
+            # E or W
+            self.DirectionDeviation = self.parsedata[3]
+            # Magnetic variation, degrees east or west, to the nearest 0.1 degree.
+            self.MagneticVariation = float(self.parsedata[4])
+            # E or W
+            self.DirectionVariation = self.parsedata[5]
 
     def parse_WIMDA(self):
         if len(self.parsedata) != 21:
             raise WTST_ERROR('invalid WIMDA '+self.line_list[0])
-        if self.parsedata[1] == '':
-            self.WIMDAFlag = 0
-            self.BarometricPressureMercury = 0
-            self.AirTemperature = 0
-        else:
-            self.WIMDAFlag = 1
-            self.BarometricPressureMercury = float(self.parsedata[1])
+        if self.parsedata[1] != '':
+            # Barometric pressure, inches of mercury, to the nearest 0.01 inch
+            self.BarMercury = float(self.parsedata[1])
+            # Air temperature, degrees C, to the nearest 0.1 degree C
             self.AirTemperature = float(self.parsedata[5])
-        if self.GPVTGFlag == 0:
-            self.WindDirectionTrue = 0
-            self.WindDirectionMagnetic = 0
-            self.WindSpeedKnots = 0
-            self.WindSpeedMs = 0
-        else:
+
+        if self.parsedata[13] !='':
+            # Wind direction, degrees True, to the nearest 0.1 degree
             self.WindDirectionTrue = float(self.parsedata[13])
-            self.WindDirectionMagnetic = float(self.parsedata[15]) 
+            # Wind direction, degrees Magnetic, to the nearest 0.1 degree
+            self.WindDirectionMagnetic = float(self.parsedata[15])
+            # Wind speed, knots, to the nearest 0.1 knot
             self.WindSpeedKnots = float(self.parsedata[17])
-            self.WindSpeedMs = float(self.parsedata[19])
+            # Wind speed, meters per second, to the nearest 0.1 m/s
+            #self.WindSpeedMs = float(self.parsedata[19])
         #print(self.WIMDAFlag, self.BarometricPressureMercury, self.AirTemperature,self.WindDirectionTrue, self.WindDirectionMagnetic, self.WindSpeedKnots, self.WindSpeedMs)
 
     def parse_WIMWV(self):
         if len(self.parsedata) != 6:
             raise WTST_ERROR('invalid WIMWV '+self.line_list[0])
-        if self.parsedata[5] == 'V':
-            self.WIMWVFlag = 0
-            self.WindAngle = 0
-            self.WindReference = ''
-            self.WindSpeed = 0
-            self.WindSpeedUnit = ''
-        else:
-            self.WIMWVFlag = 1
+        if self.parsedata[5] == 'A':
+            # Status: A = data valid; V = data invalid
+            self.MWVStatus = self.parsedata[5]
+            # Wind angle, 0.0 to 359.9 degrees, in relation to the vessel’s bow/centerline, to the nearest 0.1 degree. If the data for this field is not valid, the field will be blank.
             self.WindAngle = float(self.parsedata[1])
-            self.WindReference = self.parsedata[2]
+            # R = Relative (apparent wind, as felt when standing on the moving ship)
+            #self.WindReference = self.parsedata[2]
+            #Wind speed, to the nearest tenth of a unit. If the data for this field is not valid, the field will be blank.
+            #In the PB200 WeatherStation, this field always contains "N" (knots).
             self.WindSpeed = float(self.parsedata[3])
-            self.WindSpeedUnit = self.parsedata[4]
+        else:
+            self.MWVStatus = self.parsedata[5]
+            #self.WindSpeedUnit = self.parsedata[4]
         #print(self.WIMWVFlag, self.WindAngle, self.WindReference, self.WindSpeed, self.WindSpeedUnit)
 
-    def parse_TIROT(self):
-        #print ('len(TIROT) = ',len(self.parsedata[0]))
-        if len(self.parsedata) != 3:
-            raise WTST_ERROR('invalid TIROT '+self.line_list[0])
-        if self.parsedata[2] == 'V':
-            self.TIROTFlag = 0
-            #degree per minute
-            self.RateTurn = 0
-        else:
-            self.TIROTFlag = 1
-            self.RateTurn = float(self.parsedata[1])
-        #print (self.TIROTFlag, self.RateTurn)
 
     def parse_YXXDR(self):
-        self.YXXDR = 1
-        #print('YXXDR')
-        #if len(self.parsedata) != 17 :
-            #raise WTST_ERROR('invalid YXXDR '+self.line_list[0])
+        if len(self.parsedata) == 9:
+            #Pitch: oscillation of vessel about its latitudinal axis. Bow moving up is positive. Value reported to the nearest 0.1 degree.
+            self.Pitch = float(self.parsedata[2])
+            #Roll: oscillation of vessel about its longitudinal axis. Roll to the starboard is positive. Value reported to the nearest 0.1 degree.
+            self.Roll = float(self.parsedata[6])
+            #print(self.Pitch,self.Roll)
 
-def talker():#ros message publish
-    pub = rospy.Publisher('WTST', WTST_msg, queue_size=5)
+    def isset(self,dataname):
+        try:
+            type (eval('self.'+dataname))
+        except:
+            return 0
+        else:
+            return 1
+
+
+
+class dataWrapper:
+    """docstring for dataWrapper"""
+    def __init__(self):
+        self.GPSIndicator = 'GPSIndicator'
+        self.Latitude = 'Latitude'
+        self.Longitude ='Longitude'
+        self.PosX = 'PosX'
+        self.PosY = 'PosY'
+        self.Roll = 'Roll'
+        self.Pitch = 'Pitch'
+        self.Yaw = 'HeadingTrueNorth'
+        self.WindAngle = 'WindAngle'
+        self.WindSpeed = 'WindSpeed'
+
+        self.NumSata = 'NumSata'
+        self.VTGIndicator = 'VTGIndicator'
+        self.DegreeTrue = 'DegreeTrue'
+        self.DegreeMagnetic = 'DegreeMagnetic'
+        self.SpeedKnots = 'SpeedKnots'
+        self.HeadingMagneticSenor = 'HeadingMagneticSenor'
+        self.MagneticDeviation = 'MagneticDeviation'
+        self.DirectionDeviation = 'DirectionDeviation'
+        self.MagneticVariation = 'MagneticVariation'
+        self.DirectionVariation = 'DirectionVariation'
+        self.BarMercury = 'BarMercury'
+        self.AirTemperature = 'AirTemperature'
+        self.WindDirectionTrue = 'WindDirectionTrue'
+        self.WindDirectionMagnetic = 'WindDirectionMagnetic'
+        self.WindSpeedKnots = 'WindSpeedKnots'
+        self.MWVStatus = 'MWVStatus'
+
+
+    def pubData(self,msg,wtst):
+        if wtst.isset(self.GPSIndicator):
+            msg.GPSIndicator = wtst.GPSIndicator
+        if wtst.isset(self.Latitude):
+            msg.Latitude = wtst.Latitude
+        if wtst.isset(self.Longitude):
+            msg.Longitude = wtst.Longitude
+        if wtst.isset(self.PosX):
+            msg.PosX = wtst.PosX
+        if wtst.isset(self.PosY):
+            msg.PosY = wtst.PosY
+        if wtst.isset(self.Roll):
+            msg.Roll = wtst.Roll
+        if wtst.isset(self.Pitch):
+            msg.Pitch = wtst.Pitch
+        if wtst.isset(self.Yaw):
+            msg.Yaw = wtst.HeadingTrueNorth
+        if wtst.isset(self.WindAngle):
+            msg.WindAngle = wtst.WindAngle
+        if wtst.isset(self.WindSpeed):
+            msg.WindSpeed = wtst.WindSpeed
+        return msg
+
+    def pubProData(self,msgPro,wtst):
+        if wtst.isset(self.GPSIndicator):
+            msgPro.GPSIndicator = wtst.GPSIndicator
+        if wtst.isset(self.Latitude):
+            msgPro.Latitude = wtst.Latitude
+        if wtst.isset(self.Longitude):
+            msgPro.Longitude = wtst.Longitude
+        if wtst.isset(self.PosX):
+            msgPro.PosX = wtst.PosX
+        if wtst.isset(self.PosY):
+            msgPro.PosY = wtst.PosY
+
+        if wtst.isset(self.NumSata):
+            msgPro.NumSata = wtst.NumSata
+        if wtst.isset(self.VTGIndicator):
+            msgPro.VTGIndicator = wtst.VTGIndicator
+        if wtst.isset(self.DegreeTrue):
+            msgPro.DegreeTrue = wtst.DegreeTrue
+        if wtst.isset(self.DegreeMagnetic):
+            msgPro.DegreeMagnetic = wtst.DegreeMagnetic
+        if wtst.isset(self.SpeedKnots):
+            msgPro.SpeedKnots = wtst.SpeedKnots
+        if wtst.isset(self.HeadingMagneticSenor):
+            msgPro.HeadingMagneticSenor = wtst.HeadingMagneticSenor
+        if wtst.isset(self.MagneticDeviation):
+            msgPro.MagneticDeviation = wtst.MagneticDeviation
+        if wtst.isset(self.DirectionDeviation):
+            msgPro.DirectionDeviation = wtst.DirectionDeviation
+        if wtst.isset(self.MagneticVariation):
+            msgPro.MagneticVariation = wtst.MagneticVariation
+        if wtst.isset(self.DirectionVariation):
+            msgPro.DirectionVariation = wtst.DirectionVariation
+
+        if wtst.isset(self.Roll):
+            msgPro.Roll = wtst.Roll
+            #print(wtst.Roll)
+        if wtst.isset(self.Pitch):
+            msgPro.Pitch = wtst.Pitch
+        if wtst.isset(self.Yaw):
+            msgPro.Yaw = wtst.HeadingTrueNorth
+        if wtst.isset(self.WindAngle):
+            msgPro.WindAngle = wtst.WindAngle
+        if wtst.isset(self.WindSpeed):
+            msgPro.WindSpeed = wtst.WindSpeed
+
+        if wtst.isset(self.BarMercury):
+            msgPro.BarMercury = wtst.BarMercury
+        if wtst.isset(self.AirTemperature):
+            msgPro.AirTemperature = wtst.AirTemperature
+            #print(wtst.AirTemperature)
+        if wtst.isset(self.WindDirectionTrue):
+            msgPro.WindDirectionTrue = wtst.WindDirectionTrue
+        if wtst.isset(self.WindDirectionMagnetic):
+            msgPro.WindDirectionMagnetic = wtst.WindDirectionMagnetic
+        if wtst.isset(self.WindSpeedKnots):
+            msgPro.WindSpeedKnots = wtst.WindSpeedKnots
+        if wtst.isset(self.MWVStatus):
+            msgPro.MWVStatus = wtst.MWVStatus
+
+        return msgPro
+
+
+
+def talker():  # ros message publish
+
+    pub = rospy.Publisher('WTST', WTST_msg, queue_size=1)
+    #pub = rospy.Publisher('WTST', WTST_Pro_msg, queue_size=1)
     rospy.init_node('WTST_Talker', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
+    rate = rospy.Rate(20)  # 20hz
 
-    wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT,INIT_COMMANDS) 
-    wtst_msg = WTST_msg()
+    wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT, INIT_COMMANDS)
+    wtst.set_origin(ORIGIN_LAT, ORIGIN_LON)
+
+    msg = WTST_msg()
+    #msgPro = WTST_Pro_msg()
+    datawrapper = dataWrapper()
+
     try:
-        for ii in range(32):
+        for ii in range(28):
             wtst.update()
         while not rospy.is_shutdown():
             wtst.update()
@@ -257,44 +434,20 @@ def talker():#ros message publish
             wtst.update()
             wtst.update()
             wtst.update()
-            wtst.update()
 
-            wtst_msg.GPGGAFlag = wtst.GPGGAFlag
-            wtst_msg.Latitude = wtst.Latitude
-            wtst_msg.Longitude = wtst.Longitude
-            wtst_msg.Altitude = wtst.Altitude
-            wtst_msg.NumSata = wtst.NumSata
-            wtst_msg.GPVTGFlag = wtst.GPVTGFlag
-            wtst_msg.DegreeTrue = wtst.DegreeTrue
-            wtst_msg.DegreeMagmetic = wtst.DegreeMagmetic
-            wtst_msg.SpeedKnots = wtst.SpeedKnots
-            wtst_msg.SpeedKmhr = wtst.SpeedKmhr
-            wtst_msg.GPZDAFlag = wtst.GPZDAFlag
-            wtst_msg.UTCTime = wtst.UTCTime
-            wtst_msg.UTCDay = wtst.UTCDay
-            wtst_msg.UTCMonth = wtst.UTCMonth
-            wtst_msg.WIMDAFlag = wtst.WIMDAFlag
-            wtst_msg.BarPreMer = wtst.BarometricPressureMercury
-            wtst_msg.AirTemperature = wtst.AirTemperature
-            wtst_msg.WindDirectionTrue = wtst.WindDirectionTrue
-            wtst_msg.WindDirectionMagnetic = wtst.WindDirectionMagnetic
-            wtst_msg.WindSpeedKnots = wtst.WindSpeedKnots
-            wtst_msg.WindSpeedMs = wtst.WindSpeedMs
-            wtst_msg.WIMWVFlag = wtst.WIMWVFlag
-            wtst_msg.WindAngle = wtst.WindAngle
-            wtst_msg.WindReference = wtst.WindReference
-            wtst_msg.WindSpeed = wtst.WindSpeed
-            wtst_msg.WindSpeedUnit = wtst.WindSpeedUnit
-            wtst_msg.TIROTFlag = wtst.TIROTFlag
-            wtst_msg.RateTurn = wtst.RateTurn
-            rospy.loginfo(wtst_msg.WindAngle)
+            wtst_msg = datawrapper.pubData(msg,wtst)
+            #wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
+
             pub.publish(wtst_msg)
+            #pub.publish(wtst_pro_msg)
             rate.sleep()
-    except rospy.ROSInterruptException:
-        pass
+    except rospy.ROSInterruptException as e:
+        print(e)
     finally:
+        print('wsts closed!')
         wtst.close()
 
 
 if __name__ == '__main__':
     talker()
+

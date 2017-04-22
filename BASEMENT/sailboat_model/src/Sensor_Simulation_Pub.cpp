@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     //float64 WindAngle
     sailboat_message::Sensor_Simulation_msg msg;
     msg.WindAngle = 0;
-    ROS_INFO("I talk: [%f]", msg.WindAngle);
+    ROS_INFO("I talk WindAngle: [%f]", msg.WindAngle);
     Sensor_pub.publish(msg);
 
     ros::spinOnce();

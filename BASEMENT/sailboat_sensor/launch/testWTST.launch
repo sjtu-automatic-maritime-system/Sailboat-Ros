@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="sailboat_sensor" type="WeatherStation_Talker.py" name="WTST_Talker"/>
+    <node pkg="rosbag" type="record" name="bag_record" args="/WTST"/>
+    <node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/WTST/PosX"/>
+</launch>

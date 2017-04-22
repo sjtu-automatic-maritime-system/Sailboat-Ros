@@ -1,3 +1,7 @@
 *~
 test/
-*pyc
+*.pyc
+*.[oa]
+cmake-build-debug/*
+/CMakeLists.txt
+.idea/*
