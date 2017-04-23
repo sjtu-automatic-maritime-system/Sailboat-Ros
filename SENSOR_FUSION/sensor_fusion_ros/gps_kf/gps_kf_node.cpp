@@ -84,7 +84,7 @@ void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr& msg)
     GPSmsg.velx = tracking.kf_.x_[2];
     GPSmsg.vely = tracking.kf_.x_[3];
 
-    GPSkf_pub.publish(msg);
+    GPSkf_pub.publish(GPSmsg);
 
 }
 
@@ -92,7 +92,7 @@ void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr& msg)
 int main(int argc, char** argv) {
     ros::init(argc, argv, "gps_kf_node");
 
-    GPS_KF gps_kf();
+    GPS_KF gps_kf;
 
     ros::spin();
 

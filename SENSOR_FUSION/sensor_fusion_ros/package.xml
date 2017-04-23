@@ -2,7 +2,7 @@
 <package format="2">
   <name>sensor_fusion_ros</name>
   <version>0.1.0</version>
-  <description>The gt_kf package</description>
+  <description>The sensor_fusion_ros package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

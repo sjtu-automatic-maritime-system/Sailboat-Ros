@@ -9,7 +9,7 @@
 
 class MeasurementPackage {
 public:
-    float timestamp_;
+    double_t timestamp_;
 
     enum SensorType {
         LASER, RADAR

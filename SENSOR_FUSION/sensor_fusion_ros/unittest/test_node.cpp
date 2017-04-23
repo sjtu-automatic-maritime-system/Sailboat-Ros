@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
             iss >> timestamp;
             gps_meas.timestamp= timestamp / 1000000.0;
 
-            ROS_INFO("timestamp %ld", timestamp);
+            ROS_INFO("timestamp %f", timestamp);
             kf_test_pub.publish(gps_meas);
             ros::spinOnce();
             loop_rate.sleep();

@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   xacro
   turtlesim
   dynamic_reconfigure
+  sailboat_message
 )
 
 ################################################
