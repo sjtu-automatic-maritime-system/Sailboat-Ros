@@ -155,7 +155,7 @@ target_link_libraries(kf_test_node ${catkin_LIBRARIES} sensor_fusion_lib)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(gps_kf_node sensor_fusion_ros_generate_message_cpp )
+#add_dependencies(gps_kf_node sensor_fusion_ros_generate_message_cpp )
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(

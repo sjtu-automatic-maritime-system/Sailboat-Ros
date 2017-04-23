@@ -19,13 +19,13 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "kf_test_node");
     ros::NodeHandle nh;
     ros::Publisher kf_test_pub = nh.advertise<sensor_fusion_ros::GpsMeasurement>("gps_measurement", 100);
-    ros::Rate loop_rate(1);
+    ros::Rate loop_rate(10);
 
     /*******************************************************************************
      *  Set Measurements															 *
      *******************************************************************************/
     // hardcoded input file with laser and radar measurements
-    string in_file_name_ = "/home/jianyun/didi-challenge_ws/src/SENSOR_FUSION/sensor_fusion_ros/unittest/obj_pose-laser-radar-synthetic-input.txt";
+    string in_file_name_ = "/home/jianyun/catkin_ws/src/Sailboat-Ros/SENSOR_FUSION/sensor_fusion_ros/unittest/obj_pose-laser-radar-synthetic-input.txt";
     ifstream in_file(in_file_name_.c_str(), std::ifstream::in);
 
     if (!in_file.is_open()) {

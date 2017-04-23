@@ -21,34 +21,35 @@ using std::vector;
 
 //Create a Tracking instance
 
-class GPS_KF{
+class GPS_KF {
 public:
-    GPS_KF(){
-        GPSkf_pub = nh.advertise<sensor_fusion_ros::GpsKF>("mach", 5);
-        sub = nh.subscribe("WTST", 100, &GPS_KF::GPScallback,this);
+    GPS_KF() {
+        GPSkf_pub = nh.advertise<sensor_fusion_ros::GpsKF>("gps_kf", 10);
+//        sub = nh.subscribe("WTST", 100, &GPS_KF::GPScallback, this);
+        sub = nh.subscribe("gps_measurement", 100, &GPS_KF::callback, this);
 
     }
+
     ~GPS_KF() {
 
     }
 
-    void callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr& msg);
-    void GPScallback(const sailboat_message::WTST_msg::ConstPtr& msg);
+    void callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg);
+
+    void GPScallback(const sailboat_message::WTST_msg::ConstPtr &msg);
 
 private:
     Tracking tracking;
     ros::NodeHandle nh;
     ros::Publisher GPSkf_pub;
-    //ros::Subscriber sub = nh.subscribe("gps_measurement", 100, callback);
     ros::Subscriber sub;
 
 };
 
-void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr& msg)
-{
+void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg) {
     ROS_INFO("I head posx: %f, posy: %f", msg->posx, msg->posy);
     MeasurementPackage meas_pkg;
-    if (msg->sensor_type.compare("L") == 0){
+    if (msg->sensor_type.compare("L") == 0) {
         meas_pkg.sensor_type_ = MeasurementPackage::LASER;
         meas_pkg.timestamp_ = msg->timestamp;
         ROS_INFO("timestamp: %f", meas_pkg.timestamp_);
@@ -60,11 +61,18 @@ void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr& msg)
         ROS_INFO("update posx: %f, posy: %f", tracking.kf_.x_[0], tracking.kf_.x_[1]);
         ROS_INFO("update velx: %f, vely: %f", tracking.kf_.x_[2], tracking.kf_.x_[3]);
 
-        }
+        sensor_fusion_ros::GpsKF GPSmsg;
+        GPSmsg.posx = tracking.kf_.x_[0];
+        GPSmsg.posy = tracking.kf_.x_[1];
+        GPSmsg.velx = tracking.kf_.x_[2];
+        GPSmsg.vely = tracking.kf_.x_[3];
+
+        GPSkf_pub.publish(GPSmsg);
+
+    }
 }
 
-void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr& msg)
-{
+void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr &msg) {
     ROS_INFO("I head posx: %f, posy: %f", msg->PosX, msg->PosY);
     MeasurementPackage meas_pkg;
     meas_pkg.sensor_type_ = MeasurementPackage::LASER;
@@ -89,7 +97,7 @@ void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr& msg)
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     ros::init(argc, argv, "gps_kf_node");
 
     GPS_KF gps_kf;
