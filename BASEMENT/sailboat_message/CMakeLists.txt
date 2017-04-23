@@ -58,6 +58,7 @@ add_message_files(
   Sensor_msg.msg
   Sensor_Simulation_msg.msg
   Sailboat_Simulation_msg.msg
+  Target_msg.msg
   TestCtrl.msg
 #   Message1.msg
 #   Message2.msg

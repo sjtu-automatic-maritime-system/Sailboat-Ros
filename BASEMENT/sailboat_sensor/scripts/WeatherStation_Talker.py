@@ -324,6 +324,7 @@ class dataWrapper:
 
 
     def pubData(self,msg,wtst):
+        msg.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.Latitude):

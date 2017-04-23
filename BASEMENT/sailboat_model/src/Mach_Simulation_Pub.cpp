@@ -1,3 +1,7 @@
+//
+// Created by hywel on 17-3-23.
+//
+
 #include "ros/ros.h"
 #include "sailboat_message/Mach_msg.h"
 #include <dynamic_reconfigure/server.h>
@@ -22,8 +26,10 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
   ros::Publisher Mach_pub = n.advertise<sailboat_message::Mach_msg>("Mach", 10);
 
-  dynamic_reconfigure::Server<sailboat_model::sailboat_mach_simulation_Config> server;
+  dynamic_reconfigure::Server<sailboat_model::sailboat_mach_simulation_Config> dserver;
   dynamic_reconfigure::Server<sailboat_model::sailboat_mach_simulation_Config>::CallbackType f;
+  f = boost::bind(&callback, _1, _2);
+  dserver.setCallback(f);
 
   ROS_INFO("Spinning node");
 
@@ -31,8 +37,7 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
-    f = boost::bind(&callback, _1, _2);
-    server.setCallback(f);
+
   //   // int16 MachFlag
   //   // float64 motor
   //   // float64 rudder

@@ -58,6 +58,7 @@ find_package(catkin REQUIRED COMPONENTS
    LaserMeasurement.msg
    RaderMeasurement.msg
    KFResult.msg
+   GpsKF.msg
  )
 
 ## Generate services in the 'srv' folder

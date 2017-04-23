@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  dynamic_reconfigure
 )
 
 
@@ -89,10 +90,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+        cfg/PID_Adjustment.cfg
+        #   cfg/DynReconf1.cfg
+        #   cfg/DynReconf2.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -195,17 +197,34 @@ catkin_package(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(
+        include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${catkin_INCLUDE_DIRS})
 
-add_executable(Mach_talker src/Mach_Talker.cpp)
-target_link_libraries(Mach_talker ${catkin_LIBRARIES})
-add_dependencies(Mach_talker sailboat_message_generate_message_cpp)
+set( sailboat_actuator_SRC
+        src/CPID.cpp
+        src/CHeadingControl.cpp
+        )
 
+add_library( ${PROJECT_NAME} ${sailboat_actuator_SRC} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
+
+add_executable(pid_demo src/PID_Demo.cpp)
+target_link_libraries(pid_demo ${catkin_LIBRARIES} sailboat_actuator)
+
+add_executable(headingControl src/HeadingControlMain.cpp)
+target_link_libraries(headingControl ${catkin_LIBRARIES} sailboat_actuator)
+add_dependencies(headingControl sailboat_actuator_gencfg sailboat_message_generate_message_cpp)
+
+add_executable(Mach_talker_demo src/Mach_Talker_Demo.cpp)
+target_link_libraries(Mach_talker_demo ${catkin_LIBRARIES})
+add_dependencies(Mach_talker_demo sailboat_message_generate_message_cpp)
 
 #add_executable(Mach_listener src/Mach_Listener.cpp)
 #target_link_libraries(Mach_listener ${catkin_LIBRARIES})
 #add_dependencies(Mach_listener sailboat_message_generate_message_cpp)
-
 
 #add_executable(Mach_client src/Mach_Client.cpp)
 #target_link_libraries(Mach_client ${catkin_LIBRARIES})
