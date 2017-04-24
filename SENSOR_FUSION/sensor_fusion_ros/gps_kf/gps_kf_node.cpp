@@ -25,8 +25,8 @@ class GPS_KF {
 public:
     GPS_KF() {
         GPSkf_pub = nh.advertise<sensor_fusion_ros::GpsKF>("gps_kf", 10);
-//        sub = nh.subscribe("WTST", 100, &GPS_KF::GPScallback, this);
-        sub = nh.subscribe("gps_measurement", 100, &GPS_KF::callback, this);
+        sub = nh.subscribe("WTST", 100, &GPS_KF::GPScallback, this);
+//        sub = nh.subscribe("gps_measurement", 100, &GPS_KF::callback, this);
 
     }
 
@@ -53,6 +53,7 @@ void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg) {
         meas_pkg.sensor_type_ = MeasurementPackage::LASER;
         meas_pkg.timestamp_ = msg->timestamp;
         ROS_INFO("timestamp: %f", meas_pkg.timestamp_);
+
         meas_pkg.raw_measurements_ = VectorXd(2);
         meas_pkg.raw_measurements_ << msg->posx, msg->posy;
 
@@ -60,7 +61,7 @@ void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg) {
         tracking.ProcessMeasurement(meas_pkg);
         ROS_INFO("update posx: %f, posy: %f", tracking.kf_.x_[0], tracking.kf_.x_[1]);
         ROS_INFO("update velx: %f, vely: %f", tracking.kf_.x_[2], tracking.kf_.x_[3]);
-
+        std::cout << typeid(meas_pkg.timestamp_).name() << std::endl;
         sensor_fusion_ros::GpsKF GPSmsg;
         GPSmsg.posx = tracking.kf_.x_[0];
         GPSmsg.posy = tracking.kf_.x_[1];

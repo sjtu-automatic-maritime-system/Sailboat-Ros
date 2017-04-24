@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         istringstream iss(line);
         string sensor_type;
         iss >> sensor_type;	//reads first element from the current line
-        float timestamp;
+        double_t timestamp;
         sensor_fusion_ros::GpsMeasurement gps_meas;
         if(sensor_type.compare("L") == 0){	//laser measurement
             //read measurements
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
             iss >> timestamp;
             gps_meas.timestamp= timestamp / 1000000.0;
 
-            ROS_INFO("timestamp %f", timestamp);
+            ROS_INFO("timestamp %f", gps_meas.timestamp);
             kf_test_pub.publish(gps_meas);
             ros::spinOnce();
             loop_rate.sleep();
