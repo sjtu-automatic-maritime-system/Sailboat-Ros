@@ -25,7 +25,7 @@ class GPS_KF {
 public:
     GPS_KF() {
         GPSkf_pub = nh.advertise<sensor_fusion_ros::GpsKF>("gps_kf", 10);
-        sub = nh.subscribe("WTST", 100, &GPS_KF::GPScallback, this);
+        sub = nh.subscribe("WTST_tmp", 100, &GPS_KF::GPScallback, this);
 //        sub = nh.subscribe("gps_measurement", 100, &GPS_KF::callback, this);
 
     }

@@ -75,6 +75,12 @@ class WTST:
         east = r2*cos(lat1)*d_lon
         return north,east
 
+    def gps_chang(self,num):
+        d = int(num/100)
+        m = num - 100*d
+        return float(d)+float(m)/60
+
+
     def close(self):
         self.ser.close()
         rospy.loginfo('WTST close')
@@ -174,9 +180,12 @@ class WTST:
             # 8 = Simulator Mode
             self.GPSIndicator = int(self.parsedata[6])
             # Latitude, to the nearest .0001 minute
-            self.Latitude = float(self.parsedata[2])
+            latitude = float(self.parsedata[2])
             # Longitude, to the nearest .0001 minute
-            self.Longitude = float(self.parsedata[4])
+            longitude = float(self.parsedata[4])
+
+            self.Latitude = self.gps_chang(latitude)
+            self.Longitude = self.gps_chang(longitude)
             #
             self.PosX, self.PosY = self.w84_calc_ne(self.Latitude, self.Longitude)
             # Number of satellites in use, 0-12
@@ -324,7 +333,7 @@ class dataWrapper:
 
 
     def pubData(self,msg,wtst):
-        msg.timestamp = rospy.get_time()
+        msg.timestamp = rospy.
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.Latitude):
