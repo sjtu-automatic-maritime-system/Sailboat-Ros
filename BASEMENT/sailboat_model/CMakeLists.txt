@@ -104,6 +104,9 @@ add_executable(Mach_Simulation_Pub src/Mach_Simulation_Pub.cpp)
 add_dependencies(Mach_Simulation_Pub sailboat_model_gencfg)
 target_link_libraries(Mach_Simulation_Pub ${catkin_LIBRARIES})
 
+add_executable(Simulation src/Sailboat_Simulation.cpp)
+target_link_libraries(Simulation ${catkin_LIBRARIES} sailboat_model)
+add_dependencies(Simulation sailboat_message_generate_message_cpp)
 
 add_executable(EigenTestDemo demo/EigenTestDemo.cpp)
 target_link_libraries(EigenTestDemo ${catkin_LIBRARIES})

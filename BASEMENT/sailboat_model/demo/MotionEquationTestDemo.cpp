@@ -10,7 +10,7 @@ int main(){
     CSailboatMotionEquation SME;
 
 
-    SME.SailboatCalc(t);
+    SME.Sailboat_Test(t);
 
     cout<<fabs(0.1)<<endl;
     cout<<abs(0.1)<<endl;

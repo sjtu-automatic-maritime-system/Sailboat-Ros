@@ -370,7 +370,7 @@ void CSailboatMotionEquation::RestoreForce() {
 
     g_eta(2,0) = par->m*par->g*par->GMt*sin(phi)*cos(phi);
     cout<<g_eta(2,0)<<endl;
-    cout<<"g_eta "<<endl<<g_eta<<endl;
+    //cout<<"g_eta "<<endl<<g_eta<<endl;
 }
 
 void CSailboatMotionEquation::DampingForce() {
@@ -387,7 +387,7 @@ void CSailboatMotionEquation::DampingForce() {
     D_nu(2,0) = D_keel_tmp[2]+D_hull_tmp[2]+par->k1 * phi_dot * fabs(phi_dot);
     D_nu(3,0) = D_keel_tmp[3]+D_hull_tmp[3]+par->k2 * psi_dot * fabs(psi_dot) * cos(phi);
 
-    cout<<"D_nu "<<endl<<D_nu<<endl;
+    //cout<<"D_nu "<<endl<<D_nu<<endl;
 }
 
 void CSailboatMotionEquation::Damping(double rou, double A, double x, double y, double z, int id) {
@@ -474,7 +474,7 @@ void CSailboatMotionEquation::ControlForceRudder() {
     tau_r(2,0) = -tmp4*par->z_r;
     tau_r(3,0) = tmp4*par->x_r;
 
-    cout<<"tau_r"<<tau_r<<endl;
+    //cout<<"tau_r"<<tau_r<<endl;
 }
 
 
@@ -577,7 +577,7 @@ void CSailboatMotionEquation::Equation() {
 
 void CSailboatMotionEquation::Sailboat_Test(double time) {
 
-    cout<<"Calc Start"<<endl;
+    //cout<<"Calc Start"<<endl;
     for (; t < time ; t = t+delta_t) {
         Sailboat_Calc();
     }
@@ -594,10 +594,10 @@ void CSailboatMotionEquation::Sailboat_Calc() {
     nu = nu + nu_dot * delta_t;
     eta = eta + eta_dot * delta_t;
 
-    cout<<t<<"s: F="<<endl<<F<<endl;
-    cout<<t<<"s: nu="<<endl<<nu<<endl;
-    cout<<t<<"s: eta="<<endl<<eta<<endl;
-    cout<<"----------------"<<endl;
+    //cout<<t<<"s: F="<<endl<<F<<endl;
+    //cout<<t<<"s: nu="<<endl<<nu<<endl;
+    //cout<<t<<"s: eta="<<endl<<eta<<endl;
+    //cout<<"----------------"<<endl;
 
     uu = nu(0,0);
     vv = nu(1,0);

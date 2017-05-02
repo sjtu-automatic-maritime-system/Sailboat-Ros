@@ -5,8 +5,8 @@ test/
 cmake-build-debug/*
 /CMakeLists.txt
 .idea/
-/SAILBOAT.config
-/SAILBOAT.creator
-/SAILBOAT.files
-/SAILBOAT.include
+SAILBOAT.config
+SAILBOAT.creator
+SAILBOAT.files
+SAILBOAT.include
 

@@ -43,7 +43,6 @@ int main(int argc, char **argv)
   //   // float64 rudder
   //   // float64 sail
     sailboat_message::Mach_msg msg;
-    msg.MachFlag = 0;
     msg.motor = 0;
     msg.rudder = rudder;
     msg.sail = sail;
