@@ -1,1 +1,2 @@
 float64 WindAngle
+float64 WindSpeed

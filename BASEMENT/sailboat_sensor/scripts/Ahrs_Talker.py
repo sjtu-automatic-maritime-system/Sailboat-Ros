@@ -165,7 +165,9 @@ def talker():#ros message publish
     try:
         while not rospy.is_shutdown():
             ahrs.update()
-            ahrs_msg.AhrsFlag = 1
+
+            ahrs_msg.timestamp = rospy.get_time()
+
             ahrs_msg.roll = ahrs.Roll
             ahrs_msg.pitch = ahrs.Pitch
             ahrs_msg.yaw = ahrs.Yaw

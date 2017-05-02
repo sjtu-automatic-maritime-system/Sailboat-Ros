@@ -111,10 +111,12 @@ CSailboatMotionEquation::CSailboatMotionEquation() {
     RudderCoefInit();
     SailCoefInit();
 
+    Init();
+
     cout<<"init success"<<endl;
-
-
 }
+
+
 
 CSailboatMotionEquation::~CSailboatMotionEquation() {
     delete CsipKeelYl;
@@ -125,6 +127,15 @@ CSailboatMotionEquation::~CSailboatMotionEquation() {
     delete CsipRudderYd;
     delete CsipSailYl;
     delete CsipSailYd;
+
+}
+
+void CSailboatMotionEquation::Init() {
+
+    mach_sub = simulation_node.subscribe("mach", 2, &CSailboatMotionEquation::MachCallback,this);
+    sensor_sub = simulation_node.subscribe("sensor", 2, &CSailboatMotionEquation::SensorCallback,this);
+
+    sailboat_pub = simulation_node.advertise<sailboat_message::Sailboat_Simulation_msg>("sailboat", 5);
 
 }
 
@@ -564,15 +575,15 @@ void CSailboatMotionEquation::Equation() {
 }
 
 
-void CSailboatMotionEquation::SailboatCalc(double time) {
-    SailboatIn();
+void CSailboatMotionEquation::Sailboat_Test(double time) {
+
     cout<<"Calc Start"<<endl;
     for (; t < time ; t = t+delta_t) {
-        SailboatFor();
+        Sailboat_Calc();
     }
 }
 
-void CSailboatMotionEquation::SailboatFor() {
+void CSailboatMotionEquation::Sailboat_Calc() {
     RestoreForce();
     DampingForce();
     ControlForceRudder();
@@ -598,9 +609,18 @@ void CSailboatMotionEquation::SailboatFor() {
     psi = eta(3,0);
 }
 
-void CSailboatMotionEquation::SailboatIn() {
-
-
+double* CSailboatMotionEquation::Sailboat_Out() {
+    double * tmp;
+    tmp = new double[8];
+    tmp[0] = uu;
+    tmp[1] = vv;
+    tmp[2] = pp;
+    tmp[3] = rr;
+    tmp[4] = XX;
+    tmp[5] = YY;
+    tmp[6] = phi;
+    tmp[7] = psi;
+    return tmp;
 }
 
 
@@ -610,4 +630,16 @@ double CSailboatMotionEquation::d2r(double d) {
 
 double CSailboatMotionEquation::r2d(double r) {
     return r*180/pi;
+}
+
+void CSailboatMotionEquation::SensorCallback(const sailboat_message::Sensor_Simulation_msg::ConstPtr &msg) {
+    ROS_INFO("Sensor_msg sub: [%f] [%f]", msg->WindAngle , msg->WindSpeed);
+    windDirection = msg->WindAngle;
+    windVelocity = msg->WindSpeed;
+}
+
+void CSailboatMotionEquation::MachCallback(const sailboat_message::Mach_msg::ConstPtr &msg) {
+    ROS_INFO("Mach_msg sub: [%f] [%f]", msg->rudder , msg->sail);
+    rudderAngle = msg->rudder;
+    sailAngle = msg->sail;
 }

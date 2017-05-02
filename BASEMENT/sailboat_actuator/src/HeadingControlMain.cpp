@@ -23,11 +23,12 @@ int main(int argc, char **argv)
 
     while (ros::ok())
     {
+        headingControl.AP_Calc(); //计算
         double rudder = headingControl.Get_Rudder();
         double sail = headingControl.Get_Sail();
 
         sailboat_message::Mach_msg msg;
-        msg.MachFlag = 1;
+        msg.timestamp = ros::Time::now().toSec();
         msg.motor = 0;
         msg.rudder = rudder;
         msg.sail = sail;

@@ -12,7 +12,7 @@
 
 CHeadingControl::CHeadingControl() {
 
-    Kp = 2;
+    Kp = 1;
     Ki = 0;
     Kd = 0;
     T = 0.01;
@@ -24,7 +24,7 @@ CHeadingControl::CHeadingControl() {
     rudder = 0;
     sail = 0;
 
-    Setting();
+    Init();
 
 }
 
@@ -41,7 +41,7 @@ CHeadingControl::CHeadingControl(double kp, double ki, double kd) {
     rudder = 0;
     sail = 0;
 
-    Setting();
+    Init();
 }
 
 CHeadingControl::CHeadingControl(double kp, double ki, double kd, double t, double outMax, double outMin) {
@@ -57,7 +57,7 @@ CHeadingControl::CHeadingControl(double kp, double ki, double kd, double t, doub
     rudder = 0;
     sail = 0;
 
-    Setting();
+    Init();
 }
 
 CHeadingControl::~CHeadingControl() {
@@ -73,7 +73,7 @@ double CHeadingControl::Get_Sail() {
     return sail;
 }
 
-void CHeadingControl::Setting() {
+void CHeadingControl::Init() {
 
     pidp=new CPID(Kp,Ki, Kd, T, OutMax,OutMin);
 

@@ -20,6 +20,10 @@
 
 //ros
 #include "ros/ros.h"
+#include "sailboat_message/Target_msg.h"
+#include "sailboat_message/Sailboat_Simulation_msg.h"
+#include "sailboat_message/Sensor_Simulation_msg.h"
+#include "sailboat_message/Mach_msg.h"
 
 #define pi 3.1415926
 
@@ -31,11 +35,6 @@ using namespace Eigen::Architecture;
 using namespace std;
 //所有角度传输时，计算时再转换成弧度.
 //最终输入输出为角度
-
-struct dampping{
-    double  alpha;
-    MatrixXd D_nu;
-};
 
 struct param{
     //---parinit----
@@ -95,10 +94,21 @@ struct param{
 
 class CSailboatMotionEquation{
 public:
+    //ros相关
+    ros::NodeHandle simulation_node;
+    ros::Subscriber sensor_sub;
+    ros::Subscriber mach_sub;
+    ros::Publisher sailboat_pub;
+    //sailboat_message::Sailboat_Simulation_msg ssmsg;
+
 
     CSailboatMotionEquation();
     ~CSailboatMotionEquation();
 
+    //ros节点初始化
+    void Init();
+
+    //coef系数初始化
     void KeelCoefInit();
     void HullCoefInit();
     void RudderCoefInit();
@@ -109,28 +119,34 @@ public:
     double* RudderCoef(double alpha);
     double* SailCoef(double alpha);
 
+    //各项力计算
     void RestoreForce();
-
     void DampingForce();
-
     void Damping(double rou, double A, double x, double y, double z, int id);
-
     void ControlForceRudder();
-
     void ControlForceSail();
 
+    //4DOF方程
     void Equation();
 
+    //弧度角度转化
     double d2r(double d);
     double r2d(double r);
 
-    void SailboatCalc(double time);
-    void SailboatFor();
-    void SailboatIn();
-    void SailboatOut();
+    // 计算和循环
+    void Sailboat_Test(double time);
+    void Sailboat_Calc();
+
+    double* Sailboat_Out();
+
+    //ros callback函数
+    void SensorCallback(const sailboat_message::Sensor_Simulation_msg::ConstPtr& msg);
+    void MachCallback(const sailboat_message::Mach_msg::ConstPtr& msg);
 
 
 private:
+
+    //参数和变量
     double t;
     double delta_t; //时间步长delta_t
 

@@ -16,7 +16,9 @@
 
 class CHeadingControl {
 public:
-
+    ros::NodeHandle ap_node;
+    ros::Subscriber sensor_sub;
+    ros::Subscriber ctrl_sub;
     ros::Publisher mach_pub;
 
     CHeadingControl();
@@ -24,21 +26,25 @@ public:
     CHeadingControl(double kp, double ki, double kd, double t, double outMax, double outMin);
     ~CHeadingControl();
 
-    void Setting();
+    //初始化
+    void Init();
 
+    //得到舵角或帆角
     double Get_Rudder();
     double Get_Sail();
 
+    //pid算法得到舵角
+    void AP_Calc();
+
+    //ros callback函数
     void SensorCallback(const sailboat_message::WTST_msg::ConstPtr& msg);
     void CtrlCallback(const sailboat_message::Target_msg::ConstPtr& msg);
     void PIDCallback(sailboat_actuator::pid_adjustment_Config &config, uint32_t level);
 
-    void AP_Calc();
+
 
 private:
-    ros::NodeHandle ap_node;
-    ros::Subscriber sensor_sub;
-    ros::Subscriber ctrl_sub;
+
 
     CPID* pidp;
 
