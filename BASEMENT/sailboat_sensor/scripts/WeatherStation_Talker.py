@@ -14,7 +14,7 @@ from sailboat_message.msg import WTST_Pro_msg
 
 
 # if using serial port, set it something like to "COM1" or "/dev/tty1"
-WTST_URL = "/dev/wtrt"
+WTST_URL = "/dev/wtst"
 # serial port baudrate
 BAUDRATE = 4800
 BAUDRATE_change=38400
@@ -100,7 +100,7 @@ class WTST:
 
     def update(self):
         l = self.ser.readline()
-        #print l
+        print l
         if l == '':
             rospy.logwarn('WTST timeout, reconnect')
             self.close()
@@ -333,7 +333,7 @@ class dataWrapper:
 
 
     def pubData(self,msg,wtst):
-        msg.timestamp = rospy.
+        msg.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.Latitude):

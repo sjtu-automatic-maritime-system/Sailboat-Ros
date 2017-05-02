@@ -11,8 +11,8 @@
 #include "sailboat_actuator/pid_adjustment_Config.h"
 #include <sstream>
 
-#ifndef SAILBOAT_HEADINGCONTROL_H
-#define SAILBOAT_HEADINGCONTROL_H
+#ifndef SAILBOAT_CHEADINGCONTROL_H
+#define SAILBOAT_CHEADINGCONTROL_H
 
 
 class CHeadingControl {
@@ -56,9 +56,7 @@ private:
     double rudder;
     double sail;
 
-
-
 };
 
 
-#endif //SAILBOAT_HEADINGCONTROL_H
+#endif //SAILBOAT_CHEADINGCONTROL_H

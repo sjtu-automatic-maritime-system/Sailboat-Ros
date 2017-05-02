@@ -2,8 +2,8 @@
 // Created by hywel on 17-4-23.
 //
 
-#ifndef SAILBOAT_PID_H
-#define SAILBOAT_PID_H
+#ifndef SAILBOAT_CPID_H
+#define SAILBOAT_CPID_H
 
 //增量式PID
 //http://www.cnblogs.com/cjq0301/p/5184808.html
@@ -58,4 +58,4 @@ private:
 };
 
 
-#endif //SAILBOAT_PID_H
+#endif //SAILBOAT_CPID_H

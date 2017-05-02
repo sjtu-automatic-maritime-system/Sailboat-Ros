@@ -61,6 +61,7 @@ CHeadingControl::CHeadingControl(double kp, double ki, double kd, double t, doub
 }
 
 CHeadingControl::~CHeadingControl() {
+    delete pidp;
 
 }
 

@@ -73,9 +73,19 @@ catkin_package(
 
 
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+        include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${catkin_INCLUDE_DIRS})
 
+set( sailboat_model_SRC
+        lib/CCubicSplineInterpolation.cpp
+        lib/CSailboatMotionEquation.cpp
+        lib/CDynamicVPP.cpp
+        )
+
+add_library( ${PROJECT_NAME} ${sailboat_model_SRC} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 
 
 add_executable(turtle_tf_broadcaster src/tf_broadcaster.cpp)
@@ -91,6 +101,18 @@ add_executable(Sensor_Simulation_Pub src/Sensor_Simulation_Pub.cpp)
 target_link_libraries(Sensor_Simulation_Pub ${catkin_LIBRARIES})
 
 add_executable(Mach_Simulation_Pub src/Mach_Simulation_Pub.cpp)
-#add_dependencies(Mach_Simulation_Pub chapter2_tutorials_gencfg)
 add_dependencies(Mach_Simulation_Pub sailboat_model_gencfg)
 target_link_libraries(Mach_Simulation_Pub ${catkin_LIBRARIES})
+
+
+add_executable(EigenTestDemo demo/EigenTestDemo.cpp)
+target_link_libraries(EigenTestDemo ${catkin_LIBRARIES})
+
+add_executable(SIPTestDemo demo/SplineInterpolationTestDemo.cpp)
+target_link_libraries(SIPTestDemo ${catkin_LIBRARIES} sailboat_model)
+
+add_executable(VppTestDemo demo/DynamicVppTestDemo.cpp)
+target_link_libraries(VppTestDemo ${catkin_LIBRARIES} sailboat_model)
+
+add_executable(MotionEquationTestDemo demo/MotionEquationTestDemo.cpp)
+target_link_libraries(MotionEquationTestDemo ${catkin_LIBRARIES} sailboat_model)
