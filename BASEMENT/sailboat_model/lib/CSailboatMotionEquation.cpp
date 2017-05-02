@@ -1,5 +1,5 @@
 //
-// Created by sjtu on 17-4-25.
+// Created by hywel on 17-4-25.
 //
 
 #include "CSailboatMotionEquation.h"
@@ -66,6 +66,12 @@ CSailboatMotionEquation::CSailboatMotionEquation() {
 
     t = 0;
     delta_t = 0.02;
+    rudderAngle = 0;
+    sailAngle = 0;
+    windDirection = 0;
+    windVelocity = 0;
+    delta_r = d2r(rudderAngle);
+    delta_s = d2r(sailAngle);
 
     g_eta = MatrixXd::Zero(4,1);
     D_nu = MatrixXd::Zero(4,1);
@@ -82,10 +88,20 @@ CSailboatMotionEquation::CSailboatMotionEquation() {
     nu_dot = MatrixXd::Zero(4,1);
     eta_dot = MatrixXd::Zero(4,1);
 
-    v_in = MatrixXd::Zero(8,1);
+    v_in = MatrixXd::Zero(8,1); //没有用到，被nu和eta代替
     nu = MatrixXd::Zero(4,1);
     eta = MatrixXd::Zero(4,1);
-    v_out = MatrixXd::Zero(8,1);
+    v_out = MatrixXd::Zero(8,1);//没有用到
+
+    eta(3,0) = pi;
+    uu = nu(0,0);
+    vv = nu(1,0);
+    pp = nu(2,0);
+    rr = nu(3,0);
+    XX = eta(0,0);
+    YY = eta(1,0);
+    phi = eta(2,0);
+    psi = eta(3,0);
 
     D_keel_tmp = new double[4];
     D_hull_tmp = new double[4];
@@ -550,44 +566,27 @@ void CSailboatMotionEquation::Equation() {
 
 void CSailboatMotionEquation::SailboatCalc(double time) {
     SailboatIn();
-
     cout<<"Calc Start"<<endl;
-
-
     for (; t < time ; t = t+delta_t) {
-        RestoreForce();
-        DampingForce();
-        ControlForceRudder();
-        ControlForceSail();
-
-        Equation();
-
-        nu = nu + nu_dot * delta_t;
-        eta = eta + eta_dot * delta_t;
-
-        cout<<t<<"s: F="<<endl<<F<<endl;
-        cout<<t<<"s: nu="<<endl<<nu<<endl;
-        cout<<t<<"s: eta="<<endl<<eta<<endl;
-        cout<<"----------------"<<endl;
-
-        uu = nu(0,0);
-        vv = nu(1,0);
-        pp = nu(2,0);
-        rr = nu(3,0);
-        XX = eta(0,0);
-        YY = eta(1,0);
-        phi = eta(2,0);
-        psi = eta(3,0);
+        SailboatFor();
     }
 }
 
-void CSailboatMotionEquation::SailboatIn() {
-    rudderAngle = 0;
-    sailAngle = pi/4;
-    windDirection = pi/4;
-    windVelocity = 5;
+void CSailboatMotionEquation::SailboatFor() {
+    RestoreForce();
+    DampingForce();
+    ControlForceRudder();
+    ControlForceSail();
 
-    eta(3,0) = pi;
+    Equation();
+
+    nu = nu + nu_dot * delta_t;
+    eta = eta + eta_dot * delta_t;
+
+    cout<<t<<"s: F="<<endl<<F<<endl;
+    cout<<t<<"s: nu="<<endl<<nu<<endl;
+    cout<<t<<"s: eta="<<endl<<eta<<endl;
+    cout<<"----------------"<<endl;
 
     uu = nu(0,0);
     vv = nu(1,0);
@@ -597,9 +596,11 @@ void CSailboatMotionEquation::SailboatIn() {
     YY = eta(1,0);
     phi = eta(2,0);
     psi = eta(3,0);
+}
 
-    delta_r = d2r(rudderAngle);
-    delta_s = d2r(sailAngle);
+void CSailboatMotionEquation::SailboatIn() {
+
+
 }
 
 

@@ -12,10 +12,14 @@
 #include <cstring>
 #include <string>
 #include <cfloat>
-#include <typeinfo>
+
 #include "CCubicSplineInterpolation.h"
+
 //matrix
 #include <Eigen/Dense>
+
+//ros
+#include "ros/ros.h"
 
 #define pi 3.1415926
 
@@ -121,6 +125,7 @@ public:
     double r2d(double r);
 
     void SailboatCalc(double time);
+    void SailboatFor();
     void SailboatIn();
     void SailboatOut();
 
@@ -175,17 +180,14 @@ private:
 
     double delta_r;
     double delta_s;
-
+    //damping
     double *D_keel_tmp;
     double *D_hull_tmp;
 
-    //damping
-    //dampping damppingk;
-    //dampping damppingh;
+
+
 
     param *par;
-
-
 
 };
 

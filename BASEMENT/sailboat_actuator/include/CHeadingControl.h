@@ -14,7 +14,6 @@
 #ifndef SAILBOAT_CHEADINGCONTROL_H
 #define SAILBOAT_CHEADINGCONTROL_H
 
-
 class CHeadingControl {
 public:
 
