@@ -1,9 +1,10 @@
 //
 // Created by hywel on 17-4-25.
+// reference Jianyun Xu's Simulink
 //
 // 一个找了一天的bug：定义数组指针后必须new分配内存。
-#ifndef SAILBOAT_CSAILBOATMOTIONEQUATION_H
-#define SAILBOAT_CSAILBOATMOTIONEQUATION_H
+#ifndef SAILBOAT_CSIMULATIONVER1_H
+#define SAILBOAT_CSIMULATIONVER1_H
 
 //math
 #include <cmath>
@@ -21,8 +22,9 @@
 //ros
 #include "ros/ros.h"
 #include "sailboat_message/Target_msg.h"
-#include "sailboat_message/Sailboat_Simulation_msg.h"
-#include "sailboat_message/Sensor_Simulation_msg.h"
+#include "sailboat_message/Sensor_msg.h"
+//#include "sailboat_message/Sailboat_Simulation_msg.h"
+#include "sailboat_message/Wind_Simulation_msg.h"
 #include "sailboat_message/Mach_msg.h"
 
 #define pi 3.1415926
@@ -92,19 +94,20 @@ struct param{
     double z_sf;
 };
 
-class CSailboatMotionEquation{
+class CSimulationVer1{
 public:
     //ros相关
     ros::NodeHandle simulation_node;
-    ros::Subscriber sensor_sub;
+    ros::Subscriber wind_sub;
     ros::Subscriber mach_sub;
-    ros::Publisher sailboat_pub;
+    ros::Publisher sensor_pub;
     //sailboat_message::Sailboat_Simulation_msg ssmsg;
 
+    CSimulationVer1();
+    ~CSimulationVer1();
 
-    CSailboatMotionEquation();
-    ~CSailboatMotionEquation();
-
+    //setting 帆船初始姿态
+    void SettingAttitudeInit(double u, double v, double p, double r, double x, double y, double phi, double psi);
     //ros节点初始化
     void Init();
 
@@ -122,7 +125,7 @@ public:
     //各项力计算
     void RestoreForce();
     void DampingForce();
-    void Damping(double rou, double A, double x, double y, double z, int id);
+    double* Damping(double rou, double A, double x, double y, double z, int id);
     void ControlForceRudder();
     void ControlForceSail();
 
@@ -132,23 +135,25 @@ public:
     //弧度角度转化
     double d2r(double d);
     double r2d(double r);
+    //限幅
+    double limitsPi(double tmp);
 
     // 计算和循环
-    void Sailboat_Test(double time);
-    void Sailboat_Calc();
+    void Sailboat_Test(double time, double d_t);
+    void Sailboat_Calc(double d_t);
 
     double* Sailboat_Out();
 
     //ros callback函数
-    void SensorCallback(const sailboat_message::Sensor_Simulation_msg::ConstPtr& msg);
+    void WindCallback(const sailboat_message::Wind_Simulation_msg::ConstPtr& msg);
     void MachCallback(const sailboat_message::Mach_msg::ConstPtr& msg);
 
 
 private:
 
     //参数和变量
-    double t;
-    double delta_t; //时间步长delta_t
+    //double t;
+    //double delta_t; //时间步长delta_t
 
     MatrixXd g_eta;
     MatrixXd D_nu;
@@ -165,11 +170,11 @@ private:
     MatrixXd nu_dot;
     MatrixXd eta_dot;
 
-    MatrixXd v_in;
+    //MatrixXd v_in;
     MatrixXd nu;
     MatrixXd eta;
 
-    MatrixXd v_out;
+    //MatrixXd v_out;
 
     CCubicSplineInterpolation* CsipKeelYl;
     CCubicSplineInterpolation* CsipKeelYd;
@@ -189,6 +194,9 @@ private:
     double phi;
     double psi;
 
+    double AWA;
+    double AWS;
+
     double rudderAngle;
     double sailAngle;
     double windDirection;
@@ -197,11 +205,8 @@ private:
     double delta_r;
     double delta_s;
     //damping
-    double *D_keel_tmp;
-    double *D_hull_tmp;
-
-
-
+    //double *D_keel_tmp;
+    //double *D_hull_tmp;
 
     param *par;
 
@@ -211,4 +216,5 @@ private:
 
 
 
-#endif //SAILBOAT_CSAILBOATMOTIONEQUATION_H
+#endif //SAILBOAT_CSIMULATIONVER2_H
+

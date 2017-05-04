@@ -8,5 +8,6 @@ cmake-build-debug/*
 SAILBOAT.config
 SAILBOAT.creator
 SAILBOAT.files
-SAILBOAT.include
+SAILBOAT.includes
+SAILBOAT.creator.user
 

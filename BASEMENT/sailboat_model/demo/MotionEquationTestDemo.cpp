@@ -1,16 +1,17 @@
 //
 // Created by hywel on 17-5-1.
 //
-#include "CSailboatMotionEquation.h"
+#include "CSimulationVer1.h"
 
 
 int main(){
     double t;
+    double d_t=0.02;
     cin>>t;
-    CSailboatMotionEquation SME;
+    CSimulationVer1 SME;
 
 
-    SME.Sailboat_Test(t);
+    SME.Sailboat_Test(t,d_t);
 
     cout<<fabs(0.1)<<endl;
     cout<<abs(0.1)<<endl;

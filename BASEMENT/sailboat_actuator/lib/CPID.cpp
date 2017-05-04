@@ -78,6 +78,13 @@ double CPID::Get_Out() {
 double CPID::PID_Calc() {
 
     Error = Ref - Fdb;
+    while (fabs(Error)>pi)
+    {
+        if (Error >= pi)
+            Error = Error - 2*pi;
+        else if (Error <= -pi)
+            Error = Error + 2*pi;
+    }
     //计算中间量 a0a1a2
     a0 = Kp+Ki*T+Kd/T;
     a1 = Kp+2*Kd/T;

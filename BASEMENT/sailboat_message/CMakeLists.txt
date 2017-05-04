@@ -56,10 +56,10 @@ add_message_files(
   WTST_msg.msg
   WTST_Pro_msg.msg
   Sensor_msg.msg
-  Sensor_Simulation_msg.msg
+  Wind_Simulation_msg.msg
   Sailboat_Simulation_msg.msg
   Target_msg.msg
-  TestCtrl.msg
+  old/TestCtrl.msg
 #   Message1.msg
 #   Message2.msg
 )

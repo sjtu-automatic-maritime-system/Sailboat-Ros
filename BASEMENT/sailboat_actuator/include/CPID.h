@@ -5,6 +5,10 @@
 #ifndef SAILBOAT_CPID_H
 #define SAILBOAT_CPID_H
 
+#include <cmath>
+
+#define pi 3.1415926
+
 //增量式PID
 //http://www.cnblogs.com/cjq0301/p/5184808.html
 //u(k) = u(k-1)+(kp+ki*T+kd/T)e(k)-(kp+2kd/T)e(k-1)+kd/T*e(k-2)

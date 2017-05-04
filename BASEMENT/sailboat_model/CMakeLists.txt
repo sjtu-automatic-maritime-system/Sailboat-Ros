@@ -79,8 +79,9 @@ include_directories(
 
 set( sailboat_model_SRC
         lib/CCubicSplineInterpolation.cpp
-        lib/CSailboatMotionEquation.cpp
+        lib/CSimulaitonVer1.cpp
         lib/CDynamicVPP.cpp
+        lib/CSimulationVer2.cpp
         )
 
 add_library( ${PROJECT_NAME} ${sailboat_model_SRC} )
@@ -97,16 +98,16 @@ target_link_libraries(turtle_tf_listener ${catkin_LIBRARIES})
 add_executable(frame_tf_broadcaster src/frame_tf_broadcaster.cpp)
 target_link_libraries(frame_tf_broadcaster ${catkin_LIBRARIES})
 
-add_executable(Sensor_Simulation_Pub src/Sensor_Simulation_Pub.cpp)
-target_link_libraries(Sensor_Simulation_Pub ${catkin_LIBRARIES})
+add_executable(Wind_Simulation_Pub src/Wind_Simulation_Pub.cpp)
+target_link_libraries(Wind_Simulation_Pub ${catkin_LIBRARIES})
 
 add_executable(Mach_Simulation_Pub src/Mach_Simulation_Pub.cpp)
 add_dependencies(Mach_Simulation_Pub sailboat_model_gencfg)
 target_link_libraries(Mach_Simulation_Pub ${catkin_LIBRARIES})
 
-add_executable(Simulation src/Sailboat_Simulation.cpp)
-target_link_libraries(Simulation ${catkin_LIBRARIES} sailboat_model)
-add_dependencies(Simulation sailboat_message_generate_message_cpp)
+add_executable(Sailboat_Simulation src/Sailboat_Simulation.cpp)
+target_link_libraries(Sailboat_Simulation ${catkin_LIBRARIES} sailboat_model)
+add_dependencies(Sailboat_Simulation sailboat_message_generate_message_cpp)
 
 add_executable(EigenTestDemo demo/EigenTestDemo.cpp)
 target_link_libraries(EigenTestDemo ${catkin_LIBRARIES})

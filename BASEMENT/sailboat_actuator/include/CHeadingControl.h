@@ -5,19 +5,26 @@
 #include "ros/ros.h"
 #include "CPID.h"
 #include "sailboat_message/Mach_msg.h"
-#include "sailboat_message/WTST_msg.h"
+#include "sailboat_message/Sensor_msg.h"//改成处理过后的Sensor_msg
 #include "sailboat_message/Target_msg.h"
 #include <dynamic_reconfigure/server.h>
 #include "sailboat_actuator/pid_adjustment_Config.h"
+
+//#include "sailboat_message/Sailboat_Simulation_msg.h"
+//#include "sailboat_message/Sensor_Simulation_msg.h"
 #include <sstream>
 
 #ifndef SAILBOAT_CHEADINGCONTROL_H
 #define SAILBOAT_CHEADINGCONTROL_H
 
+#define pi 3.1415926
+
 class CHeadingControl {
 public:
     ros::NodeHandle ap_node;
     ros::Subscriber sensor_sub;
+    //ros::Subscriber sensor_simulation_sub;
+    //ros::Subscriber sailboat_simulation_sub;
     ros::Subscriber ctrl_sub;
     ros::Publisher mach_pub;
 
@@ -37,7 +44,10 @@ public:
     void AP_Calc();
 
     //ros callback函数
-    void SensorCallback(const sailboat_message::WTST_msg::ConstPtr& msg);
+    void SensorCallback(const sailboat_message::Sensor_msg::ConstPtr& msg);
+    //整合后就不用了
+    //void SensorSimulationCallback(const sailboat_message::Sensor_Simulation_msg::ConstPtr& msg);
+    //void SailboatSimulationCallback(const sailboat_message::Sailboat_Simulation_msg::ConstPtr& msg);
     void CtrlCallback(const sailboat_message::Target_msg::ConstPtr& msg);
     void PIDCallback(sailboat_actuator::pid_adjustment_Config &config, uint32_t level);
 
@@ -57,6 +67,9 @@ private:
 
     double yawRef;
     double yawFdb;
+
+    double AWA;
+    double AWS;
 
     double rudder;
     double sail;

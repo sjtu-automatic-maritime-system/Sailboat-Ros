@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "HeadingControl");
 
     //Create an object of class SubscribeAndPublish that will take care of everything
-    CHeadingControl headingControl(2,0,0);
+    CHeadingControl headingControl(0.5,0,0,0.1,0.52,-0.52);
 
     dynamic_reconfigure::Server<sailboat_actuator::pid_adjustment_Config> srv;
     dynamic_reconfigure::Server<sailboat_actuator::pid_adjustment_Config>::CallbackType f;
@@ -34,6 +34,7 @@ int main(int argc, char **argv)
         msg.sail = sail;
 
         ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
+        ROS_INFO("I talk Sail_Angle: [%f]", msg.sail);
         headingControl.mach_pub.publish(msg);
 
         ros::spinOnce();
