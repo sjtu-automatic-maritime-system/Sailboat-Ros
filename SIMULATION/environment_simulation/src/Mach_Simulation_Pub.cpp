@@ -12,7 +12,7 @@ static float motor = 0;
 static float rudder = 0;
 static float sail = 0;
 
-void callback(sailboat_model::sailboat_mach_simulation_Config &config, uint32_t level) {
+void callback(environment_simulation::sailboat_mach_simulation_Config &config, uint32_t level) {
   //ROS_INFO("Reconfigure Request: %f %f %d", 
     //       config.Sail_Angle,config.Rudder_Angle, 
     //       config.size);
@@ -26,8 +26,8 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
   ros::Publisher Mach_pub = n.advertise<sailboat_message::Mach_msg>("Mach", 10);
 
-  dynamic_reconfigure::Server<sailboat_model::sailboat_mach_simulation_Config> dserver;
-  dynamic_reconfigure::Server<sailboat_model::sailboat_mach_simulation_Config>::CallbackType f;
+  dynamic_reconfigure::Server<environment_simulation::sailboat_mach_simulation_Config> dserver;
+  dynamic_reconfigure::Server<environment_simulation::sailboat_mach_simulation_Config>::CallbackType f;
   f = boost::bind(&callback, _1, _2);
   dserver.setCallback(f);
 

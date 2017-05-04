@@ -53,6 +53,6 @@ add_executable(Wind_Simulation_Pub src/Wind_Simulation_Pub.cpp)
 target_link_libraries(Wind_Simulation_Pub ${catkin_LIBRARIES})
 
 add_executable(Mach_Simulation_Pub src/Mach_Simulation_Pub.cpp)
-add_dependencies(Mach_Simulation_Pub sailboat_model_gencfg)
+add_dependencies(Mach_Simulation_Pub environment_simulation_gencfg)
 target_link_libraries(Mach_Simulation_Pub ${catkin_LIBRARIES})
 

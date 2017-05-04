@@ -14,12 +14,12 @@
 //#include "sailboat_message/Sensor_Simulation_msg.h"
 #include <sstream>
 
-#ifndef SAILBOAT_CHEADINGCONTROL_H
-#define SAILBOAT_CHEADINGCONTROL_H
+#ifndef SAILBOAT_CAUTOPILOTVER1_H
+#define SAILBOAT_CAUTOPILOTVER1_H
 
 #define pi 3.1415926
 
-class CHeadingControl {
+class CAutopilotVer1 {
 public:
     ros::NodeHandle ap_node;
     ros::Subscriber sensor_sub;
@@ -28,10 +28,10 @@ public:
     ros::Subscriber ctrl_sub;
     ros::Publisher mach_pub;
 
-    CHeadingControl();
-    CHeadingControl(double kp, double ki, double kd);
-    CHeadingControl(double kp, double ki, double kd, double t, double outMax, double outMin);
-    ~CHeadingControl();
+    CAutopilotVer1();
+    CAutopilotVer1(double kp, double ki, double kd);
+    CAutopilotVer1(double kp, double ki, double kd, double t, double outMax, double outMin);
+    ~CAutopilotVer1();
 
     //初始化
     void Init();
@@ -49,7 +49,7 @@ public:
     //void SensorSimulationCallback(const sailboat_message::Sensor_Simulation_msg::ConstPtr& msg);
     //void SailboatSimulationCallback(const sailboat_message::Sailboat_Simulation_msg::ConstPtr& msg);
     void CtrlCallback(const sailboat_message::Target_msg::ConstPtr& msg);
-    void PIDCallback(sailboat_actuator::pid_adjustment_Config &config, uint32_t level);
+    void PIDCallback(autopilot::pid_adjustment_Config &config, uint32_t level);
 
 
 
@@ -77,4 +77,4 @@ private:
 };
 
 
-#endif //SAILBOAT_CHEADINGCONTROL_H
+#endif //SAILBOAT_CAUTOPILOTVER1_H

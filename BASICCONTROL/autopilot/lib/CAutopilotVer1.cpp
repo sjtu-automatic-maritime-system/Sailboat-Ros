@@ -2,7 +2,7 @@
 // Created by hywel on 17-4-23.
 //
 
-#include "CHeadingControl.h"
+#include "CAutopilotVer1.h"
 
 
 
@@ -10,7 +10,7 @@
 //ros::Publisher mach_pub;
 //ros::Subscriber sensor_sub;
 
-CHeadingControl::CHeadingControl() {
+CAutopilotVer1::CAutopilotVer1() {
 
     Kp = 0.5;
     Ki = 0;
@@ -28,7 +28,7 @@ CHeadingControl::CHeadingControl() {
 
 }
 
-CHeadingControl::CHeadingControl(double kp, double ki, double kd) {
+CAutopilotVer1::CAutopilotVer1(double kp, double ki, double kd) {
     Kp = kp;
     Ki = ki;
     Kd = kd;
@@ -44,7 +44,7 @@ CHeadingControl::CHeadingControl(double kp, double ki, double kd) {
     Init();
 }
 
-CHeadingControl::CHeadingControl(double kp, double ki, double kd, double t, double outMax, double outMin) {
+CAutopilotVer1::CAutopilotVer1(double kp, double ki, double kd, double t, double outMax, double outMin) {
     Kp = kp;
     Ki = ki;
     Kd = kd;
@@ -60,33 +60,33 @@ CHeadingControl::CHeadingControl(double kp, double ki, double kd, double t, doub
     Init();
 }
 
-CHeadingControl::~CHeadingControl() {
+CAutopilotVer1::~CAutopilotVer1() {
     delete pidp;
 
 }
 
-double CHeadingControl::Get_Rudder() {
+double CAutopilotVer1::Get_Rudder() {
     return rudder;
 }
 
-double CHeadingControl::Get_Sail() {
+double CAutopilotVer1::Get_Sail() {
     return sail;
 }
 
-void CHeadingControl::Init() {
+void CAutopilotVer1::Init() {
 
     pidp=new CPID(Kp,Ki, Kd, T, OutMax,OutMin);
 
     mach_pub = ap_node.advertise<sailboat_message::Mach_msg>("mach", 5);
 
-    sensor_sub = ap_node.subscribe("sensor", 5, &CHeadingControl::SensorCallback,this);
+    sensor_sub = ap_node.subscribe("sensor", 5, &CAutopilotVer1::SensorCallback,this);
     //sensor_simulation_sub = ap_node.subscribe("sensor", 2, &CHeadingControl::SensorSimulationCallback,this);
     //sailboat_simulation_sub = ap_node.subscribe("sailboat", 2, &CHeadingControl::SailboatSimulationCallback,this);
-    ctrl_sub = ap_node.subscribe("targetangle", 5, &CHeadingControl::CtrlCallback,this);
+    ctrl_sub = ap_node.subscribe("targetangle", 5, &CAutopilotVer1::CtrlCallback,this);
 
 }
 
-void CHeadingControl::SensorCallback(const sailboat_message::Sensor_msg::ConstPtr &msg) {
+void CAutopilotVer1::SensorCallback(const sailboat_message::Sensor_msg::ConstPtr &msg) {
     ROS_INFO("I get AWA: [%f]", msg->AWA);
     yawFdb = msg->Yaw;
     AWA = msg->AWA;
@@ -104,12 +104,12 @@ void CHeadingControl::SensorCallback(const sailboat_message::Sensor_msg::ConstPt
 //}
 
 
-void CHeadingControl::CtrlCallback(const sailboat_message::Target_msg::ConstPtr &msg) {
+void CAutopilotVer1::CtrlCallback(const sailboat_message::Target_msg::ConstPtr &msg) {
     ROS_INFO("Tatget_msg sub: [%f]",msg->TargetAngle);
     yawRef = msg->TargetAngle;
 }
 
-void CHeadingControl::PIDCallback(sailboat_actuator::pid_adjustment_Config &config, uint32_t level) {
+void CAutopilotVer1::PIDCallback(autopilot::pid_adjustment_Config &config, uint32_t level) {
     ROS_INFO("PID_ad config: [%f] [%f] [%f]",config.Kp,config.Ki,config.Kd);
     Kp = config.Kp;
     Ki = config.Ki;
@@ -121,7 +121,7 @@ void CHeadingControl::PIDCallback(sailboat_actuator::pid_adjustment_Config &conf
     ROS_INFO("CPID: [%f] [%f] [%f]",p,i,d);
 }
 
-void CHeadingControl::AP_Calc() {
+void CAutopilotVer1::AP_Calc() {
     pidp->Set_Ref(yawRef);
     pidp->Set_Fdb(yawFdb);
     ROS_INFO("YAWRef and YAWFdb: [%f] [%f]",yawRef,yawFdb);

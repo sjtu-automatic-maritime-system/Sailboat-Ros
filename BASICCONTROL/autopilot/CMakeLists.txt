@@ -42,7 +42,7 @@ include_directories(
 
 set( autopilot_SRC
         lib/CPID.cpp
-        lib/CHeadingControl.cpp
+        lib/CAutopilotVer1.cpp
         )
 
 add_library( ${PROJECT_NAME} ${autopilot_SRC} )
@@ -52,7 +52,7 @@ target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 add_executable(pid_demo demo/PID_Demo.cpp)
 target_link_libraries(pid_demo ${catkin_LIBRARIES} autopilot)
 
-add_executable(headingControl src/HeadingControlMain.cpp)
-target_link_libraries(headingControl ${catkin_LIBRARIES} autopilot)
-add_dependencies(headingControl sailboat_actuator_gencfg sailboat_message_generate_message_cpp)
+add_executable(AutoPilot src/AutoPilot.cpp)
+target_link_libraries(AutoPilot ${catkin_LIBRARIES} autopilot)
+add_dependencies(AutoPilot autolipot_gencfg sailboat_message_generate_message_cpp)
 
