@@ -125,13 +125,14 @@ void CAutopilotVer1::AP_Calc() {
     pidp->Set_Ref(yawRef);
     pidp->Set_Fdb(yawFdb);
     ROS_INFO("YAWRef and YAWFdb: [%f] [%f]",yawRef,yawFdb);
-    rudder = pidp->PID_Calc()*180/pi;
+    rudder = pidp->PID_Calc();
 
-    sail = -5.0/6*AWA*180/pi;
-    if (sail> 90)
-        sail = 90;
-    else if (sail < -90)
-        sail = -90;
+    sail = -5.0/6*AWA;
+    if (sail> pi/2)
+        sail = pi/2;
+    else if (sail < -pi/2)
+        sail = -pi/2;
+
     ROS_INFO("sail: [%f]",sail);
 
 }

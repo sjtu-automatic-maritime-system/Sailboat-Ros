@@ -11,7 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-        sailboat_message
+  sailboat_message
+  math_tool
 )
 
 
@@ -42,8 +43,8 @@ set( sailboat_simulation_SRC
         lib/CSimulationVer2.cpp)
 
 add_library( ${PROJECT_NAME} ${sailboat_simulation_SRC} )
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
-target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 
 add_executable(Sailboat_Simulation src/Sailboat_Simulation.cpp)
 target_link_libraries(Sailboat_Simulation ${catkin_LIBRARIES} sailboat_simulation)
@@ -57,3 +58,4 @@ target_link_libraries(SIPTestDemo ${catkin_LIBRARIES} sailboat_simulation)
 
 add_executable(MotionEquationTestDemo demo/MotionEquationTestDemo.cpp)
 target_link_libraries(MotionEquationTestDemo ${catkin_LIBRARIES} sailboat_simulation)
+

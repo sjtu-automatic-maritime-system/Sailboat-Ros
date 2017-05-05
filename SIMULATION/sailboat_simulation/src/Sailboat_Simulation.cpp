@@ -9,6 +9,9 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "SimulationVer1");
 
     CSimulationVer1 SME;
+    //显示仿真数据
+    SME.ShowData();
+    //SME.HideData();
 
     ros::Rate loop_rate(50);
 
@@ -42,6 +45,8 @@ int main(int argc, char **argv) {
         ros::spinOnce();
         loop_rate.sleep();
     }
+
+    delete [] sailboat_msg;
 
 
     return 0;

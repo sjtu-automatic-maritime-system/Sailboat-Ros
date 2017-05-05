@@ -3,6 +3,7 @@
 // reference Jianyun Xu's Simulink
 //
 // 一个找了一天的bug：定义数组指针后必须new分配内存。
+// 所有角度都是弧度制
 #ifndef SAILBOAT_CSIMULATIONVER1_H
 #define SAILBOAT_CSIMULATIONVER1_H
 
@@ -96,6 +97,9 @@ struct param{
 
 class CSimulationVer1{
 public:
+
+
+
     //ros相关
     ros::NodeHandle simulation_node;
     ros::Subscriber wind_sub;
@@ -143,6 +147,8 @@ public:
     void Sailboat_Calc(double d_t);
 
     double* Sailboat_Out();
+    void ShowData();
+    void HideData();
 
     //ros callback函数
     void WindCallback(const sailboat_message::Wind_Simulation_msg::ConstPtr& msg);
@@ -150,6 +156,8 @@ public:
 
 
 private:
+
+    bool dataShow; //数据显示
 
     //参数和变量
     //double t;

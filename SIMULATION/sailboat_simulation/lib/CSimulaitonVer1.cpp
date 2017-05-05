@@ -12,6 +12,9 @@
 
 
 CSimulationVer1::CSimulationVer1() {
+
+    dataShow = false;
+
     // --- parinit---
     par = new param();
 
@@ -445,8 +448,8 @@ double* CSimulationVer1::Damping(double rou, double A, double x, double y, doubl
     double k2 = 1;
     double L = k1*0.5*rou*A*V2*cld[0];
     double D = k2*0.5*rou*A*V2*cld[1];
-    cout<<"L = "<<L<<endl;
-    cout<<"D = "<<D<<endl;
+    //cout<<"L = "<<L<<endl;
+    //cout<<"D = "<<D<<endl;
 
     double tmp1 = -L*sin(alphaTmp)+D*cos(alphaTmp);
     double tmp2 =  L*cos(alphaTmp)+D*sin(alphaTmp);
@@ -682,10 +685,13 @@ void CSimulationVer1::Sailboat_Calc(double d_t) {
         eta(3,0) = -pi/6;
 
 
-    cout<<"F="<<endl<<F<<endl;
-    cout<<"nu="<<endl<<nu<<endl;
-    cout<<"eta="<<endl<<eta<<endl;
-    cout<<"----------------"<<endl;
+    if (dataShow == true)
+    {
+        cout<<"F="<<endl<<F<<endl;
+        cout<<"nu="<<endl<<nu<<endl;
+        cout<<"eta="<<endl<<eta<<endl;
+        cout<<"----------------"<<endl;
+    }
 
     uu = nu(0,0);
     vv = nu(1,0);
@@ -715,6 +721,15 @@ double* CSimulationVer1::Sailboat_Out() {
 
 }
 
+void CSimulationVer1::ShowData()
+{
+    dataShow = true;
+}
+
+void CSimulationVer1::HideData()
+{
+    dataShow = false;
+}
 
 double CSimulationVer1::d2r(double d) {
     return d*pi/180;
@@ -747,6 +762,6 @@ void CSimulationVer1::MachCallback(const sailboat_message::Mach_msg::ConstPtr &m
     ROS_INFO("Mach_msg sub: [%f] [%f]", msg->rudder , msg->sail);
     rudderAngle = msg->rudder;
     sailAngle = msg->sail;
-    delta_r = d2r(rudderAngle);
-    delta_s = d2r(sailAngle);
+    delta_r = rudderAngle;
+    delta_s = sailAngle;
 }

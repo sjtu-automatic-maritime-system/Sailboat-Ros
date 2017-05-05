@@ -104,6 +104,7 @@ class WTST:
         if l == '':
             rospy.logwarn('WTST timeout, reconnect')
             self.close()
+            time.sleep(0.5)
             self.open()
         self.line = self.line + l
         if self.line.endswith('\n'):
