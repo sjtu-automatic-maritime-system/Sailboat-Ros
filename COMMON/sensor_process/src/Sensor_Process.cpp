@@ -7,7 +7,7 @@
 
 
 
-#include "CSensorProcess.h"
+#include "sensor_process/CSensorProcess.h"
 
 
 //float64 timestamp
@@ -26,7 +26,7 @@
 int main(int argc, char **argv)
 {
 
-    ros::init(argc, argv, "Sensor_Process");
+    ros::init(argc, argv, "sensor_process");
 
     CSensorProcess senPro;
 

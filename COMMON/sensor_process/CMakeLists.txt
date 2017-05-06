@@ -34,16 +34,14 @@ catkin_package(
 
 include_directories(
         include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
 set( sensor_process_SRC
-        lib/CSensorProcess.cpp)
+        src/CSensorProcess.cpp
+        src/Sensor_Process.cpp)
 
-add_library( ${PROJECT_NAME} ${sensor_process_SRC} )
-add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
-target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 
-add_executable(Sensor_Process src/Sensor_Process.cpp)
-target_link_libraries(Sensor_Process ${catkin_LIBRARIES} sensor_process)
-add_dependencies(Sensor_Process sailboat_message_generate_message_cpp)
+add_executable(sensor_process ${sensor_process_SRC})
+target_link_libraries(sensor_process ${catkin_LIBRARIES})
+add_dependencies(sensor_process sailboat_message_generate_message_cpp)

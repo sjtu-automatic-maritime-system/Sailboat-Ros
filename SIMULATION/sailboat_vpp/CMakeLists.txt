@@ -26,14 +26,14 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES sailboat_vpp
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES sailboat_vpp
+  CATKIN_DEPENDS roscpp rospy std_msgs sailboat_message
+  DEPENDS system_lib
 )
 include_directories(
         include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
 set( sailboat_vpp_SRC
@@ -44,5 +44,5 @@ add_library( ${PROJECT_NAME} ${sailboat_vpp_SRC} )
 add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
 target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 
-add_executable(VppTestDemo demo/DynamicVppTestDemo.cpp)
-target_link_libraries(VppTestDemo ${catkin_LIBRARIES} sailboat_vpp)
+add_executable(vpp_test_demo demo/DynamicVppTestDemo.cpp)
+target_link_libraries(vpp_test_demo ${catkin_LIBRARIES} sailboat_vpp)

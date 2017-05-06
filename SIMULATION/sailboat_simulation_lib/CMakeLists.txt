@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(sailboat_service)
+project(sailboat_simulation_lib)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 # add_definitions(-std=c++11)
@@ -8,10 +8,11 @@ project(sailboat_service)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  math_tool_lib
   roscpp
   rospy
+  sailboat_message
   std_msgs
-  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -55,13 +56,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  Mach_srv.srv
-  Control_srv.srv
+# add_service_files(
+#   FILES
 #   Service1.srv
 #   Service2.srv
-)
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -71,10 +70,10 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -107,8 +106,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES sailboat_service
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  LIBRARIES sailboat_simulation_lib
+  CATKIN_DEPENDS math_tool_lib roscpp rospy sailboat_message std_msgs
   DEPENDS system_lib
 )
 
@@ -120,7 +119,23 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+        include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
+        ${catkin_INCLUDE_DIRS})
 
+set( sailboat_simulation_lib_SRC
+        #lib/CCubicSplineInterpolation.cpp
+        src/CSimulaitonVer1.cpp
+        src/CSimulationVer2.cpp
+        #src/Sailboat_Simulation.cpp
+        )
 
+add_library( ${PROJECT_NAME} ${sailboat_simulation_lib_SRC} )
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} math_tool_lib)
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
+
+add_executable(eigen_test_demo demo/EigenTestDemo.cpp)
+target_link_libraries(eigen_test_demo ${catkin_LIBRARIES})
+#
+add_executable(motion_equation_test_demo demo/MotionEquationTestDemo.cpp)
+target_link_libraries(motion_equation_test_demo ${catkin_LIBRARIES} sailboat_simulation_lib)

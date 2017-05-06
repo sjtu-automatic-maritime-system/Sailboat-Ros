@@ -12,15 +12,16 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sailboat_message
-  math_tool
+  math_tool_lib
+        sailboat_simulation_lib
 )
 
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES sailboat_simulation
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES sailboat_simulation
+  CATKIN_DEPENDS roscpp rospy std_msgs sailboat_simulation_lib sailboat_message math_tool_lib
+  DEPENDS system_lib
 )
 
 ###########
@@ -31,31 +32,29 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 
-
 include_directories(
         include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
-set( sailboat_simulation_SRC
-        lib/CCubicSplineInterpolation.cpp
-        lib/CSimulaitonVer1.cpp
-        lib/CSimulationVer2.cpp)
 
-add_library( ${PROJECT_NAME} ${sailboat_simulation_SRC} )
-target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES})
-add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
 
-add_executable(Sailboat_Simulation src/Sailboat_Simulation.cpp)
-target_link_libraries(Sailboat_Simulation ${catkin_LIBRARIES} sailboat_simulation)
-add_dependencies(Sailboat_Simulation sailboat_message_generate_message_cpp)
+add_executable(sailboat_simulation_ver1 src/Sailboat_Simulation.cpp)
+target_link_libraries(sailboat_simulation_ver1 ${catkin_LIBRARIES} math_tool_lib sailboat_simulation_lib)
+add_dependencies(sailboat_simulation_ver1 sailboat_message_generate_message_cpp)
 
-add_executable(EigenTestDemo demo/EigenTestDemo.cpp)
-target_link_libraries(EigenTestDemo ${catkin_LIBRARIES})
 
-add_executable(SIPTestDemo demo/SplineInterpolationTestDemo.cpp)
-target_link_libraries(SIPTestDemo ${catkin_LIBRARIES} sailboat_simulation)
 
-add_executable(MotionEquationTestDemo demo/MotionEquationTestDemo.cpp)
-target_link_libraries(MotionEquationTestDemo ${catkin_LIBRARIES} sailboat_simulation)
-
+## Mark executables and/or libraries for installation
+#install(TARGETS math_tool_lib
+#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
+##
+## Mark cpp header files for installation
+#install(DIRECTORY include/${PROJECT_NAME}/
+#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#   FILES_MATCHING PATTERN "*.h"
+#   PATTERN ".svn" EXCLUDE
+#)

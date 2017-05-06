@@ -2,11 +2,11 @@
 // Created by hywel on 17-5-2.
 //
 
-#include "CSimulationVer1.h"
+#include "sailboat_simulation_lib/CSimulationVer1.h"
 
 int main(int argc, char **argv) {
     //Initiate ROS
-    ros::init(argc, argv, "SimulationVer1");
+    ros::init(argc, argv, "simulation_ver1");
 
     CSimulationVer1 SME;
     //显示仿真数据

@@ -28,10 +28,10 @@ generate_dynamic_reconfigure_options(
 
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES environment_simulation
-#  CATKIN_DEPENDS dynamic_reconfigure roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES environment_simulation
+  CATKIN_DEPENDS dynamic_reconfigure roscpp rospy std_msgs sailboat_message dynamic_reconfigure
+  DEPENDS system_lib
 )
 
 ###########
@@ -44,15 +44,15 @@ catkin_package(
 
 include_directories(
         include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
 
 
-add_executable(Wind_Simulation_Pub src/Wind_Simulation_Pub.cpp)
-target_link_libraries(Wind_Simulation_Pub ${catkin_LIBRARIES})
+add_executable(wind_simulation_pub src/Wind_Simulation_Pub.cpp)
+target_link_libraries(wind_simulation_pub ${catkin_LIBRARIES})
 
-add_executable(Mach_Simulation_Pub src/Mach_Simulation_Pub.cpp)
-add_dependencies(Mach_Simulation_Pub environment_simulation_gencfg)
-target_link_libraries(Mach_Simulation_Pub ${catkin_LIBRARIES})
+add_executable(mach_simulation_pub src/Mach_Simulation_Pub.cpp)
+add_dependencies(mach_simulation_pub environment_simulation_gencfg)
+target_link_libraries(mach_simulation_pub ${catkin_LIBRARIES})
 

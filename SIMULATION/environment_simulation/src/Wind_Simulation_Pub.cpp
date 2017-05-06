@@ -11,7 +11,7 @@
 int main(int argc, char **argv)
 {
 
-  ros::init(argc, argv, "Wind_Simulation_Talker");
+  ros::init(argc, argv, "wind_simulation_talker");
   ros::NodeHandle n;
   ros::Publisher Wind_pub = n.advertise<sailboat_message::Wind_Simulation_msg>("wind", 10);
   ros::Rate loop_rate(10);

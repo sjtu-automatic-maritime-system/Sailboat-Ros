@@ -2,7 +2,7 @@
 // Created by hywel on 17-5-1.
 // 康梦萁 游艇设计与性能研究
 //
-#include "../include/CDynamicVPP.h"
+#include "sailboat_vpp/CDynamicVPP.h"
 
 CDynamicVPP::CDynamicVPP() {
     init();

@@ -154,8 +154,8 @@ class AHRS():
 
 
 def talker():#ros message publish
-    pub = rospy.Publisher('Ahrs', Ahrs_msg, queue_size=5)
-    rospy.init_node('Ahrs_Talker', anonymous=True)
+    pub = rospy.Publisher('ahrs', Ahrs_msg, queue_size=5)
+    rospy.init_node('ahrs_talker', anonymous=True)
     rate = rospy.Rate(20) # 10hz
 
     ahrs = AHRS()

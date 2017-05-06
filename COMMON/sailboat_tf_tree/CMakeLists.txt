@@ -7,15 +7,19 @@ project(sailboat_tf_tree)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+
+set(sailboat_tf_tree_DEPENDENCE
+        robot_state_publisher
+        roscpp
+        rospy
+        std_msgs
+        tf
+        urdf
+        xacro
+        turtlesim)
+
 find_package(catkin REQUIRED COMPONENTS
-  robot_state_publisher
-  roscpp
-  rospy
-  std_msgs
-  tf
-  urdf
-  xacro
-  turtlesim
+    ${sailboat_tf_tree_DEPENDENCE}
 )
 
 ## System dependencies are found with CMake's conventions
@@ -108,10 +112,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES sailboat_tf_tree
-#  CATKIN_DEPENDS robot_state_publisher roscpp rospy std_msg tf urdf xacro
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES sailboat_tf_tree
+  CATKIN_DEPENDS ${sailboat_tf_tree_DEPENDENCE}
+  DEPENDS system_lib
 )
 
 include_directories(

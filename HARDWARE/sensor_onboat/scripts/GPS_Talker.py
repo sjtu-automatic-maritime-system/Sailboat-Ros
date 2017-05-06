@@ -250,8 +250,8 @@ def console_logger():
 
 
 def talker():#ros message publish
-    pub = rospy.Publisher('GPS', GPS_msg, queue_size=5)
-    rospy.init_node('GPS_Talker', anonymous=True)
+    pub = rospy.Publisher('gps', GPS_msg, queue_size=5)
+    rospy.init_node('gps_talker', anonymous=True)
     rate = rospy.Rate(5) # 5hz
 
     logger = console_logger() #todo write in Class GNSS

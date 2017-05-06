@@ -24,5 +24,5 @@ class SensorListener:
         rospy.spin()
 
 if __name__ == '__main__':
-    ahrs = SensorListener('Ahrslistener','WTST')
+    ahrs = SensorListener('Ahrslistener','wtst')
     ahrs.listener()

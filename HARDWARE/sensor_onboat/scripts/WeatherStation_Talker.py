@@ -423,9 +423,9 @@ class dataWrapper:
 
 def talker():  # ros message publish
 
-    pub = rospy.Publisher('WTST', WTST_msg, queue_size=1)
+    pub = rospy.Publisher('wtst', WTST_msg, queue_size=1)
     #pub = rospy.Publisher('WTST', WTST_Pro_msg, queue_size=1)
-    rospy.init_node('WTST_Talker', anonymous=True)
+    rospy.init_node('wtst_talker', anonymous=True)
     rate = rospy.Rate(20)  # 20hz
 
     wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT, INIT_COMMANDS)

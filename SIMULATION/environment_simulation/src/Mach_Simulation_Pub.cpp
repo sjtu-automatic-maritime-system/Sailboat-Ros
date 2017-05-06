@@ -22,9 +22,9 @@ void callback(environment_simulation::sailboat_mach_simulation_Config &config, u
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "Mach_Simulation_Talker");
+  ros::init(argc, argv, "mach_simulation_talker");
   ros::NodeHandle n;
-  ros::Publisher Mach_pub = n.advertise<sailboat_message::Mach_msg>("Mach", 10);
+  ros::Publisher Mach_pub = n.advertise<sailboat_message::Mach_msg>("mach", 10);
 
   dynamic_reconfigure::Server<environment_simulation::sailboat_mach_simulation_Config> dserver;
   dynamic_reconfigure::Server<environment_simulation::sailboat_mach_simulation_Config>::CallbackType f;
