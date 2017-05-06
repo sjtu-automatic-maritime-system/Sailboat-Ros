@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 generate_dynamic_reconfigure_options(
         cfg/Sailboat_Mach_Simulation.cfg
+        cfg/Sailboat_targetAngle_Simulation.cfg
         #   cfg/DynReconf1.cfg
         #   cfg/DynReconf2.cfg
 )
@@ -56,3 +57,6 @@ add_executable(mach_simulation_pub src/Mach_Simulation_Pub.cpp)
 add_dependencies(mach_simulation_pub environment_simulation_gencfg)
 target_link_libraries(mach_simulation_pub ${catkin_LIBRARIES})
 
+add_executable(targetangle_simulation_pub src/TargetAngle_Simulation_Pub.cpp)
+add_dependencies(targetangle_simulation_pub environment_simulation_gencfg)
+target_link_libraries(targetangle_simulation_pub ${catkin_LIBRARIES})

@@ -79,10 +79,10 @@ void CAutopilotVer1::Init() {
 
     mach_pub = ap_node.advertise<sailboat_message::Mach_msg>("mach", 5);
 
-    sensor_sub = ap_node.subscribe("sensor", 5, &CAutopilotVer1::SensorCallback,this);
+    sensor_sub = ap_node.subscribe("sensor", 2, &CAutopilotVer1::SensorCallback,this);
     //sensor_simulation_sub = ap_node.subscribe("sensor", 2, &CHeadingControl::SensorSimulationCallback,this);
     //sailboat_simulation_sub = ap_node.subscribe("sailboat", 2, &CHeadingControl::SailboatSimulationCallback,this);
-    ctrl_sub = ap_node.subscribe("targetangle", 5, &CAutopilotVer1::CtrlCallback,this);
+    ctrl_sub = ap_node.subscribe("targetangle", 2, &CAutopilotVer1::CtrlCallback,this);
 
 }
 
@@ -111,9 +111,9 @@ void CAutopilotVer1::CtrlCallback(const sailboat_message::Target_msg::ConstPtr &
 
 void CAutopilotVer1::PIDCallback(autopilot_lib::pid_adjustment_Config &config, uint32_t level) {
     ROS_INFO("PID_ad config: [%f] [%f] [%f]",config.Kp,config.Ki,config.Kd);
-    Kp = config.Kp;
-    Ki = config.Ki;
-    Kd = config.Kd;
+    Kp = config.Kp /10;
+    Ki = config.Ki /10;
+    Kd = config.Kd /10;
     pidp->Set_Kp(Kp);
     pidp->Set_Ki(Ki);
     pidp->Set_Kd(Kd);
@@ -125,9 +125,10 @@ void CAutopilotVer1::AP_Calc() {
     pidp->Set_Ref(yawRef);
     pidp->Set_Fdb(yawFdb);
     ROS_INFO("YAWRef and YAWFdb: [%f] [%f]",yawRef,yawFdb);
-    rudder = pidp->PID_Calc();
+    //rudder = pidp->PID_Calc();
 
-    sail = -5.0/6*AWA;
+    rudder = (yawRef-yawFdb)*Kp;
+    sail = sailCtrl.GetBestSailAngle2(AWA);
     if (sail> pi/2)
         sail = pi/2;
     else if (sail < -pi/2)

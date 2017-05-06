@@ -126,9 +126,12 @@ include_directories(
 
 set( autopilot_lib_SRC
         src/CAutopilotVer1.cpp
+        src/CSailCtrl.cpp
         )
 
 add_library( ${PROJECT_NAME} ${autopilot_lib_SRC} )
-add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 
+add_executable(sailctrl_test_demo demo/SailCtrlTestDemo.cpp)
+target_link_libraries(sailctrl_test_demo ${catkin_LIBRARIES} autopilot_lib)

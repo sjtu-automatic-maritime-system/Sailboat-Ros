@@ -9,7 +9,7 @@
 #include "sailboat_message/Target_msg.h"
 #include <dynamic_reconfigure/server.h>
 #include "autopilot_lib/pid_adjustment_Config.h"
-
+#include "autopilot_lib/CSailCtrl.h"
 //#include "sailboat_message/Sailboat_Simulation_msg.h"
 //#include "sailboat_message/Sensor_Simulation_msg.h"
 #include <sstream>
@@ -55,6 +55,7 @@ public:
 
 private:
 
+    CSailCtrl sailCtrl;
 
     CPID* pidp;
 

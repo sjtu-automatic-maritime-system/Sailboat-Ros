@@ -131,5 +131,8 @@ target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 add_executable(sip_test_demo demo/SplineInterpolationTestDemo.cpp)
 target_link_libraries(sip_test_demo ${catkin_LIBRARIES} math_tool_lib)
 
-add_executable(pid_demo demo/PID_Demo.cpp)
+add_executable(pid_demo demo/pidDemo.cpp)
 target_link_libraries(pid_demo ${catkin_LIBRARIES} math_tool_lib)
+
+add_executable(math_demo demo/MathDemo.cpp)
+target_link_libraries(math_demo ${catkin_LIBRARIES} math_tool_lib)

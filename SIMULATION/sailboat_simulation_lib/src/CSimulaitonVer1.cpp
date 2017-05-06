@@ -675,14 +675,14 @@ void CSimulationVer1::Sailboat_Calc(double d_t) {
     nu(3,0) = limitsPi(nu(3,0));
     eta(3,0) = limitsPi(eta(3,0));
 
-    if(nu(3,0) > pi/6)
-        nu(3,0) = pi/6;
-    else if (nu(3,0) < -pi/6)
-        nu(3,0) = -pi/6;
-    if(eta(3,0) > pi/6)
-        eta(3,0) = pi/6;
-    else if (eta(3,0) < -pi/6)
-        eta(3,0) = -pi/6;
+    if(nu(2,0) > pi/6)
+        nu(2,0) = pi/6;
+    else if (nu(2,0) < -pi/6)
+        nu(2,0) = -pi/6;
+    if(eta(2,0) > pi/6)
+        eta(2,0) = pi/6;
+    else if (eta(2,0) < -pi/6)
+        eta(2,0) = -pi/6;
 
 
     if (dataShow == true)

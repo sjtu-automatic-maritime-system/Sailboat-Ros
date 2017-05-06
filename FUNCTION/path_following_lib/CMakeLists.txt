@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(path_following)
+project(path_following_lib)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 # add_definitions(-std=c++11)
@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sailboat_message
   std_msgs
-        path_following_lib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,8 +106,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES path_following
-  CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs path_following_lib
+  LIBRARIES path_following_lib
+  CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs
   DEPENDS system_lib
 )
 
@@ -124,6 +123,13 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
-add_executable(path_following_ver1 src/PathFollowing.cpp)
-target_link_libraries(path_following_ver1 ${catkin_LIBRARIES})
-add_dependencies(path_following_ver1 sailboat_message_generate_message_cpp)
+set( path_following_lib_SRC
+        src/CPathFollowingVer1.cpp
+        )
+
+add_library( ${PROJECT_NAME} ${path_following_lib_SRC} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
+
+#add_executable(path_following_test_demo demo/pathFollowingTestDemo.cpp)
+#target_link_libraries(path_following_test_demo ${catkin_LIBRARIES} path_following_lib)

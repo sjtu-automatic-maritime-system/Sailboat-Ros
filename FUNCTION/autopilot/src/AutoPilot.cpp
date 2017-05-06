@@ -33,8 +33,8 @@ int main(int argc, char **argv)
         msg.rudder = rudder;
         msg.sail = sail;
 
-        ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
-        ROS_INFO("I talk Sail_Angle: [%f]", msg.sail);
+        //ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
+        //ROS_INFO("I talk Sail_Angle: [%f]", msg.sail);
         autopilot.mach_pub.publish(msg);
 
         ros::spinOnce();
