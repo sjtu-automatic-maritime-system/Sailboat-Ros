@@ -165,7 +165,8 @@ def talker():#ros message publish
     try:
         while not rospy.is_shutdown():
             ahrs.update()
-
+            ahrs_msg.header.stamp = rospy.Time.now()
+            ahrs_msg.header.frame_id = 'AHRS'
             ahrs_msg.timestamp = rospy.get_time()
 
             ahrs_msg.roll = ahrs.Roll

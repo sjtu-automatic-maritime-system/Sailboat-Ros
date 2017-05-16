@@ -23,6 +23,7 @@
 //float64 AWS
 
 
+
 int main(int argc, char **argv)
 {
 
@@ -39,6 +40,9 @@ int main(int argc, char **argv)
         sensorMsg = senPro.GetSensorMsg();
 
         sailboat_message::Sensor_msg msg;
+
+        msg.header.stamp = ros::Time::now();
+        msg.header.frame_id = "sensor";
 
         msg.timestamp = ros::Time::now().toSec();
         msg.ux = sensorMsg[1];

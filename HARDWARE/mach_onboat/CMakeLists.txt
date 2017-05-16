@@ -198,3 +198,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(mach_listener test/Mach_Listener.cpp)
+target_link_libraries(mach_listener ${catkin_LIBRARIES})
+add_dependencies(mach_listener sailboat_message_generate_message_cpp)

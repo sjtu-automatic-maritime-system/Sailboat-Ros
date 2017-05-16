@@ -8,12 +8,12 @@
     <param name="scale_linear" value="2" type="double"/>
     <param name="scale_angular" value="2" type="double"/>
 
-    <node pkg="sailboat_model" type="turtle_tf_broadcaster"
+    <node pkg="sailboat_tf_tree" type="turtle_tf_broadcaster"
           args="/turtle1" name="turtle1_tf_broadcaster" />
-    <node pkg="sailboat_model" type="turtle_tf_broadcaster"
+    <node pkg="sailboat_tf_tree" type="turtle_tf_broadcaster"
           args="/turtle2" name="turtle2_tf_broadcaster" />
-    <node pkg="sailboat_model" type="turtle_tf_listener"
+    <node pkg="sailboat_tf_tree" type="turtle_tf_listener"
           name="listener" />
-    <node pkg="sailboat_model" type="frame_tf_broadcaster"
+    <node pkg="sailboat_tf_tree" type="frame_tf_broadcaster"
           name="broadcaster_frame" />
   </launch>

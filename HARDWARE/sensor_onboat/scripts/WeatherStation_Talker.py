@@ -100,7 +100,7 @@ class WTST:
 
     def update(self):
         l = self.ser.readline()
-        print l
+        #print l
         if l == '':
             rospy.logwarn('WTST timeout, reconnect')
             self.close()
@@ -314,12 +314,12 @@ class dataWrapper:
         self.Yaw = 'HeadingTrueNorth'
         self.WindAngle = 'WindAngle'
         self.WindSpeed = 'WindSpeed'
+        self.DegreeTrue = 'DegreeTrue'
+        self.SpeedKnots = 'SpeedKnots'
 
         self.NumSata = 'NumSata'
         self.VTGIndicator = 'VTGIndicator'
-        self.DegreeTrue = 'DegreeTrue'
         self.DegreeMagnetic = 'DegreeMagnetic'
-        self.SpeedKnots = 'SpeedKnots'
         self.HeadingMagneticSenor = 'HeadingMagneticSenor'
         self.MagneticDeviation = 'MagneticDeviation'
         self.DirectionDeviation = 'DirectionDeviation'
@@ -334,6 +334,8 @@ class dataWrapper:
 
 
     def pubData(self,msg,wtst):
+        msg.header.stamp = rospy.Time.now()
+        msg.header.frame_id = 'WTST'
         msg.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
@@ -355,10 +357,16 @@ class dataWrapper:
             msg.WindAngle = wtst.WindAngle
         if wtst.isset(self.WindSpeed):
             msg.WindSpeed = wtst.WindSpeed
+        if wtst.isset(self.DegreeTrue):
+            msg.DegreeTrue = wtst.DegreeTrue
+        if wtst.isset(self.SpeedKnots):
+            msg.SpeedKnots = wtst.SpeedKnots
         return msg
 
     def pubProData(self,msgPro,wtst):
-        msg.timestamp = rospy.get_time()
+        msgPro.header.stamp = rospy.Time.now()
+        msgPro.header.frame_id = 'WTST'
+        msgPro.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msgPro.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.Latitude):

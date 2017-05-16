@@ -122,11 +122,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(turtle_tf_broadcaster src/tf_broadcaster.cpp)
+add_executable(state_publisher src/state_publisher.cpp)
+target_link_libraries(state_publisher ${catkin_LIBRARIES})
+add_dependencies(state_publisher sailboat_message_generate_message_cpp)
+
+add_executable(turtle_tf_broadcaster demo/tf_broadcaster.cpp)
 target_link_libraries(turtle_tf_broadcaster ${catkin_LIBRARIES})
 
-add_executable(turtle_tf_listener src/tf_listener.cpp)
+add_executable(turtle_tf_listener demo/tf_listener.cpp)
 target_link_libraries(turtle_tf_listener ${catkin_LIBRARIES})
 
-add_executable(frame_tf_broadcaster src/frame_tf_broadcaster.cpp)
+add_executable(frame_tf_broadcaster demo/frame_tf_broadcaster.cpp)
 target_link_libraries(frame_tf_broadcaster ${catkin_LIBRARIES})

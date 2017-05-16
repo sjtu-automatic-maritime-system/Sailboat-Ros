@@ -262,6 +262,8 @@ def talker():#ros message publish
             gnss.update()
             gnss.update()
             if gnss.isGetData == True:
+                GPS_msg.header.stamp = rospy.Time.now()
+                GPS_msg.header.frame_id = 'GPS'
                 GPS_msg.timestamp = rospy.get_time()
                 GPS_msg.satn = gnss.satn
                 GPS_msg.posx = gnss.posx
