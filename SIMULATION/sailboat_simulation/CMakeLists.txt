@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
   LIBRARIES sailboat_simulation
   CATKIN_DEPENDS roscpp rospy std_msgs sailboat_simulation_lib sailboat_message math_tool_lib
   DEPENDS system_lib

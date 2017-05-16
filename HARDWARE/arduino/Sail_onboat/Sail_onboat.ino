@@ -113,14 +113,14 @@ void flash() {
     durGear = pulseIn(gearPin, HIGH, 20000);
     count = 0;
   }
-  //if (durGear < 1950 && durGear > 1050) {
-  //  if (durGear < 1500)
-  //    autoFlag = 0;
-  //  else
-  //    autoFlag = 1;
-  //}
+  if (durGear < 1950 && durGear > 1050) {
+    if (durGear < 1500)
+      autoFlag = 0;
+    else
+      autoFlag = 1;
+  }
   //test flag
-  autoFlag = 1;
+  //autoFlag = 1;
   signalSelection();
   veloLimit();
   servoCtrl();
