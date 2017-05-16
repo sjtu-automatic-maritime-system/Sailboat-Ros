@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
   LIBRARIES autopilot
   CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs autopilot_lib
   DEPENDS system_lib
