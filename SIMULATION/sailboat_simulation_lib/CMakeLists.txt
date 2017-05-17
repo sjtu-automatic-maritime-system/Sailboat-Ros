@@ -132,7 +132,7 @@ set( sailboat_simulation_lib_SRC
 
 add_library( ${PROJECT_NAME} ${sailboat_simulation_lib_SRC} )
 target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} math_tool_lib)
-add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} mach_onboat_generate_message_cpp)
 
 add_executable(eigen_test_demo demo/EigenTestDemo.cpp)
 target_link_libraries(eigen_test_demo ${catkin_LIBRARIES})

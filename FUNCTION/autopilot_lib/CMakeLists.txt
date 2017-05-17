@@ -130,7 +130,7 @@ set( autopilot_lib_SRC
         )
 
 add_library( ${PROJECT_NAME} ${autopilot_lib_SRC} )
-add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} mach_onboat_generate_message_cpp)
 target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
 
 add_executable(sailctrl_test_demo demo/SailCtrlTestDemo.cpp)

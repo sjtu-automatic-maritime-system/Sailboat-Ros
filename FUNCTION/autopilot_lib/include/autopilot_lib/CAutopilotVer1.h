@@ -4,7 +4,7 @@
 
 #include "ros/ros.h"
 #include "math_tool_lib/CPID.h"
-#include "sailboat_message/Mach_msg.h"
+#include "mach_onboat/Mach_msg.h"
 #include "sailboat_message/Sensor_msg.h"//改成处理过后的Sensor_msg
 #include "sailboat_message/Target_msg.h"
 #include <dynamic_reconfigure/server.h>

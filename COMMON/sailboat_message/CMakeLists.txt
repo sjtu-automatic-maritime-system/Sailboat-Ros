@@ -50,7 +50,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Mach_msg.msg
+#  Mach_msg.msg
   GPS_msg.msg
   Ahrs_msg.msg
   WTST_msg.msg

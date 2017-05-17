@@ -40,5 +40,5 @@ include_directories(
 
 add_executable(autopilot_ver1 src/AutoPilot.cpp)
 target_link_libraries(autopilot_ver1 ${catkin_LIBRARIES})
-add_dependencies(autopilot_ver1 autolipot_gencfg sailboat_message_generate_message_cpp)
+add_dependencies(autopilot_ver1 autolipot_gencfg sailboat_message_generate_message_cpp mach_onboat_generate_message_cpp)
 

@@ -77,7 +77,7 @@ void CAutopilotVer1::Init() {
 
     pidp=new CPID(Kp,Ki, Kd, T, OutMax,OutMin);
 
-    mach_pub = ap_node.advertise<sailboat_message::Mach_msg>("mach", 5);
+    mach_pub = ap_node.advertise<mach_onboat::Mach_msg>("mach", 5);
 
     sensor_sub = ap_node.subscribe("sensor", 2, &CAutopilotVer1::SensorCallback,this);
     //sensor_simulation_sub = ap_node.subscribe("sensor", 2, &CHeadingControl::SensorSimulationCallback,this);

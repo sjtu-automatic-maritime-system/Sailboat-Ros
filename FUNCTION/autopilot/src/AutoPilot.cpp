@@ -27,7 +27,7 @@ int main(int argc, char **argv)
         double rudder = autopilot.Get_Rudder();
         double sail = autopilot.Get_Sail();
 
-        sailboat_message::Mach_msg msg;
+        mach_onboat::Mach_msg msg;
         msg.timestamp = ros::Time::now().toSec();
         msg.motor = 0;
         msg.rudder = rudder;

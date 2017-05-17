@@ -26,7 +26,7 @@
 #include "sailboat_message/Sensor_msg.h"
 //#include "sailboat_message/Sailboat_Simulation_msg.h"
 #include "sailboat_message/Wind_Simulation_msg.h"
-#include "sailboat_message/Mach_msg.h"
+#include "mach_onboat/Mach_msg.h"
 
 #define pi 3.1415926
 
@@ -152,7 +152,7 @@ public:
 
     //ros callback函数
     void WindCallback(const sailboat_message::Wind_Simulation_msg::ConstPtr& msg);
-    void MachCallback(const sailboat_message::Mach_msg::ConstPtr& msg);
+    void MachCallback(const mach_onboat::Mach_msg::ConstPtr& msg);
 
 
 private:

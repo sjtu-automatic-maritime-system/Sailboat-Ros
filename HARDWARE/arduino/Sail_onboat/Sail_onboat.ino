@@ -1,6 +1,6 @@
 #include <ros.h>
 #include <std_msgs/String.h>
-#include <sailboat_message/Mach_msg.h>
+#include <mach_onboat/Mach_msg.h>
 #include <FlexiTimer2.h>
 #include <Servo.h>
 #define pi 3.141592654;
@@ -41,12 +41,12 @@ float rudderdata = 0;
 float saildata = 0;
 String ss;
 char c[10];
-void MachmessageCb( const sailboat_message::Mach_msg & msg){
+void MachmessageCb( const mach_onboat::Mach_msg & msg){
   motordata = msg.motor;
   rudderdata = msg.rudder;
   saildata = msg.sail;
 }
-ros::Subscriber<sailboat_message::Mach_msg> sub("mach", MachmessageCb);
+ros::Subscriber<mach_onboat::Mach_msg> sub("mach", MachmessageCb);
 //endROS
 
 void setup()

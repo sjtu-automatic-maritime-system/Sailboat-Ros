@@ -758,7 +758,7 @@ void CSimulationVer1::WindCallback(const sailboat_message::Wind_Simulation_msg::
     windVelocity = msg->TWS;
 }
 
-void CSimulationVer1::MachCallback(const sailboat_message::Mach_msg::ConstPtr &msg) {
+void CSimulationVer1::MachCallback(const mach_onboat::Mach_msg::ConstPtr &msg) {
     ROS_INFO("Mach_msg sub: [%f] [%f]", msg->rudder , msg->sail);
     rudderAngle = msg->rudder;
     sailAngle = msg->sail;

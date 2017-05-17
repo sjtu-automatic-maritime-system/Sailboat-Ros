@@ -54,7 +54,7 @@ add_executable(wind_simulation_pub src/Wind_Simulation_Pub.cpp)
 target_link_libraries(wind_simulation_pub ${catkin_LIBRARIES})
 
 add_executable(mach_simulation_pub src/Mach_Simulation_Pub.cpp)
-add_dependencies(mach_simulation_pub environment_simulation_gencfg)
+add_dependencies(mach_simulation_pub environment_simulation_gencfg mach_onboat_generate_message_cpp)
 target_link_libraries(mach_simulation_pub ${catkin_LIBRARIES})
 
 add_executable(targetangle_simulation_pub src/TargetAngle_Simulation_Pub.cpp)
