@@ -1,7 +1,7 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 #include <mach_onboat/Mach_msg.h>
-//#include <FlexiTimer2.h>
+#include <FlexiTimer2.h>
 #include <Servo.h>
 #define pi 3.141592654;
 
@@ -33,9 +33,8 @@ int sailLimit = 40;
 //ROS define 
 ros::NodeHandle  nh;
 //talker
-mach_onboat::Mach_msg mach2_msg;
-//ros::Publisher chatter("chatter", &str_msg);
-ros::Publisher mach2("mach2", &mach2_msg);
+std_msgs::String str_msg;
+ros::Publisher chatter("chatter", &str_msg);
 //listener
 float motordata= 0;
 float rudderdata = 0;
@@ -55,7 +54,7 @@ void setup()
   //ros node setup
   nh.initNode();
   nh.subscribe(sub);
-  nh.advertise(mach2);
+  nh.advertise(chatter);
   
   motor.attach(9, 1100, 1900);  // attaches the servo on pin 9 to the servo object
   rudder.attach(10, 1100, 1900);
@@ -69,8 +68,8 @@ void setup()
   sail.write(sailAng);
   delay(1000);
   durGear = pulseIn(gearPin, HIGH);
-  //FlexiTimer2::set(100, flash);
-  //FlexiTimer2::start();
+  FlexiTimer2::set(100, flash);
+  FlexiTimer2::start();
 }
 
 
@@ -108,12 +107,12 @@ void servoCtrl() {
 }
 
 
-//void flash() {
-  //count ++;
-  //if (count == 10) { //read the gearPin every 10 intervals
-  //  durGear = pulseIn(gearPin, HIGH, 20000);
-  //  count = 0;
- // }
+void flash() {
+  count ++;
+  if (count == 10) { //read the gearPin every 10 intervals
+    durGear = pulseIn(gearPin, HIGH, 20000);
+    count = 0;
+  }
 //  if (durGear < 1950 && durGear > 1050) {
 //    if (durGear < 1500)
 //      autoFlag = 0;
@@ -121,28 +120,20 @@ void servoCtrl() {
 //      autoFlag = 1;
 //  }
   //test flag
- // autoFlag = 1;
-//  signalSelection();
+  autoFlag = 1;
+  signalSelection();
   //veloLimit();
-//  servoCtrl();
+  servoCtrl();
 
 
 
-//}
+}
 
 
 void loop()
 {
-    autoFlag = 1;
-    signalSelection();
-  //veloLimit();
-    servoCtrl();
-    //dtostrf(rudderAng,3,3,c);
-    mach2_msg.motor = motordata;
-    mach2_msg.rudder = rudderdata;
-    mach2_msg.sail = saildata;
-    //str_msg.data = c;
-    mach2.publish( &mach2_msg );
+    dtostrf(rudderAng,3,3,c);
+    str_msg.data = c;
+    chatter.publish( &str_msg );
     nh.spinOnce();
-    delay(100);
 }
