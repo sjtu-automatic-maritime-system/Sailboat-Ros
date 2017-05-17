@@ -116,9 +116,9 @@ class WTST:
         if not self.line.startswith('$'):
             self.ser.flush()
             rospy.logwarn("header not started with '$'")
-            #self.ser.close()
-            #time.sleep(1)
-            #self.ser.open()
+            self.ser.close()
+            time.sleep(1)
+            self.ser.open()
             return
         self.line = self.line.rstrip('\r\n')
         # XOR checksum  
