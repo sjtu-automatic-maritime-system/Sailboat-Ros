@@ -108,27 +108,27 @@ void servoCtrl() {
 }
 
 
-//void flash() {
-  //count ++;
-  //if (count == 10) { //read the gearPin every 10 intervals
-  //  durGear = pulseIn(gearPin, HIGH, 20000);
-  //  count = 0;
- // }
-//  if (durGear < 1950 && durGear > 1050) {
-//    if (durGear < 1500)
-//      autoFlag = 0;
-//    else
-//      autoFlag = 1;
-//  }
+void flash() {
+  count ++;
+  if (count == 10) { //read the gearPin every 10 intervals
+    durGear = pulseIn(gearPin, HIGH, 20000);
+    count = 0;
+  }
+  if (durGear < 1950 && durGear > 1050) {
+    if (durGear < 1500)
+      autoFlag = 0;
+    else
+      autoFlag = 1;
+  }
   //test flag
- // autoFlag = 1;
-//  signalSelection();
-  //veloLimit();
-//  servoCtrl();
+  //autoFlag = 1;
+  signalSelection();
+  veloLimit();
+  servoCtrl();
 
 
 
-//}
+}
 
 
 void loop()
