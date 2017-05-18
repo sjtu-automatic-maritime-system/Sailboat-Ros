@@ -70,9 +70,9 @@ void CSensorProcess::wtstCallback(const sailboat_message::WTST_msg::ConstPtr& ms
     WtstMsg[3] = msg->Longitude;
     WtstMsg[4] = msg->PosX;
     WtstMsg[5] = msg->PosY;
-    WtstMsg[6] = msg->Roll;
-    WtstMsg[7] = msg->Pitch;
-    WtstMsg[8] = msg->Yaw;
-    WtstMsg[9] = msg->WindAngle;
+    WtstMsg[6] = msg->Roll/57.3;
+    WtstMsg[7] = msg->Pitch/57.3;
+    WtstMsg[8] = msg->Yaw/57.3;
+    WtstMsg[9] = msg->WindAngle/57.3;
     WtstMsg[10] = msg->WindSpeed;
 }

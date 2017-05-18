@@ -11,6 +11,7 @@ arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_85535303636351612
 motor = 0
 rudder = 0
 sail = 0
+pcCtrl = 0
 
 def crc16(x):
     poly = 0x8408
@@ -86,7 +87,7 @@ class Arduino():
 
     def send_data(self):
         header = '\xff\x01'
-        tmp = self.fst.pack(motor,rudder,sail,0)
+        tmp = self.fst.pack(motor,rudder,sail,pcCtrl)
         crc_code = struct.pack('!H', crc16(tmp))
         # print binascii.hexlify(tmp), type(tmp)
         tmp = header + tmp
@@ -122,7 +123,7 @@ class SensorListener:
 
 
 def callback(data):
-    global motor, rudder, sail
+    global motor, rudder, sail, pcCtrl
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
     motor = int(data.motor*57.3)+90
@@ -130,6 +131,8 @@ def callback(data):
     rudder = int(-data.rudder*57.3)+90
     #max~min 90-0 130~50
     sail = int(abs(data.sail)*57.3*80/90)+50
+
+    pcCtrl = int(data.PCCtrl)
 
     if rudder > 130:
         rudder = 130

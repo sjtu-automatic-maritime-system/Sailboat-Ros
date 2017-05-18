@@ -34,6 +34,8 @@ public:
     void JudgeReach();
     void FindTarget();
 
+    void SetMinJudgeDistence(double d);
+
     void CalcTurningRadius();
     //没有用到
     void CalcHeadingDeviation();
@@ -54,7 +56,8 @@ private:
     int toPointId;
     int oldToPointId;
 
-    double judgeDistencd;
+    double judgeDistence;
+    double minJudgeDistence;
 
     //计算
     double targeDistance;

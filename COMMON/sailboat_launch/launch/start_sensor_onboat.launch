@@ -2,6 +2,6 @@
     <node pkg="sensor_onboat" type="Ahrs_Talker.py" name="Ahrs_Talker"/>
     <node pkg="sensor_onboat" type="WeatherStation_Talker.py" name="WTST_Talker"/>
     <node pkg="sensor_process" type="sensor_process" name="Sensor_Process"/>
-    <node pkg="rosbag" type="record" name="bag_record" args="/WTST /Ahrs /sensor"/>
+    <!-- node pkg="rosbag" type="record" name="bag_record" args="/WTST /Ahrs /sensor"/ -->
     <!-- node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/WTST/PosX"/ -->
 </launch>

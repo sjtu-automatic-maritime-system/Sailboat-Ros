@@ -15,7 +15,11 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
         autopilot_lib
 )
-
+generate_dynamic_reconfigure_options(
+        cfg/Sailboat_Mach_Simulation.cfg
+        #   cfg/DynReconf1.cfg
+        #   cfg/DynReconf2.cfg
+)
 
 catkin_package(
 #  INCLUDE_DIRS include

@@ -13,6 +13,11 @@ CPathFollowingVer1::CPathFollowingVer1() {
     turningAngle = 0;
     turningRadius = 0;
     headingDeviation = 0;
+
+    minJudgeDistence = 5;
+
+    targetAngle_pub = pf_node.advertise<sailboat_message::Target_msg>("targetangle", 5);
+    sensor_sub = pf_node.subscribe("sensor", 2, &CPathFollowingVer1::SensorCallback,this);
 }
 
 CPathFollowingVer1::~CPathFollowingVer1() {
@@ -22,21 +27,23 @@ CPathFollowingVer1::~CPathFollowingVer1() {
 
 void CPathFollowingVer1::Init(double *x, double *y,int num) {
 
-    targetAngle_pub = pf_node.advertise<sailboat_message::Target_msg>("targetangle", 5);
-
-    sensor_sub = pf_node.subscribe("sensor", 2, &CPathFollowingVer1::SensorCallback,this);
-
     pathX = new double[num];
     pathY = new double[num];
 
     for (int i = 0; i < num; ++i) {
         pathX[i] = x[i];
         pathY[i] = y[i];
-        //cout<<pathX[i]<<endl;
+        cout<<pathX[i]<<endl;
     }
     count = num;
     ROS_INFO("count = [%i]",count);
 
+
+}
+
+void CPathFollowingVer1::SetMinJudgeDistence(double d)
+{
+    minJudgeDistence = d;
 }
 
 void CPathFollowingVer1::UpdateSenserDate(double uxx, double vyy, double wxx, double wzz, double posx, double posy,
@@ -58,11 +65,11 @@ void CPathFollowingVer1::JudgeReach() {
     double y2 = pathY[toPointId];
     targeDistance = sqrt(pow(x2-x0,2)+pow(y2-y0,2));
 
-    judgeDistencd = turningRadius;
-    //if(judgeDistencd < 5)
-    judgeDistencd = 2;
+    judgeDistence = turningRadius;
+    if(judgeDistence < minJudgeDistence)
+        judgeDistence = minJudgeDistence;
 
-    if(judgeDistencd > targeDistance)
+    if(judgeDistence > targeDistance)
     {
         oldToPointId = toPointId;
         toPointId = toPointId + 1;
@@ -75,6 +82,7 @@ void CPathFollowingVer1::FindTarget() {
     if(toPointId == count-1 && pathX[0] == pathX[count-1] &&pathY[0] == pathY[count-1])
         toPointId = 0;
     if(toPointId > count-1){
+        toPointId = 0;
         ROS_INFO("finish");
         isPathFollowing = false;
     }

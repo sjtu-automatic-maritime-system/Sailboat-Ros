@@ -39,7 +39,7 @@ public:
     //得到舵角或帆角
     double Get_Rudder();
     double Get_Sail();
-
+    int Get_PCCtrl();
     //pid算法得到舵角
     void AP_Calc();
 
@@ -59,6 +59,8 @@ private:
 
     CPID* pidp;
 
+
+    int PCCtrl;
     double Kp;
     double Ki;
     double Kd;

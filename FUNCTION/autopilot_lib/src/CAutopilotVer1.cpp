@@ -72,7 +72,9 @@ double CAutopilotVer1::Get_Rudder() {
 double CAutopilotVer1::Get_Sail() {
     return sail;
 }
-
+int CAutopilotVer1::Get_PCCtrl(){
+    return PCCtrl;
+}
 void CAutopilotVer1::Init() {
 
     pidp=new CPID(Kp,Ki, Kd, T, OutMax,OutMin);
@@ -117,6 +119,12 @@ void CAutopilotVer1::PIDCallback(autopilot_lib::pid_adjustment_Config &config, u
     pidp->Set_Kp(Kp);
     pidp->Set_Ki(Ki);
     pidp->Set_Kd(Kd);
+
+    if (config.PC_Ctrl == true)
+        PCCtrl = 1;
+    else
+        PCCtrl = 0;
+
     double p,i,d = pidp->Get_Kpid();
     ROS_INFO("CPID: [%f] [%f] [%f]",p,i,d);
 }

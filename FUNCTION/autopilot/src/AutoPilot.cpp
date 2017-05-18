@@ -5,6 +5,10 @@
 #include "autopilot_lib/CAutopilotVer1.h"
 #include "autopilot_lib/pid_adjustment_Config.h"
 
+
+
+
+
 int main(int argc, char **argv)
 {
     //Initiate ROS
@@ -26,12 +30,14 @@ int main(int argc, char **argv)
         autopilot.AP_Calc(); //计算
         double rudder = autopilot.Get_Rudder();
         double sail = autopilot.Get_Sail();
+        int PCCtrl = autopilot.Get_PCCtrl();
 
         mach_onboat::Mach_msg msg;
         msg.timestamp = ros::Time::now().toSec();
         msg.motor = 0;
         msg.rudder = rudder;
         msg.sail = sail;
+        msg.PCCtrl = PCCtrl;
 
         //ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
         //ROS_INFO("I talk Sail_Angle: [%f]", msg.sail);
