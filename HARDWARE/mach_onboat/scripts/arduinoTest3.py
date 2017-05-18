@@ -39,7 +39,7 @@ class Arduino():
 
     def ser_open(self):
         try:
-            self.arduino_ser = serial.Serial(arduino_port, 115200, timeout=1)
+            self.arduino_ser = serial.Serial(arduino_port, 38400, timeout=1)
             #self.logger.info(self.ahrs_ser.portstr+' open successfully')
             return True
         except(serial.serialutil.SerialException):
@@ -53,7 +53,7 @@ class Arduino():
 
     def read_data(self):
         self.buf += self.arduino_ser.read(14-len(self.buf))
-        print binascii.hexlify(self.buf)
+        #print binascii.hexlify(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
             self.buf = ''
@@ -70,7 +70,7 @@ class Arduino():
         #testBety = self.buf[0:9]
 
         datas = self.recvDataFst.unpack(self.buf)
-        print datas
+        #print datas
         crc16Num = crc16(self.buf[2:-2])
 
 
@@ -81,12 +81,6 @@ class Arduino():
 
         self.EarduinoDatas = datas[1:-1]
         print self.EarduinoDatas
-
-        #print (type(self.buf))
-        #print ('bety = ', testBety)
-        #print ('Roll = ', datas[0])
-        #abc = hex(datas[0])
-        #print ('Roll = ', abc)
 
         self.buf = ''
 
@@ -109,7 +103,7 @@ class SensorListener:
         self.NodeName = nodeName
         self.TopicName = topicName
         rospy.init_node(self.NodeName, anonymous=True)
-        self.r = rospy.Rate(10)
+        self.r = rospy.Rate(15)
         self.arduino = Arduino()
         self.listener()
 
@@ -145,7 +139,7 @@ def callback(data):
         sail = 130
     if sail < 50:
         sail = 50
-    rospy.loginfo("subscriber successfully")
+    #rospy.loginfo("subscriber successfully")
 
     #print "ros send"
     #print data.motor,data.rudder,data.sail

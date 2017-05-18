@@ -41,7 +41,7 @@ class Arduino():
 
     def ser_open(self):
         try:
-            self.arduino_ser = serial.Serial(arduino_port, 115200, timeout=1)
+            self.arduino_ser = serial.Serial(arduino_port, 38400, timeout=1)
             #self.logger.info(self.ahrs_ser.portstr+' open successfully')
             return True
         except(serial.serialutil.SerialException):

@@ -75,7 +75,7 @@ void structDataSend() {
 }
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(38400);
     motor.attach(9);  // attaches the servo on pin 9 to the servo object
     rudder.attach(10);
     sail.attach(11);
