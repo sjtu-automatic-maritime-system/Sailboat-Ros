@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="rosbag" type="record" name="bag_record" args="/wtst /ahrs /sensor /mach"/>
+    <!-- node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/WTST/PosX"/ -->
+</launch>

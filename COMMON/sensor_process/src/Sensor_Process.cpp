@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     {
 
         sensorMsg = senPro.GetSensorMsg();
-
+cd 
         sailboat_message::Sensor_msg msg;
 
         msg.header.stamp = ros::Time::now();
