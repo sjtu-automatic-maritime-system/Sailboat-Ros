@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
         mach_onboat::Mach_msg msg;
         msg.timestamp = ros::Time::now().toSec();
-        msg.motor = 0;
+        msg.motor = 50;
         msg.rudder = rudder;
         msg.sail = sail;
         msg.PCCtrl = PCCtrl;

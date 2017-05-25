@@ -21,6 +21,7 @@ CAutopilotVer1::CAutopilotVer1() {
     yawFdb = 0;
     yawRef = 0;
 
+    PCCtrl = 0;
     rudder = 0;
     sail = 0;
 
@@ -38,6 +39,7 @@ CAutopilotVer1::CAutopilotVer1(double kp, double ki, double kd) {
     yawFdb = 0;
     yawRef = 0;
 
+    PCCtrl = 0;
     rudder = 0;
     sail = 0;
 
@@ -54,6 +56,7 @@ CAutopilotVer1::CAutopilotVer1(double kp, double ki, double kd, double t, double
     yawFdb = 0;
     yawRef = 0;
 
+    PCCtrl = 0;
     rudder = 0;
     sail = 0;
 
@@ -135,7 +138,7 @@ void CAutopilotVer1::AP_Calc() {
     ROS_INFO("YAWRef and YAWFdb: [%f] [%f]",yawRef,yawFdb);
     //rudder = pidp->PID_Calc();
 
-    rudder = (yawRef-yawFdb)*Kp;
+    rudder = -(yawRef-yawFdb)*Kp;
     sail = sailCtrl.GetBestSailAngle2(AWA);
     if (sail> pi/2)
         sail = pi/2;
