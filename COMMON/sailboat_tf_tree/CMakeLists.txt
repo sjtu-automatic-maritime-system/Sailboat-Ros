@@ -16,7 +16,9 @@ set(sailboat_tf_tree_DEPENDENCE
         tf
         urdf
         xacro
-        turtlesim)
+        sailboat_message
+#        turtlesim
+        )
 
 find_package(catkin REQUIRED COMPONENTS
     ${sailboat_tf_tree_DEPENDENCE}
