@@ -8,9 +8,9 @@ import time
 # from msgdev import
 
 arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_855353036363516120C1-if00'
-motor = 0
-rudder = 0
-sail = 0
+motor = 50
+rudder = 90
+sail = 90
 pcCtrl = 0
 
 def crc16(x):
@@ -40,7 +40,7 @@ class Arduino():
 
     def ser_open(self):
         try:
-            self.arduino_ser = serial.Serial(arduino_port, 38400, timeout=1)
+            self.arduino_ser = serial.Serial(arduino_port, 115200, timeout=1)
             #self.logger.info(self.ahrs_ser.portstr+' open successfully')
             return True
         except(serial.serialutil.SerialException):
@@ -54,7 +54,7 @@ class Arduino():
 
     def read_data(self):
         self.buf += self.arduino_ser.read(14-len(self.buf))
-        #print binascii.hexlify(self.buf)
+        print binascii.hexlify(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
             self.buf = ''
@@ -89,7 +89,7 @@ class Arduino():
         header = '\xff\x01'
         tmp = self.fst.pack(motor,rudder,sail,pcCtrl)
         crc_code = struct.pack('!H', crc16(tmp))
-        # print binascii.hexlify(tmp), type(tmp)
+        print binascii.hexlify(tmp), type(tmp)
         tmp = header + tmp
         tmp = tmp + crc_code
         #print binascii.hexlify(tmp)
@@ -114,9 +114,10 @@ class SensorListener:
         #rospy.Subscriber("Ahrs", Ahrs_msg, callback)
         rospy.Subscriber(self.TopicName, Mach_msg, callback)
         # spin() simply keeps python from exiting until this node is stopped
-        while not rospy.is_shutdown():
+        while 1:
+        #while not rospy.is_shutdown():
             self.arduino.update()
-            self.r.sleep()
+            #self.r.sleep()
 
 
 
@@ -126,13 +127,18 @@ def callback(data):
     global motor, rudder, sail, pcCtrl
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
-    motor = int(data.motor*57.3)+90
+    motor = int(data.motor)
     #max~min 40~-40 130~50
     rudder = int(-data.rudder*57.3)+90
     #max~min 90-0 130~50
     sail = int(abs(data.sail)*57.3*80/90)+50
 
     pcCtrl = int(data.PCCtrl)
+
+    if motor > 100:
+        motor = 100
+    if motor < 0:
+        motor = 0
 
     if rudder > 130:
         rudder = 130
@@ -142,22 +148,23 @@ def callback(data):
         sail = 130
     if sail < 50:
         sail = 50
-    #rospy.loginfo("subscriber successfully")
+   # rospy.loginfo("subscriber successfully")
 
     #print "ros send"
-    #print data.motor,data.rudder,data.sail
-    #print motor,rudder,sail
+    #print data.motor,data.rudder,data.sail,data.pcCtrl
+    print motor,rudder,sail,pcCtrl
 
 
 def talker():#ros message publish
 
     SensorListener('arduinoTest','mach')
 
-    #rospy.spin()
+    rospy.spin()
 
 
 
 if __name__ == '__main__':
+
 
 
     talker()
