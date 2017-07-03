@@ -171,7 +171,7 @@ void serial_read_3() {
       motor_speed = map(servodata[0], 0, 100, MIN_MOTOR, MAX_MOTOR);
       rudder_pos = servodata[1];
       sail_pos = servodata[2];
-      enableCtrl = serialdata[3];
+      enableCtrl = servodata[3];
       //foresail_pos = servodata[3];
       serial_out_count = 0;
 //      Serial.print(servodata[0]);

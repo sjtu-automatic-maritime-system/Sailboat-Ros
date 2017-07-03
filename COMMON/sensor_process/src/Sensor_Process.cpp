@@ -13,8 +13,8 @@
 //float64 timestamp
 //float64 ux
 //float64 vy
-//float64 wx
-//float64 wz
+//float64 gx
+//float64 gz
 //float64 Posx
 //float64 Posy
 //float64 Roll
@@ -46,8 +46,8 @@ int main(int argc, char **argv)
         msg.timestamp = ros::Time::now().toSec();
         msg.ux = sensorMsg[1];
         msg.vy = sensorMsg[2];
-        msg.wx = sensorMsg[3];
-        msg.wz = sensorMsg[4];
+        msg.gx = sensorMsg[3];
+        msg.gz = sensorMsg[4];
         msg.Posx = sensorMsg[5];
         msg.Posy = sensorMsg[6];
         msg.Roll = sensorMsg[7];

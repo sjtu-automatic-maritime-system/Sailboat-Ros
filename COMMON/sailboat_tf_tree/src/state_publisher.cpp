@@ -27,8 +27,8 @@ double sail = 0.0;
 void sensorCallback(const sailboat_message::Sensor_msg::ConstPtr& msg) {
     ux = msg->ux;
     vy = msg->vy;
-    wx = msg->wx;
-    wz = msg->wz;
+    wx = msg->gx;
+    wz = msg->gz;
     Posx = msg->Posx;
     Posy = msg->Posy;
     Roll = msg->Roll;

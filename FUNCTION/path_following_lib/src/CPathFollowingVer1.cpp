@@ -141,8 +141,8 @@ void CPathFollowingVer1::SensorCallback(const sailboat_message::Sensor_msg::Cons
     //ROS_INFO("I get AWA: [%f]", msg->AWA);
     ux = msg->ux;
     vy = msg->vy;
-    wx = msg->wx;
-    wz = msg->wz;
+    wx = msg->gx;
+    wz = msg->gz;
     posX = msg->Posx;
     posY = msg->Posy;
     Roll = msg->Roll;

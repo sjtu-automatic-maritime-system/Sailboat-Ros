@@ -65,7 +65,7 @@ class AHRS():
         self.fst = struct.Struct("<9fH")
         self.buf = ''
         self.attrs = ['Roll', 'Pitch', 'Yaw', 'gx', 'gy', 'gz',
-                      'ax', 'ay', 'az', 'devicestatus']
+                      'wx', 'wy', 'wz', 'devicestatus']
 
     def ser_open(self):
         try:
@@ -175,9 +175,9 @@ def talker():#ros message publish
             ahrs_msg.gx = ahrs.gx
             ahrs_msg.gy = ahrs.gy
             ahrs_msg.gz = ahrs.gz
-            ahrs_msg.ax = ahrs.ax
-            ahrs_msg.ay = ahrs.ay
-            ahrs_msg.az  = ahrs.az
+            ahrs_msg.wx = ahrs.wx
+            ahrs_msg.wy = ahrs.wy
+            ahrs_msg.wz  = ahrs.wz
             #show data
             rospy.loginfo(ahrs_msg.roll)
             pub.publish(ahrs_msg)

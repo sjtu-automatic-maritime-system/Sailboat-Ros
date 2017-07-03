@@ -93,4 +93,4 @@
 #### float64 wx
 #### float64 wy
 #### float64 wz
-###### Coning integration at 1KHz output. These ω x , ω y , and ω z are three real32 numbers (12 bytes),expressed in rad . s -1 .
+###### Fully calibrated and Kalman unbiased accelerometers values. A x , A y and A z are three real32 numbers (12 bytes), expressed in m . s -2 .

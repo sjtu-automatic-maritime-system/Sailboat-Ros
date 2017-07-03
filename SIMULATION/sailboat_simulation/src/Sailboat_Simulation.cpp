@@ -28,10 +28,12 @@ int main(int argc, char **argv) {
 
         sailboat_message::Sensor_msg msg;
 
+        msg.header.stamp = ros::Time::now();
+        msg.header.frame_id = "base_link";
         msg.ux = sailboat_msg[0];
         msg.vy = sailboat_msg[1];
-        msg.wx = sailboat_msg[2];
-        msg.wz = sailboat_msg[3];
+        msg.gx = sailboat_msg[2];
+        msg.gz = sailboat_msg[3];
         msg.Posx = sailboat_msg[4];
         msg.Posy = sailboat_msg[5];
         msg.Roll = sailboat_msg[6];

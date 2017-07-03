@@ -6,6 +6,6 @@ float64 yaw
 float64 gx
 float64 gy
 float64 gz
-float64 wx
-float64 wy
-float64 wz
+float64 ax
+float64 ay
+float64 az

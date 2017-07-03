@@ -31,8 +31,8 @@ void CSensorProcess::Init() {
 void CSensorProcess::ProcessMsg() {
     SensorMsg[1] = 0; //todo!
     SensorMsg[2] = 0; //todo!
-    SensorMsg[3] = AhrsMsg[7];
-    SensorMsg[4] = AhrsMsg[9];
+    SensorMsg[3] = AhrsMsg[4];
+    SensorMsg[4] = AhrsMsg[6];
     SensorMsg[5] = WtstMsg[4];
     SensorMsg[6] = WtstMsg[5];
     SensorMsg[7] = AhrsMsg[1];
@@ -56,9 +56,9 @@ void CSensorProcess::ahrsCallback(const sailboat_message::Ahrs_msg::ConstPtr &ms
     AhrsMsg[4] = msg->gx;
     AhrsMsg[5] = msg->gy;
     AhrsMsg[6] = msg->gz;
-    AhrsMsg[7] = msg->wx;
-    AhrsMsg[8] = msg->wy;
-    AhrsMsg[9] = msg->wz;
+    AhrsMsg[7] = msg->ax;
+    AhrsMsg[8] = msg->ay;
+    AhrsMsg[9] = msg->az;
 }
 
 void CSensorProcess::wtstCallback(const sailboat_message::WTST_msg::ConstPtr& msg)

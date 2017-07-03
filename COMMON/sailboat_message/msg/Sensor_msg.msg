@@ -2,8 +2,8 @@ Header header
 float64 timestamp
 float64 ux
 float64 vy
-float64 wx
-float64 wz
+float64 gx
+float64 gz
 float64 Posx
 float64 Posy
 float64 Roll
