@@ -1,0 +1,1 @@
+export PATH="/home/jianyun/miniconda2/bin:$PATH"
