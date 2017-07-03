@@ -75,4 +75,6 @@ void CSensorProcess::wtstCallback(const sailboat_message::WTST_msg::ConstPtr& ms
     WtstMsg[8] = msg->Yaw/57.3;
     WtstMsg[9] = msg->WindAngle/57.3;
     WtstMsg[10] = msg->WindSpeed;
+    if (WtstMsg[9]>3.14)
+        WtstMsg[9] = WtstMsg[9]-6.28;
 }

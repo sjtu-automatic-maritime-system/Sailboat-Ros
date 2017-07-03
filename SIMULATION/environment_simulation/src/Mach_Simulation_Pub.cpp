@@ -8,7 +8,7 @@
 #include "environment_simulation/sailboat_mach_simulation_Config.h"
 #include <sstream>
 
-static float motor = 0;
+static float motor = 50;
 static float rudder = 0;
 static float sail = 0;
 static int PCCtrl = 0;
@@ -17,6 +17,7 @@ void callback(environment_simulation::sailboat_mach_simulation_Config &config, u
   //ROS_INFO("Reconfigure Request: %f %f %d", 
     //       config.Sail_Angle,config.Rudder_Angle, 
     //       config.size);
+  motor = config.motor;
   rudder = config.Rudder_Angle;
   sail = config.Sail_Angle;
   if (config.PC_Ctrl == true)
@@ -49,7 +50,7 @@ int main(int argc, char **argv)
   //   // float64 rudder
   //   // float64 sail
     mach_onboat::Mach_msg msg;
-    msg.motor = 0;
+    msg.motor = motor;
     msg.rudder = rudder;
     msg.sail = sail;
     msg.PCCtrl = PCCtrl;

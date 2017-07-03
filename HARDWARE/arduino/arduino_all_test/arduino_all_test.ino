@@ -64,6 +64,7 @@ void structDataSend() {
     arduinoData.motorSpeed = tmp_motor;
     arduinoData.rudderAng = rudder_pos - 90;
     arduinoData.sailAng = (sail_pos - 50)/8*9;
+    //arduinoData.sailAng = enableCtrl;
     arduinoData.readMark = mark;
     arduinoData.autoFlag = autoFlag;
 
