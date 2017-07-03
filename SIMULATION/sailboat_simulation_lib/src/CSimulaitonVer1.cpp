@@ -762,6 +762,8 @@ void CSimulationVer1::MachCallback(const mach_onboat::Mach_msg::ConstPtr &msg) {
     ROS_INFO("Mach_msg sub: [%f] [%f]", msg->rudder , msg->sail);
     rudderAngle = msg->rudder;
     sailAngle = msg->sail;
+    if(sailAngle>1.5) sailAngle=1.5;
+    if(sailAngle<-1.5) sailAngle=-1.5;
     delta_r = rudderAngle;
     delta_s = sailAngle;
 }
