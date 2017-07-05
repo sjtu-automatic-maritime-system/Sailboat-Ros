@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <node pkg="environment_simulation" type="Wind_Simulation_Pub" name="Wind_Simulation_Pub"/>
-
-    <node pkg="environment_simulation" type="Mach_Simulation_Pub" name="Mach_Simulation_Pub" output="screen"/>
-    
-    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure_mach"/>
-
-</launch> 

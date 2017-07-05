@@ -8,20 +8,20 @@ project(sailboat_simulation)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
-  sailboat_message
-  math_tool_lib
+        roscpp
+        rospy
+        std_msgs
+        sailboat_message
+        math_tool_lib
         sailboat_simulation_lib
-)
+        )
 
 
 catkin_package(
-#  INCLUDE_DIRS include
-  LIBRARIES sailboat_simulation
-  CATKIN_DEPENDS roscpp rospy std_msgs sailboat_simulation_lib sailboat_message math_tool_lib
-  DEPENDS system_lib
+        #  INCLUDE_DIRS include
+        LIBRARIES sailboat_simulation
+        CATKIN_DEPENDS roscpp rospy std_msgs sailboat_simulation_lib sailboat_message math_tool_lib
+        DEPENDS system_lib
 )
 
 ###########
@@ -38,23 +38,8 @@ include_directories(
         ${catkin_INCLUDE_DIRS})
 
 
-
 add_executable(sailboat_simulation_ver1 src/Sailboat_Simulation.cpp)
-target_link_libraries(sailboat_simulation_ver1 ${catkin_LIBRARIES} math_tool_lib sailboat_simulation_lib)
+target_link_libraries(sailboat_simulation_ver1 ${catkin_LIBRARIES})
+#math_tool_lib sailboat_simulation_lib
 add_dependencies(sailboat_simulation_ver1 sailboat_message_generate_message_cpp)
 
-
-
-## Mark executables and/or libraries for installation
-#install(TARGETS math_tool_lib
-#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-#)
-##
-## Mark cpp header files for installation
-#install(DIRECTORY include/${PROJECT_NAME}/
-#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-#)
