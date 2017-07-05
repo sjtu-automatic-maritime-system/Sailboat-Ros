@@ -5,6 +5,8 @@
 #include "path_following_lib/CPathFollowingVer1.h"
 
 CPathFollowingVer1::CPathFollowingVer1() {
+    pathX = new double[8];
+    pathY = new double[8];
     sailboatTurnR = 8;
     sailboatL = 1.5;
     toPointId = 0;
@@ -15,9 +17,6 @@ CPathFollowingVer1::CPathFollowingVer1() {
     headingDeviation = 0;
 
     minJudgeDistence = 5;
-
-    targetAngle_pub = pf_node.advertise<sailboat_message::Target_msg>("targetangle", 5);
-    sensor_sub = pf_node.subscribe("sensor", 2, &CPathFollowingVer1::SensorCallback,this);
 }
 
 CPathFollowingVer1::~CPathFollowingVer1() {
@@ -27,8 +26,7 @@ CPathFollowingVer1::~CPathFollowingVer1() {
 
 void CPathFollowingVer1::Init(double *x, double *y,int num) {
 
-    pathX = new double[num];
-    pathY = new double[num];
+
 
     for (int i = 0; i < num; ++i) {
         pathX[i] = x[i];
@@ -36,27 +34,13 @@ void CPathFollowingVer1::Init(double *x, double *y,int num) {
         cout<<pathX[i]<<endl;
     }
     count = num;
-    ROS_INFO("count = [%i]",count);
+
+
+    //ROS_INFO("count = [%i]",count);
 
 
 }
 
-void CPathFollowingVer1::SetMinJudgeDistence(double d)
-{
-    minJudgeDistence = d;
-}
-
-void CPathFollowingVer1::UpdateSenserDate(double uxx, double vyy, double wxx, double wzz, double posx, double posy,
-                                          double roll, double yaw) {
-    ux = uxx;
-    vy = vyy;
-    wx = wxx;
-    wz = wzz;
-    posX = posx;
-    posY = posy;
-    Roll = roll;
-    Yaw = yaw;
-}
 
 void CPathFollowingVer1::JudgeReach() {
     double x0 = posX;
@@ -74,7 +58,7 @@ void CPathFollowingVer1::JudgeReach() {
         oldToPointId = toPointId;
         toPointId = toPointId + 1;
     }
-    ROS_INFO("[%i] [%f] [%f]",toPointId,pathX[toPointId],pathY[toPointId]);
+    //ROS_INFO("[%i] [%f] [%f]",toPointId,pathX[toPointId],pathY[toPointId]);
 
 }
 
@@ -83,7 +67,7 @@ void CPathFollowingVer1::FindTarget() {
         toPointId = 0;
     if(toPointId > count-1){
         toPointId = 0;
-        ROS_INFO("finish");
+        //ROS_INFO("finish");
         isPathFollowing = false;
     }
 }
@@ -125,7 +109,7 @@ void CPathFollowingVer1::CalcTargetAngle() {
     //}
 }
 
-double CPathFollowingVer1::CalcFor(){
+void CPathFollowingVer1::CalcFor(){
     JudgeReach();
     FindTarget();
 
@@ -133,18 +117,7 @@ double CPathFollowingVer1::CalcFor(){
     CalcHeadingDeviation();
 
     CalcTargetAngle();
-    return targetAngle;
+    //return targetAngle;
 }
 
 
-void CPathFollowingVer1::SensorCallback(const sailboat_message::Sensor_msg::ConstPtr &msg) {
-    //ROS_INFO("I get AWA: [%f]", msg->AWA);
-    ux = msg->ux;
-    vy = msg->vy;
-    wx = msg->gx;
-    wz = msg->gz;
-    posX = msg->Posx;
-    posY = msg->Posy;
-    Roll = msg->Roll;
-    Yaw= msg->Yaw;
-}

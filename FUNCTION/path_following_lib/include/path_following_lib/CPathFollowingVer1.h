@@ -8,9 +8,7 @@
 #ifndef SAILBOAT_CPATHFOLLOWVER2_H
 #define SAILBOAT_CPATHFOLLOWVER2_H
 
-#include "ros/ros.h"
-#include "sailboat_message/Sensor_msg.h"//改成处理过后的Sensor_msg
-#include "sailboat_message/Target_msg.h"
+
 #include <iostream>
 #include <cmath>
 
@@ -21,10 +19,6 @@ using namespace std;
 class CPathFollowingVer1{
 public:
 
-    ros::NodeHandle pf_node;
-    ros::Subscriber sensor_sub;
-    ros::Publisher targetAngle_pub;
-
     CPathFollowingVer1();
     ~CPathFollowingVer1();
 
@@ -34,7 +28,6 @@ public:
     void JudgeReach();
     void FindTarget();
 
-    void SetMinJudgeDistence(double d);
 
     void CalcTurningRadius();
     //没有用到
@@ -42,11 +35,20 @@ public:
 
     void CalcTargetAngle();
 
-    double CalcFor();
+    void CalcFor();
 
-    void UpdateSenserDate(double uxx, double vyy, double wxx, double wzz, double posx, double posy, double roll, double yaw);
+    double ux;
+    double vy;
+    double wx;
+    double wz;
+    double posX;
+    double posY;
+    double Roll;
+    double Yaw;
 
-    void SensorCallback(const sailboat_message::Sensor_msg::ConstPtr &msg);
+    double targetAngle;
+
+    double minJudgeDistence;
 
 private:
     //判断参数
@@ -57,7 +59,7 @@ private:
     int oldToPointId;
 
     double judgeDistence;
-    double minJudgeDistence;
+
 
     //计算
     double targeDistance;
@@ -67,7 +69,7 @@ private:
 
     double headingDeviation;
     //输出
-    double targetAngle;
+
     //输入
     //X -10,-20,-30,-40,-40,-30,-20,-10
     //Y 0,-5,-15,-10,10,15,5,0
@@ -76,14 +78,7 @@ private:
 
     int count;
     //传感器数据
-    double ux;
-    double vy;
-    double wx;
-    double wz;
-    double posX;
-    double posY;
-    double Roll;
-    double Yaw;
+
 };
 
 
