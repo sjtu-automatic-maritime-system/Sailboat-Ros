@@ -2,7 +2,7 @@
     <node pkg="sensor_onboat" type="Ahrs_Talker.py" name="Ahrs_Talker"/>
     <node pkg="sensor_onboat" type="WeatherStation_Talker.py" name="WTST_Talker"/>
     <node pkg="sensor_process" type="sensor_process" name="Sensor_Process"/>
-    <node pkg="mach_onboat" type="arduinoTest3.py" name="arduino"  output="screen"/>
+    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino"  output="screen"/>
     <!-- node pkg="rosbag" type="record" name="bag_record" args="/wtst /ahrs /sensor /mach"/ -->
     <!-- node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/WTST/PosX"/ -->
 </launch>

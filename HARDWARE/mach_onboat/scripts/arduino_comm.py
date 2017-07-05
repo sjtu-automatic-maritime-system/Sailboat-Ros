@@ -7,7 +7,8 @@ import serial
 import time
 # from msgdev import
 
-arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_855353036363516120C1-if00'
+#arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_855353036363516120C1-if00'
+arduino_port = '/dev/ttyACM1'
 motor = 50
 rudder = 90
 sail = 90
@@ -54,7 +55,7 @@ class Arduino():
 
     def read_data(self):
         self.buf += self.arduino_ser.read(14-len(self.buf))
-        print binascii.hexlify(self.buf)
+        print 'arduino read:',binascii.hexlify(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
             self.buf = ''
@@ -81,7 +82,7 @@ class Arduino():
             return
 
         self.EarduinoDatas = datas[1:-1]
-        print self.EarduinoDatas
+        print 'arduino read data:',self.EarduinoDatas
 
         self.buf = ''
 
@@ -89,7 +90,7 @@ class Arduino():
         header = '\xff\x01'
         tmp = self.fst.pack(motor,rudder,sail,pcCtrl)
         crc_code = struct.pack('!H', crc16(tmp))
-        print binascii.hexlify(tmp), type(tmp)
+        print 'send data:',binascii.hexlify(tmp), type(tmp)
         tmp = header + tmp
         tmp = tmp + crc_code
         #print binascii.hexlify(tmp)
@@ -152,7 +153,7 @@ def callback(data):
 
     #print "ros send"
     #print data.motor,data.rudder,data.sail,data.pcCtrl
-    print motor,rudder,sail,pcCtrl
+    print 'get mach msg:',motor,rudder,sail,pcCtrl
 
 
 def talker():#ros message publish
