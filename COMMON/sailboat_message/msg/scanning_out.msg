@@ -7,3 +7,5 @@ float64 speed_angle                  # '<Root>/speed_angle'
 float64 leg                          # '<Root>/leg'
 float64 los_heading                  # '<Root>/los_heading'
 float64 speed_angle_d                # '<Root>/speed_angle_d'#
+float64 drive_force
+float64 sail_ground_d

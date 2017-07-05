@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.230
+// Model version                  : 1.258
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Fri Jun 30 13:51:12 2017
+// C/C++ source code generated on : Wed Jul 05 14:49:06 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -42,7 +42,6 @@ typedef struct {
   real_T price_fixSail[1140];
   real_T Dis[1000];
   real_T ship_speed_history[800];      // '<Root>/MATLAB Function7'
-  real_T SailForce_ground[760];
   real_T price[760];
 } B_scanning_T;
 
@@ -86,6 +85,8 @@ typedef struct {
   real_T leg;                          // '<Root>/leg'
   real_T los_heading;                  // '<Root>/los_heading'
   real_T speed_angle_d;                // '<Root>/speed_angle_d'
+  real_T sail_ground_d;                // '<Root>/sail_ground_d'
+  real_T drive_force;                  // '<Root>/drive_force'
 } ExtY_scanning_T;
 
 // Parameters (auto storage)

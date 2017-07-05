@@ -136,6 +136,8 @@ void getOutput(sailboat_message::scanning_out& msg){
     msg.speed_angle_d = scanning_Obj.scanning_Y.speed_angle_d;
     msg.wind_speed = scanning_Obj.scanning_Y.wind_speed;
     msg.wind_angle_ground = scanning_Obj.scanning_Y.wind_angle_ground;
+    msg.drive_force = scanning_Obj.scanning_Y.drive_force;
+    msg.sail_ground_d = scanning_Obj.scanning_Y.sail_ground_d;
 }
 
 //
