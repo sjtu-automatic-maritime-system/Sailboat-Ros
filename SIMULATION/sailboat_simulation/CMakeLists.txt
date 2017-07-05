@@ -41,5 +41,5 @@ include_directories(
 add_executable(sailboat_simulation_ver1 src/Sailboat_Simulation.cpp)
 target_link_libraries(sailboat_simulation_ver1 ${catkin_LIBRARIES})
 #math_tool_lib sailboat_simulation_lib
-add_dependencies(sailboat_simulation_ver1 sailboat_message_generate_message_cpp)
+add_dependencies(sailboat_simulation_ver1 ${catkin_EXPORTED_TARGETS})
 

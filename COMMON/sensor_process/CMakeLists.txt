@@ -44,4 +44,4 @@ set( sensor_process_SRC
 
 add_executable(sensor_process ${sensor_process_SRC})
 target_link_libraries(sensor_process ${catkin_LIBRARIES})
-add_dependencies(sensor_process sailboat_message_generate_message_cpp)
+add_dependencies(sensor_process ${catkin_EXPORTED_TARGETS})

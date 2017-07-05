@@ -37,7 +37,7 @@ include_directories(
 
 add_executable(state_publisher src/state_publisher.cpp)
 target_link_libraries(state_publisher ${catkin_LIBRARIES})
-add_dependencies(state_publisher sailboat_message_generate_message_cpp mach_onboat_generate_message_cpp)
+add_dependencies(state_publisher ${catkin_EXPORTED_TARGETS})
 
 add_executable(turtle_tf_broadcaster demo/tf_broadcaster.cpp)
 target_link_libraries(turtle_tf_broadcaster ${catkin_LIBRARIES})
