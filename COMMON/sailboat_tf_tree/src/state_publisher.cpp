@@ -9,7 +9,7 @@
 #include <tf/transform_datatypes.h>
 #include <nav_msgs/Odometry.h>
 #include "sailboat_message/Sensor_msg.h"
-#include "mach_onboat/Mach_msg.h"
+#include "sailboat_message/Mach_msg.h"
 
 double ux;
 double vy;
@@ -36,7 +36,7 @@ void sensorCallback(const sailboat_message::Sensor_msg::ConstPtr& msg) {
     //ROS_INFO("I heard: [%f] [%f] [%f] [%f]", msg->Posx,msg->Posy,Posx,Posy);
 }
 
-void machCallback(const mach_onboat::Mach_msg::ConstPtr& msg) {
+void machCallback(const sailboat_message::Mach_msg::ConstPtr& msg) {
     ROS_INFO("I heard: [%f] [%f]", msg->rudder,msg->sail);
     rudder = msg->rudder;
     sail = msg->sail;

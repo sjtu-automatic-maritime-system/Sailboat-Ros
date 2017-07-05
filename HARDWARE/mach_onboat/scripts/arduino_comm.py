@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-from mach_onboat.msg import Mach_msg
+from sailboat_message.msg import Mach_msg
 import struct
 import binascii
 import serial

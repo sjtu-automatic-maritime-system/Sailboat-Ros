@@ -3,7 +3,7 @@
 //
 
 #include "ros/ros.h"
-#include "mach_onboat/Mach_msg.h"
+#include "sailboat_message/Mach_msg.h"
 #include <dynamic_reconfigure/server.h>
 #include "environment_simulation/sailboat_mach_simulation_Config.h"
 #include <sstream>
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "mach_simulation_talker");
   ros::NodeHandle n;
-  ros::Publisher Mach_pub = n.advertise<mach_onboat::Mach_msg>("mach", 10);
+  ros::Publisher Mach_pub = n.advertise<sailboat_message::Mach_msg>("mach", 10);
 
   dynamic_reconfigure::Server<environment_simulation::sailboat_mach_simulation_Config> dserver;
   dynamic_reconfigure::Server<environment_simulation::sailboat_mach_simulation_Config>::CallbackType f;
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   //   // float64 motor
   //   // float64 rudder
   //   // float64 sail
-    mach_onboat::Mach_msg msg;
+    sailboat_message::Mach_msg msg;
     msg.motor = motor;
     msg.rudder = rudder;
     msg.sail = sail;

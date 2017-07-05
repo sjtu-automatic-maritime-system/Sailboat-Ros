@@ -45,8 +45,8 @@
   <build_depend>rospy</build_depend>
   <build_depend>sailboat_message</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>autopilot_lib</build_depend>
-  <run_depend>autopilot_lib</run_depend>
+  <build_depend>math_tool_lib</build_depend>
+  <run_depend>math_tool_lib</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>

@@ -8,24 +8,24 @@ project(autopilot)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  dynamic_reconfigure
-  roscpp
-  rospy
-  sailboat_message
-  std_msgs
-        autopilot_lib
-)
+        dynamic_reconfigure
+        roscpp
+        rospy
+        sailboat_message
+        std_msgs
+        math_tool_lib
+        )
 generate_dynamic_reconfigure_options(
-        cfg/Sailboat_Mach_Simulation.cfg
+        cfg/PID_Adjustment.cfg
         #   cfg/DynReconf1.cfg
         #   cfg/DynReconf2.cfg
 )
 
 catkin_package(
-#  INCLUDE_DIRS include
-  LIBRARIES autopilot
-  CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs autopilot_lib
-  DEPENDS system_lib
+        INCLUDE_DIRS include
+        LIBRARIES autopilot
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs math_tool_lib
+        DEPENDS system_lib
 )
 
 ###########
@@ -40,9 +40,14 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
+set(autopilot_SRC
+        src/AutoPilot.cpp
+        src/CAutopilotVer1.cpp
+        src/CSailCtrl.cpp
+        )
 
 
-add_executable(autopilot_ver1 src/AutoPilot.cpp)
-target_link_libraries(autopilot_ver1 ${catkin_LIBRARIES})
-add_dependencies(autopilot_ver1 autolipot_gencfg sailboat_message_generate_message_cpp mach_onboat_generate_message_cpp)
-
+add_executable(${PROJECT_NAME} ${autopilot_SRC})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+#autolipot_gencfg

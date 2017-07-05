@@ -2,7 +2,7 @@
 // Created by hywel on 17-5-5.
 //
 
-#include "CSailCtrl.h"
+#include "autopilot/CSailCtrl.h"
 
 CSailCtrl::CSailCtrl() {
     awaData = new double[19];

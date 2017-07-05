@@ -151,10 +151,7 @@ void CSimulationVer1::SettingAttitudeInit(double u, double v, double p, double r
 //ros相关
 void CSimulationVer1::Init() {
 
-    mach_sub = simulation_node.subscribe("mach", 2, &CSimulationVer1::MachCallback,this);
-    wind_sub = simulation_node.subscribe("wind", 2, &CSimulationVer1::WindCallback,this);
 
-    sensor_pub = simulation_node.advertise<sailboat_message::Sensor_msg>("sensor", 5);
 }
 
 void CSimulationVer1::KeelCoefInit() {
@@ -648,7 +645,7 @@ void CSimulationVer1::Equation() {
 
 void CSimulationVer1::Sailboat_Test(double time, double d_t) {
     double delta_t = d_t;
-    ROS_INFO("Sailboat_Test start");
+    //ROS_INFO("Sailboat_Test start");
     for (double t = 0; t < time ; t = t+delta_t) {
         Sailboat_Calc(delta_t);
     }
@@ -704,22 +701,6 @@ void CSimulationVer1::Sailboat_Calc(double d_t) {
 
 }
 
-double* CSimulationVer1::Sailboat_Out() {
-    double * tmp;
-    tmp = new double[10];
-    tmp[0] = uu;
-    tmp[1] = vv;
-    tmp[2] = pp;
-    tmp[3] = rr;
-    tmp[4] = XX;
-    tmp[5] = YY;
-    tmp[6] = phi;
-    tmp[7] = psi;
-    tmp[8] = AWA;
-    tmp[9] = AWS;
-    return tmp;
-
-}
 
 void CSimulationVer1::ShowData()
 {
@@ -752,18 +733,3 @@ double CSimulationVer1::limitsPi(double tmp)
 }
 
 
-void CSimulationVer1::WindCallback(const sailboat_message::Wind_Simulation_msg::ConstPtr &msg) {
-    ROS_INFO("Wind_msg sub: [%f] [%f]", msg->TWA , msg->TWS);
-    windDirection = msg->TWA;
-    windVelocity = msg->TWS;
-}
-
-void CSimulationVer1::MachCallback(const mach_onboat::Mach_msg::ConstPtr &msg) {
-    ROS_INFO("Mach_msg sub: [%f] [%f]", msg->rudder , msg->sail);
-    rudderAngle = msg->rudder;
-    sailAngle = msg->sail;
-    if(sailAngle>1.5) sailAngle=1.5;
-    if(sailAngle<-1.5) sailAngle=-1.5;
-    delta_r = rudderAngle;
-    delta_s = sailAngle;
-}

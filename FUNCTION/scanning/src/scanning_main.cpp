@@ -21,7 +21,7 @@
 #include "sailboat_message/Sensor_msg.h"
 #include "sailboat_message/scanning_out.h"
 #include "sailboat_message/Sailboat_Simulation_msg.h"
-#include "mach_onboat/Mach_msg.h"
+#include "sailboat_message/Mach_msg.h"
 
 #include <dynamic_reconfigure/server.h>
 #include <scanning/scanning.h>
@@ -113,7 +113,7 @@ void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     getInput(msg);
 }
 
-void getOutMachPut(mach_onboat::Mach_msg& msg){
+void getOutMachPut(sailboat_message::Mach_msg& msg){
 
     msg.timestamp = ros::Time::now().toSec();
     msg.motor = 0;
@@ -165,7 +165,7 @@ int_T main(int_T argc, char **argv) {
     ros::Publisher scanning_pub;
     ros::Publisher mach_pub;
     scanning_pub = nh.advertise<sailboat_message::scanning_out>("scanning_out", 2);
-    mach_pub = nh.advertise<mach_onboat::Mach_msg>("mach", 2);
+    mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
     dynamic_reconfigure::Server<scanning::scanning_Config> server;
     dynamic_reconfigure::Server<scanning::scanning_Config>::CallbackType f;
@@ -189,7 +189,7 @@ int_T main(int_T argc, char **argv) {
         ros::spinOnce();
         rt_OneStep();
         sailboat_message::scanning_out msg;
-        mach_onboat::Mach_msg msgMach;
+        sailboat_message::Mach_msg msgMach;
         getOutMachPut(msgMach);
         getOutput(msg);
         scanning_pub.publish(msg);

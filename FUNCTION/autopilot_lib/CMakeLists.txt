@@ -8,13 +8,13 @@ project(autopilot_lib)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  dynamic_reconfigure
-  roscpp
-  rospy
-  sailboat_message
-  std_msgs
+        dynamic_reconfigure
+        roscpp
+        rospy
+        sailboat_message
+        std_msgs
         math_tool_lib
-)
+        )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -90,11 +90,6 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * uncomment the "generate_dynamic_reconfigure_options" section below
 ##     and list every .cfg file to be processed
 
-generate_dynamic_reconfigure_options(
-        cfg/PID_Adjustment.cfg
-        #   cfg/DynReconf1.cfg
-        #   cfg/DynReconf2.cfg
-)
 
 ###################################
 ## catkin specific configuration ##
@@ -106,10 +101,10 @@ generate_dynamic_reconfigure_options(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES autopilot_lib
-  CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs math_tool_lib
-  DEPENDS system_lib
+        #INCLUDE_DIRS include
+        LIBRARIES autopilot_lib
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs math_tool_lib
+        DEPENDS system_lib
 )
 
 ###########
@@ -124,14 +119,4 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
-set( autopilot_lib_SRC
-        src/CAutopilotVer1.cpp
-        src/CSailCtrl.cpp
-        )
 
-add_library( ${PROJECT_NAME} ${autopilot_lib_SRC} )
-add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} mach_onboat_generate_message_cpp)
-target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
-
-add_executable(sailctrl_test_demo demo/SailCtrlTestDemo.cpp)
-target_link_libraries(sailctrl_test_demo ${catkin_LIBRARIES} autopilot_lib)

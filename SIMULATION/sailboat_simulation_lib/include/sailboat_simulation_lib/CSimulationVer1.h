@@ -20,13 +20,7 @@
 //matrix
 #include <eigen3/Eigen/Dense>
 
-//ros
-#include "ros/ros.h"
-#include "sailboat_message/Target_msg.h"
-#include "sailboat_message/Sensor_msg.h"
-//#include "sailboat_message/Sailboat_Simulation_msg.h"
-#include "sailboat_message/Wind_Simulation_msg.h"
-#include "mach_onboat/Mach_msg.h"
+
 
 #define pi 3.1415926
 
@@ -101,18 +95,14 @@ public:
 
 
     //ros相关
-    ros::NodeHandle simulation_node;
-    ros::Subscriber wind_sub;
-    ros::Subscriber mach_sub;
-    ros::Publisher sensor_pub;
-    //sailboat_message::Sailboat_Simulation_msg ssmsg;
+
 
     CSimulationVer1();
     ~CSimulationVer1();
 
     //setting 帆船初始姿态
     void SettingAttitudeInit(double u, double v, double p, double r, double x, double y, double phi, double psi);
-    //ros节点初始化
+    //初始化
     void Init();
 
     //coef系数初始化
@@ -146,13 +136,29 @@ public:
     void Sailboat_Test(double time, double d_t);
     void Sailboat_Calc(double d_t);
 
-    double* Sailboat_Out();
     void ShowData();
     void HideData();
 
-    //ros callback函数
-    void WindCallback(const sailboat_message::Wind_Simulation_msg::ConstPtr& msg);
-    void MachCallback(const mach_onboat::Mach_msg::ConstPtr& msg);
+
+    double AWA;
+    double AWS;
+
+    double rudderAngle;
+    double sailAngle;
+    double windDirection;
+    double windVelocity;
+
+    double delta_r;
+    double delta_s;
+
+    double uu;
+    double vv;
+    double pp;
+    double rr;
+    double XX;
+    double YY;
+    double phi;
+    double psi;
 
 
 private:
@@ -193,25 +199,9 @@ private:
     CCubicSplineInterpolation* CsipSailYl;
     CCubicSplineInterpolation* CsipSailYd;
 
-    double uu;
-    double vv;
-    double pp;
-    double rr;
-    double XX;
-    double YY;
-    double phi;
-    double psi;
 
-    double AWA;
-    double AWS;
 
-    double rudderAngle;
-    double sailAngle;
-    double windDirection;
-    double windVelocity;
 
-    double delta_r;
-    double delta_s;
     //damping
     //double *D_keel_tmp;
     //double *D_hull_tmp;

@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
         FILES
         #  Mach_msg.msg
+        Mach_msg.msg
         scanning_out.msg
         GPS_msg.msg
         Ahrs_msg.msg
