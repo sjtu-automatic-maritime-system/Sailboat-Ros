@@ -70,7 +70,8 @@ void PointCallback(path_following::path_following_point_Config &config, uint32_t
 }
 
 void Target_pub(sailboat_message::Target_msg& msg){
-    msg.timestamp = ros::Time::now().toSec();
+    msg.header.stamp = ros::Time::now();
+    msg.header.frame_id = "base_link";
     msg.TargetAngle = pathfollowingver1.targetAngle;
 
     ROS_INFO("I talk TargetAngle: [%f]", msg.TargetAngle);

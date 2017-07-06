@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         msg.header.stamp = ros::Time::now();
         msg.header.frame_id = "sensor";
 
-        msg.timestamp = ros::Time::now().toSec();
+        //msg.timestamp = ros::Time::now().toSec();
         msg.ux = sensorMsg[1];
         msg.vy = sensorMsg[2];
         msg.gx = sensorMsg[3];

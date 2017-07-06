@@ -1,5 +1,4 @@
 Header header
-float64 timestamp
 float64 satn
 float64 posx
 float64 posy

@@ -14,17 +14,17 @@
 //
 #include <stddef.h>
 #include <stdio.h>                     // This ert_main.c example uses printf/fflush
+#include <scanning/scanning.h>
 #include "scanning.h"         // Model's header file
 #include "rtwtypes.h"
 
 #include "ros/ros.h"
 #include "sailboat_message/Sensor_msg.h"
 #include "sailboat_message/scanning_out.h"
-#include "sailboat_message/Sailboat_Simulation_msg.h"
 #include "sailboat_message/Mach_msg.h"
 
 #include <dynamic_reconfigure/server.h>
-#include <scanning/scanning.h>
+
 #include "scanning/scanning_Config.h"
 #include "scanning/pcCtrl_Config.h"
 
@@ -92,7 +92,7 @@ void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     scanning_Obj.scanning_P.Ki = config.Ki;
     scanning_Obj.scanning_P.Kd = config.Kd;
     scanning_Obj.scanning_P.R = config.R;
-    scanning_Obj.scanning_P.jibing_time = config.jibing_time;
+    //scanning_Obj.scanning_P.jibing_time = config.jibing_time;
     scanning_Obj.scanning_P.max_loose_time = config.max_loose_time;
     scanning_Obj.scanning_P.max_roll_allowed = config.max_roll_allowed;
     scanning_Obj.scanning_P.pos_history_len = config.pos_history_len;
@@ -100,6 +100,16 @@ void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     scanning_Obj.scanning_P.ship_speed_history_len = config.ship_speed_history_len;
     scanning_Obj.scanning_P.tacking_force_discount = config.tacking_force_discount;
     scanning_Obj.scanning_P.wind_mean_time = config.wind_mean_time;
+
+    scanning_Obj.scanning_P.scanning_points[0] = config.point0_x;
+    scanning_Obj.scanning_P.scanning_points[1] = config.point1_x;
+    scanning_Obj.scanning_P.scanning_points[2] = config.point2_x;
+    scanning_Obj.scanning_P.scanning_points[3] = config.point3_x;
+
+    scanning_Obj.scanning_P.scanning_points[4] = config.point0_y;
+    scanning_Obj.scanning_P.scanning_points[5] = config.point1_y;
+    scanning_Obj.scanning_P.scanning_points[6] = config.point2_y;
+    scanning_Obj.scanning_P.scanning_points[7] = config.point3_y;
 }
 
 void PcCtrlCfgcallback(scanning::pcCtrl_Config &config, uint32_t level){

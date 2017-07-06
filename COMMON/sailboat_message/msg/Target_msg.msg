@@ -1,2 +1,2 @@
-float64 timestamp
+Header header
 float64 TargetAngle

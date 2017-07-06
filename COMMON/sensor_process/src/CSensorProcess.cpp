@@ -49,7 +49,7 @@ double* CSensorProcess::GetSensorMsg() {
 
 void CSensorProcess::ahrsCallback(const sailboat_message::Ahrs_msg::ConstPtr &msg) {
     ROS_INFO("ahrs_msg sub: [%f] [%f] [%f]", msg->roll,msg->pitch,msg->yaw);
-    AhrsMsg[0] = msg->timestamp;
+    //AhrsMsg[0] = msg->timestamp;
     AhrsMsg[1] = msg->roll;
     AhrsMsg[2] = msg->pitch;
     AhrsMsg[3] = msg->yaw;
@@ -64,7 +64,7 @@ void CSensorProcess::ahrsCallback(const sailboat_message::Ahrs_msg::ConstPtr &ms
 void CSensorProcess::wtstCallback(const sailboat_message::WTST_msg::ConstPtr& msg)
 {
     ROS_INFO("wtst_msg sub: [%f] [%f]", msg->PosX,msg->PosY);
-    WtstMsg[0] = msg->timestamp;
+    //WtstMsg[0] = msg->timestamp;
     WtstMsg[1] = msg->GPSIndicator;
     WtstMsg[2] = msg->Latitude;
     WtstMsg[3] = msg->Longitude;
@@ -74,7 +74,7 @@ void CSensorProcess::wtstCallback(const sailboat_message::WTST_msg::ConstPtr& ms
     WtstMsg[7] = msg->Pitch/57.3;
     WtstMsg[8] = msg->Yaw/57.3;
     WtstMsg[9] = msg->WindAngle/57.3;
-    WtstMsg[10] = msg->WindSpeed;
+    WtstMsg[10] = msg->WindSpeed*0.514;
     if (WtstMsg[9]>3.14)
         WtstMsg[9] = WtstMsg[9]-6.28;
 }

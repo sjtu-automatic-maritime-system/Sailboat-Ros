@@ -1,11 +1,11 @@
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'scanning'.
+// Code generated for Simulink model 'race_course'.
 //
-// Model version                  : 1.271
+// Model version                  : 1.311
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 11:19:00 2017
+// C/C++ source code generated on : Thu Jul 06 13:08:27 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -14,10 +14,10 @@
 //
 #include <stddef.h>
 #include <stdio.h>                     // This ert_main.c example uses printf/fflush 
-#include "scanning.h"                  // Model's header file
+#include "race_course.h"               // Model's header file
 #include "rtwtypes.h"
 
-static scanningModelClass scanning_Obj;// Instance of model class
+static race_courseModelClass race_course_Obj;// Instance of model class
 
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -38,7 +38,7 @@ void rt_OneStep(void)
 
   // Check for overrun
   if (OverrunFlag) {
-    rtmSetErrorStatus(scanning_Obj.getRTM(), "Overrun");
+    rtmSetErrorStatus(race_course_Obj.getRTM(), "Overrun");
     return;
   }
 
@@ -49,7 +49,7 @@ void rt_OneStep(void)
   // Set model inputs here
 
   // Step the model
-  scanning_Obj.step();
+  race_course_Obj.step();
 
   // Get model outputs here
 
@@ -74,7 +74,7 @@ int_T main(int_T argc, const char *argv[])
   (void)(argv);
 
   // Initialize model
-  scanning_Obj.initialize();
+  race_course_Obj.initialize();
 
   // Attach rt_OneStep to a timer or interrupt service routine with
   //  period 0.1 seconds (the model's base sample time) here.  The
@@ -86,14 +86,14 @@ int_T main(int_T argc, const char *argv[])
          "Generated ERT main won't simulate model step behavior. "
          "To change this behavior select the 'MAT-file logging' option.\n");
   fflush((NULL));
-  while (rtmGetErrorStatus(scanning_Obj.getRTM()) == (NULL)) {
+  while (rtmGetErrorStatus(race_course_Obj.getRTM()) == (NULL)) {
     //  Perform other application tasks here
   }
 
   // Disable rt_OneStep() here
 
   // Terminate model
-  scanning_Obj.terminate();
+  race_course_Obj.terminate();
   return 0;
 }
 

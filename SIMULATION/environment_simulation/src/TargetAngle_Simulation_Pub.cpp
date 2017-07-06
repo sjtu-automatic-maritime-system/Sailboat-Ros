@@ -41,6 +41,8 @@ int main(int argc, char **argv)
   //   // float64 rudder
   //   // float64 sail
     sailboat_message::Target_msg msg;
+    msg.header.stamp = ros::Time::now();
+    msg.header.frame_id = "base_link";
     msg.TargetAngle = target;
     
     ROS_INFO("I talk TargetAngle: [%f]", msg.TargetAngle);

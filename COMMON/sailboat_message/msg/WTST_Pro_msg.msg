@@ -1,5 +1,4 @@
 Header header
-float64 timestamp
 int16 GPSIndicator
 float64 Latitude
 float64 Longitude
