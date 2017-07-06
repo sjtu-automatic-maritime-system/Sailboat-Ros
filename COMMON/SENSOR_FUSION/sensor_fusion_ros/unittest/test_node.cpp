@@ -3,7 +3,7 @@
 //
 
 #include "ros/ros.h"
-#include "sensor_fusion_ros/GpsMeasurement.h"
+#include "sensor_fusion_msg/GpsMeasurement.h"
 //#include "std_msgs/Time.h"
 
 #include <fstream>
@@ -18,7 +18,7 @@ using namespace std;
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kf_test_node");
     ros::NodeHandle nh;
-    ros::Publisher kf_test_pub = nh.advertise<sensor_fusion_ros::GpsMeasurement>("gps_measurement", 100);
+    ros::Publisher kf_test_pub = nh.advertise<sensor_fusion_msg::GpsMeasurement>("gps_measurement", 100);
     ros::Rate loop_rate(10);
 
     /*******************************************************************************
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
         string sensor_type;
         iss >> sensor_type;	//reads first element from the current line
         double_t timestamp;
-        sensor_fusion_ros::GpsMeasurement gps_meas;
+        sensor_fusion_msg::GpsMeasurement gps_meas;
         if(sensor_type.compare("L") == 0){	//laser measurement
             //read measurements
             gps_meas.sensor_type = "L";

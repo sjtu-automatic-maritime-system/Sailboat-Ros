@@ -9,8 +9,8 @@
 
 #include "measurement_package.h"
 #include "tracking.h"
-#include "sensor_fusion_ros/GpsMeasurement.h"
-#include "sensor_fusion_ros/GpsKF.h"
+#include "sensor_fusion_msg/GpsMeasurement.h"
+#include "sensor_fusion_msg/GpsKF.h"
 #include "sailboat_message/WTST_msg.h"
 #include "ros/ros.h"
 
@@ -24,7 +24,7 @@ using std::vector;
 class GPS_KF {
 public:
     GPS_KF() {
-        GPSkf_pub = nh.advertise<sensor_fusion_ros::GpsKF>("gps_kf", 10);
+        GPSkf_pub = nh.advertise<sensor_fusion_msg::GpsKF>("gps_kf", 10);
         sub = nh.subscribe("WTST_tmp", 100, &GPS_KF::GPScallback, this);
 //        sub = nh.subscribe("gps_measurement", 100, &GPS_KF::callback, this);
 
@@ -34,7 +34,7 @@ public:
 
     }
 
-    void callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg);
+    void callback(const sensor_fusion_msg::GpsMeasurement::ConstPtr &msg);
 
     void GPScallback(const sailboat_message::WTST_msg::ConstPtr &msg);
 
@@ -46,7 +46,7 @@ private:
 
 };
 
-void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg) {
+void GPS_KF::callback(const sensor_fusion_msg::GpsMeasurement::ConstPtr &msg) {
     ROS_INFO("I head posx: %f, posy: %f", msg->posx, msg->posy);
     MeasurementPackage meas_pkg;
     if (msg->sensor_type.compare("L") == 0) {
@@ -62,7 +62,7 @@ void GPS_KF::callback(const sensor_fusion_ros::GpsMeasurement::ConstPtr &msg) {
         ROS_INFO("update posx: %f, posy: %f", tracking.kf_.x_[0], tracking.kf_.x_[1]);
         ROS_INFO("update velx: %f, vely: %f", tracking.kf_.x_[2], tracking.kf_.x_[3]);
         std::cout << typeid(meas_pkg.timestamp_).name() << std::endl;
-        sensor_fusion_ros::GpsKF GPSmsg;
+        sensor_fusion_msg::GpsKF GPSmsg;
         GPSmsg.posx = tracking.kf_.x_[0];
         GPSmsg.posy = tracking.kf_.x_[1];
         GPSmsg.velx = tracking.kf_.x_[2];
@@ -87,7 +87,7 @@ void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr &msg) {
     ROS_INFO("update posx: %f, posy: %f", tracking.kf_.x_[0], tracking.kf_.x_[1]);
     ROS_INFO("update velx: %f, vely: %f", tracking.kf_.x_[2], tracking.kf_.x_[3]);
 
-    sensor_fusion_ros::GpsKF GPSmsg;
+    sensor_fusion_msg::GpsKF GPSmsg;
     GPSmsg.posx = tracking.kf_.x_[0];
     GPSmsg.posy = tracking.kf_.x_[1];
     GPSmsg.velx = tracking.kf_.x_[2];

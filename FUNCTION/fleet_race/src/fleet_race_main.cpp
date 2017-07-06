@@ -155,7 +155,7 @@ int_T main(int_T argc, char **argv)
   //
   //   rt_OneStep();
 
-  ros::init(argc, argv, "scanning");
+  ros::init(argc, argv, "fleet_race");
   ros::NodeHandle nh;
   ros::Subscriber sub;
   ros::Publisher fleet_race_pub;

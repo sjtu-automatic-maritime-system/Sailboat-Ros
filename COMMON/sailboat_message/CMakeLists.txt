@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
         FILES
         #  Mach_msg.msg
+        station_keeping_out.msg
         fleet_race_out.msg
         Mach_msg.msg
         scanning_out.msg
