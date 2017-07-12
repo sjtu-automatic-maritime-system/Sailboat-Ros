@@ -35,8 +35,9 @@ class Arduino():
         self.header = chr(0x4f) + chr(0x5e)
 
         self.fst = struct.Struct('!4H')
-        self.recvDataBytes = 14
-        self.recvDataFst = struct.Struct('<H5hH')
+        self.recvDataBytes = 18
+        self.recvDataFst = struct.Struct('<H7hH')
+        self.EarduinoDatas = [0,0,0,0,0,0,0]
 
         self.buf = ''
 
@@ -55,7 +56,7 @@ class Arduino():
             self.arduino_ser.write(self.send_data())
 
     def read_data(self):
-        self.buf += self.arduino_ser.read(14-len(self.buf))
+        self.buf += self.arduino_ser.read(18-len(self.buf))
         print 'arduino read:',binascii.hexlify(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
@@ -66,7 +67,7 @@ class Arduino():
             self.buf = self.buf[idx:]
             print ('ReadError: header not at start, discard bytes before header')
             return
-        if len(self.buf) < 14:
+        if len(self.buf) < 18:
             print ('ReadError: not enough data')
             return
 
@@ -128,6 +129,8 @@ class SensorListener:
             self.arduinomsg.motor = self.arduino.EarduinoDatas[2]
             self.arduinomsg.rudder = self.arduino.EarduinoDatas[3]
             self.arduinomsg.sail = self.arduino.EarduinoDatas[4]
+            self.arduinomsg.voltage1 = self.arduino.EarduinoDatas[5]
+            self.arduinomsg.voltage2 = self.arduino.EarduinoDatas[6]
             self.pub.publish(self.arduinomsg)
             #self.r.sleep()
             # float64 timestamp
@@ -148,9 +151,9 @@ def callback(data):
     #rospy.loginfo("I heard %f", data.roll)
     motor = int(data.motor)
     #max~min 40~-40 130~50
-    rudder = int(-data.rudder*57.3)+90
-    #max~min 90-0 130~50
-    sail = int(abs(data.sail)*57.3*80/90)+50
+    rudder = int(data.rudder*57.3)+90
+    #max~min 90-0 77~50
+    sail = int(abs(data.sail)*57.3/3.3)+50
 
     pcCtrl = int(data.PCCtrl)
 
