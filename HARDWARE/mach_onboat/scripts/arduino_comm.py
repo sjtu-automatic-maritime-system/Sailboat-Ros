@@ -8,8 +8,8 @@ import serial
 import time
 # from msgdev import
 
-#arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_855353036363516120C1-if00'
-arduino_port = '/dev/ttyACM0'
+arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_75533353038351615291-if00'
+#arduino_port = '/dev/ttyACM0'
 motor = 50
 rudder = 90
 sail = 90

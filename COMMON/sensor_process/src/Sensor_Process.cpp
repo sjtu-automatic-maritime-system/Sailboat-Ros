@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         sailboat_message::Sensor_msg msg;
 
         msg.header.stamp = ros::Time::now();
-        msg.header.frame_id = "sensor";
+        msg.header.frame_id = "sensor2";
 
         //msg.timestamp = ros::Time::now().toSec();
         msg.ux = sensorMsg[1];
