@@ -18,8 +18,8 @@ void callback(environment_simulation::sailboat_mach_simulation_Config &config, u
     //       config.Sail_Angle,config.Rudder_Angle, 
     //       config.size);
   motor = config.motor;
-  rudder = config.Rudder_Angle;
-  sail = config.Sail_Angle;
+  rudder = config.Rudder_Angle/57.3;
+  sail = config.Sail_Angle/57.3;
   if (config.PC_Ctrl == true)
     PCCtrl = 1;
   else

@@ -63,7 +63,8 @@ add_message_files(
         Wind_Simulation_msg.msg
         Sailboat_Simulation_msg.msg
         Target_msg.msg
-        old/TestCtrl.msg
+        Arduino_msg.msg
+
         #   Message1.msg
         #   Message2.msg
 )

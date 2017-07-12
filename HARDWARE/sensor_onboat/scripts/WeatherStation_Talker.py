@@ -167,7 +167,8 @@ class WTST:
 
     def parse_GPGGA(self):
         if len(self.parsedata) != 15:
-            raise WTST_ERROR('invalid GPGGA '+self.line_list[0])
+            return
+            #raise WTST_ERROR('invalid GPGGA '+self.line_list[0])
         if int(self.parsedata[6]) != 0:
             #     self.Latitude = 0
             #     self.Longitude = 0
@@ -197,7 +198,8 @@ class WTST:
 
     def parse_GPVTG(self):
         if len(self.parsedata) != 10:
-            raise WTST_ERROR('invalid GPVTG '+self.line_list[0])
+            return
+            #raise WTST_ERROR('invalid GPVTG '+self.line_list[0])
         if self.parsedata[9] != 'N' :
             # self.DegreeTrue = 0
             # self.DegreeMagmetic = 0
@@ -221,7 +223,8 @@ class WTST:
 
     def parse_HCHDT(self):
         if len(self.parsedata) != 3:
-            raise WTST_ERROR('invalid HCHDT '+self.line_list[0])
+            return
+            #raise WTST_ERROR('invalid HCHDT '+self.line_list[0])
         if self.parsedata[2] == 'T' :
             # Heading relative to True North, degrees
             self.HeadingTrueNorth = float(self.parsedata[1])
@@ -229,7 +232,8 @@ class WTST:
 
     def parse_HCHDG(self):
         if len(self.parsedata) != 6:
-            raise WTST_ERROR('invalid HCHDG '+self.line_list[0])
+            return
+            #raise WTST_ERROR('invalid HCHDG '+self.line_list[0])
         if self.parsedata[1] != '' :
 
             # Magnetic sensor heading, degrees, to the nearest 0.1 degree
@@ -246,7 +250,8 @@ class WTST:
 
     def parse_WIMDA(self):
         if len(self.parsedata) != 21:
-            raise WTST_ERROR('invalid WIMDA '+self.line_list[0])
+            return
+            #raise WTST_ERROR('invalid WIMDA '+self.line_list[0])
         if self.parsedata[1] != '':
             # Barometric pressure, inches of mercury, to the nearest 0.01 inch
             self.BarMercury = float(self.parsedata[1])
@@ -266,7 +271,8 @@ class WTST:
 
     def parse_WIMWV(self):
         if len(self.parsedata) != 6:
-            raise WTST_ERROR('invalid WIMWV '+self.line_list[0])
+            return
+            #raise WTST_ERROR('invalid WIMWV '+self.line_list[0])
         if self.parsedata[5] == 'A':
             # Status: A = data valid; V = data invalid
             self.MWVStatus = self.parsedata[5]

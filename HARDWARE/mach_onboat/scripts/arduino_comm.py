@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from sailboat_message.msg import Mach_msg
+from sailboat_message.msg import Arduino_msg
 import struct
 import binascii
 import serial
@@ -8,7 +9,7 @@ import time
 # from msgdev import
 
 #arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_855353036363516120C1-if00'
-arduino_port = '/dev/ttyACM1'
+arduino_port = '/dev/ttyACM0'
 motor = 50
 rudder = 90
 sail = 90
@@ -105,8 +106,10 @@ class SensorListener:
         self.NodeName = nodeName
         self.TopicName = topicName
         rospy.init_node(self.NodeName, anonymous=True)
-        self.r = rospy.Rate(15)
+        self.pub = rospy.Publisher('arduino', Arduino_msg, queue_size=5)
+        self.r = rospy.Rate(10)
         self.arduino = Arduino()
+        self.arduinomsg = Arduino_msg()
         self.listener()
 
 
@@ -114,12 +117,27 @@ class SensorListener:
 
         #rospy.Subscriber("Ahrs", Ahrs_msg, callback)
         rospy.Subscriber(self.TopicName, Mach_msg, callback)
+
         # spin() simply keeps python from exiting until this node is stopped
         while 1:
         #while not rospy.is_shutdown():
             self.arduino.update()
+            self.arduinomsg.timestamp = rospy.get_time()
+            self.arduinomsg.readMark = self.arduino.EarduinoDatas[0]
+            self.arduinomsg.autoFlag = self.arduino.EarduinoDatas[1]
+            self.arduinomsg.motor = self.arduino.EarduinoDatas[2]
+            self.arduinomsg.rudder = self.arduino.EarduinoDatas[3]
+            self.arduinomsg.sail = self.arduino.EarduinoDatas[4]
+            self.pub.publish(self.arduinomsg)
             #self.r.sleep()
-
+            # float64 timestamp
+            # float64 readMark
+            # float64 autoFlag
+            # float64 motor
+            # float64 rudder
+            # float64 sail
+            # float64 voltage1
+            # float64 voltage2
 
 
 

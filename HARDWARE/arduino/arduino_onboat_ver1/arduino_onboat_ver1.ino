@@ -48,11 +48,12 @@ struct //total 2+10+2=14 bytes
   byte header2;  // 1 bytes
 
   //control part (total 10 bytes)
+  int readMark;   // 2
+  int autoFlag;   // 2
   int motorSpeed; // 2 bytes
   int rudderAng;  // 2
   int sailAng;    // 2
-  int readMark;   // 2
-  int autoFlag;   // 2
+
 
   //crc (total 2 bytes)
   unsigned int crcnum;  //2
@@ -63,12 +64,12 @@ arduinoData = {
 
 void structDataSend() {
   int tmp_motor = map(motor_speed,70,110,0,100);
+  arduinoData.readMark = mark;
+  arduinoData.autoFlag = autoFlag;
   arduinoData.motorSpeed = tmp_motor;
   arduinoData.rudderAng = rudder_pos - 90;
   arduinoData.sailAng = (sail_pos - 50)/8*9;
   //arduinoData.sailAng = enableCtrl;
-  arduinoData.readMark = mark;
-  arduinoData.autoFlag = autoFlag;
 
 
   byte *tobyte = (byte*)&arduinoData;
@@ -240,22 +241,6 @@ void WriteData() {
   }
 }
 
-void SendData() {
-  //    Serial.print(motor_speed);
-  //    Serial.print(",");
-  //    Serial.print(durRudd);
-  //    Serial.print(",");
-  //    Serial.print(durThro);
-  //    Serial.print(",");
-  Serial.print(motor_speed);
-  Serial.print(",");
-  Serial.print(rudder_pos);
-  Serial.print(",");
-  Serial.print(sail_pos);
-  Serial.print(",");
-  Serial.println(durGear);
-}
-
 void flash() {
   count ++;
   if (count == 10) { //read the gearPin every 10 intervals
@@ -277,7 +262,6 @@ void flash() {
       autoFlag = 0;
     }
   }
-
 
 
   serial_read_3();

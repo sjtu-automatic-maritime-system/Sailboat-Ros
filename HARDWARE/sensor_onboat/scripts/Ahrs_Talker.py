@@ -177,9 +177,9 @@ def talker():#ros message publish
             ahrs_msg.gz = ahrs.gz
             ahrs_msg.ax = ahrs.ax
             ahrs_msg.ay = ahrs.ay
-            ahrs_msg.az  = ahrs.az
+            ahrs_msg.az = ahrs.az
             #show data
-            rospy.loginfo(ahrs_msg.roll)
+            #rospy.loginfo(ahrs_msg.roll)
             pub.publish(ahrs_msg)
             rate.sleep()            
     except rospy.ROSInterruptException:
