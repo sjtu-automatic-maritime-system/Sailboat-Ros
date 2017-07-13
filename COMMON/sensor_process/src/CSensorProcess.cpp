@@ -23,7 +23,7 @@ CSensorProcess::~CSensorProcess() {
 }
 
 void CSensorProcess::Init() {
-    sensor_pub = node.advertise<sailboat_message::Sensor_msg>("sensor", 2);
+    sensor_pub = node.advertise<sailboat_message::Sensor_msg>("sensor2", 2);
     ahrs_sub = node.subscribe("ahrs", 2, &CSensorProcess::ahrsCallback,this);
     wtst_sub = node.subscribe("wtst", 2, &CSensorProcess::wtstCallback,this);
 }

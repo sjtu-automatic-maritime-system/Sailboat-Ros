@@ -1,0 +1,1 @@
+KERNEL=="ttyACM*", ATTRS{idVendor}=="2a03", ATTRS{idProduct}=="0042", MODE:="0666"
