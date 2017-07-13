@@ -21,17 +21,18 @@
 #include "ros/ros.h"
 #include "sailboat_message/Sensor_msg.h"
 #include "sailboat_message/scanning_out.h"
+#include "sailboat_message/scanning_para.h"
 #include "sailboat_message/Mach_msg.h"
 
 #include <dynamic_reconfigure/server.h>
 
 #include "scanning/scanning_Config.h"
-#include "scanning/pcCtrl_Config.h"
 
 
 
 static scanningModelClass scanning_Obj;// Instance of model class
-bool pcCtrl;
+int pcCtrl = 0;
+ros::Publisher scanning_para_pub;
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
 // is what makes the generated code "real-time".  The function rt_OneStep is
@@ -88,11 +89,15 @@ void getInput(const sailboat_message::Sensor_msg::ConstPtr msg) {
 void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     ROS_INFO("Reconfigure Request: %f %f %f",config.Kp,config.Ki,config.Kd);
 
+    if (config.PC_Ctrl == true)
+        pcCtrl = 1;
+    else
+        pcCtrl = 0;
+
     scanning_Obj.scanning_P.Kp = config.Kp;
     scanning_Obj.scanning_P.Ki = config.Ki;
     scanning_Obj.scanning_P.Kd = config.Kd;
     scanning_Obj.scanning_P.R = config.R;
-    //scanning_Obj.scanning_P.jibing_time = config.jibing_time;
     scanning_Obj.scanning_P.max_loose_time = config.max_loose_time;
     scanning_Obj.scanning_P.max_roll_allowed = config.max_roll_allowed;
     scanning_Obj.scanning_P.pos_history_len = config.pos_history_len;
@@ -110,14 +115,32 @@ void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     scanning_Obj.scanning_P.scanning_points[5] = config.point1_y;
     scanning_Obj.scanning_P.scanning_points[6] = config.point2_y;
     scanning_Obj.scanning_P.scanning_points[7] = config.point3_y;
+
+    sailboat_message::scanning_para msg;
+
+    msg.Kp = config.Kp;
+    msg.Ki = config.Ki;
+    msg.Kd = config.Kd;
+    msg.R = config.R;
+    msg.max_loose_time = config.max_loose_time;
+    msg.max_roll_allowed = config.max_roll_allowed;
+    msg.pos_history_len = config.pos_history_len;
+    msg.run_period = config.run_period;
+    msg.ship_speed_history_len = config.ship_speed_history_len;
+    msg.tacking_force_discount = config.tacking_force_discount;
+    msg.wind_mean_time = config.wind_mean_time;
+
+    msg.point0_x = config.point0_x;
+    msg.point1_x = config.point1_x;
+    msg.point2_x = config.point2_x;
+    msg.point3_x = config.point3_x;
+    msg.point0_y = config.point0_y;
+    msg.point1_y = config.point1_y;
+    msg.point2_y = config.point2_y;
+    msg.point3_y = config.point3_y;
+    scanning_para_pub.publish(msg);
 }
 
-void PcCtrlCfgcallback(scanning::pcCtrl_Config &config, uint32_t level){
-    if (config.PC_Ctrl == true)
-        pcCtrl = 1;
-    else
-        pcCtrl = 0;
-}
 
 void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     getInput(msg);
@@ -173,8 +196,10 @@ int_T main(int_T argc, char **argv) {
     ros::NodeHandle nh;
     ros::Subscriber sub;
     ros::Publisher scanning_pub;
+
     ros::Publisher mach_pub;
     scanning_pub = nh.advertise<sailboat_message::scanning_out>("scanning_out", 2);
+    scanning_para_pub = nh.advertise<sailboat_message::scanning_para>("scanning_para", 2);
     mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
     dynamic_reconfigure::Server<scanning::scanning_Config> server;

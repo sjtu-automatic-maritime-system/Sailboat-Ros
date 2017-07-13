@@ -21,12 +21,14 @@
 #include "sailboat_message/Sensor_msg.h"
 #include "sailboat_message/Mach_msg.h"
 #include "sailboat_message/fleet_race_out.h"
+#include "sailboat_message/fleet_race_para.h"
 
 #include <dynamic_reconfigure/server.h>
 #include "fleet_race/fleet_race_Config.h"
 
 static race_courseModelClass race_course_Obj;// Instance of model class
-bool pcCtrl;
+int pcCtrl = 0;
+ros::Publisher fleet_race_para_pub;
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
 // is what makes the generated code "real-time".  The function rt_OneStep is
@@ -38,100 +40,131 @@ bool pcCtrl;
 // your application needs.  This example simply sets an error status in the
 // real-time model and returns from rt_OneStep.
 //
-void rt_OneStep(void)
-{
-  static boolean_T OverrunFlag = 0;
+void rt_OneStep(void) {
+    static boolean_T OverrunFlag = 0;
 
-  // Disable interrupts here
+    // Disable interrupts here
 
-  // Check for overrun
-  if (OverrunFlag) {
-    rtmSetErrorStatus(race_course_Obj.getRTM(), "Overrun");
-    return;
-  }
+    // Check for overrun
+    if (OverrunFlag) {
+        rtmSetErrorStatus(race_course_Obj.getRTM(), "Overrun");
+        return;
+    }
 
-  OverrunFlag = true;
+    OverrunFlag = true;
 
-  // Save FPU context here (if necessary)
-  // Re-enable timer or interrupt here
-  // Set model inputs here
+    // Save FPU context here (if necessary)
+    // Re-enable timer or interrupt here
+    // Set model inputs here
 
-  // Step the model
-  race_course_Obj.step();
+    // Step the model
+    race_course_Obj.step();
 
-  // Get model outputs here
+    // Get model outputs here
 
-  // Indicate task complete
-  OverrunFlag = false;
+    // Indicate task complete
+    OverrunFlag = false;
 
-  // Disable interrupts here
-  // Restore FPU context here (if necessary)
-  // Enable interrupts here
+    // Disable interrupts here
+    // Restore FPU context here (if necessary)
+    // Enable interrupts here
 }
 
 void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
-  race_course_Obj.race_course_U.North = msg->Posx;
-  race_course_Obj.race_course_U.East = msg->Posy;
-  race_course_Obj.race_course_U.Roll = msg->Roll;
-  race_course_Obj.race_course_U.Yaw = msg->Yaw;
-  race_course_Obj.race_course_U.Roll_rate = msg->gx;
-  race_course_Obj.race_course_U.Yaw_rate = msg->gz;
-  race_course_Obj.race_course_U.Airmar_wind_angle = msg->AWA;
-  race_course_Obj.race_course_U.Airmar_wind_speed = msg->AWS;
+    race_course_Obj.race_course_U.North = msg->Posx;
+    race_course_Obj.race_course_U.East = msg->Posy;
+    race_course_Obj.race_course_U.Roll = msg->Roll;
+    race_course_Obj.race_course_U.Yaw = msg->Yaw;
+    race_course_Obj.race_course_U.Roll_rate = msg->gx;
+    race_course_Obj.race_course_U.Yaw_rate = msg->gz;
+    race_course_Obj.race_course_U.Airmar_wind_angle = msg->AWA;
+    race_course_Obj.race_course_U.Airmar_wind_speed = msg->AWS;
 }
 
 void FleetraceCfgcallback(fleet_race::fleet_race_Config &config, uint32_t level) {
-  ROS_INFO("Reconfigure Request: %f %f %f",config.Kp,config.Ki,config.Kd);
+    ROS_INFO("Reconfigure Request: %f %f %f", config.Kp, config.Ki, config.Kd);
+    if (config.PC_Ctrl == true)
+        pcCtrl = 1;
+    else
+        pcCtrl = 0;
+    race_course_Obj.race_course_P.Kp = config.Kp;
+    race_course_Obj.race_course_P.Ki = config.Ki;
+    race_course_Obj.race_course_P.Kd = config.Kd;
+    race_course_Obj.race_course_P.R_reach = config.R_reach;
+    race_course_Obj.race_course_P.R_reach_big = config.R_reach_big;
+    race_course_Obj.race_course_P.extra_leg_len = config.extra_leg_len;
 
-  race_course_Obj.race_course_P.Kp = config.Kp;
-  race_course_Obj.race_course_P.Ki = config.Ki;
-  race_course_Obj.race_course_P.Kd = config.Kd;
-  race_course_Obj.race_course_P.R_reach = config.R_reach;
-  race_course_Obj.race_course_P.R_reach_big = config.R_reach_big;
-  race_course_Obj.race_course_P.extra_leg_len = config.extra_leg_len;
+    race_course_Obj.race_course_P.max_loose_time = config.max_loose_time;
+    race_course_Obj.race_course_P.max_roll_allowed = config.max_roll_allowed;
+    race_course_Obj.race_course_P.pos_history_len = config.pos_history_len;
+    race_course_Obj.race_course_P.run_period = config.run_period;
+    race_course_Obj.race_course_P.ship_speed_history_len = config.ship_speed_history_len;
+    race_course_Obj.race_course_P.upwind_leg = config.upwind_leg;
+    race_course_Obj.race_course_P.wind_mean_time = config.wind_mean_time;
 
-  race_course_Obj.race_course_P.max_loose_time = config.max_loose_time;
-  race_course_Obj.race_course_P.max_roll_allowed = config.max_roll_allowed;
-  race_course_Obj.race_course_P.pos_history_len = config.pos_history_len;
-  race_course_Obj.race_course_P.run_period = config.run_period;
-  race_course_Obj.race_course_P.ship_speed_history_len = config.ship_speed_history_len;
-  race_course_Obj.race_course_P.upwind_leg = config.upwind_leg;
-  race_course_Obj.race_course_P.wind_mean_time = config.wind_mean_time;
+    race_course_Obj.race_course_P.race_points[0] = config.point0_x;
+    race_course_Obj.race_course_P.race_points[1] = config.point1_x;
+    race_course_Obj.race_course_P.race_points[2] = config.point2_x;
+    race_course_Obj.race_course_P.race_points[3] = config.point3_x;
 
-  race_course_Obj.race_course_P.race_points[0] = config.point0_x;
-  race_course_Obj.race_course_P.race_points[1] = config.point1_x;
-  race_course_Obj.race_course_P.race_points[2] = config.point2_x;
-  race_course_Obj.race_course_P.race_points[3] = config.point3_x;
+    race_course_Obj.race_course_P.race_points[4] = config.point0_y;
+    race_course_Obj.race_course_P.race_points[5] = config.point1_y;
+    race_course_Obj.race_course_P.race_points[6] = config.point2_y;
+    race_course_Obj.race_course_P.race_points[7] = config.point3_y;
 
-  race_course_Obj.race_course_P.race_points[4] = config.point0_y;
-  race_course_Obj.race_course_P.race_points[5] = config.point1_y;
-  race_course_Obj.race_course_P.race_points[6] = config.point2_y;
-  race_course_Obj.race_course_P.race_points[7] = config.point3_y;
+    sailboat_message::fleet_race_para msg;
+
+    msg.Kp = config.Kp;
+    msg.Ki = config.Ki;
+    msg.Kd = config.Kd;
+    msg.R_reach = config.R_reach;
+    msg.R_reach_big = config.R_reach_big;
+    msg.extra_leg_len = config.extra_leg_len;
+
+    msg.max_loose_time = config.max_loose_time;
+    msg.max_roll_allowed = config.max_roll_allowed;
+    msg.pos_history_len = config.pos_history_len;
+    msg.run_period = config.run_period;
+    msg.ship_speed_history_len = config.ship_speed_history_len;
+    msg.upwind_leg = config.upwind_leg;
+    msg.wind_mean_time = config.wind_mean_time;
+
+    msg.point0_x = config.point0_x;
+    msg.point1_x = config.point1_x;
+    msg.point2_x = config.point2_x;
+    msg.point3_x = config.point3_x;
+    msg.point0_y = config.point0_y;
+    msg.point1_y = config.point1_y;
+    msg.point2_y = config.point2_y;
+    msg.point3_y = config.point3_y;
+
+    fleet_race_para_pub.publish(msg);
+
 }
 
-void getOutMachPut(sailboat_message::Mach_msg& msg){
+void getOutMachPut(sailboat_message::Mach_msg &msg) {
 
-  msg.timestamp = ros::Time::now().toSec();
-  msg.motor = 0;
-  msg.rudder = race_course_Obj.race_course_Y.Rudder;
-  msg.sail = race_course_Obj.race_course_Y.Sail;
+    msg.timestamp = ros::Time::now().toSec();
+    msg.motor = 0;
+    msg.rudder = race_course_Obj.race_course_Y.Rudder;
+    msg.sail = race_course_Obj.race_course_Y.Sail;
 
-  msg.PCCtrl = pcCtrl;
+    msg.PCCtrl = pcCtrl;
 
 }
 
-void getOutput(sailboat_message::fleet_race_out& msg){
+void getOutput(sailboat_message::fleet_race_out &msg) {
 
-  msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = "base_link";
-  msg.Sail = race_course_Obj.race_course_Y.Sail;
-  msg.Rudder = race_course_Obj.race_course_Y.Rudder;
-  msg.leg = race_course_Obj.race_course_Y.leg;
-  msg.los_heading = race_course_Obj.race_course_Y.los_heading;
-  msg.speed_angle = race_course_Obj.race_course_Y.speed_angle;
-  msg.speed_angle_d = race_course_Obj.race_course_Y.speed_angle_d;
-  msg.wind_speed = race_course_Obj.race_course_Y.wind_speed;
-  msg.wind_angle_ground = race_course_Obj.race_course_Y.wind_angle_ground;
+    msg.header.stamp = ros::Time::now();
+    msg.header.frame_id = "base_link";
+    msg.Sail = race_course_Obj.race_course_Y.Sail;
+    msg.Rudder = race_course_Obj.race_course_Y.Rudder;
+    msg.leg = race_course_Obj.race_course_Y.leg;
+    msg.los_heading = race_course_Obj.race_course_Y.los_heading;
+    msg.speed_angle = race_course_Obj.race_course_Y.speed_angle;
+    msg.speed_angle_d = race_course_Obj.race_course_Y.speed_angle_d;
+    msg.wind_speed = race_course_Obj.race_course_Y.wind_speed;
+    msg.wind_angle_ground = race_course_Obj.race_course_Y.wind_angle_ground;
 }
 
 //
@@ -140,66 +173,66 @@ void getOutput(sailboat_message::fleet_race_out& msg){
 // Attaching rt_OneStep to a real-time clock is target specific.  This example
 // illustates how you do this relative to initializing the model.
 //
-int_T main(int_T argc, char **argv)
-{
-  // Unused arguments
-  (void)(argc);
-  (void)(argv);
+int_T main(int_T argc, char **argv) {
+    // Unused arguments
+    (void) (argc);
+    (void) (argv);
 
-  // Initialize model
-  race_course_Obj.initialize();
+    // Initialize model
+    race_course_Obj.initialize();
 
-  // Attach rt_OneStep to a timer or interrupt service routine with
-  //  period 0.1 seconds (the model's base sample time) here.  The
-  //  call syntax for rt_OneStep is
-  //
-  //   rt_OneStep();
+    // Attach rt_OneStep to a timer or interrupt service routine with
+    //  period 0.1 seconds (the model's base sample time) here.  The
+    //  call syntax for rt_OneStep is
+    //
+    //   rt_OneStep();
 
-  ros::init(argc, argv, "fleet_race");
-  ros::NodeHandle nh;
-  ros::Subscriber sub;
-  ros::Publisher fleet_race_pub;
-  ros::Publisher mach_pub;
-  fleet_race_pub = nh.advertise<sailboat_message::fleet_race_out>("fleet_race_out", 2);
-  mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
+    ros::init(argc, argv, "fleet_race");
+    ros::NodeHandle nh;
+    ros::Subscriber sub;
+    ros::Publisher fleet_race_pub;
 
-  dynamic_reconfigure::Server<fleet_race::fleet_race_Config> server;
-  dynamic_reconfigure::Server<fleet_race::fleet_race_Config>::CallbackType f;
+    ros::Publisher mach_pub;
+    fleet_race_pub = nh.advertise<sailboat_message::fleet_race_out>("fleet_race_out", 2);
+    fleet_race_para_pub = nh.advertise<sailboat_message::fleet_race_para>("fleet_race_para", 2);
+    mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
-  f = boost::bind(&FleetraceCfgcallback, _1, _2);
-  server.setCallback(f);
+    dynamic_reconfigure::Server<fleet_race::fleet_race_Config> server;
+    dynamic_reconfigure::Server<fleet_race::fleet_race_Config>::CallbackType f;
 
-  sub = nh.subscribe("sensor", 100, callback);
+    f = boost::bind(&FleetraceCfgcallback, _1, _2);
+    server.setCallback(f);
 
-  ros::Rate loop_rate(10);
-  while (ros::ok()) {
-    ros::spinOnce();
-    rt_OneStep();
-    sailboat_message::fleet_race_out msg;
-    sailboat_message::Mach_msg msgMach;
-    getOutMachPut(msgMach);
-    getOutput(msg);
-    fleet_race_pub.publish(msg);
-    mach_pub.publish(msgMach);
+    sub = nh.subscribe("sensor", 100, callback);
 
-    loop_rate.sleep();
-  }
+    ros::Rate loop_rate(10);
+    while (ros::ok()) {
+        ros::spinOnce();
+        rt_OneStep();
+        sailboat_message::fleet_race_out msg;
+        sailboat_message::Mach_msg msgMach;
+        getOutMachPut(msgMach);
+        getOutput(msg);
+        fleet_race_pub.publish(msg);
+        mach_pub.publish(msgMach);
+
+        loop_rate.sleep();
+    }
 
 
+    printf("Warning: The simulation will run forever. "
+                   "Generated ERT main won't simulate model step behavior. "
+                   "To change this behavior select the 'MAT-file logging' option.\n");
+    fflush((NULL));
+    while (rtmGetErrorStatus(race_course_Obj.getRTM()) == (NULL)) {
+        //  Perform other application tasks here
+    }
 
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
-  while (rtmGetErrorStatus(race_course_Obj.getRTM()) == (NULL)) {
-    //  Perform other application tasks here
-  }
+    // Disable rt_OneStep() here
 
-  // Disable rt_OneStep() here
-
-  // Terminate model
-  race_course_Obj.terminate();
-  return 0;
+    // Terminate model
+    race_course_Obj.terminate();
+    return 0;
 }
 
 //

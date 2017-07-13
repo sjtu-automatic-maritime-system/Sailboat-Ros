@@ -21,6 +21,7 @@
 #include "ros/ros.h"
 #include "sailboat_message/Sensor_msg.h"
 #include "sailboat_message/station_keeping_out.h"
+#include "sailboat_message/station_keeping_para.h"
 #include "sailboat_message/Mach_msg.h"
 
 #include <dynamic_reconfigure/server.h>
@@ -28,10 +29,10 @@
 #include "station_keeping/station_keeping_Config.h"
 
 
-bool pcCtrl;
+int pcCtrl = 0;
 
 static station_keepingModelClass station_keeping_Obj;// Instance of model class
-
+ros::Publisher station_keeping_para_pub;
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
 // is what makes the generated code "real-time".  The function rt_OneStep is
@@ -89,7 +90,10 @@ void getInput(const sailboat_message::Sensor_msg::ConstPtr msg) {
 
 void ScanningCfgcallback(station_keeping::station_keeping_Config &config, uint32_t level) {
     ROS_INFO("Reconfigure Request: %f %f %f",config.Kp,config.Ki,config.Kd);
-
+    if (config.PC_Ctrl == true)
+        pcCtrl = 1;
+    else
+        pcCtrl = 0;
     station_keeping_Obj.station_keeping_P.Kp = config.Kp;
     station_keeping_Obj.station_keeping_P.Ki = config.Ki;
     station_keeping_Obj.station_keeping_P.Kd = config.Kd;
@@ -103,6 +107,21 @@ void ScanningCfgcallback(station_keeping::station_keeping_Config &config, uint32
 
     station_keeping_Obj.station_keeping_P.point_keeping[0] = config.point_keeping_x;
     station_keeping_Obj.station_keeping_P.point_keeping[1] = config.point_keeping_y;
+
+    sailboat_message::station_keeping_para msg;
+    msg.Kp = config.Kp;
+    msg.Ki = config.Ki;
+    msg.Kd = config.Kd;
+    msg.max_loose_time = config.max_loose_time;
+    msg.max_roll_allowed = config.max_roll_allowed;
+    msg.pos_history_len = config.pos_history_len;
+    msg.run_period = config.run_period;
+    msg.ship_speed_history_len = config.ship_speed_history_len;
+    msg.tacking_force_discount = config.tacking_force_discount;
+    msg.wind_mean_time = config.wind_mean_time;
+    msg.point_keeping_x = config.point_keeping_x;
+    msg.point_keeping_y = config.point_keeping_y;
+    station_keeping_para_pub.publish(msg);
 }
 
 
@@ -158,9 +177,11 @@ int_T main(int_T argc, char **argv) {
     ros::NodeHandle nh;
     ros::Subscriber sub;
     ros::Publisher station_keeping_pub;
+
     ros::Publisher mach_pub;
 
     station_keeping_pub = nh.advertise<sailboat_message::station_keeping_out>("station_keeping_out", 2);
+    station_keeping_para_pub = nh.advertise<sailboat_message::station_keeping_para>("station_keeping_para", 2);
     mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
     dynamic_reconfigure::Server<station_keeping::station_keeping_Config> server;

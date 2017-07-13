@@ -53,17 +53,24 @@ add_message_files(
         #  Mach_msg.msg
         station_keeping_out.msg
         fleet_race_out.msg
-        Mach_msg.msg
         scanning_out.msg
+        station_keeping_para.msg
+        fleet_race_para.msg
+        scanning_para.msg
+
+        Mach_msg.msg
         GPS_msg.msg
         Ahrs_msg.msg
         WTST_msg.msg
         WTST_Pro_msg.msg
         Sensor_msg.msg
+        Arduino_msg.msg
+
         Wind_Simulation_msg.msg
         Sailboat_Simulation_msg.msg
         Target_msg.msg
-        Arduino_msg.msg
+
+
 
         #   Message1.msg
         #   Message2.msg

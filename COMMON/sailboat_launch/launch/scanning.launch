@@ -1,3 +1,4 @@
 <launch>
     <node pkg="scanning" type="scanning" name="scanning"/>
+    <node pkg="rosbag" type="record" name="scanning_record" args=" -o /home/sjtu-sailboat/rosbag/test2 /wtst /ahrs /mach /sensor /sensor2 /scanning_out /scanning_para"/>
 </launch>
