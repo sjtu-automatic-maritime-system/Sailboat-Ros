@@ -1,6 +1,15 @@
 #include <Servo.h>
 #include <FlexiTimer2.h>
 
+//voltage
+int voltage1Pin = 0;
+int voltage2Pin = 1;
+const float voltageRef = 4.85; // Arduino uno voltage reference
+float voltage1;
+float tmpVoltage1[5] = {0,0,0,0,0};
+float voltage2;
+float tmpVoltage2[5] = {0,0,0,0,0};
+
 //servo
 Servo motor, rudder, sail;
 const int datanum = 4;
@@ -25,7 +34,7 @@ int durGear = 0; // used for control type switch (control type: auto or manual)
 int serial_out_count = 0; //used to count the times that serial communication error
 int mark = 0;
 
-int enableCtrl = 1;//todo
+int pcCtrl = 0;//
 
 //remote control pins
 const int elevPin = 3, throPin = 4, ruddPin = 5, gearPin = 6;
@@ -54,8 +63,8 @@ struct //total 2+10+2=14 bytes
     int motorSpeed; // 2 bytes
     int rudderAng;  // 2
     int sailAng;    // 2
-    int voltage1;   // voltage1*10
-    int voltage2;
+    int voltage1ten;   // voltage1*10
+    int voltage2ten;
 
     //crc (total 2 bytes)
     unsigned int crcnum;  //2
@@ -71,8 +80,8 @@ void structDataSend() {
     arduinoData.motorSpeed = tmp_motor;
     arduinoData.rudderAng = rudder_pos - 90;
     arduinoData.sailAng = (sail_pos - 50) * 3.3;
-    arduinoData.voltage1 = durThro;
-    arduinoData.voltage2 = sail_pos;
+    arduinoData.voltage1ten = int(voltage1*10);
+    arduinoData.voltage2ten = int(voltage2*10);
 
 
     byte *tobyte = (byte * ) & arduinoData;
@@ -171,7 +180,7 @@ void serial_read_3() {
             motor_speed = map(servodata[0], 0, 100, MIN_MOTOR, MAX_MOTOR);
             rudder_pos = servodata[1];
             sail_pos = servodata[2];
-            enableCtrl = servodata[3];
+            pcCtrl = servodata[3];
 
             serial_out_count = 0;
             //      Serial.print(servodata[0]);
@@ -235,6 +244,28 @@ void WriteData() {
     }
 }
 
+void voltageCurrentMeter() {
+    tmpVoltage1[0] = tmpVoltage1[1];
+    tmpVoltage1[1] = tmpVoltage1[2];
+    tmpVoltage1[2] = tmpVoltage1[3];
+    tmpVoltage1[3] = tmpVoltage1[4];
+
+    tmpVoltage2[0] = tmpVoltage2[1];
+    tmpVoltage2[1] = tmpVoltage2[2];
+    tmpVoltage2[2] = tmpVoltage2[3];
+    tmpVoltage2[3] = tmpVoltage2[4];
+
+    long analogVoltage1 = 0;
+    analogVoltage1 = analogRead(voltage1Pin);
+    tmpVoltage1[4] = analogVoltage1 / 1024.0 * 5 * voltageRef; //compute real voltage value
+    voltage1 = (tmpVoltage1[0]+tmpVoltage1[1]+tmpVoltage1[2]+tmpVoltage1[3]+tmpVoltage1[4])/5;
+
+    long analogVoltage2 = 0;
+    analogVoltage2 = analogRead(voltage2Pin);
+    tmpVoltage2[4] = analogVoltage2 / 1024.0 * 5 * voltageRef; //compute real voltage value
+    voltage2 = (tmpVoltage2[0]+tmpVoltage2[1]+tmpVoltage2[2]+tmpVoltage2[3]+tmpVoltage2[4])/5;
+}
+
 void flash() {
     count++;
     if (count == 10) { //read the gearPin every 10 intervals
@@ -242,7 +273,7 @@ void flash() {
         count = 0;
     }
 
-    if (mark == 1 && enableCtrl == 1) {
+    if (mark == 1 && pcCtrl == 1) {
         autoFlag = 1;
     } else {
         if (durGear > 1300 && durGear < 1900) {
@@ -252,7 +283,7 @@ void flash() {
         }
     }
 
-
+    voltageCurrentMeter();
     serial_read_3();
     signalSelection();
     veloLimit();
