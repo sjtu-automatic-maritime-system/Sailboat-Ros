@@ -149,7 +149,7 @@ def callback(data):
     global motor, rudder, sail, pcCtrl
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
-    motor = int(data.motor)
+    motor = 50
     #max~min 40~-40 130~50
     rudder = int(data.rudder*57.3)+90
     #max~min 90-0 77~50
