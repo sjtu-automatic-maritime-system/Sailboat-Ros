@@ -50,7 +50,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
         FILES
-        #  Mach_msg.msg
+
         station_keeping_out.msg
         fleet_race_out.msg
         scanning_out.msg
@@ -70,10 +70,6 @@ add_message_files(
         Sailboat_Simulation_msg.msg
         Target_msg.msg
 
-
-
-        #   Message1.msg
-        #   Message2.msg
 )
 
 ## Generate added messages and services with any dependencies listed here

@@ -28,7 +28,7 @@
 
 static race_courseModelClass race_course_Obj;// Instance of model class
 int pcCtrl = 0;
-ros::Publisher fleet_race_para_pub;
+
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
 // is what makes the generated code "real-time".  The function rt_OneStep is
@@ -112,34 +112,6 @@ void FleetraceCfgcallback(fleet_race::fleet_race_Config &config, uint32_t level)
     race_course_Obj.race_course_P.race_points[6] = config.point2_y;
     race_course_Obj.race_course_P.race_points[7] = config.point3_y;
 
-    sailboat_message::fleet_race_para msg;
-
-    msg.Kp = config.Kp;
-    msg.Ki = config.Ki;
-    msg.Kd = config.Kd;
-    msg.R_reach = config.R_reach;
-    msg.R_reach_big = config.R_reach_big;
-    msg.extra_leg_len = config.extra_leg_len;
-
-    msg.max_loose_time = config.max_loose_time;
-    msg.max_roll_allowed = config.max_roll_allowed;
-    msg.pos_history_len = config.pos_history_len;
-    msg.run_period = config.run_period;
-    msg.ship_speed_history_len = config.ship_speed_history_len;
-    msg.upwind_leg = config.upwind_leg;
-    msg.wind_mean_time = config.wind_mean_time;
-
-    msg.point0_x = config.point0_x;
-    msg.point1_x = config.point1_x;
-    msg.point2_x = config.point2_x;
-    msg.point3_x = config.point3_x;
-    msg.point0_y = config.point0_y;
-    msg.point1_y = config.point1_y;
-    msg.point2_y = config.point2_y;
-    msg.point3_y = config.point3_y;
-
-    fleet_race_para_pub.publish(msg);
-
 }
 
 void getOutMachPut(sailboat_message::Mach_msg &msg) {
@@ -167,6 +139,32 @@ void getOutput(sailboat_message::fleet_race_out &msg) {
     msg.wind_angle_ground = race_course_Obj.race_course_Y.wind_angle_ground;
 }
 
+void getOutParaPut(sailboat_message::fleet_race_para &msg)
+{
+    msg.Kp           = race_course_Obj.race_course_P.Kp;
+    msg.Ki           = race_course_Obj.race_course_P.Ki;
+    msg.Kd           = race_course_Obj.race_course_P.Kd;
+    msg.R_reach      = race_course_Obj.race_course_P.R_reach;
+    msg.R_reach_big  = race_course_Obj.race_course_P.R_reach_big;
+    msg.extra_leg_len= race_course_Obj.race_course_P.extra_leg_len;
+
+    msg.max_loose_time        = race_course_Obj.race_course_P.max_loose_time;
+    msg.max_roll_allowed      = race_course_Obj.race_course_P.max_roll_allowed;
+    msg.pos_history_len       = race_course_Obj.race_course_P.pos_history_len;
+    msg.run_period            = race_course_Obj.race_course_P.run_period;
+    msg.ship_speed_history_len= race_course_Obj.race_course_P.ship_speed_history_len;
+    msg.upwind_leg            = race_course_Obj.race_course_P.upwind_leg;
+    msg.wind_mean_time        = race_course_Obj.race_course_P.wind_mean_time;
+
+    msg.point0_x = race_course_Obj.race_course_P.race_points[0];
+    msg.point1_x = race_course_Obj.race_course_P.race_points[1];
+    msg.point2_x = race_course_Obj.race_course_P.race_points[2];
+    msg.point3_x = race_course_Obj.race_course_P.race_points[3];
+    msg.point0_y = race_course_Obj.race_course_P.race_points[4];
+    msg.point1_y = race_course_Obj.race_course_P.race_points[5];
+    msg.point2_y = race_course_Obj.race_course_P.race_points[6];
+    msg.point3_y = race_course_Obj.race_course_P.race_points[7];
+}
 //
 // The example "main" function illustrates what is required by your
 // application code to initialize, execute, and terminate the generated code.
@@ -191,10 +189,12 @@ int_T main(int_T argc, char **argv) {
     ros::NodeHandle nh;
     ros::Subscriber sub;
     ros::Publisher fleet_race_pub;
+    ros::Publisher fleet_race_para_pub;
 
     ros::Publisher mach_pub;
     fleet_race_pub = nh.advertise<sailboat_message::fleet_race_out>("fleet_race_out", 2);
     fleet_race_para_pub = nh.advertise<sailboat_message::fleet_race_para>("fleet_race_para", 2);
+
     mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
     dynamic_reconfigure::Server<fleet_race::fleet_race_Config> server;
@@ -211,9 +211,14 @@ int_T main(int_T argc, char **argv) {
         rt_OneStep();
         sailboat_message::fleet_race_out msg;
         sailboat_message::Mach_msg msgMach;
+        sailboat_message::fleet_race_para msgPara;
+
         getOutMachPut(msgMach);
         getOutput(msg);
+        getOutParaPut(msgPara);
+
         fleet_race_pub.publish(msg);
+        fleet_race_para_pub.publish(msgPara);
         mach_pub.publish(msgMach);
 
         loop_rate.sleep();

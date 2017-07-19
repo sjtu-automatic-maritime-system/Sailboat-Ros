@@ -115,30 +115,6 @@ void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     scanning_Obj.scanning_P.scanning_points[5] = config.point1_y;
     scanning_Obj.scanning_P.scanning_points[6] = config.point2_y;
     scanning_Obj.scanning_P.scanning_points[7] = config.point3_y;
-
-    sailboat_message::scanning_para msg;
-
-    msg.Kp = config.Kp;
-    msg.Ki = config.Ki;
-    msg.Kd = config.Kd;
-    msg.R = config.R;
-    msg.max_loose_time = config.max_loose_time;
-    msg.max_roll_allowed = config.max_roll_allowed;
-    msg.pos_history_len = config.pos_history_len;
-    msg.run_period = config.run_period;
-    msg.ship_speed_history_len = config.ship_speed_history_len;
-    msg.tacking_force_discount = config.tacking_force_discount;
-    msg.wind_mean_time = config.wind_mean_time;
-
-    msg.point0_x = config.point0_x;
-    msg.point1_x = config.point1_x;
-    msg.point2_x = config.point2_x;
-    msg.point3_x = config.point3_x;
-    msg.point0_y = config.point0_y;
-    msg.point1_y = config.point1_y;
-    msg.point2_y = config.point2_y;
-    msg.point3_y = config.point3_y;
-    scanning_para_pub.publish(msg);
 }
 
 
@@ -152,7 +128,6 @@ void getOutMachPut(sailboat_message::Mach_msg& msg){
     msg.motor = 0;
     msg.rudder = scanning_Obj.scanning_Y.rudder;
     msg.sail = scanning_Obj.scanning_Y.sail;
-
     msg.PCCtrl = pcCtrl;
 
 }
@@ -171,6 +146,31 @@ void getOutput(sailboat_message::scanning_out& msg){
     msg.wind_angle_ground = scanning_Obj.scanning_Y.wind_angle_ground;
     msg.drive_force = scanning_Obj.scanning_Y.drive_force;
     msg.sail_ground_d = scanning_Obj.scanning_Y.sail_ground_d;
+
+}
+
+void getOutParaPut(sailboat_message::scanning_para &msg){
+
+    msg.Kp = scanning_Obj.scanning_P.Kp;
+    msg.Ki = scanning_Obj.scanning_P.Ki;
+    msg.Kd = scanning_Obj.scanning_P.Kd;
+    msg.R = scanning_Obj.scanning_P.R;
+    msg.max_loose_time = scanning_Obj.scanning_P.max_loose_time;
+    msg.max_roll_allowed = scanning_Obj.scanning_P.max_roll_allowed;
+    msg.pos_history_len = scanning_Obj.scanning_P.pos_history_len;
+    msg.run_period = scanning_Obj.scanning_P.run_period;
+    msg.ship_speed_history_len = scanning_Obj.scanning_P.ship_speed_history_len;
+    msg.tacking_force_discount = scanning_Obj.scanning_P.tacking_force_discount;
+    msg.wind_mean_time = scanning_Obj.scanning_P.wind_mean_time;
+
+    msg.point0_x = scanning_Obj.scanning_P.scanning_points[0];
+    msg.point1_x = scanning_Obj.scanning_P.scanning_points[1];
+    msg.point2_x = scanning_Obj.scanning_P.scanning_points[2];
+    msg.point3_x = scanning_Obj.scanning_P.scanning_points[3];
+    msg.point0_y = scanning_Obj.scanning_P.scanning_points[4];
+    msg.point1_y = scanning_Obj.scanning_P.scanning_points[5];
+    msg.point2_y = scanning_Obj.scanning_P.scanning_points[6];
+    msg.point3_y = scanning_Obj.scanning_P.scanning_points[7];
 }
 
 //
@@ -225,9 +225,14 @@ int_T main(int_T argc, char **argv) {
         rt_OneStep();
         sailboat_message::scanning_out msg;
         sailboat_message::Mach_msg msgMach;
+        sailboat_message::scanning_para msgPara;
+
         getOutMachPut(msgMach);
         getOutput(msg);
+        getOutParaPut(msgPara);
+
         scanning_pub.publish(msg);
+        scanning_para_pub.publish(msgPara);
         mach_pub.publish(msgMach);
 
         loop_rate.sleep();

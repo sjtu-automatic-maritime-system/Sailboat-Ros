@@ -32,7 +32,7 @@
 int pcCtrl = 0;
 
 static station_keepingModelClass station_keeping_Obj;// Instance of model class
-ros::Publisher station_keeping_para_pub;
+
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
 // is what makes the generated code "real-time".  The function rt_OneStep is
@@ -108,20 +108,7 @@ void ScanningCfgcallback(station_keeping::station_keeping_Config &config, uint32
     station_keeping_Obj.station_keeping_P.point_keeping[0] = config.point_keeping_x;
     station_keeping_Obj.station_keeping_P.point_keeping[1] = config.point_keeping_y;
 
-    sailboat_message::station_keeping_para msg;
-    msg.Kp = config.Kp;
-    msg.Ki = config.Ki;
-    msg.Kd = config.Kd;
-    msg.max_loose_time = config.max_loose_time;
-    msg.max_roll_allowed = config.max_roll_allowed;
-    msg.pos_history_len = config.pos_history_len;
-    msg.run_period = config.run_period;
-    msg.ship_speed_history_len = config.ship_speed_history_len;
-    msg.tacking_force_discount = config.tacking_force_discount;
-    msg.wind_mean_time = config.wind_mean_time;
-    msg.point_keeping_x = config.point_keeping_x;
-    msg.point_keeping_y = config.point_keeping_y;
-    station_keeping_para_pub.publish(msg);
+
 }
 
 
@@ -154,6 +141,23 @@ void getOutput(sailboat_message::station_keeping_out& msg){
 
 }
 
+void getOutParaPut(sailboat_message::station_keeping_para &msg)
+{
+    msg.Kp = station_keeping_Obj.station_keeping_P.Kp;
+    msg.Ki = station_keeping_Obj.station_keeping_P.Ki;
+    msg.Kd = station_keeping_Obj.station_keeping_P.Kd;
+
+    msg.max_loose_time =   station_keeping_Obj.station_keeping_P.max_loose_time;
+    msg.max_roll_allowed = station_keeping_Obj.station_keeping_P.max_roll_allowed;
+    msg.pos_history_len =  station_keeping_Obj.station_keeping_P.pos_history_len;
+    msg.run_period =       station_keeping_Obj.station_keeping_P.run_period;
+    msg.ship_speed_history_len = station_keeping_Obj.station_keeping_P.ship_speed_history_len;
+    msg.tacking_force_discount = station_keeping_Obj.station_keeping_P.tacking_force_discount;
+    msg.wind_mean_time =         station_keeping_Obj.station_keeping_P.wind_mean_time;
+
+    msg.point_keeping_x = station_keeping_Obj.station_keeping_P.point_keeping[0];
+    msg.point_keeping_y = station_keeping_Obj.station_keeping_P.point_keeping[1];
+}
 //
 // The example "main" function illustrates what is required by your
 // application code to initialize, execute, and terminate the generated code.
@@ -177,7 +181,7 @@ int_T main(int_T argc, char **argv) {
     ros::NodeHandle nh;
     ros::Subscriber sub;
     ros::Publisher station_keeping_pub;
-
+    ros::Publisher station_keeping_para_pub;
     ros::Publisher mach_pub;
 
     station_keeping_pub = nh.advertise<sailboat_message::station_keeping_out>("station_keeping_out", 2);
@@ -207,10 +211,15 @@ int_T main(int_T argc, char **argv) {
         rt_OneStep();
         sailboat_message::station_keeping_out msg;
         sailboat_message::Mach_msg msgMach;
+        sailboat_message::station_keeping_para msgPara;
+
+        getOutParaPut(msgPara);
         getOutMachPut(msgMach);
         getOutput(msg);
+
         station_keeping_pub.publish(msg);
         mach_pub.publish(msgMach);
+        station_keeping_para_pub.publish(msgPara);
 
         loop_rate.sleep();
     }
