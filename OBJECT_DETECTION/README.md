@@ -30,6 +30,9 @@ roslaunch pointgrey_camera_driver camera.launch
 
 # Calibration
 http://wiki.ros.org/camera_calibration
+## do calibration
+```
 rosrun camera_calibration cameracalibrator.py --size 6x4 --square 0.041 image:=/camera/image_raw camera:=/camera
-
-# 
+```
+## already have calibration
+ copy file `camera_info` to `~/.ros`
