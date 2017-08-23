@@ -14,8 +14,8 @@
 //
 #include <stddef.h>
 #include <stdio.h>                     // This ert_main.c example uses printf/fflush
-#include "station_keeping/station_keeping.h"
-#include "station_keeping.h"           // Model's header file
+#include "station_keeping/keeping.h"
+#include "keeping.h"           // Model's header file
 #include "rtwtypes.h"
 
 #include "ros/ros.h"
@@ -31,11 +31,11 @@
 
 int pcCtrl = 0;
 
-static station_keepingModelClass station_keeping_Obj;// Instance of model class
+static keepingModelClass station_keeping_Obj;// Instance of model class
 
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
-// is what makes the generated code "real-time".  The function rt_OneStep is
+// is what makes the generated code "real-time".  The function rt_OneStep i
 // always associated with the base rate of the model.  Subrates are managed
 // by the base rate from inside the generated code.  Enabling/disabling
 // interrupts and floating point context switches are target specific.  This
@@ -78,14 +78,14 @@ void rt_OneStep(void)
 
 
 void getInput(const sailboat_message::Sensor_msg::ConstPtr msg) {
-    station_keeping_Obj.station_keeping_U.North = msg->Posx;
-    station_keeping_Obj.station_keeping_U.East = msg->Posy;
-    station_keeping_Obj.station_keeping_U.ahrs_Roll = msg->Roll;
-    station_keeping_Obj.station_keeping_U.ahrs_Yaw = msg->Yaw;
-    station_keeping_Obj.station_keeping_U.ahrs_Roll_rate = msg->gx;
-    station_keeping_Obj.station_keeping_U.ahrs_Yaw_rate = msg->gz;
-    station_keeping_Obj.station_keeping_U.Airmar_wind_angle = msg->AWA;
-    station_keeping_Obj.station_keeping_U.Airmar_wind_speed = msg->AWS;
+    station_keeping_Obj.keeping_U.north = msg->Posx;
+    station_keeping_Obj.keeping_U.east = msg->Posy;
+    station_keeping_Obj.keeping_U.roll = msg->Roll;
+    station_keeping_Obj.keeping_U.yaw = msg->Yaw;
+    station_keeping_Obj.keeping_U.roll_rate = msg->gx;
+    station_keeping_Obj.keeping_U.yaw_rate = msg->gz;
+    station_keeping_Obj.keeping_U.Airmar_wind_angle = msg->AWA;
+    station_keeping_Obj.keeping_U.Airmar_wind_speed = msg->AWS;
 }
 
 void ScanningCfgcallback(station_keeping::station_keeping_Config &config, uint32_t level) {
@@ -94,19 +94,22 @@ void ScanningCfgcallback(station_keeping::station_keeping_Config &config, uint32
         pcCtrl = 1;
     else
         pcCtrl = 0;
-    station_keeping_Obj.station_keeping_P.Kp = config.Kp;
-    station_keeping_Obj.station_keeping_P.Ki = config.Ki;
-    station_keeping_Obj.station_keeping_P.Kd = config.Kd;
-    station_keeping_Obj.station_keeping_P.max_loose_time = config.max_loose_time;
-    station_keeping_Obj.station_keeping_P.max_roll_allowed = config.max_roll_allowed;
-    station_keeping_Obj.station_keeping_P.pos_history_len = config.pos_history_len;
-    station_keeping_Obj.station_keeping_P.run_period = config.run_period;
-    station_keeping_Obj.station_keeping_P.ship_speed_history_len = config.ship_speed_history_len;
-    station_keeping_Obj.station_keeping_P.tacking_force_discount = config.tacking_force_discount;
-    station_keeping_Obj.station_keeping_P.wind_mean_time = config.wind_mean_time;
+    station_keeping_Obj.keeping_P.Kp = config.Kp;
+    station_keeping_Obj.keeping_P.Ki = config.Ki;
+    station_keeping_Obj.keeping_P.Kd = config.Kd;
+    station_keeping_Obj.keeping_P.max_loose_time = config.max_loose_time;
+    station_keeping_Obj.keeping_P.max_roll_allowed = config.max_roll_allowed;
+    station_keeping_Obj.keeping_P.pos_history_len = config.pos_history_len;
+    station_keeping_Obj.keeping_P.run_period = config.run_period;
+    station_keeping_Obj.keeping_P.ship_speed_history_len = config.ship_speed_history_len;
+    station_keeping_Obj.keeping_P.tacking_force_discount = config.tacking_force_discount;
+    station_keeping_Obj.keeping_P.wind_mean_time = config.wind_mean_time;
 
-    station_keeping_Obj.station_keeping_P.point_keeping[0] = config.point_keeping_x;
-    station_keeping_Obj.station_keeping_P.point_keeping[1] = config.point_keeping_y;
+    station_keeping_Obj.keeping_P.jibing_time  = config.jibing_time  ;
+    station_keeping_Obj.keeping_P.tacking_time = config.tacking_time ;
+
+    station_keeping_Obj.keeping_P.point_keeping[0] = config.point_keeping_x;
+    station_keeping_Obj.keeping_P.point_keeping[1] = config.point_keeping_y;
 
 
 }
@@ -121,8 +124,8 @@ void getOutMachPut(sailboat_message::Mach_msg& msg){
 
     msg.timestamp = ros::Time::now().toSec();
     msg.motor = 0;
-    msg.rudder = station_keeping_Obj.station_keeping_Y.rudder;
-    msg.sail = station_keeping_Obj.station_keeping_Y.sail;
+    msg.rudder = station_keeping_Obj.keeping_Y.rudder;
+    msg.sail = station_keeping_Obj.keeping_Y.sail;
 
     msg.PCCtrl = pcCtrl;
 
@@ -130,33 +133,37 @@ void getOutMachPut(sailboat_message::Mach_msg& msg){
 
 void getOutput(sailboat_message::station_keeping_out& msg){
 
+    msg.header.stamp = ros::Time::now();
     msg.header.frame_id = "base_link";
-    msg.sail = station_keeping_Obj.station_keeping_Y.sail;
-    msg.rudder = station_keeping_Obj.station_keeping_Y.rudder;
-    msg.los_heading = station_keeping_Obj.station_keeping_Y.los_heading;
-    msg.speed_angle = station_keeping_Obj.station_keeping_Y.speed_angle;
-    msg.speed_angle_d = station_keeping_Obj.station_keeping_Y.speed_angle_d;
-    msg.wind_speed = station_keeping_Obj.station_keeping_Y.wind_speed;
-    msg.wind_angle_ground = station_keeping_Obj.station_keeping_Y.wind_angle_ground;
+    msg.sail = station_keeping_Obj.keeping_Y.sail;
+    msg.rudder = station_keeping_Obj.keeping_Y.rudder;
+    msg.los_heading = station_keeping_Obj.keeping_Y.los_heading;
+    msg.speed_angle = station_keeping_Obj.keeping_Y.speed_angle;
+    msg.speed_angle_d = station_keeping_Obj.keeping_Y.speed_angle_d;
+    msg.wind_speed = station_keeping_Obj.keeping_Y.wind_speed;
+    msg.wind_angle_ground = station_keeping_Obj.keeping_Y.wind_angle_ground;
 
 }
 
 void getOutParaPut(sailboat_message::station_keeping_para &msg)
 {
-    msg.Kp = station_keeping_Obj.station_keeping_P.Kp;
-    msg.Ki = station_keeping_Obj.station_keeping_P.Ki;
-    msg.Kd = station_keeping_Obj.station_keeping_P.Kd;
+    msg.Kp = station_keeping_Obj.keeping_P.Kp;
+    msg.Ki = station_keeping_Obj.keeping_P.Ki;
+    msg.Kd = station_keeping_Obj.keeping_P.Kd;
 
-    msg.max_loose_time =   station_keeping_Obj.station_keeping_P.max_loose_time;
-    msg.max_roll_allowed = station_keeping_Obj.station_keeping_P.max_roll_allowed;
-    msg.pos_history_len =  station_keeping_Obj.station_keeping_P.pos_history_len;
-    msg.run_period =       station_keeping_Obj.station_keeping_P.run_period;
-    msg.ship_speed_history_len = station_keeping_Obj.station_keeping_P.ship_speed_history_len;
-    msg.tacking_force_discount = station_keeping_Obj.station_keeping_P.tacking_force_discount;
-    msg.wind_mean_time =         station_keeping_Obj.station_keeping_P.wind_mean_time;
+    msg.max_loose_time =   station_keeping_Obj.keeping_P.max_loose_time;
+    msg.max_roll_allowed = station_keeping_Obj.keeping_P.max_roll_allowed;
+    msg.pos_history_len =  station_keeping_Obj.keeping_P.pos_history_len;
+    msg.run_period =       station_keeping_Obj.keeping_P.run_period;
+    msg.ship_speed_history_len = station_keeping_Obj.keeping_P.ship_speed_history_len;
+    msg.tacking_force_discount = station_keeping_Obj.keeping_P.tacking_force_discount;
+    msg.wind_mean_time =         station_keeping_Obj.keeping_P.wind_mean_time;
 
-    msg.point_keeping_x = station_keeping_Obj.station_keeping_P.point_keeping[0];
-    msg.point_keeping_y = station_keeping_Obj.station_keeping_P.point_keeping[1];
+    msg.jibing_time  = station_keeping_Obj.keeping_P.jibing_time  ;
+    msg.tacking_time = station_keeping_Obj.keeping_P.tacking_time ;
+
+    msg.point_keeping_x = station_keeping_Obj.keeping_P.point_keeping[0];
+    msg.point_keeping_y = station_keeping_Obj.keeping_P.point_keeping[1];
 }
 //
 // The example "main" function illustrates what is required by your

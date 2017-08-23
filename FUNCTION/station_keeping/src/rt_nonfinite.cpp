@@ -1,11 +1,11 @@
 //
 // File: rt_nonfinite.cpp
 //
-// Code generated for Simulink model 'station_keeping'.
+// Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.261
+// Model version                  : 1.182
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 15:10:39 2017
+// C/C++ source code generated on : Wed Aug 23 15:56:21 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic

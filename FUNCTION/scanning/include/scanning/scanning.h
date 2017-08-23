@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.271
+// Model version                  : 1.277
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 11:19:00 2017
+// C/C++ source code generated on : Wed Aug 23 14:22:40 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -14,7 +14,6 @@
 //
 #ifndef RTW_HEADER_scanning_h_
 #define RTW_HEADER_scanning_h_
-#include <cmath>
 #include <math.h>
 #include <string.h>
 #include <stddef.h>
@@ -40,10 +39,10 @@
 
 // Block signals (auto storage)
 typedef struct {
-  real_T real_wind_history[6000];      // '<Root>/MATLAB Function6'
+  real_T real_wind_history[6000];      // '<Root>/MATLAB Function7'
   real_T price_fixSail[1140];
   real_T Dis[1000];
-  real_T ship_speed_history[800];      // '<Root>/MATLAB Function7'
+  real_T ship_speed_history[800];      // '<Root>/MATLAB Function8'
   real_T price[760];
 } B_scanning_T;
 
@@ -52,43 +51,45 @@ typedef struct {
   real_T UnitDelay15_DSTATE[300];      // '<Root>/Unit Delay15'
   real_T UnitDelay14_DSTATE[800];      // '<Root>/Unit Delay14'
   real_T UnitDelay_DSTATE;             // '<Root>/Unit Delay'
-  real_T UnitDelay4_DSTATE;            // '<Root>/Unit Delay4'
-  real_T UnitDelay2_DSTATE;            // '<Root>/Unit Delay2'
+  real_T UnitDelay5_DSTATE;            // '<Root>/Unit Delay5'
   real_T UnitDelay3_DSTATE;            // '<Root>/Unit Delay3'
+  real_T UnitDelay4_DSTATE;            // '<Root>/Unit Delay4'
   real_T UnitDelay1_DSTATE;            // '<Root>/Unit Delay1'
   real_T UnitDelay13_DSTATE[6000];     // '<Root>/Unit Delay13'
-  real_T UnitDelay7_DSTATE;            // '<Root>/Unit Delay7'
   real_T UnitDelay8_DSTATE;            // '<Root>/Unit Delay8'
   real_T UnitDelay9_DSTATE;            // '<Root>/Unit Delay9'
-  real_T UnitDelay11_DSTATE;           // '<Root>/Unit Delay11'
+  real_T UnitDelay16_DSTATE;           // '<Root>/Unit Delay16'
+  real_T UnitDelay10_DSTATE;           // '<Root>/Unit Delay10'
+  real_T UnitDelay2_DSTATE;            // '<Root>/Unit Delay2'
+  real_T UnitDelay7_DSTATE;            // '<Root>/Unit Delay7'
   real_T UnitDelay6_DSTATE;            // '<Root>/Unit Delay6'
-  real_T UnitDelay5_DSTATE;            // '<Root>/Unit Delay5'
 } DW_scanning_T;
 
 // External inputs (root inport signals with auto storage)
 typedef struct {
   real_T North;                        // '<Root>/North'
   real_T East;                         // '<Root>/East'
-  real_T ahrs_Yaw;                     // '<Root>/ahrs_Yaw'
-  real_T ahrs_Roll;                    // '<Root>/ahrs_Roll'
-  real_T ahrs_Roll_rate;               // '<Root>/ahrs_Roll_rate'
-  real_T ahrs_Yaw_rate;                // '<Root>/ahrs_Yaw_rate'
+  real_T Yaw;                          // '<Root>/Yaw'
+  real_T Roll;                         // '<Root>/Roll'
+  real_T Yaw_rate;                     // '<Root>/Yaw_rate'
+  real_T Roll_rate;                    // '<Root>/Roll_rate'
   real_T Airmar_wind_angle;            // '<Root>/Airmar_wind_angle'
   real_T Airmar_wind_speed;            // '<Root>/Airmar_wind_speed'
 } ExtU_scanning_T;
 
 // External outputs (root outports fed by signals with auto storage)
 typedef struct {
-  real_T rudder;                       // '<Root>/rudder'
-  real_T sail;                         // '<Root>/sail'
-  real_T wind_angle_ground;            // '<Root>/wind_angle_ground'
-  real_T wind_speed;                   // '<Root>/wind_speed'
   real_T speed_angle;                  // '<Root>/speed_angle'
-  real_T leg;                          // '<Root>/leg'
   real_T los_heading;                  // '<Root>/los_heading'
-  real_T speed_angle_d;                // '<Root>/speed_angle_d'
   real_T sail_ground_d;                // '<Root>/sail_ground_d'
   real_T drive_force;                  // '<Root>/drive_force'
+  real_T wind_speed;                   // '<Root>/wind_speed'
+  real_T speed_angle_d;                // '<Root>/speed_angle_d'
+  real_T leg;                          // '<Root>/leg'
+  real_T HorizontalSpeed;              // '<Root>/Horizontal Speed'
+  real_T wind_angle_mean;              // '<Root>/wind_angle_mean'
+  real_T rudder;                       // '<Root>/rudder'
+  real_T sail;                         // '<Root>/sail'
 } ExtY_scanning_T;
 
 // Parameters (auto storage)
@@ -105,14 +106,20 @@ struct P_scanning_T_ {
   real_T R;                            // Variable: R
                                        //  Referenced by: '<Root>/MATLAB Function3'
 
+  real_T jibing_time;                  // Variable: jibing_time
+                                       //  Referenced by: '<Root>/MATLAB Function4'
+
   real_T max_loose_time;               // Variable: max_loose_time
-                                       //  Referenced by: '<Root>/MATLAB Function5'
+                                       //  Referenced by: '<Root>/MATLAB Function6'
 
   real_T max_roll_allowed;             // Variable: max_roll_allowed
-                                       //  Referenced by: '<Root>/MATLAB Function5'
+                                       //  Referenced by: '<Root>/MATLAB Function6'
+
+  real_T points_up_move;               // Variable: points_up_move
+                                       //  Referenced by: '<Root>/MATLAB Function'
 
   real_T pos_history_len;              // Variable: pos_history_len
-                                       //  Referenced by: '<Root>/MATLAB Function7'
+                                       //  Referenced by: '<Root>/MATLAB Function8'
 
   real_T run_period;                   // Variable: run_period
                                        //  Referenced by: '<Root>/MATLAB Function2'
@@ -121,13 +128,76 @@ struct P_scanning_T_ {
                                        //  Referenced by: '<Root>/MATLAB Function'
 
   real_T ship_speed_history_len;       // Variable: ship_speed_history_len
-                                       //  Referenced by: '<Root>/MATLAB Function7'
+                                       //  Referenced by: '<Root>/MATLAB Function8'
+
+  real_T start_counting;               // Variable: start_counting
+                                       //  Referenced by: '<Root>/MATLAB Function'
+
+  real_T tacking_discount_decrease_windspeed;// Variable: tacking_discount_decrease_windspeed
+                                             //  Referenced by: '<Root>/MATLAB Function1'
 
   real_T tacking_force_discount;       // Variable: tacking_force_discount
                                        //  Referenced by: '<Root>/MATLAB Function1'
 
+  real_T tacking_time;                 // Variable: tacking_time
+                                       //  Referenced by: '<Root>/MATLAB Function4'
+
+  real_T upwind_R_expand_ratio;        // Variable: upwind_R_expand_ratio
+                                       //  Referenced by: '<Root>/MATLAB Function3'
+
   real_T wind_mean_time;               // Variable: wind_mean_time
-                                       //  Referenced by: '<Root>/MATLAB Function6'
+                                       //  Referenced by: '<Root>/MATLAB Function7'
+
+  real_T Airmar_X_Value;               // Expression: -0.61
+                                       //  Referenced by: '<Root>/Airmar_X'
+
+  real_T Airmar_Z_Value;               // Expression: 0.8
+                                       //  Referenced by: '<Root>/Airmar_Z'
+
+  real_T UnitDelay15_InitialCondition[300];// Expression: zeros(100,3)
+                                           //  Referenced by: '<Root>/Unit Delay15'
+
+  real_T UnitDelay14_InitialCondition[800];// Expression: zeros(400,2)
+                                           //  Referenced by: '<Root>/Unit Delay14'
+
+  real_T UnitDelay_InitialCondition;   // Expression: 1
+                                       //  Referenced by: '<Root>/Unit Delay'
+
+  real_T UnitDelay5_InitialCondition;  // Expression: 1
+                                       //  Referenced by: '<Root>/Unit Delay5'
+
+  real_T UnitDelay3_InitialCondition;  // Expression: 0
+                                       //  Referenced by: '<Root>/Unit Delay3'
+
+  real_T UnitDelay4_InitialCondition;  // Expression: 0
+                                       //  Referenced by: '<Root>/Unit Delay4'
+
+  real_T UnitDelay1_InitialCondition;  // Expression: 0.1
+                                       //  Referenced by: '<Root>/Unit Delay1'
+
+  real_T UnitDelay13_InitialCondition[6000];// Expression: zeros(2000,3)
+                                            //  Referenced by: '<Root>/Unit Delay13'
+
+  real_T UnitDelay8_InitialCondition;  // Expression: 0
+                                       //  Referenced by: '<Root>/Unit Delay8'
+
+  real_T UnitDelay9_InitialCondition;  // Expression: pi/2
+                                       //  Referenced by: '<Root>/Unit Delay9'
+
+  real_T UnitDelay16_InitialCondition; // Expression: 1
+                                       //  Referenced by: '<Root>/Unit Delay16'
+
+  real_T UnitDelay10_InitialCondition; // Expression: 1
+                                       //  Referenced by: '<Root>/Unit Delay10'
+
+  real_T UnitDelay2_InitialCondition;  // Expression: -1
+                                       //  Referenced by: '<Root>/Unit Delay2'
+
+  real_T UnitDelay7_InitialCondition;  // Expression: pi/2
+                                       //  Referenced by: '<Root>/Unit Delay7'
+
+  real_T UnitDelay6_InitialCondition;  // Expression: 0
+                                       //  Referenced by: '<Root>/Unit Delay6'
 
 };
 
@@ -153,6 +223,12 @@ class scanningModelClass {
  public:
   // Tunable parameters
   P_scanning_T scanning_P;
+
+  // Block signals
+  B_scanning_T scanning_B;
+
+  // Block states
+  DW_scanning_T scanning_DW;
 
   // External inputs
   ExtU_scanning_T scanning_U;
@@ -182,12 +258,6 @@ class scanningModelClass {
 
   // private data and function members
  private:
-  // Block signals
-  B_scanning_T scanning_B;
-
-  // Block states
-  DW_scanning_T scanning_DW;
-
   // Real-Time Model
   RT_MODEL_scanning_T scanning_M;
 
@@ -195,18 +265,18 @@ class scanningModelClass {
   real_T scanning_GetAngle(real_T x, real_T y);
   real_T scanning_AngleDiff(real_T angle1, real_T angle2);
   real_T scanning_GetAngle_n(real_T x, real_T y);
-  real_T scanning_AngleDiff_b(real_T angle1, real_T angle2);
-  real_T scanning_AngleDiff_f(real_T angle1, real_T angle2);
-  real_T scanning_AngleDiff_p(real_T angle1, real_T angle2);
+  real_T scanning_AngleDiff_lg(real_T angle1, real_T angle2);
+  real_T scanning_AngleDiff_l(real_T angle1, real_T angle2);
+  real_T scanning_AngleDiff_g(real_T angle1, real_T angle2);
   real_T scanning_SailDeadZone(real_T sail_check, const real_T dead_sail_data[],
     const int32_T dead_sail_sizes[2]);
   real_T scanning_ppval(const real_T pp_breaks[59], const real_T pp_coefs[232],
                         real_T x);
   real_T scanning_interp1(real_T varargin_3);
-  real_T scanning_interp1_n(real_T varargin_3);
-  real_T scanning_interp1_nz(real_T varargin_3);
+  real_T scanning_interp1_l(real_T varargin_3);
+  real_T scanning_interp1_ls(real_T varargin_3);
   real_T scanning_interiorSlope(real_T d1, real_T d2, real_T w1, real_T w2);
-  real_T scanning_interp1_nz3(const real_T varargin_2[5], real_T varargin_3);
+  real_T scanning_interp1_lsv(const real_T varargin_2[5], real_T varargin_3);
   void scanning_getSailForce_ground(real_T WindAngle_ground, real_T
     SailAngle_ground, real_T WindSpeed, real_T *SailForce, real_T
     *SailForceAngle_ground, real_T *Attack_angle);
@@ -234,10 +304,10 @@ class scanningModelClass {
 //  '<S3>'   : 'scanning/MATLAB Function2'
 //  '<S4>'   : 'scanning/MATLAB Function3'
 //  '<S5>'   : 'scanning/MATLAB Function4'
-//  '<S6>'   : 'scanning/MATLAB Function5'
-//  '<S7>'   : 'scanning/MATLAB Function6'
-//  '<S8>'   : 'scanning/MATLAB Function7'
-//  '<S9>'   : 'scanning/MATLAB Function8'
+//  '<S6>'   : 'scanning/MATLAB Function6'
+//  '<S7>'   : 'scanning/MATLAB Function7'
+//  '<S8>'   : 'scanning/MATLAB Function8'
+//  '<S9>'   : 'scanning/MATLAB Function9'
 
 #endif                                 // RTW_HEADER_scanning_h_
 

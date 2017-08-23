@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.271
+// Model version                  : 1.277
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 11:19:00 2017
+// C/C++ source code generated on : Wed Aug 23 14:22:40 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -64,13 +64,13 @@ real_T scanningModelClass::scanning_GetAngle(real_T x, real_T y)
   } else if ((y == 0.0) && (x < 0.0)) {
     angle = 3.1415926535897931;
   } else if ((x > 0.0) && (y > 0.0)) {
-    angle = std::atan(y / x);
+    angle = atan(y / x);
   } else if ((x > 0.0) && (y < 0.0)) {
-    angle = std::atan(y / x) + 6.2831853071795862;
+    angle = atan(y / x) + 6.2831853071795862;
   } else if ((x < 0.0) && (y > 0.0)) {
-    angle = std::atan(y / x) + 3.1415926535897931;
+    angle = atan(y / x) + 3.1415926535897931;
   } else if ((x < 0.0) && (y < 0.0)) {
-    angle = std::atan(y / x) + 3.1415926535897931;
+    angle = atan(y / x) + 3.1415926535897931;
   } else {
     angle = 0.0;
   }
@@ -81,13 +81,13 @@ real_T scanningModelClass::scanning_GetAngle(real_T x, real_T y)
 real_T rt_roundd_snf(real_T u)
 {
   real_T y;
-  if (std::abs(u) < 4.503599627370496E+15) {
+  if (fabs(u) < 4.503599627370496E+15) {
     if (u >= 0.5) {
-      y = std::floor(u + 0.5);
+      y = floor(u + 0.5);
     } else if (u > -0.5) {
       y = u * 0.0;
     } else {
-      y = std::ceil(u - 0.5);
+      y = ceil(u - 0.5);
     }
   } else {
     y = u;
@@ -101,32 +101,29 @@ real_T scanningModelClass::scanning_AngleDiff(real_T angle1, real_T angle2)
 {
   real_T d;
   real_T r;
-  if (std::abs(angle2 - angle1) <= 3.1415926535897931) {
+  if (fabs(angle2 - angle1) <= 3.1415926535897931) {
     d = angle2 - angle1;
   } else {
     r = (angle2 - angle1) / 6.2831853071795862;
-    if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-    {
+    if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
       r = 0.0;
     } else {
-      r = (r - std::floor(r)) * 6.2831853071795862;
+      r = (r - floor(r)) * 6.2831853071795862;
     }
 
     if (r <= 3.1415926535897931) {
       d = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * std::abs(d))
-      {
+      if (fabs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * fabs(d)) {
         d = 0.0;
       } else {
-        d = (d - std::floor(d)) * 6.2831853071795862;
+        d = (d - floor(d)) * 6.2831853071795862;
       }
     } else {
       r = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-      {
+      if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
         r = 0.0;
       } else {
-        r = (r - std::floor(r)) * 6.2831853071795862;
+        r = (r - floor(r)) * 6.2831853071795862;
       }
 
       d = r - 6.2831853071795862;
@@ -149,13 +146,13 @@ real_T scanningModelClass::scanning_GetAngle_n(real_T x, real_T y)
   } else if ((y == 0.0) && (x < 0.0)) {
     angle = 3.1415926535897931;
   } else if ((x > 0.0) && (y > 0.0)) {
-    angle = std::atan(y / x);
+    angle = atan(y / x);
   } else if ((x > 0.0) && (y < 0.0)) {
-    angle = std::atan(y / x) + 6.2831853071795862;
+    angle = atan(y / x) + 6.2831853071795862;
   } else if ((x < 0.0) && (y > 0.0)) {
-    angle = std::atan(y / x) + 3.1415926535897931;
+    angle = atan(y / x) + 3.1415926535897931;
   } else if ((x < 0.0) && (y < 0.0)) {
-    angle = std::atan(y / x) + 3.1415926535897931;
+    angle = atan(y / x) + 3.1415926535897931;
   } else {
     angle = 0.0;
   }
@@ -164,36 +161,33 @@ real_T scanningModelClass::scanning_GetAngle_n(real_T x, real_T y)
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function3'
-real_T scanningModelClass::scanning_AngleDiff_b(real_T angle1, real_T angle2)
+real_T scanningModelClass::scanning_AngleDiff_lg(real_T angle1, real_T angle2)
 {
   real_T d;
   real_T r;
-  if (std::abs(angle2 - angle1) <= 3.1415926535897931) {
+  if (fabs(angle2 - angle1) <= 3.1415926535897931) {
     d = angle2 - angle1;
   } else {
     r = (angle2 - angle1) / 6.2831853071795862;
-    if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-    {
+    if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
       r = 0.0;
     } else {
-      r = (r - std::floor(r)) * 6.2831853071795862;
+      r = (r - floor(r)) * 6.2831853071795862;
     }
 
     if (r <= 3.1415926535897931) {
       d = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * std::abs(d))
-      {
+      if (fabs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * fabs(d)) {
         d = 0.0;
       } else {
-        d = (d - std::floor(d)) * 6.2831853071795862;
+        d = (d - floor(d)) * 6.2831853071795862;
       }
     } else {
       r = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-      {
+      if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
         r = 0.0;
       } else {
-        r = (r - std::floor(r)) * 6.2831853071795862;
+        r = (r - floor(r)) * 6.2831853071795862;
       }
 
       d = r - 6.2831853071795862;
@@ -204,36 +198,33 @@ real_T scanningModelClass::scanning_AngleDiff_b(real_T angle1, real_T angle2)
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T scanningModelClass::scanning_AngleDiff_f(real_T angle1, real_T angle2)
+real_T scanningModelClass::scanning_AngleDiff_l(real_T angle1, real_T angle2)
 {
   real_T d;
   real_T r;
-  if (std::abs(angle2 - angle1) <= 3.1415926535897931) {
+  if (fabs(angle2 - angle1) <= 3.1415926535897931) {
     d = angle2 - angle1;
   } else {
     r = (angle2 - angle1) / 6.2831853071795862;
-    if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-    {
+    if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
       r = 0.0;
     } else {
-      r = (r - std::floor(r)) * 6.2831853071795862;
+      r = (r - floor(r)) * 6.2831853071795862;
     }
 
     if (r <= 3.1415926535897931) {
       d = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * std::abs(d))
-      {
+      if (fabs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * fabs(d)) {
         d = 0.0;
       } else {
-        d = (d - std::floor(d)) * 6.2831853071795862;
+        d = (d - floor(d)) * 6.2831853071795862;
       }
     } else {
       r = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-      {
+      if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
         r = 0.0;
       } else {
-        r = (r - std::floor(r)) * 6.2831853071795862;
+        r = (r - floor(r)) * 6.2831853071795862;
       }
 
       d = r - 6.2831853071795862;
@@ -244,36 +235,33 @@ real_T scanningModelClass::scanning_AngleDiff_f(real_T angle1, real_T angle2)
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function2'
-real_T scanningModelClass::scanning_AngleDiff_p(real_T angle1, real_T angle2)
+real_T scanningModelClass::scanning_AngleDiff_g(real_T angle1, real_T angle2)
 {
   real_T d;
   real_T r;
-  if (std::abs(angle2 - angle1) <= 3.1415926535897931) {
+  if (fabs(angle2 - angle1) <= 3.1415926535897931) {
     d = angle2 - angle1;
   } else {
     r = (angle2 - angle1) / 6.2831853071795862;
-    if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-    {
+    if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
       r = 0.0;
     } else {
-      r = (r - std::floor(r)) * 6.2831853071795862;
+      r = (r - floor(r)) * 6.2831853071795862;
     }
 
     if (r <= 3.1415926535897931) {
       d = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * std::abs(d))
-      {
+      if (fabs(d - rt_roundd_snf(d)) <= 2.2204460492503131E-16 * fabs(d)) {
         d = 0.0;
       } else {
-        d = (d - std::floor(d)) * 6.2831853071795862;
+        d = (d - floor(d)) * 6.2831853071795862;
       }
     } else {
       r = (angle2 - angle1) / 6.2831853071795862;
-      if (std::abs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * std::abs(r))
-      {
+      if (fabs(r - rt_roundd_snf(r)) <= 2.2204460492503131E-16 * fabs(r)) {
         r = 0.0;
       } else {
-        r = (r - std::floor(r)) * 6.2831853071795862;
+        r = (r - floor(r)) * 6.2831853071795862;
       }
 
       d = r - 6.2831853071795862;
@@ -420,7 +408,7 @@ real_T scanningModelClass::scanning_interp1(real_T varargin_3)
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T scanningModelClass::scanning_interp1_n(real_T varargin_3)
+real_T scanningModelClass::scanning_interp1_l(real_T varargin_3)
 {
   real_T Vq;
   static real_T b_breaks[59] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
@@ -503,7 +491,7 @@ real_T scanningModelClass::scanning_interp1_n(real_T varargin_3)
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T scanningModelClass::scanning_interp1_nz(real_T varargin_3)
+real_T scanningModelClass::scanning_interp1_ls(real_T varargin_3)
 {
   real_T Vq;
   static real_T b_breaks[59] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
@@ -614,7 +602,7 @@ real_T scanningModelClass::scanning_interiorSlope(real_T d1, real_T d2, real_T
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T scanningModelClass::scanning_interp1_nz3(const real_T varargin_2[5],
+real_T scanningModelClass::scanning_interp1_lsv(const real_T varargin_2[5],
   real_T varargin_3)
 {
   real_T Vq;
@@ -680,8 +668,7 @@ real_T scanningModelClass::scanning_interp1_nz3(const real_T varargin_2[5],
       slopes_idx_4 = del_idx_1;
     }
 
-    if ((signd1 != slopes_idx_4) && (std::abs(xloc) > std::abs(3.0 * del_idx_0)))
-    {
+    if ((signd1 != slopes_idx_4) && (fabs(xloc) > fabs(3.0 * del_idx_0))) {
       xloc = 3.0 * del_idx_0;
     }
   }
@@ -721,8 +708,7 @@ real_T scanningModelClass::scanning_interp1_nz3(const real_T varargin_2[5],
       slopes_idx_4 = del_idx_2;
     }
 
-    if ((signd1 != slopes_idx_4) && (std::abs(xloc) > std::abs(3.0 * del_idx_3)))
-    {
+    if ((signd1 != slopes_idx_4) && (fabs(xloc) > fabs(3.0 * del_idx_3))) {
       xloc = 3.0 * del_idx_3;
     }
   }
@@ -1249,50 +1235,50 @@ void scanningModelClass::scanning_getSailForce_ground(real_T WindAngle_ground,
 
   // 风的来向，翼的指向
   // 都是弧度
-  *Attack_angle = scanning_AngleDiff_f(SailAngle_ground, WindAngle_ground);
+  *Attack_angle = scanning_AngleDiff_l(SailAngle_ground, WindAngle_ground);
   Re = 1.21 * WindSpeed * 0.25 / 1.7899999999999998E-5;
-  SailForce_lift_1 = scanning_interp1(std::abs(*Attack_angle) /
+  SailForce_lift_1 = scanning_interp1(fabs(*Attack_angle) / 3.1415926535897931 *
+    180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
+  SailForce_drag_1 = scanning_interp1_l(fabs(*Attack_angle) / 3.1415926535897931
+    * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
+  SailForce_lift_2 = scanning_interp1_ls(fabs(*Attack_angle) /
     3.1415926535897931 * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
-  SailForce_drag_1 = scanning_interp1_n(std::abs(*Attack_angle) /
-    3.1415926535897931 * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
-  SailForce_lift_2 = scanning_interp1_nz(std::abs(*Attack_angle) /
-    3.1415926535897931 * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     Vq = (rtNaN);
   } else {
     Vq = scanning_ppval(h_breaks, h_coefs, SailForce_drag_16);
   }
 
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     b_Vq = (rtNaN);
   } else {
     b_Vq = scanning_ppval(h_breaks, g_coefs, SailForce_drag_16);
   }
 
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     c_Vq = (rtNaN);
   } else {
     c_Vq = scanning_ppval(h_breaks, f_coefs, SailForce_drag_16);
   }
 
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     d_Vq = (rtNaN);
   } else {
     d_Vq = scanning_ppval(h_breaks, e_coefs, SailForce_drag_16);
   }
 
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     e_Vq = (rtNaN);
   } else {
     e_Vq = scanning_ppval(h_breaks, d_coefs, SailForce_drag_16);
   }
 
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     SailForce_drag_16 = (rtNaN);
   } else {
@@ -1301,7 +1287,7 @@ void scanningModelClass::scanning_getSailForce_ground(real_T WindAngle_ground,
 
   SailForce_lift_16 = SailForce_drag_16 * 0.5 * 1.21 * (WindSpeed * WindSpeed) *
     0.55;
-  SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
+  SailForce_drag_16 = fabs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     SailForce_drag_16 = (rtNaN);
   } else {
@@ -1320,13 +1306,13 @@ void scanningModelClass::scanning_getSailForce_ground(real_T WindAngle_ground,
       SailForce_lift_1_0[2] = b_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_lift_1_0[3] = d_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_lift_1_0[4] = SailForce_lift_16;
-      SailForce_lift_16 = scanning_interp1_nz3(SailForce_lift_1_0, Re);
+      SailForce_lift_16 = scanning_interp1_lsv(SailForce_lift_1_0, Re);
       SailForce_drag_1_0[0] = SailForce_drag_1;
       SailForce_drag_1_0[1] = Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_drag_1_0[2] = c_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_drag_1_0[3] = e_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_drag_1_0[4] = SailForce_drag_16;
-      SailForce_drag_16 = scanning_interp1_nz3(SailForce_drag_1_0, Re);
+      SailForce_drag_16 = scanning_interp1_lsv(SailForce_drag_1_0, Re);
     }
   }
 
@@ -1343,8 +1329,8 @@ void scanningModelClass::scanning_getSailForce_ground(real_T WindAngle_ground,
 
   *SailForceAngle_ground = (WindAngle_ground + 3.1415926535897931) +
     rt_atan2d_snf(SailForce_lift_16, SailForce_drag_16) * Re;
-  *SailForce = std::sqrt(SailForce_lift_16 * SailForce_lift_16 +
-    SailForce_drag_16 * SailForce_drag_16);
+  *SailForce = sqrt(SailForce_lift_16 * SailForce_lift_16 + SailForce_drag_16 *
+                    SailForce_drag_16);
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
@@ -1361,20 +1347,20 @@ real_T scanningModelClass::scanning_HeadingDeadZone(real_T heading_check, real_T
   // degree ;heading_d_last为角度
   memset(&dead_heading[0], 0, 9U * sizeof(real_T));
   dead_num = 2;
-  dead_heading[0] = (WindAngle_ground - 0.57595865315812866) +
+  dead_heading[0] = (WindAngle_ground - 0.78539816339744828) +
     12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 0.57595865315812866) +
+  dead_heading[3] = (WindAngle_ground + 0.78539816339744828) +
     12.566370614359172;
-  dead_heading[6] = 1.1519173063162573;
+  dead_heading[6] = 1.5707963267948966;
   dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
   dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
   dead_heading[7] = 3.1415926535897931;
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 66.0) - 3.0) / 180.0 *
+    dead_heading[2] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 66.0) + 3.0) + 360.0) / 180.0 *
+    dead_heading[5] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 4.0840704496667311;
+    dead_heading[8] = 3.246312408709453;
 
     // %%%%%dead_zone*2???
     dead_num = 3;
@@ -1397,7 +1383,11 @@ real_T scanningModelClass::scanning_HeadingDeadZone(real_T heading_check, real_T
     }
 
     if (heading < dead_heading[5]) {
-      check = 2.0;
+      if (tacking < 2.5) {
+        check = 2.0;
+      } else {
+        check = 1.0;
+      }
     }
   }
 
@@ -1412,17 +1402,16 @@ void scanningModelClass::step()
   real_T y_speed;
   int32_T b;
   real_T leg;
+  real_T real_wind_speed_x;
+  int32_T wind_valid;
+  real_T accumulate_wind_speed;
+  real_T count_wind;
   int32_T begin;
   real_T length_time;
-  real_T i;
-  real_T sf;
-  real_T c;
   int32_T itmp;
   int32_T ixstart;
-  int32_T b_ixstart;
   int32_T c_itmp;
   boolean_T exitg1;
-  real_T WindSpeed_mean;
   real_T loose_time;
   real_T heading;
   real_T sail_d_last;
@@ -1434,49 +1423,50 @@ void scanningModelClass::step()
   real_T n;
   real_T drive_force[380];
   real_T x;
-  real_T rtb_WindAngle_mean;
-  real_T rtb_speed_angle_d;
+  real_T rtb_Horizontal_speed;
   real_T rtb_CenterPosY;
   real_T rtb_CenterPosX;
-  real_T rtb_Horizontal_speed;
-  real_T rtb_path[202];
+  real_T rtb_path[402];
+  real_T rtb_tacking;
   int32_T rtb_sail_safe;
   real_T rtb_pos_history[300];
-  int32_T i_0;
+  int32_T i;
   real_T dead_sail_data[4];
   int32_T dead_sail_sizes[2];
-  real_T end2_idx_0;
-  real_T end2_idx_1;
-  real_T start_point_idx_0;
-  real_T start_point_idx_1;
+  real_T GPS_data_idx_0;
+  real_T point3_idx_0;
+  real_T point3_idx_1;
+  real_T end1_idx_0;
+  real_T point1_idx_0;
+  real_T end1_idx_1;
 
-  // MATLAB Function: '<Root>/MATLAB Function8' incorporates:
+  // MATLAB Function: '<Root>/MATLAB Function9' incorporates:
   //   Constant: '<Root>/Airmar_X'
   //   Constant: '<Root>/Airmar_Z'
   //   Inport: '<Root>/East'
   //   Inport: '<Root>/North'
-  //   Inport: '<Root>/ahrs_Roll'
-  //   Inport: '<Root>/ahrs_Yaw'
+  //   Inport: '<Root>/Roll'
+  //   Inport: '<Root>/Yaw'
 
-  // MATLAB Function 'MATLAB Function8': '<S9>:1'
+  // MATLAB Function 'MATLAB Function9': '<S9>:1'
   // X前正后负 船尾看roll右正左负 NED大地坐标
   // '<S9>:1:3'
   // '<S9>:1:4'
-  rtb_CenterPosX = (scanning_U.North - -0.61 * std::cos(scanning_U.ahrs_Yaw)) -
-    0.8 * std::sin(scanning_U.ahrs_Roll) * std::cos(scanning_U.ahrs_Yaw +
-    1.5707963267948966);
+  rtb_CenterPosX = (scanning_U.North - scanning_P.Airmar_X_Value * cos
+                    (scanning_U.Yaw)) - scanning_P.Airmar_Z_Value * sin
+    (scanning_U.Roll) * cos(scanning_U.Yaw + 1.5707963267948966);
 
   // '<S9>:1:5'
-  rtb_CenterPosY = (scanning_U.East - -0.61 * std::sin(scanning_U.ahrs_Yaw)) -
-    0.8 * std::sin(scanning_U.ahrs_Roll) * std::sin(scanning_U.ahrs_Yaw +
-    1.5707963267948966);
+  rtb_CenterPosY = (scanning_U.East - scanning_P.Airmar_X_Value * sin
+                    (scanning_U.Yaw)) - scanning_P.Airmar_Z_Value * sin
+    (scanning_U.Roll) * sin(scanning_U.Yaw + 1.5707963267948966);
 
-  // MATLAB Function: '<Root>/MATLAB Function7' incorporates:
-  //   Inport: '<Root>/ahrs_Yaw'
+  // MATLAB Function: '<Root>/MATLAB Function8' incorporates:
+  //   Inport: '<Root>/Yaw'
   //   UnitDelay: '<Root>/Unit Delay14'
   //   UnitDelay: '<Root>/Unit Delay15'
 
-  // MATLAB Function 'MATLAB Function7': '<S8>:1'
+  // MATLAB Function 'MATLAB Function8': '<S8>:1'
   // run period
   // '<S8>:1:6'
   memset(&rtb_pos_history[0], 0, 300U * sizeof(real_T));
@@ -1484,17 +1474,17 @@ void scanningModelClass::step()
   // '<S8>:1:7'
   rtb_pos_history[0] = rtb_CenterPosX;
   rtb_pos_history[100] = rtb_CenterPosY;
-  rtb_pos_history[200] = scanning_U.ahrs_Yaw;
+  rtb_pos_history[200] = scanning_U.Yaw;
 
   // '<S8>:1:8'
-  for (b_ixstart = 0; b_ixstart < (int32_T)(scanning_P.pos_history_len + -1.0);
-       b_ixstart++) {
+  for (wind_valid = 0; wind_valid < (int32_T)(scanning_P.pos_history_len + -1.0);
+       wind_valid++) {
     // '<S8>:1:8'
     // '<S8>:1:9'
-    i_0 = (int32_T)((2.0 + (real_T)b_ixstart) - 1.0);
-    rtb_pos_history[b_ixstart + 1] = scanning_DW.UnitDelay15_DSTATE[i_0 - 1];
-    rtb_pos_history[b_ixstart + 101] = scanning_DW.UnitDelay15_DSTATE[i_0 + 99];
-    rtb_pos_history[b_ixstart + 201] = scanning_DW.UnitDelay15_DSTATE[i_0 + 199];
+    i = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
+    rtb_pos_history[wind_valid + 1] = scanning_DW.UnitDelay15_DSTATE[i - 1];
+    rtb_pos_history[wind_valid + 101] = scanning_DW.UnitDelay15_DSTATE[i + 99];
+    rtb_pos_history[wind_valid + 201] = scanning_DW.UnitDelay15_DSTATE[i + 199];
 
     // '<S8>:1:8'
   }
@@ -1515,21 +1505,21 @@ void scanningModelClass::step()
   memset(&scanning_B.ship_speed_history[0], 0, 800U * sizeof(real_T));
 
   // '<S8>:1:16'
-  scanning_B.ship_speed_history[0] = std::cos(scanning_U.ahrs_Yaw) * x_speed +
-    std::sin(scanning_U.ahrs_Yaw) * y_speed;
-  scanning_B.ship_speed_history[400] = -std::sin(scanning_U.ahrs_Yaw) * x_speed
-    + std::cos(scanning_U.ahrs_Yaw) * y_speed;
+  scanning_B.ship_speed_history[0] = cos(scanning_U.Yaw) * x_speed + sin
+    (scanning_U.Yaw) * y_speed;
+  scanning_B.ship_speed_history[400] = -sin(scanning_U.Yaw) * x_speed + cos
+    (scanning_U.Yaw) * y_speed;
 
   // '<S8>:1:17'
   for (ixstart = 0; ixstart < (int32_T)(scanning_P.ship_speed_history_len + -1.0);
        ixstart++) {
     // '<S8>:1:17'
     // '<S8>:1:18'
-    i_0 = (int32_T)((2.0 + (real_T)ixstart) - 1.0);
+    i = (int32_T)((2.0 + (real_T)ixstart) - 1.0);
     scanning_B.ship_speed_history[ixstart + 1] =
-      scanning_DW.UnitDelay14_DSTATE[i_0 - 1];
+      scanning_DW.UnitDelay14_DSTATE[i - 1];
     scanning_B.ship_speed_history[ixstart + 401] =
-      scanning_DW.UnitDelay14_DSTATE[i_0 + 399];
+      scanning_DW.UnitDelay14_DSTATE[i + 399];
 
     // '<S8>:1:17'
   }
@@ -1545,42 +1535,46 @@ void scanningModelClass::step()
     x_speed = 0.0;
   } else {
     x_speed = scanning_B.ship_speed_history[0];
-    for (b_ixstart = 2; b_ixstart <= b; b_ixstart++) {
-      x_speed += scanning_B.ship_speed_history[b_ixstart - 1];
+    for (wind_valid = 2; wind_valid <= b; wind_valid++) {
+      x_speed += scanning_B.ship_speed_history[wind_valid - 1];
     }
   }
 
   y_speed = x_speed / (real_T)b;
   if (1.0 > scanning_P.ship_speed_history_len) {
-    b_ixstart = 0;
+    wind_valid = 0;
   } else {
-    b_ixstart = (int32_T)scanning_P.ship_speed_history_len;
+    wind_valid = (int32_T)scanning_P.ship_speed_history_len;
   }
 
   // '<S8>:1:21'
-  if (b_ixstart == 0) {
+  if (wind_valid == 0) {
     x_speed = 0.0;
   } else {
     x_speed = scanning_B.ship_speed_history[400];
-    for (ixstart = 2; ixstart <= b_ixstart; ixstart++) {
+    for (ixstart = 2; ixstart <= wind_valid; ixstart++) {
       x_speed += scanning_B.ship_speed_history[ixstart + 399];
     }
   }
 
-  x_speed /= (real_T)b_ixstart;
+  x_speed /= (real_T)wind_valid;
 
   // '<S8>:1:22'
-  if (std::abs(y_speed) < 0.1) {
+  if (fabs(y_speed) < 0.1) {
     // '<S8>:1:23'
     // '<S8>:1:24'
-    Horizontal_speed_angle = scanning_U.ahrs_Yaw;
+    Horizontal_speed_angle = scanning_U.Yaw;
   } else {
     // '<S8>:1:26'
-    Horizontal_speed_angle = scanning_U.ahrs_Yaw + rt_atan2d_snf(x_speed,
-      y_speed);
+    Horizontal_speed_angle = scanning_U.Yaw + rt_atan2d_snf(x_speed, y_speed);
   }
 
-  rtb_Horizontal_speed = std::sqrt(y_speed * y_speed + x_speed * x_speed);
+  rtb_Horizontal_speed = sqrt(y_speed * y_speed + x_speed * x_speed);
+
+  // Outport: '<Root>/speed_angle' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function8'
+
+  scanning_Y.speed_angle = Horizontal_speed_angle;
 
   // MATLAB Function: '<Root>/MATLAB Function' incorporates:
   //   UnitDelay: '<Root>/Unit Delay'
@@ -1593,20 +1587,51 @@ void scanningModelClass::step()
   // '<S1>:1:5'
   // '<S1>:1:6'
   // '<S1>:1:7'
-  x_speed = scanning_GetAngle(scanning_P.scanning_points[1] -
-    scanning_P.scanning_points[3], scanning_P.scanning_points[5] -
-    scanning_P.scanning_points[7]);
+  accumulate_wind_speed = scanning_P.scanning_points[2] -
+    scanning_P.scanning_points[0];
+  y_speed = scanning_P.scanning_points[6] - scanning_P.scanning_points[4];
+  count_wind = sqrt(accumulate_wind_speed * accumulate_wind_speed + y_speed *
+                    y_speed);
+  GPS_data_idx_0 = (scanning_P.scanning_points[0] - scanning_P.scanning_points[2])
+    / count_wind * scanning_P.points_up_move;
+  end1_idx_1 = (scanning_P.scanning_points[4] - scanning_P.scanning_points[6]) /
+    count_wind * scanning_P.points_up_move;
 
   // '<S1>:1:8'
+  point1_idx_0 = scanning_P.scanning_points[0] + GPS_data_idx_0;
+
   // '<S1>:1:9'
+  y_speed = scanning_P.scanning_points[1] + GPS_data_idx_0;
+  accumulate_wind_speed = scanning_P.scanning_points[5] + end1_idx_1;
+
   // '<S1>:1:10'
+  point3_idx_0 = scanning_P.scanning_points[2] + GPS_data_idx_0;
+  point3_idx_1 = scanning_P.scanning_points[6] + end1_idx_1;
+
+  // '<S1>:1:11'
+  GPS_data_idx_0 += scanning_P.scanning_points[3];
+  real_wind_speed_x = scanning_P.scanning_points[7] + end1_idx_1;
+
+  // '<S1>:1:13'
+  x_speed = scanning_GetAngle(y_speed - GPS_data_idx_0, accumulate_wind_speed -
+    real_wind_speed_x);
+
+  // '<S1>:1:14'
+  // %%%%%%%%%
+  // '<S1>:1:15'
+  // %%%%%%%%%%
+  // '<S1>:1:16'
+  // %%%%%%%%%
   if ((((scanning_DW.UnitDelay_DSTATE > 3.5) && (scanning_DW.UnitDelay_DSTATE <
          4.5)) || ((scanning_DW.UnitDelay_DSTATE > 1.5) &&
                    (scanning_DW.UnitDelay_DSTATE < 2.5))) && (scanning_AngleDiff
-       (x_speed, scanning_GetAngle(rtb_CenterPosX - scanning_P.scanning_points[2],
-         rtb_CenterPosY - scanning_P.scanning_points[6])) < 0.0)) {
-    // '<S1>:1:11'
-    // '<S1>:1:12'
+       (x_speed, scanning_GetAngle(rtb_CenterPosX - (point3_idx_0 * 15.5 +
+          GPS_data_idx_0 * 0.5) / 16.0, rtb_CenterPosY - (point3_idx_1 * 15.5 +
+          real_wind_speed_x * 0.5) / 16.0)) < 0.0) && (scanning_P.start_counting
+       > 0.5)) {
+    // '<S1>:1:17'
+    // 2,4
+    // '<S1>:1:18'
     leg = scanning_DW.UnitDelay_DSTATE + 1.0;
   } else if ((((scanning_DW.UnitDelay_DSTATE > 0.5) &&
                (scanning_DW.UnitDelay_DSTATE < 1.5)) ||
@@ -1615,204 +1640,391 @@ void scanningModelClass::step()
               ((scanning_DW.UnitDelay_DSTATE > 4.5) &&
                (scanning_DW.UnitDelay_DSTATE < 5.5)) ||
               ((scanning_DW.UnitDelay_DSTATE > 6.5) &&
-               (scanning_DW.UnitDelay_DSTATE < 7.5))) && (scanning_AngleDiff
-              (x_speed, scanning_GetAngle(rtb_CenterPosX -
-                scanning_P.scanning_points[3], rtb_CenterPosY -
-                scanning_P.scanning_points[7])) > 0.0)) {
-    // '<S1>:1:14'
-    // '<S1>:1:15'
+               (scanning_DW.UnitDelay_DSTATE < 7.5))) && ((scanning_AngleDiff
+               (x_speed, scanning_GetAngle(rtb_CenterPosX - (GPS_data_idx_0 *
+      15.5 + point3_idx_0 * 0.5) / 16.0, rtb_CenterPosY - (real_wind_speed_x *
+      15.5 + point3_idx_1 * 0.5) / 16.0)) > 0.0) && (scanning_P.start_counting >
+    0.5))) {
+    // '<S1>:1:20'
+    // 1,3,5,7
+    // '<S1>:1:21'
     leg = scanning_DW.UnitDelay_DSTATE + 1.0;
   } else {
-    if ((scanning_DW.UnitDelay_DSTATE > 5.5) && (scanning_DW.UnitDelay_DSTATE <
-         6.5) && (scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
-           (scanning_P.scanning_points[2] + scanning_P.scanning_points[3]) / 2.0,
-           rtb_CenterPosY - (scanning_P.scanning_points[6] +
-            scanning_P.scanning_points[7]) / 2.0)) < 0.0)) {
-      // '<S1>:1:17'
-      // '<S1>:1:18'
+    if ((((scanning_DW.UnitDelay_DSTATE > 5.5) && (scanning_DW.UnitDelay_DSTATE <
+           6.5)) || ((scanning_DW.UnitDelay_DSTATE > 7.5) &&
+                     (scanning_DW.UnitDelay_DSTATE < 8.5))) &&
+        (scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
+           (point3_idx_0 * 7.5 + GPS_data_idx_0 * 8.5) / 16.0, rtb_CenterPosY -
+           (point3_idx_1 * 7.5 + real_wind_speed_x * 8.5) / 16.0)) < 0.0) &&
+        (scanning_P.start_counting > 0.5)) {
+      // '<S1>:1:23'
+      // 6,8
+      // '<S1>:1:24'
       leg = scanning_DW.UnitDelay_DSTATE + 1.0;
     }
   }
 
-  // '<S1>:1:21'
-  x_speed = ((8.5 - leg) * scanning_P.scanning_points[0] + (leg - 0.5) *
-             scanning_P.scanning_points[2]) / 8.0;
-  y_speed = ((8.5 - leg) * scanning_P.scanning_points[4] + (leg - 0.5) *
-             scanning_P.scanning_points[6]) / 8.0;
-
-  // '<S1>:1:22'
-  end2_idx_0 = ((8.5 - leg) * scanning_P.scanning_points[1] + (leg - 0.5) *
-                scanning_P.scanning_points[3]) / 8.0;
-  end2_idx_1 = ((8.5 - leg) * scanning_P.scanning_points[5] + (leg - 0.5) *
-                scanning_P.scanning_points[7]) / 8.0;
-  if ((rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) > 0.5) && (leg < 4.5)) {
-    // '<S1>:1:23'
-    // '<S1>:1:24'
-    start_point_idx_0 = x_speed;
-    start_point_idx_1 = y_speed;
-
-    // '<S1>:1:25'
-    x_speed = end2_idx_0;
-    y_speed = end2_idx_1;
-  } else if ((rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) < 0.5) && (leg <
-              4.5)) {
-    // '<S1>:1:26'
+  if (leg > 8.5) {
     // '<S1>:1:27'
-    start_point_idx_0 = end2_idx_0;
-    start_point_idx_1 = end2_idx_1;
-
     // '<S1>:1:28'
-  } else if ((rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) > 0.5) && (leg >
-              4.5)) {
-    // '<S1>:1:29'
-    // '<S1>:1:30'
-    start_point_idx_0 = (x_speed + end2_idx_0) / 2.0;
-    start_point_idx_1 = (y_speed + end2_idx_1) / 2.0;
+    leg = 7.5;
+  }
 
-    // '<S1>:1:31'
-    x_speed = end2_idx_0;
-    y_speed = end2_idx_1;
-  } else if ((rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) < 0.5) && (leg >
-              4.5) && (leg < 7.5)) {
+  // '<S1>:1:30'
+  end1_idx_0 = ((8.5 - leg) * point1_idx_0 + (leg - 0.5) * point3_idx_0) / 8.0;
+  end1_idx_1 = ((scanning_P.scanning_points[4] + end1_idx_1) * (8.5 - leg) +
+                (leg - 0.5) * point3_idx_1) / 8.0;
+
+  // '<S1>:1:31'
+  point1_idx_0 = ((8.5 - leg) * y_speed + (leg - 0.5) * GPS_data_idx_0) / 8.0;
+  y_speed = ((8.5 - leg) * accumulate_wind_speed + (leg - 0.5) *
+             real_wind_speed_x) / 8.0;
+  if ((leg > 7.4) && (leg < 7.6)) {
     // '<S1>:1:32'
     // '<S1>:1:33'
-    start_point_idx_0 = end2_idx_0;
-    start_point_idx_1 = end2_idx_1;
+    leg = 9.0;
+  }
 
-    // '<S1>:1:34'
-    x_speed = (x_speed + end2_idx_0) / 2.0;
-    y_speed = (y_speed + end2_idx_1) / 2.0;
-  } else {
+  if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) > 0.5) && (leg < 4.5)) {
     // '<S1>:1:36'
-    start_point_idx_0 = end2_idx_0;
-    start_point_idx_1 = end2_idx_1;
-
+    // 1,3
     // '<S1>:1:37'
-  }
+    point3_idx_0 = end1_idx_0;
+    point3_idx_1 = end1_idx_1;
 
-  // '<S1>:1:40'
-  // '<S1>:1:41'
-  for (b_ixstart = 0; b_ixstart < 101; b_ixstart++) {
+    // '<S1>:1:38'
+    GPS_data_idx_0 = point1_idx_0;
+    end1_idx_1 = y_speed;
+  } else if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) < 0.5) && (leg < 4.5))
+  {
+    // '<S1>:1:39'
+    // 2,4
+    // '<S1>:1:40'
+    point3_idx_0 = point1_idx_0;
+    point3_idx_1 = y_speed;
+
     // '<S1>:1:41'
+    GPS_data_idx_0 = end1_idx_0;
+  } else if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) > 0.5) && (leg > 4.5) &&
+             (leg < 7.5)) {
     // '<S1>:1:42'
-    rtb_path[b_ixstart] = ((101.0 - (1.0 + (real_T)b_ixstart)) *
-      start_point_idx_0 + ((1.0 + (real_T)b_ixstart) - 1.0) * x_speed) / 100.0;
-
+    // 5,7
     // '<S1>:1:43'
-    rtb_path[101 + b_ixstart] = ((101.0 - (1.0 + (real_T)b_ixstart)) *
-      start_point_idx_1 + ((1.0 + (real_T)b_ixstart) - 1.0) * y_speed) / 100.0;
+    point3_idx_0 = (end1_idx_0 + point1_idx_0) / 2.0;
+    point3_idx_1 = (end1_idx_1 + y_speed) / 2.0;
 
-    // '<S1>:1:41'
+    // '<S1>:1:44'
+    GPS_data_idx_0 = point1_idx_0;
+    end1_idx_1 = y_speed;
+  } else if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) < 0.5) && (leg > 4.5) &&
+             (leg < 7.5)) {
+    // '<S1>:1:45'
+    // 6
+    // '<S1>:1:46'
+    point3_idx_0 = point1_idx_0;
+    point3_idx_1 = y_speed;
+
+    // '<S1>:1:47'
+    GPS_data_idx_0 = (end1_idx_0 + point1_idx_0) / 2.0;
+    end1_idx_1 = (end1_idx_1 + y_speed) / 2.0;
+  } else if (leg > 7.5) {
+    // '<S1>:1:48'
+    // 8,9
+    // '<S1>:1:49'
+    point3_idx_0 = point1_idx_0;
+    point3_idx_1 = y_speed;
+
+    // '<S1>:1:50'
+    GPS_data_idx_0 = end1_idx_0;
+  } else {
+    // '<S1>:1:52'
+    point3_idx_0 = point1_idx_0;
+    point3_idx_1 = y_speed;
+
+    // '<S1>:1:53'
+    GPS_data_idx_0 = end1_idx_0;
   }
+
+  // %%%%%%%%%%%%%%end_point再延伸一段
+  // '<S1>:1:57'
+  point1_idx_0 = (GPS_data_idx_0 * 13.0 + point3_idx_0 * -3.0) / 10.0;
+  y_speed = (end1_idx_1 * 13.0 + point3_idx_1 * -3.0) / 10.0;
+
+  // '<S1>:1:59'
+  // '<S1>:1:60'
+  for (wind_valid = 0; wind_valid < 201; wind_valid++) {
+    // '<S1>:1:60'
+    // '<S1>:1:61'
+    rtb_path[wind_valid] = ((201.0 - (1.0 + (real_T)wind_valid)) * point3_idx_0
+      + ((1.0 + (real_T)wind_valid) - 1.0) * point1_idx_0) / 200.0;
+
+    // '<S1>:1:62'
+    rtb_path[201 + wind_valid] = ((201.0 - (1.0 + (real_T)wind_valid)) *
+      point3_idx_1 + ((1.0 + (real_T)wind_valid) - 1.0) * y_speed) / 200.0;
+
+    // '<S1>:1:60'
+  }
+
+  // MATLAB Function: '<Root>/MATLAB Function7' incorporates:
+  //   Constant: '<Root>/Airmar_X'
+  //   Constant: '<Root>/Airmar_Z'
+  //   Inport: '<Root>/Airmar_wind_angle'
+  //   Inport: '<Root>/Airmar_wind_speed'
+  //   Inport: '<Root>/Roll'
+  //   Inport: '<Root>/Roll_rate'
+  //   Inport: '<Root>/Yaw'
+  //   Inport: '<Root>/Yaw_rate'
+  //   MATLAB Function: '<Root>/MATLAB Function8'
+  //   UnitDelay: '<Root>/Unit Delay13'
+
+  // '<S1>:1:65'
+  // '<S1>:1:66'
+  // MATLAB Function 'MATLAB Function7': '<S7>:1'
+  // '<S7>:1:4'
+  // '<S7>:1:5'
+  // '<S7>:1:6'
+  real_wind_speed_x = cos(scanning_U.Airmar_wind_angle + scanning_U.Yaw) *
+    scanning_U.Airmar_wind_speed - ((cos(scanning_U.Yaw + 1.5707963267948966) *
+    scanning_U.Roll_rate * scanning_P.Airmar_Z_Value + rtb_Horizontal_speed *
+    cos(Horizontal_speed_angle)) + cos(scanning_U.Yaw + 1.5707963267948966) *
+    scanning_U.Yaw_rate * scanning_P.Airmar_X_Value);
+
+  // %%%%%%%%%%%%%%%%%%%%%%%%%%
+  // '<S7>:1:7'
+  end1_idx_0 = sin(scanning_U.Airmar_wind_angle + scanning_U.Yaw) *
+    scanning_U.Airmar_wind_speed - ((sin(scanning_U.Yaw + 1.5707963267948966) *
+    scanning_U.Roll_rate * scanning_P.Airmar_Z_Value + rtb_Horizontal_speed *
+    sin(Horizontal_speed_angle)) + sin(scanning_U.Yaw + 1.5707963267948966) *
+    scanning_U.Yaw_rate * scanning_P.Airmar_X_Value);
+
+  // %%%%%%%%%%%%%%%%%%%%%%%%%%
+  // '<S7>:1:9'
+  if ((fabs(scanning_U.Roll) < 0.78539816339744828) && (fabs
+       (scanning_U.Roll_rate) < 1.0471975511965976)) {
+    // '<S7>:1:12'
+    // '<S7>:1:13'
+    wind_valid = 1;
+  } else {
+    // '<S7>:1:15'
+    wind_valid = 0;
+  }
+
+  // '<S7>:1:17'
+  memset(&scanning_B.real_wind_history[0], 0, 6000U * sizeof(real_T));
+
+  // '<S7>:1:18'
+  scanning_B.real_wind_history[0] = real_wind_speed_x;
+  scanning_B.real_wind_history[2000] = end1_idx_0;
+  scanning_B.real_wind_history[4000] = wind_valid;
+
+  // '<S7>:1:20'
+  y_speed = rt_roundd_snf(scanning_P.wind_mean_time / 0.1);
+
+  // '<S7>:1:20'
+  for (wind_valid = 0; wind_valid < (int32_T)(y_speed + -1.0); wind_valid++) {
+    // '<S7>:1:20'
+    // '<S7>:1:21'
+    i = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
+    scanning_B.real_wind_history[wind_valid + 1] =
+      scanning_DW.UnitDelay13_DSTATE[i - 1];
+    scanning_B.real_wind_history[wind_valid + 2001] =
+      scanning_DW.UnitDelay13_DSTATE[i + 1999];
+    scanning_B.real_wind_history[wind_valid + 4001] =
+      scanning_DW.UnitDelay13_DSTATE[i + 3999];
+
+    // '<S7>:1:20'
+  }
+
+  // '<S7>:1:24'
+  x_speed = 0.0;
+
+  // '<S7>:1:25'
+  y_speed = 0.0;
+
+  // '<S7>:1:26'
+  accumulate_wind_speed = 0.0;
+
+  // '<S7>:1:27'
+  count_wind = 0.0;
+
+  // '<S7>:1:28'
+  point1_idx_0 = rt_roundd_snf(scanning_P.wind_mean_time / 0.1);
+
+  // '<S7>:1:28'
+  for (wind_valid = 0; wind_valid < (int32_T)point1_idx_0; wind_valid++) {
+    // '<S7>:1:28'
+    if (scanning_B.real_wind_history[4000 + wind_valid] > 0.5) {
+      // '<S7>:1:29'
+      // '<S7>:1:30'
+      x_speed += scanning_B.real_wind_history[wind_valid];
+
+      // '<S7>:1:31'
+      y_speed += scanning_B.real_wind_history[2000 + wind_valid];
+
+      // '<S7>:1:32'
+      accumulate_wind_speed += sqrt(scanning_B.real_wind_history[2000 +
+        wind_valid] * scanning_B.real_wind_history[2000 + wind_valid] +
+        scanning_B.real_wind_history[wind_valid] *
+        scanning_B.real_wind_history[wind_valid]);
+
+      // '<S7>:1:33'
+      count_wind++;
+    }
+
+    // '<S7>:1:28'
+  }
+
+  if (count_wind < 0.5) {
+    // '<S7>:1:36'
+    // '<S7>:1:37'
+    // '<S7>:1:38'
+    // '<S7>:1:39'
+    point3_idx_0 = sqrt(real_wind_speed_x * real_wind_speed_x + end1_idx_0 *
+                        end1_idx_0);
+  } else {
+    // '<S7>:1:41'
+    real_wind_speed_x = x_speed / count_wind;
+
+    // '<S7>:1:42'
+    end1_idx_0 = y_speed / count_wind;
+
+    // '<S7>:1:43'
+    point3_idx_0 = accumulate_wind_speed / count_wind;
+  }
+
+  if (fabs(real_wind_speed_x) < 1.0E-5) {
+    // '<S7>:1:45'
+    // '<S7>:1:46'
+    real_wind_speed_x = 1.0E-5;
+  }
+
+  // '<S7>:1:48'
+  point3_idx_1 = rt_atan2d_snf(end1_idx_0, real_wind_speed_x);
 
   // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function'
   //   UnitDelay: '<Root>/Unit Delay1'
-  //   UnitDelay: '<Root>/Unit Delay2'
   //   UnitDelay: '<Root>/Unit Delay3'
   //   UnitDelay: '<Root>/Unit Delay4'
+  //   UnitDelay: '<Root>/Unit Delay5'
 
-  // '<S1>:1:45'
-  // '<S1>:1:46'
-  end2_idx_0 = scanning_DW.UnitDelay4_DSTATE;
-  x_speed = scanning_DW.UnitDelay1_DSTATE;
+  end1_idx_0 = scanning_P.R;
+  accumulate_wind_speed = scanning_DW.UnitDelay5_DSTATE;
+  y_speed = scanning_DW.UnitDelay1_DSTATE;
 
   // MATLAB Function 'MATLAB Function3': '<S4>:1'
   // '<S4>:1:3'
   // '<S4>:1:4'
+  // '<S4>:1:5'
   // '<S4>:1:6'
+  x_speed = fabs(scanning_AngleDiff_lg(scanning_GetAngle_n(rtb_path[199] -
+    rtb_path[0], rtb_path[400] - rtb_path[201]), point3_idx_1));
+
+  //  if upwind_angle<pi/2 && upwind_angle>pi/6
+  //      R=R+(pi/2-upwind_angle)*upwind_R_expand_ratio;
+  //  elseif upwind_angle<=pi/6
+  //      R=R+(pi/2-pi/6)*upwind_R_expand_ratio;
+  //  end
+  if (x_speed < 0.89759790102565518) {
+    // '<S4>:1:12'
+    // '<S4>:1:13'
+    end1_idx_0 = (0.89759790102565518 - x_speed) *
+      scanning_P.upwind_R_expand_ratio / 3.1415926535897931 * 3.5 + scanning_P.R;
+  }
+
+  // '<S4>:1:16'
   begin = 0;
 
-  // '<S4>:1:7'
+  // '<S4>:1:17'
   // time from point to point
-  // '<S4>:1:8'
+  // '<S4>:1:18'
   // run period
-  // '<S4>:1:9'
+  // '<S4>:1:19'
   // 搜寻2*50个run period的时间范围
-  if ((scanning_DW.UnitDelay2_DSTATE != rtb_path[0]) ||
-      (scanning_DW.UnitDelay3_DSTATE != rtb_path[101])) {
-    // '<S4>:1:11'
+  if ((scanning_DW.UnitDelay3_DSTATE != rtb_path[0]) ||
+      (scanning_DW.UnitDelay4_DSTATE != rtb_path[201])) {
+    // '<S4>:1:21'
     // 如路径变化，从头开始
-    // '<S4>:1:12'
-    x_speed = 0.1;
+    // '<S4>:1:22'
+    y_speed = 0.1;
 
-    // '<S4>:1:13'
+    // '<S4>:1:23'
     b = 1;
   } else {
-    // '<S4>:1:15'
+    // '<S4>:1:25'
     b = 0;
   }
 
   // Update for UnitDelay: '<Root>/Unit Delay1' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
 
-  // '<S4>:1:17'
-  // '<S4>:1:18'
-  // '<S4>:1:19'
-  scanning_DW.UnitDelay1_DSTATE = x_speed + 0.1;
+  // '<S4>:1:27'
+  // '<S4>:1:28'
+  // '<S4>:1:29'
+  scanning_DW.UnitDelay1_DSTATE = y_speed + 0.1;
 
   // MATLAB Function: '<Root>/MATLAB Function3'
   // 世界时间
-  // '<S4>:1:21'
-  // '<S4>:1:26'
-  x_speed /= 0.1;
-
-  // '<S4>:1:27'
-  y_speed = std::floor(x_speed);
-  if (y_speed <= 1.0) {
-    // '<S4>:1:28'
-    // '<S4>:1:29'
-    y_speed = 1.0;
-  }
-
   // '<S4>:1:31'
-  if (y_speed > 100.0) {
-    // '<S4>:1:32'
-    // '<S4>:1:34'
-    x_speed = (x_speed - y_speed) + 100.0;
+  // '<S4>:1:36'
+  y_speed /= 0.1;
+
+  // '<S4>:1:37'
+  x_speed = floor(y_speed);
+  if (x_speed <= 1.0) {
+    // '<S4>:1:38'
+    // '<S4>:1:39'
+    x_speed = 1.0;
   }
 
-  if (x_speed == 1.0) {
-    // '<S4>:1:36'
-    // '<S4>:1:37'
-    end2_idx_0 = 1.0;
+  // '<S4>:1:41'
+  if (x_speed > 200.0) {
+    // '<S4>:1:42'
+    // '<S4>:1:44'
+    y_speed = (y_speed - x_speed) + 200.0;
+  }
+
+  if (y_speed == 1.0) {
+    // '<S4>:1:46'
+    // '<S4>:1:47'
+    accumulate_wind_speed = 1.0;
   }
 
   //  find the nearest setpoint
-  // '<S4>:1:43'
-  for (i_0 = 0; i_0 < 1000; i_0++) {
-    scanning_B.Dis[i_0] = (rtInf);
+  // '<S4>:1:53'
+  for (i = 0; i < 1000; i++) {
+    scanning_B.Dis[i] = (rtInf);
   }
 
-  if (end2_idx_0 + 50.0 >= 100.0) {
-    // '<S4>:1:45'
-    if (end2_idx_0 > 50.0) {
-      // '<S4>:1:46'
-      // '<S4>:1:47'
-      for (ixstart = 0; ixstart < (int32_T)((51.0 - end2_idx_0) + 100.0);
-           ixstart++) {
-        // '<S4>:1:47'
-        // '<S4>:1:48'
-        x_speed = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) + end2_idx_0) -
-          50.0) - 1.0) - 1] - rtb_CenterPosX;
-        y_speed = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) + end2_idx_0) -
-          50.0) - 1.0) + 100] - rtb_CenterPosY;
-        scanning_B.Dis[ixstart] = std::sqrt(x_speed * x_speed + y_speed *
-          y_speed);
+  if (accumulate_wind_speed + 50.0 >= 200.0) {
+    // '<S4>:1:55'
+    if (accumulate_wind_speed > 50.0) {
+      // '<S4>:1:56'
+      // '<S4>:1:57'
+      for (ixstart = 0; ixstart < (int32_T)((51.0 - accumulate_wind_speed) +
+            200.0); ixstart++) {
+        // '<S4>:1:57'
+        // '<S4>:1:58'
+        x_speed = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) +
+          accumulate_wind_speed) - 50.0) - 1.0) - 1] - rtb_CenterPosX;
+        y_speed = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) +
+          accumulate_wind_speed) - 50.0) - 1.0) + 200] - rtb_CenterPosY;
+        scanning_B.Dis[ixstart] = sqrt(x_speed * x_speed + y_speed * y_speed);
 
-        // '<S4>:1:47'
+        // '<S4>:1:57'
       }
 
-      b_ixstart = 1;
+      ixstart = 1;
       x_speed = scanning_B.Dis[0];
-      i_0 = 1;
+      i = 1;
       if (rtIsNaN(scanning_B.Dis[0])) {
         itmp = 2;
         exitg1 = false;
         while ((!exitg1) && (itmp < 1001)) {
-          b_ixstart = itmp;
+          ixstart = itmp;
           if (!rtIsNaN(scanning_B.Dis[itmp - 1])) {
             x_speed = scanning_B.Dis[itmp - 1];
-            i_0 = itmp;
+            i = itmp;
             exitg1 = true;
           } else {
             itmp++;
@@ -1820,141 +2032,140 @@ void scanningModelClass::step()
         }
       }
 
-      if (b_ixstart < 1000) {
-        while (b_ixstart + 1 < 1001) {
-          if (scanning_B.Dis[b_ixstart] < x_speed) {
-            x_speed = scanning_B.Dis[b_ixstart];
-            i_0 = b_ixstart + 1;
+      if (ixstart < 1000) {
+        while (ixstart + 1 < 1001) {
+          if (scanning_B.Dis[ixstart] < x_speed) {
+            x_speed = scanning_B.Dis[ixstart];
+            i = ixstart + 1;
           }
 
-          b_ixstart++;
+          ixstart++;
         }
       }
 
-      // '<S4>:1:50'
-      // '<S4>:1:51'
-      end2_idx_1 = (((real_T)i_0 + end2_idx_0) - 50.0) - 1.0;
+      // '<S4>:1:60'
+      // '<S4>:1:61'
+      end1_idx_1 = (((real_T)i + accumulate_wind_speed) - 50.0) - 1.0;
     } else {
-      // '<S4>:1:53'
-      for (ixstart = 0; ixstart < 100; ixstart++) {
-        // '<S4>:1:53'
-        // '<S4>:1:54'
-        x_speed = rtb_path[ixstart] - rtb_CenterPosX;
-        y_speed = rtb_path[101 + ixstart] - rtb_CenterPosY;
-        scanning_B.Dis[ixstart] = std::sqrt(x_speed * x_speed + y_speed *
-          y_speed);
+      // '<S4>:1:63'
+      for (wind_valid = 0; wind_valid < 200; wind_valid++) {
+        // '<S4>:1:63'
+        // '<S4>:1:64'
+        x_speed = rtb_path[wind_valid] - rtb_CenterPosX;
+        y_speed = rtb_path[201 + wind_valid] - rtb_CenterPosY;
+        scanning_B.Dis[wind_valid] = sqrt(x_speed * x_speed + y_speed * y_speed);
 
-        // '<S4>:1:53'
+        // '<S4>:1:63'
       }
 
-      i_0 = 1;
+      ixstart = 1;
       x_speed = scanning_B.Dis[0];
       c_itmp = 1;
       if (rtIsNaN(scanning_B.Dis[0])) {
-        b_ixstart = 2;
+        i = 2;
         exitg1 = false;
-        while ((!exitg1) && (b_ixstart < 1001)) {
-          i_0 = b_ixstart;
-          if (!rtIsNaN(scanning_B.Dis[b_ixstart - 1])) {
-            x_speed = scanning_B.Dis[b_ixstart - 1];
-            c_itmp = b_ixstart;
+        while ((!exitg1) && (i < 1001)) {
+          ixstart = i;
+          if (!rtIsNaN(scanning_B.Dis[i - 1])) {
+            x_speed = scanning_B.Dis[i - 1];
+            c_itmp = i;
             exitg1 = true;
           } else {
-            b_ixstart++;
+            i++;
           }
         }
       }
 
-      if (i_0 < 1000) {
-        while (i_0 + 1 < 1001) {
-          if (scanning_B.Dis[i_0] < x_speed) {
-            x_speed = scanning_B.Dis[i_0];
-            c_itmp = i_0 + 1;
+      if (ixstart < 1000) {
+        while (ixstart + 1 < 1001) {
+          if (scanning_B.Dis[ixstart] < x_speed) {
+            x_speed = scanning_B.Dis[ixstart];
+            c_itmp = ixstart + 1;
           }
 
-          i_0++;
+          ixstart++;
         }
       }
 
-      // '<S4>:1:56'
-      end2_idx_1 = c_itmp;
+      // '<S4>:1:66'
+      end1_idx_1 = c_itmp;
 
       // (1:Dislen)
     }
-  } else if (end2_idx_0 > 50.0) {
-    // '<S4>:1:59'
-    // '<S4>:1:60'
-    for (b_ixstart = 0; b_ixstart < 101; b_ixstart++) {
-      // '<S4>:1:60'
-      // '<S4>:1:61'
-      x_speed = rtb_path[(int32_T)((((1.0 + (real_T)b_ixstart) + end2_idx_0) -
-        50.0) - 1.0) - 1] - rtb_CenterPosX;
-      y_speed = rtb_path[(int32_T)((((1.0 + (real_T)b_ixstart) + end2_idx_0) -
-        50.0) - 1.0) + 100] - rtb_CenterPosY;
-      scanning_B.Dis[b_ixstart] = std::sqrt(x_speed * x_speed + y_speed *
-        y_speed);
+  } else if (accumulate_wind_speed > 50.0) {
+    // '<S4>:1:69'
+    // '<S4>:1:70'
+    for (wind_valid = 0; wind_valid < 101; wind_valid++) {
+      // '<S4>:1:70'
+      // '<S4>:1:71'
+      x_speed = rtb_path[(int32_T)((((1.0 + (real_T)wind_valid) +
+        accumulate_wind_speed) - 50.0) - 1.0) - 1] - rtb_CenterPosX;
+      y_speed = rtb_path[(int32_T)((((1.0 + (real_T)wind_valid) +
+        accumulate_wind_speed) - 50.0) - 1.0) + 200] - rtb_CenterPosY;
+      scanning_B.Dis[wind_valid] = sqrt(x_speed * x_speed + y_speed * y_speed);
 
-      // '<S4>:1:60'
+      // '<S4>:1:70'
     }
 
-    b_ixstart = 1;
+    wind_valid = 1;
     x_speed = scanning_B.Dis[0];
     ixstart = 1;
     if (rtIsNaN(scanning_B.Dis[0])) {
-      i_0 = 2;
+      i = 2;
       exitg1 = false;
-      while ((!exitg1) && (i_0 < 1001)) {
-        b_ixstart = i_0;
-        if (!rtIsNaN(scanning_B.Dis[i_0 - 1])) {
-          x_speed = scanning_B.Dis[i_0 - 1];
-          ixstart = i_0;
+      while ((!exitg1) && (i < 1001)) {
+        wind_valid = i;
+        if (!rtIsNaN(scanning_B.Dis[i - 1])) {
+          x_speed = scanning_B.Dis[i - 1];
+          ixstart = i;
           exitg1 = true;
         } else {
-          i_0++;
+          i++;
         }
       }
     }
 
-    if (b_ixstart < 1000) {
-      while (b_ixstart + 1 < 1001) {
-        if (scanning_B.Dis[b_ixstart] < x_speed) {
-          x_speed = scanning_B.Dis[b_ixstart];
-          ixstart = b_ixstart + 1;
+    if (wind_valid < 1000) {
+      while (wind_valid + 1 < 1001) {
+        if (scanning_B.Dis[wind_valid] < x_speed) {
+          x_speed = scanning_B.Dis[wind_valid];
+          ixstart = wind_valid + 1;
         }
 
-        b_ixstart++;
+        wind_valid++;
       }
     }
 
-    // '<S4>:1:63'
-    // '<S4>:1:64'
-    end2_idx_1 = (((real_T)ixstart + end2_idx_0) - 50.0) - 1.0;
+    // '<S4>:1:73'
+    // '<S4>:1:74'
+    end1_idx_1 = (((real_T)ixstart + accumulate_wind_speed) - 50.0) - 1.0;
   } else {
-    // '<S4>:1:66'
-    for (ixstart = 0; ixstart < (int32_T)(end2_idx_0 + 50.0); ixstart++) {
-      // '<S4>:1:66'
-      // '<S4>:1:67'
-      x_speed = rtb_path[ixstart] - rtb_CenterPosX;
-      y_speed = rtb_path[101 + ixstart] - rtb_CenterPosY;
-      scanning_B.Dis[ixstart] = std::sqrt(x_speed * x_speed + y_speed * y_speed);
+    // '<S4>:1:76'
+    for (wind_valid = 0; wind_valid < (int32_T)(accumulate_wind_speed + 50.0);
+         wind_valid++) {
+      // '<S4>:1:76'
+      // '<S4>:1:77'
+      x_speed = rtb_path[wind_valid] - rtb_CenterPosX;
+      y_speed = rtb_path[201 + wind_valid] - rtb_CenterPosY;
+      scanning_B.Dis[wind_valid] = sqrt(x_speed * x_speed + y_speed * y_speed);
 
-      // '<S4>:1:66'
+      // '<S4>:1:76'
     }
 
     ixstart = 1;
     x_speed = scanning_B.Dis[0];
     itmp = 1;
     if (rtIsNaN(scanning_B.Dis[0])) {
-      i_0 = 2;
+      i = 2;
       exitg1 = false;
-      while ((!exitg1) && (i_0 < 1001)) {
-        ixstart = i_0;
-        if (!rtIsNaN(scanning_B.Dis[i_0 - 1])) {
-          x_speed = scanning_B.Dis[i_0 - 1];
-          itmp = i_0;
+      while ((!exitg1) && (i < 1001)) {
+        ixstart = i;
+        if (!rtIsNaN(scanning_B.Dis[i - 1])) {
+          x_speed = scanning_B.Dis[i - 1];
+          itmp = i;
           exitg1 = true;
         } else {
-          i_0++;
+          i++;
         }
       }
     }
@@ -1970,405 +2181,300 @@ void scanningModelClass::step()
       }
     }
 
-    // '<S4>:1:69'
-    end2_idx_1 = itmp;
+    // '<S4>:1:79'
+    end1_idx_1 = itmp;
   }
 
   // 得到tn是最近路径点
   // LOS algorithm
-  if (end2_idx_1 > 100.0) {
-    // '<S4>:1:77'
-    // '<S4>:1:78'
-    end2_idx_1 = 100.0;
+  if (end1_idx_1 > 200.0) {
+    // '<S4>:1:87'
+    // '<S4>:1:88'
+    end1_idx_1 = 200.0;
   }
 
-  if (end2_idx_1 <= 1.0) {
-    // '<S4>:1:80'
-    // '<S4>:1:81'
-    end2_idx_1 = 2.0;
+  if (end1_idx_1 <= 1.0) {
+    // '<S4>:1:90'
+    // '<S4>:1:91'
+    end1_idx_1 = 2.0;
 
-    // '<S4>:1:82'
+    // '<S4>:1:92'
     begin = 1;
   }
 
   if (x_speed == 0.0) {
-    // '<S4>:1:84'
-    // '<S4>:1:85'
-    ixstart = 1;
+    // '<S4>:1:94'
+    // '<S4>:1:95'
+    wind_valid = 1;
   } else {
-    // '<S4>:1:87'
-    x_speed = scanning_GetAngle_n(rtb_path[(int32_T)end2_idx_1 - 1] - rtb_path
-      [(int32_T)(end2_idx_1 - 1.0) - 1], rtb_path[(int32_T)end2_idx_1 + 100] -
-      rtb_path[(int32_T)(end2_idx_1 - 1.0) + 100]);
+    // '<S4>:1:97'
+    x_speed = scanning_GetAngle_n(rtb_path[(int32_T)end1_idx_1 - 1] - rtb_path
+      [(int32_T)(end1_idx_1 - 1.0) - 1], rtb_path[(int32_T)end1_idx_1 + 200] -
+      rtb_path[(int32_T)(end1_idx_1 - 1.0) + 200]);
 
-    // '<S4>:1:88'
-    y_speed = scanning_GetAngle_n(rtb_path[(int32_T)(end2_idx_1 + 1.0) - 1] -
-      rtb_path[(int32_T)end2_idx_1 - 1], rtb_path[(int32_T)(end2_idx_1 + 1.0) +
-      100] - rtb_path[(int32_T)end2_idx_1 + 100]);
+    // '<S4>:1:98'
+    y_speed = scanning_GetAngle_n(rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] -
+      rtb_path[(int32_T)end1_idx_1 - 1], rtb_path[(int32_T)(end1_idx_1 + 1.0) +
+      200] - rtb_path[(int32_T)end1_idx_1 + 200]);
     if (x_speed - y_speed > 3.1415926535897931) {
-      // '<S4>:1:89'
-      // '<S4>:1:90'
+      // '<S4>:1:99'
+      // '<S4>:1:100'
       x_speed -= 6.2831853071795862;
     } else {
       if (y_speed - x_speed > 3.1415926535897931) {
-        // '<S4>:1:91'
-        // '<S4>:1:92'
+        // '<S4>:1:101'
+        // '<S4>:1:102'
         y_speed -= 6.2831853071795862;
       }
     }
 
-    // '<S4>:1:94'
-    end2_idx_0 = scanning_GetAngle_n(rtb_CenterPosX - rtb_path[(int32_T)
-      end2_idx_1 - 1], rtb_CenterPosY - rtb_path[(int32_T)end2_idx_1 + 100]);
+    // '<S4>:1:104'
+    accumulate_wind_speed = scanning_GetAngle_n(rtb_CenterPosX - rtb_path
+      [(int32_T)end1_idx_1 - 1], rtb_CenterPosY - rtb_path[(int32_T)end1_idx_1 +
+      200]);
 
-    // '<S4>:1:95'
-    start_point_idx_0 = std::abs(scanning_AngleDiff_b(y_speed, x_speed));
+    // '<S4>:1:105'
+    count_wind = fabs(scanning_AngleDiff_lg(y_speed, x_speed));
 
-    // '<S4>:1:96'
+    // '<S4>:1:106'
     x_speed = (x_speed + y_speed) / 2.0;
-    if (std::abs(scanning_AngleDiff_b(x_speed, end2_idx_0)) < 1.5707963267948966
-        - start_point_idx_0 / 2.0) {
-      // '<S4>:1:98'
-      // '<S4>:1:99'
-      ixstart = 2;
-    } else if ((std::abs(scanning_AngleDiff_b(x_speed, end2_idx_0)) >=
-                1.5707963267948966 - start_point_idx_0 / 2.0) && (std::abs
-                (scanning_AngleDiff_b(x_speed, end2_idx_0)) <= start_point_idx_0
-                / 2.0 + 1.5707963267948966)) {
-      // '<S4>:1:100'
-      // '<S4>:1:101'
-      ixstart = 1;
+    if (fabs(scanning_AngleDiff_lg(x_speed, accumulate_wind_speed)) <
+        1.5707963267948966 - count_wind / 2.0) {
+      // '<S4>:1:108'
+      // '<S4>:1:109'
+      wind_valid = 2;
+    } else if ((fabs(scanning_AngleDiff_lg(x_speed, accumulate_wind_speed)) >=
+                1.5707963267948966 - count_wind / 2.0) && (fabs
+                (scanning_AngleDiff_lg(x_speed, accumulate_wind_speed)) <=
+                count_wind / 2.0 + 1.5707963267948966)) {
+      // '<S4>:1:110'
+      // '<S4>:1:111'
+      wind_valid = 1;
     } else {
       // if abs(alpha_now-alpha_edge)>(pi/2+angle_area/2)
-      // '<S4>:1:103'
-      ixstart = 0;
+      // '<S4>:1:113'
+      wind_valid = 0;
     }
   }
 
-  if (ixstart == 0) {
-    // '<S4>:1:111'
-    // '<S4>:1:112'
-    end2_idx_1--;
+  if (end1_idx_1 >= 200.0) {
+    // '<S4>:1:118'
+    // '<S4>:1:119'
+    end1_idx_1 = 199.0;
   }
 
-  // '<S4>:1:114'
-  // '<S4>:1:115'
-  // '<S4>:1:116'
-  // '<S4>:1:117'
-  // '<S4>:1:120'
-  x_speed = rtb_path[(int32_T)end2_idx_1 + 100] - rtb_path[(int32_T)(end2_idx_1
-    + 1.0) + 100];
-  y_speed = rtb_path[(int32_T)(end2_idx_1 + 1.0) - 1] - rtb_path[(int32_T)
-    end2_idx_1 - 1];
-  start_point_idx_0 = std::abs((((rtb_path[(int32_T)end2_idx_1 + 100] -
-    rtb_path[(int32_T)(end2_idx_1 + 1.0) + 100]) * rtb_CenterPosX + (rtb_path
-    [(int32_T)(end2_idx_1 + 1.0) - 1] - rtb_path[(int32_T)end2_idx_1 - 1]) *
-    rtb_CenterPosY) - rtb_path[(int32_T)(end2_idx_1 + 1.0) - 1] * rtb_path
-    [(int32_T)end2_idx_1 + 100]) + rtb_path[(int32_T)(end2_idx_1 + 1.0) + 100] *
-    rtb_path[(int32_T)end2_idx_1 - 1]) / std::sqrt(x_speed * x_speed + y_speed *
-    y_speed);
+  if (wind_valid == 0) {
+    // '<S4>:1:121'
+    // '<S4>:1:122'
+    end1_idx_1--;
+  }
 
-  // '<S4>:1:121'
-  x_speed = rtb_path[(int32_T)end2_idx_1 + 100] - rtb_CenterPosY;
-  y_speed = rtb_path[(int32_T)end2_idx_1 - 1] - rtb_CenterPosX;
-  end2_idx_0 = std::sqrt(x_speed * x_speed + y_speed * y_speed);
+  // '<S4>:1:124'
+  // '<S4>:1:125'
+  // '<S4>:1:126'
+  // '<S4>:1:127'
+  // '<S4>:1:130'
+  y_speed = rtb_path[(int32_T)end1_idx_1 + 200] - rtb_path[(int32_T)(end1_idx_1
+    + 1.0) + 200];
+  x_speed = rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] - rtb_path[(int32_T)
+    end1_idx_1 - 1];
+  count_wind = fabs((((rtb_path[(int32_T)end1_idx_1 + 200] - rtb_path[(int32_T)
+                       (end1_idx_1 + 1.0) + 200]) * rtb_CenterPosX + (rtb_path
+    [(int32_T)(end1_idx_1 + 1.0) - 1] - rtb_path[(int32_T)end1_idx_1 - 1]) *
+                      rtb_CenterPosY) - rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1]
+                     * rtb_path[(int32_T)end1_idx_1 + 200]) + rtb_path[(int32_T)
+                    (end1_idx_1 + 1.0) + 200] * rtb_path[(int32_T)end1_idx_1 - 1])
+    / sqrt(y_speed * y_speed + x_speed * x_speed);
 
-  // '<S4>:1:122'
-  x_speed = rtb_path[(int32_T)(end2_idx_1 + 1.0) + 100] - rtb_CenterPosY;
-  y_speed = rtb_path[(int32_T)(end2_idx_1 + 1.0) - 1] - rtb_CenterPosX;
-  x_speed = std::sqrt(x_speed * x_speed + y_speed * y_speed);
-  if (ixstart == 1) {
-    // '<S4>:1:125'
-    // '<S4>:1:127'
-    x_speed = rtb_path[(int32_T)end2_idx_1 - 1] - rtb_path[(int32_T)(end2_idx_1
-      + 1.0) - 1];
-    y_speed = rtb_path[(int32_T)end2_idx_1 + 100] - rtb_path[(int32_T)
-      (end2_idx_1 + 1.0) + 100];
-    end2_idx_0 = std::sqrt(x_speed * x_speed + y_speed * y_speed);
+  // '<S4>:1:131'
+  x_speed = rtb_path[(int32_T)end1_idx_1 + 200] - rtb_CenterPosY;
+  y_speed = rtb_path[(int32_T)end1_idx_1 - 1] - rtb_CenterPosX;
+  accumulate_wind_speed = sqrt(x_speed * x_speed + y_speed * y_speed);
 
-    // '<S4>:1:128'
-    start_point_idx_1 = rtb_path[(int32_T)end2_idx_1 - 1];
-
-    // '<S4>:1:129'
-    x_speed = rtb_path[(int32_T)end2_idx_1 + 100];
-  } else {
-    if (start_point_idx_0 > end2_idx_0) {
-      // '<S4>:1:131'
-      // '<S4>:1:132'
-      start_point_idx_0 = end2_idx_0;
-    }
-
-    if (start_point_idx_0 > x_speed) {
-      // '<S4>:1:134'
-      // '<S4>:1:135'
-      start_point_idx_0 = x_speed;
-    }
-
+  // '<S4>:1:132'
+  x_speed = rtb_path[(int32_T)(end1_idx_1 + 1.0) + 200] - rtb_CenterPosY;
+  y_speed = rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] - rtb_CenterPosX;
+  x_speed = sqrt(x_speed * x_speed + y_speed * y_speed);
+  if (wind_valid == 1) {
+    // '<S4>:1:135'
     // '<S4>:1:137'
-    y_speed = std::sqrt(end2_idx_0 * end2_idx_0 - start_point_idx_0 *
-                        start_point_idx_0);
+    x_speed = rtb_path[(int32_T)end1_idx_1 - 1] - rtb_path[(int32_T)(end1_idx_1
+      + 1.0) - 1];
+    y_speed = rtb_path[(int32_T)end1_idx_1 + 200] - rtb_path[(int32_T)
+      (end1_idx_1 + 1.0) + 200];
+    y_speed = sqrt(x_speed * x_speed + y_speed * y_speed);
 
     // '<S4>:1:138'
-    end2_idx_0 = std::sqrt(x_speed * x_speed - start_point_idx_0 *
-      start_point_idx_0);
+    real_wind_speed_x = rtb_path[(int32_T)end1_idx_1 - 1];
 
     // '<S4>:1:139'
-    start_point_idx_1 = end2_idx_0 / (y_speed + end2_idx_0) * rtb_path[(int32_T)
-      end2_idx_1 - 1] + y_speed / (y_speed + end2_idx_0) * rtb_path[(int32_T)
-      (end2_idx_1 + 1.0) - 1];
+    x_speed = rtb_path[(int32_T)end1_idx_1 + 200];
+  } else {
+    if (count_wind > accumulate_wind_speed) {
+      // '<S4>:1:141'
+      // '<S4>:1:142'
+      count_wind = accumulate_wind_speed;
+    }
 
-    // '<S4>:1:140'
-    x_speed = end2_idx_0 / (y_speed + end2_idx_0) * rtb_path[(int32_T)end2_idx_1
-      + 100] + y_speed / (y_speed + end2_idx_0) * rtb_path[(int32_T)(end2_idx_1
-      + 1.0) + 100];
+    if (count_wind > x_speed) {
+      // '<S4>:1:144'
+      // '<S4>:1:145'
+      count_wind = x_speed;
+    }
+
+    // '<S4>:1:147'
+    accumulate_wind_speed = sqrt(accumulate_wind_speed * accumulate_wind_speed -
+      count_wind * count_wind);
+
+    // '<S4>:1:148'
+    y_speed = sqrt(x_speed * x_speed - count_wind * count_wind);
+
+    // '<S4>:1:149'
+    real_wind_speed_x = y_speed / (accumulate_wind_speed + y_speed) * rtb_path
+      [(int32_T)end1_idx_1 - 1] + accumulate_wind_speed / (accumulate_wind_speed
+      + y_speed) * rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1];
+
+    // '<S4>:1:150'
+    x_speed = y_speed / (accumulate_wind_speed + y_speed) * rtb_path[(int32_T)
+      end1_idx_1 + 200] + accumulate_wind_speed / (accumulate_wind_speed +
+      y_speed) * rtb_path[(int32_T)(end1_idx_1 + 1.0) + 200];
   }
 
   if (begin == 1) {
-    // '<S4>:1:143'
-    // '<S4>:1:144'
-    start_point_idx_1 = rtb_path[1];
+    // '<S4>:1:153'
+    // '<S4>:1:154'
+    real_wind_speed_x = rtb_path[1];
 
-    // '<S4>:1:145'
-    x_speed = rtb_path[102];
+    // '<S4>:1:155'
+    x_speed = rtb_path[202];
   }
 
   // （sn_x,sn_y)是精确投影点
   // R=100+L/5;
-  if (!(scanning_P.R <= start_point_idx_0)) {
-    // '<S4>:1:157'
-    sf = std::sqrt(scanning_P.R * scanning_P.R - start_point_idx_0 *
-                   start_point_idx_0);
-    if (sf <= end2_idx_0) {
-      // '<S4>:1:158'
-      // '<S4>:1:159'
-      start_point_idx_1 += (rtb_path[(int32_T)(end2_idx_1 + 1.0) - 1] -
-                            start_point_idx_1) * (sf / end2_idx_0);
+  if (!(end1_idx_0 <= count_wind)) {
+    // '<S4>:1:167'
+    end1_idx_0 = sqrt(end1_idx_0 * end1_idx_0 - count_wind * count_wind);
+    if (end1_idx_0 <= y_speed) {
+      // '<S4>:1:168'
+      // '<S4>:1:169'
+      real_wind_speed_x += (rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] -
+                            real_wind_speed_x) * (end1_idx_0 / y_speed);
 
-      // '<S4>:1:160'
-      x_speed += (rtb_path[(int32_T)(end2_idx_1 + 1.0) + 100] - x_speed) * (sf /
-        end2_idx_0);
+      // '<S4>:1:170'
+      x_speed += (rtb_path[(int32_T)(end1_idx_1 + 1.0) + 200] - x_speed) *
+        (end1_idx_0 / y_speed);
     } else {
-      // '<S4>:1:162'
-      i = end2_idx_1;
+      // '<S4>:1:172'
+      GPS_data_idx_0 = end1_idx_1;
 
-      // '<S4>:1:163'
-      sf -= end2_idx_0;
+      // '<S4>:1:173'
+      end1_idx_0 -= y_speed;
 
       //              while GetDistance(x_set(i),y_set(i),x_set(i+1),y_set(i+1))==0 
       //                  i=i+1;
       //              end
-      while ((sf >= 0.0) && (i < 100.0)) {
-        // '<S4>:1:167'
-        // '<S4>:1:168'
-        i++;
+      while ((end1_idx_0 >= 0.0) && (GPS_data_idx_0 < 200.0)) {
+        // '<S4>:1:177'
+        // '<S4>:1:178'
+        GPS_data_idx_0++;
 
-        // '<S4>:1:169'
-        x_speed = rtb_path[(int32_T)i - 1] - rtb_path[(int32_T)(i + 1.0) - 1];
-        y_speed = rtb_path[(int32_T)i + 100] - rtb_path[(int32_T)(i + 1.0) + 100];
-        sf -= std::sqrt(x_speed * x_speed + y_speed * y_speed);
+        // '<S4>:1:179'
+        x_speed = rtb_path[(int32_T)GPS_data_idx_0 - 1] - rtb_path[(int32_T)
+          (GPS_data_idx_0 + 1.0) - 1];
+        y_speed = rtb_path[(int32_T)GPS_data_idx_0 + 200] - rtb_path[(int32_T)
+          (GPS_data_idx_0 + 1.0) + 200];
+        end1_idx_0 -= sqrt(x_speed * x_speed + y_speed * y_speed);
       }
 
-      if (i >= 100.0) {
-        // '<S4>:1:171'
-        // '<S4>:1:172'
-        start_point_idx_1 = rtb_path[100];
+      if (GPS_data_idx_0 >= 200.0) {
+        // '<S4>:1:181'
+        // '<S4>:1:182'
+        real_wind_speed_x = rtb_path[200];
 
-        // '<S4>:1:173'
-        x_speed = rtb_path[201];
+        // '<S4>:1:183'
+        x_speed = rtb_path[401];
       } else {
-        // '<S4>:1:175'
-        x_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
-        y_speed = rtb_path[(int32_T)(i + 1.0) + 100] - rtb_path[(int32_T)i + 100];
-        end2_idx_0 = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
-        start_point_idx_0 = rtb_path[(int32_T)(i + 1.0) + 100] - rtb_path
-          [(int32_T)i + 100];
-        start_point_idx_1 = (std::sqrt(x_speed * x_speed + y_speed * y_speed) +
-                             sf) / std::sqrt(end2_idx_0 * end2_idx_0 +
-          start_point_idx_0 * start_point_idx_0) * (rtb_path[(int32_T)(i + 1.0)
-          - 1] - rtb_path[(int32_T)i - 1]) + rtb_path[(int32_T)i - 1];
+        // '<S4>:1:185'
+        x_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] - rtb_path
+          [(int32_T)GPS_data_idx_0 - 1];
+        y_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
+          [(int32_T)GPS_data_idx_0 + 200];
+        accumulate_wind_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] -
+          rtb_path[(int32_T)GPS_data_idx_0 - 1];
+        count_wind = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
+          [(int32_T)GPS_data_idx_0 + 200];
+        real_wind_speed_x = (sqrt(x_speed * x_speed + y_speed * y_speed) +
+                             end1_idx_0) / sqrt(accumulate_wind_speed *
+          accumulate_wind_speed + count_wind * count_wind) * (rtb_path[(int32_T)
+          (GPS_data_idx_0 + 1.0) - 1] - rtb_path[(int32_T)GPS_data_idx_0 - 1]) +
+          rtb_path[(int32_T)GPS_data_idx_0 - 1];
 
-        // '<S4>:1:176'
-        x_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
-        y_speed = rtb_path[(int32_T)(i + 1.0) + 100] - rtb_path[(int32_T)i + 100];
-        end2_idx_0 = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
-        start_point_idx_0 = rtb_path[(int32_T)(i + 1.0) + 100] - rtb_path
-          [(int32_T)i + 100];
-        x_speed = (std::sqrt(x_speed * x_speed + y_speed * y_speed) + sf) / std::
-          sqrt(end2_idx_0 * end2_idx_0 + start_point_idx_0 * start_point_idx_0) *
-          (rtb_path[(int32_T)(i + 1.0) + 100] - rtb_path[(int32_T)i + 100]) +
-          rtb_path[(int32_T)i + 100];
+        // '<S4>:1:186'
+        x_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] - rtb_path
+          [(int32_T)GPS_data_idx_0 - 1];
+        y_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
+          [(int32_T)GPS_data_idx_0 + 200];
+        accumulate_wind_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] -
+          rtb_path[(int32_T)GPS_data_idx_0 - 1];
+        count_wind = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
+          [(int32_T)GPS_data_idx_0 + 200];
+        x_speed = (sqrt(x_speed * x_speed + y_speed * y_speed) + end1_idx_0) /
+          sqrt(accumulate_wind_speed * accumulate_wind_speed + count_wind *
+               count_wind) * (rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] -
+                              rtb_path[(int32_T)GPS_data_idx_0 + 200]) +
+          rtb_path[(int32_T)GPS_data_idx_0 + 200];
       }
     }
   } else {
-    // '<S4>:1:153'
-    // '<S4>:1:154'
-    // '<S4>:1:155'
+    // '<S4>:1:163'
+    // '<S4>:1:164'
+    // '<S4>:1:165'
   }
 
-  // '<S4>:1:182'
+  // '<S4>:1:191'
   // Heading_d=speed_angle_d-drift_angle;
-  rtb_speed_angle_d = scanning_GetAngle_n(start_point_idx_1 - rtb_CenterPosX,
+  //  Saim_x
+  //  Saim_y
+  rtb_CenterPosX = scanning_GetAngle_n(real_wind_speed_x - rtb_CenterPosX,
     x_speed - rtb_CenterPosY);
 
-  // MATLAB Function: '<Root>/MATLAB Function6' incorporates:
-  //   Constant: '<Root>/Airmar_X'
-  //   Constant: '<Root>/Airmar_Z'
-  //   Inport: '<Root>/Airmar_wind_angle'
-  //   Inport: '<Root>/Airmar_wind_speed'
-  //   Inport: '<Root>/ahrs_Roll'
-  //   Inport: '<Root>/ahrs_Roll_rate'
-  //   Inport: '<Root>/ahrs_Yaw'
-  //   Inport: '<Root>/ahrs_Yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
-  //   UnitDelay: '<Root>/Unit Delay13'
-
-  // MATLAB Function 'MATLAB Function6': '<S7>:1'
-  // '<S7>:1:4'
-  // '<S7>:1:5'
-  // '<S7>:1:6'
-  start_point_idx_1 = std::cos(scanning_U.Airmar_wind_angle +
-    scanning_U.ahrs_Yaw) * scanning_U.Airmar_wind_speed - ((std::cos
-    (scanning_U.ahrs_Yaw + 1.5707963267948966) * scanning_U.ahrs_Roll_rate * 0.8
-    + rtb_Horizontal_speed * std::cos(Horizontal_speed_angle)) + std::cos
-    (scanning_U.ahrs_Yaw + 1.5707963267948966) * scanning_U.ahrs_Yaw_rate *
-    -0.61);
-
-  // %%%%%%%%%%%%%%%%%%%%%%%%%%
-  // '<S7>:1:7'
-  sf = std::sin(scanning_U.Airmar_wind_angle + scanning_U.ahrs_Yaw) *
-    scanning_U.Airmar_wind_speed - ((std::sin(scanning_U.ahrs_Yaw +
-    1.5707963267948966) * scanning_U.ahrs_Roll_rate * 0.8 + rtb_Horizontal_speed
-    * std::sin(Horizontal_speed_angle)) + std::sin(scanning_U.ahrs_Yaw +
-    1.5707963267948966) * scanning_U.ahrs_Yaw_rate * -0.61);
-
-  // %%%%%%%%%%%%%%%%%%%%%%%%%%
-  // '<S7>:1:9'
-  if ((std::abs(scanning_U.ahrs_Roll) < 0.78539816339744828) && (std::abs
-       (scanning_U.ahrs_Roll_rate) < 1.0471975511965976)) {
-    // '<S7>:1:12'
-    // '<S7>:1:13'
-    b_ixstart = 1;
-  } else {
-    // '<S7>:1:15'
-    b_ixstart = 0;
-  }
-
-  // '<S7>:1:17'
-  memset(&scanning_B.real_wind_history[0], 0, 6000U * sizeof(real_T));
-
-  // '<S7>:1:18'
-  scanning_B.real_wind_history[0] = start_point_idx_1;
-  scanning_B.real_wind_history[2000] = sf;
-  scanning_B.real_wind_history[4000] = b_ixstart;
-
-  // '<S7>:1:20'
-  end2_idx_0 = rt_roundd_snf(scanning_P.wind_mean_time / 0.1);
-
-  // '<S7>:1:20'
-  for (b_ixstart = 0; b_ixstart < (int32_T)(end2_idx_0 + -1.0); b_ixstart++) {
-    // '<S7>:1:20'
-    // '<S7>:1:21'
-    i_0 = (int32_T)((2.0 + (real_T)b_ixstart) - 1.0);
-    scanning_B.real_wind_history[b_ixstart + 1] =
-      scanning_DW.UnitDelay13_DSTATE[i_0 - 1];
-    scanning_B.real_wind_history[b_ixstart + 2001] =
-      scanning_DW.UnitDelay13_DSTATE[i_0 + 1999];
-    scanning_B.real_wind_history[b_ixstart + 4001] =
-      scanning_DW.UnitDelay13_DSTATE[i_0 + 3999];
-
-    // '<S7>:1:20'
-  }
-
-  // '<S7>:1:24'
-  x_speed = 0.0;
-
-  // '<S7>:1:25'
-  y_speed = 0.0;
-
-  // '<S7>:1:26'
-  end2_idx_0 = 0.0;
-
-  // '<S7>:1:27'
-  start_point_idx_0 = 0.0;
-
-  // '<S7>:1:28'
-  c = rt_roundd_snf(scanning_P.wind_mean_time / 0.1);
-
-  // '<S7>:1:28'
-  for (ixstart = 0; ixstart < (int32_T)c; ixstart++) {
-    // '<S7>:1:28'
-    if (scanning_B.real_wind_history[4000 + ixstart] > 0.5) {
-      // '<S7>:1:29'
-      // '<S7>:1:30'
-      x_speed += scanning_B.real_wind_history[ixstart];
-
-      // '<S7>:1:31'
-      y_speed += scanning_B.real_wind_history[2000 + ixstart];
-
-      // '<S7>:1:32'
-      end2_idx_0 += std::sqrt(scanning_B.real_wind_history[2000 + ixstart] *
-        scanning_B.real_wind_history[2000 + ixstart] +
-        scanning_B.real_wind_history[ixstart] *
-        scanning_B.real_wind_history[ixstart]);
-
-      // '<S7>:1:33'
-      start_point_idx_0++;
-    }
-
-    // '<S7>:1:28'
-  }
-
-  if (start_point_idx_0 < 0.5) {
-    // '<S7>:1:36'
-    // '<S7>:1:37'
-    // '<S7>:1:38'
-    // '<S7>:1:39'
-    WindSpeed_mean = std::sqrt(start_point_idx_1 * start_point_idx_1 + sf * sf);
-  } else {
-    // '<S7>:1:41'
-    start_point_idx_1 = x_speed / start_point_idx_0;
-
-    // '<S7>:1:42'
-    sf = y_speed / start_point_idx_0;
-
-    // '<S7>:1:43'
-    WindSpeed_mean = end2_idx_0 / start_point_idx_0;
-  }
-
-  if (std::abs(start_point_idx_1) < 1.0E-5) {
-    // '<S7>:1:45'
-    // '<S7>:1:46'
-    start_point_idx_1 = 1.0E-5;
-  }
-
-  // '<S7>:1:48'
-  rtb_WindAngle_mean = rt_atan2d_snf(sf, start_point_idx_1);
+  // Outport: '<Root>/los_heading'
+  scanning_Y.los_heading = rtb_CenterPosX;
 
   // MATLAB Function: '<Root>/MATLAB Function4' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
+  //   UnitDelay: '<Root>/Unit Delay10'
 
   // MATLAB Function 'MATLAB Function4': '<S5>:1'
-  // '<S5>:1:13'
-  rtb_CenterPosX = 2.0;
+  if (scanning_DW.UnitDelay10_DSTATE > scanning_P.tacking_time) {
+    // '<S5>:1:8'
+    // '<S5>:1:9'
+    rtb_tacking = 2.0;
+  } else {
+    // '<S5>:1:11'
+    rtb_tacking = scanning_DW.UnitDelay10_DSTATE + 1.0;
+  }
+
+  //  tacking=2;
   if (b > 0.5) {
     // '<S5>:1:14'
     // '<S5>:1:16'
-    rtb_CenterPosX = 1.0;
+    rtb_tacking = 1.0;
   }
 
-  // MATLAB Function: '<Root>/MATLAB Function5' incorporates:
-  //   Inport: '<Root>/ahrs_Roll'
-  //   UnitDelay: '<Root>/Unit Delay11'
+  // MATLAB Function: '<Root>/MATLAB Function6' incorporates:
+  //   Inport: '<Root>/Roll'
+  //   UnitDelay: '<Root>/Unit Delay2'
 
   // '<S5>:1:18'
-  // MATLAB Function 'MATLAB Function5': '<S6>:1'
-  if (std::abs(scanning_U.ahrs_Roll) > scanning_P.max_roll_allowed) {
+  // MATLAB Function 'MATLAB Function6': '<S6>:1'
+  if (fabs(scanning_U.Roll) > scanning_P.max_roll_allowed) {
     // '<S6>:1:2'
     // '<S6>:1:3'
     loose_time = scanning_P.max_loose_time;
   } else {
     // '<S6>:1:5'
-    loose_time = scanning_DW.UnitDelay11_DSTATE - 1.0;
+    loose_time = scanning_DW.UnitDelay2_DSTATE - 1.0;
   }
 
   if (loose_time < 0.0) {
@@ -2382,17 +2488,17 @@ void scanningModelClass::step()
 
   // MATLAB Function: '<Root>/MATLAB Function1' incorporates:
   //   Inport: '<Root>/Airmar_wind_angle'
-  //   Inport: '<Root>/ahrs_Yaw'
-  //   MATLAB Function: '<Root>/MATLAB Function6'
+  //   Inport: '<Root>/Yaw'
   //   MATLAB Function: '<Root>/MATLAB Function7'
-  //   UnitDelay: '<Root>/Unit Delay7'
+  //   MATLAB Function: '<Root>/MATLAB Function8'
+  //   UnitDelay: '<Root>/Unit Delay16'
   //   UnitDelay: '<Root>/Unit Delay8'
   //   UnitDelay: '<Root>/Unit Delay9'
 
-  heading = scanning_U.ahrs_Yaw;
-  sail_d_last = scanning_DW.UnitDelay7_DSTATE;
-  rtb_CenterPosY = scanning_DW.UnitDelay8_DSTATE;
-  jibing = scanning_DW.UnitDelay9_DSTATE;
+  heading = scanning_U.Yaw;
+  sail_d_last = scanning_DW.UnitDelay8_DSTATE;
+  rtb_CenterPosY = scanning_DW.UnitDelay9_DSTATE;
+  jibing = scanning_DW.UnitDelay16_DSTATE;
   b_tacking_force_discount = scanning_P.tacking_force_discount;
   Airmar_wind_angle = scanning_U.Airmar_wind_angle;
 
@@ -2400,165 +2506,176 @@ void scanningModelClass::step()
   // yaw,yaw_rate,,attack_angle
   // jibing的标准是多少度？
   // SailAngle_ground为角度、sail_d为弧度、
-  // '<S2>:1:8'
-  length_sailangle = ((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
-    180.0) + 90.0) - (rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
-    180.0) - 90.0)) + 1.0;
+  if (point3_idx_0 < scanning_P.tacking_discount_decrease_windspeed) {
+    // '<S2>:1:4'
+    // '<S2>:1:5'
+    b_tacking_force_discount = scanning_P.tacking_force_discount - 0.2;
+  }
 
-  // '<S2>:1:10'
+  // los_heading
+  // '<S2>:1:11'
+  length_sailangle = ((rt_roundd_snf(point3_idx_1 / 3.1415926535897931 * 180.0)
+                       + 90.0) - (rt_roundd_snf(point3_idx_1 /
+    3.1415926535897931 * 180.0) - 90.0)) + 1.0;
+
+  // '<S2>:1:13'
   memset(&scanning_B.price[0], 0, 760U * sizeof(real_T));
 
-  // '<S2>:1:11'
-  x = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0);
+  // '<S2>:1:14'
+  x = rt_roundd_snf(point3_idx_1 / 3.1415926535897931 * 180.0);
 
-  // '<S2>:1:11'
-  b = (int32_T)((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0)
-                 + 90.0) + (1.0 - (x - 90.0)));
+  // '<S2>:1:14'
+  b = (int32_T)((rt_roundd_snf(point3_idx_1 / 3.1415926535897931 * 180.0) + 90.0)
+                + (1.0 - (x - 90.0)));
 
-  // '<S2>:1:11'
+  // '<S2>:1:14'
   for (begin = 0; begin < b; begin++) {
-    // '<S2>:1:11'
+    // '<S2>:1:14'
     SailAngle_ground = (x - 90.0) + (real_T)begin;
 
-    // '<S2>:1:12'
-    n = (SailAngle_ground - (rt_roundd_snf(rtb_WindAngle_mean /
-           3.1415926535897931 * 180.0) - 90.0)) + 1.0;
-    scanning_getSailForce_ground(rtb_WindAngle_mean, SailAngle_ground / 180.0 *
-      3.1415926535897931, WindSpeed_mean, &length_time, &sf, &x_speed);
+    // '<S2>:1:15'
+    n = (SailAngle_ground - (rt_roundd_snf(point3_idx_1 / 3.1415926535897931 *
+           180.0) - 90.0)) + 1.0;
+    scanning_getSailForce_ground(point3_idx_1, SailAngle_ground / 180.0 *
+      3.1415926535897931, point3_idx_0, &end1_idx_0, &length_time, &x_speed);
 
-    // '<S2>:1:23'
-    start_point_idx_0 = (rt_roundd_snf((sf + 1.3089969389957472) /
-      3.1415926535897931 * 180.0) - rt_roundd_snf((sf - 1.3089969389957472) /
-      3.1415926535897931 * 180.0)) + 1.0;
+    // '<S2>:1:26'
+    count_wind = (rt_roundd_snf((length_time + 1.3089969389957472) /
+      3.1415926535897931 * 180.0) - rt_roundd_snf((length_time -
+      1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
 
-    // '<S2>:1:24'
+    // '<S2>:1:27'
     memset(&scanning_B.price_fixSail[0], 0, 1140U * sizeof(real_T));
 
-    // '<S2>:1:25'
-    c = rt_roundd_snf((sf - 1.3089969389957472) / 3.1415926535897931 * 180.0);
+    // '<S2>:1:28'
+    point1_idx_0 = rt_roundd_snf((length_time - 1.3089969389957472) /
+      3.1415926535897931 * 180.0);
 
-    // '<S2>:1:25'
-    b_ixstart = (int32_T)(rt_roundd_snf((sf + 1.3089969389957472) /
-      3.1415926535897931 * 180.0) + (1.0 - c));
+    // '<S2>:1:28'
+    wind_valid = (int32_T)(rt_roundd_snf((length_time + 1.3089969389957472) /
+      3.1415926535897931 * 180.0) + (1.0 - point1_idx_0));
 
-    // '<S2>:1:25'
-    for (ixstart = 0; ixstart < b_ixstart; ixstart++) {
-      // '<S2>:1:25'
-      i = c + (real_T)ixstart;
-
+    // '<S2>:1:28'
+    for (ixstart = 0; ixstart < wind_valid; ixstart++) {
       // '<S2>:1:28'
-      start_point_idx_1 = (i - rt_roundd_snf((sf - 1.3089969389957472) /
-        3.1415926535897931 * 180.0)) + 1.0;
+      GPS_data_idx_0 = point1_idx_0 + (real_T)ixstart;
 
-      // '<S2>:1:29'
-      x_speed = i / 180.0 * 3.1415926535897931;
+      // '<S2>:1:31'
+      real_wind_speed_x = (GPS_data_idx_0 - rt_roundd_snf((length_time -
+        1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
 
-      // '<S2>:1:30'
-      y_speed = scanning_HeadingDeadZone(x_speed, rtb_WindAngle_mean,
-        SailAngle_ground / 180.0 * 3.1415926535897931, rtb_CenterPosX,
-        rtb_CenterPosY / 3.1415926535897931 * 180.0);
+      // '<S2>:1:32'
+      x_speed = GPS_data_idx_0 / 180.0 * 3.1415926535897931;
+
+      // '<S2>:1:33'
+      y_speed = scanning_HeadingDeadZone(x_speed, point3_idx_1, SailAngle_ground
+        / 180.0 * 3.1415926535897931, rtb_tacking, rtb_CenterPosY /
+        3.1415926535897931 * 180.0);
 
       // speed_angle=heading_check+AngleDiff(heading_check,SailForceAngle_ground)/5;%%%加漂角,漂角怎样得到？ 
-      // '<S2>:1:32'
-      end2_idx_0 = scanning_AngleDiff_f(rtb_speed_angle_d, x_speed);
+      // '<S2>:1:35'
+      accumulate_wind_speed = scanning_AngleDiff_l(rtb_CenterPosX, x_speed);
       if ((y_speed > 0.5) && (y_speed < 1.5)) {
-        // '<S2>:1:34'
-        // '<S2>:1:35'
-        end2_idx_0 = 100.0;
+        // '<S2>:1:37'
+        // '<S2>:1:38'
+        accumulate_wind_speed = 100.0;
 
         // 10000;
       }
 
       // %%%
-      // '<S2>:1:39'
-      scanning_B.price_fixSail[(int32_T)start_point_idx_1 - 1] = x_speed;
-
-      // '<S2>:1:40'
-      scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 189] = end2_idx_0;
-
-      // '<S2>:1:41'
-      scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 379] = sf;
-
       // '<S2>:1:42'
-      scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 569] = y_speed;
-      if (end2_idx_0 < 0.0) {
-        // '<S2>:1:43'
-        // '<S2>:1:44'
-        scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 759] = 100.0;
-      } else {
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x - 1] = x_speed;
+
+      // '<S2>:1:43'
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 189] =
+        accumulate_wind_speed;
+
+      // '<S2>:1:44'
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 379] = length_time;
+
+      // '<S2>:1:45'
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 569] = y_speed;
+      if (accumulate_wind_speed < 0.0) {
         // '<S2>:1:46'
-        scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 759] = end2_idx_0;
-      }
-
-      if (end2_idx_0 > 0.0) {
-        // '<S2>:1:48'
-        // '<S2>:1:49'
-        scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 949] = -100.0;
+        // '<S2>:1:47'
+        scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 759] = 100.0;
       } else {
-        // '<S2>:1:51'
-        scanning_B.price_fixSail[(int32_T)start_point_idx_1 + 949] = end2_idx_0;
+        // '<S2>:1:49'
+        scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 759] =
+          accumulate_wind_speed;
       }
 
-      // '<S2>:1:25'
+      if (accumulate_wind_speed > 0.0) {
+        // '<S2>:1:51'
+        // '<S2>:1:52'
+        scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 949] = -100.0;
+      } else {
+        // '<S2>:1:54'
+        scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 949] =
+          accumulate_wind_speed;
+      }
+
+      // '<S2>:1:28'
     }
 
     // %%%
     // 正一个负一个
-    if (1.0 > start_point_idx_0) {
-      ixstart = 0;
+    if (1.0 > count_wind) {
+      wind_valid = 0;
     } else {
-      ixstart = (int32_T)start_point_idx_0;
+      wind_valid = (int32_T)count_wind;
     }
 
-    i_0 = 1;
+    ixstart = 1;
     x_speed = scanning_B.price_fixSail[760];
     c_itmp = 0;
-    if (ixstart > 1) {
+    if (wind_valid > 1) {
       if (rtIsNaN(scanning_B.price_fixSail[760])) {
-        b_ixstart = 1;
+        i = 1;
         exitg1 = false;
-        while ((!exitg1) && (b_ixstart + 1 <= ixstart)) {
-          i_0 = b_ixstart + 1;
-          if (!rtIsNaN(scanning_B.price_fixSail[760 + b_ixstart])) {
-            x_speed = scanning_B.price_fixSail[760 + b_ixstart];
-            c_itmp = b_ixstart;
+        while ((!exitg1) && (i + 1 <= wind_valid)) {
+          ixstart = i + 1;
+          if (!rtIsNaN(scanning_B.price_fixSail[760 + i])) {
+            x_speed = scanning_B.price_fixSail[760 + i];
+            c_itmp = i;
             exitg1 = true;
           } else {
-            b_ixstart++;
+            i++;
           }
         }
       }
 
-      if (i_0 < ixstart) {
-        while (i_0 + 1 <= ixstart) {
-          if (scanning_B.price_fixSail[760 + i_0] < x_speed) {
-            x_speed = scanning_B.price_fixSail[760 + i_0];
-            c_itmp = i_0;
+      if (ixstart < wind_valid) {
+        while (ixstart + 1 <= wind_valid) {
+          if (scanning_B.price_fixSail[760 + ixstart] < x_speed) {
+            x_speed = scanning_B.price_fixSail[760 + ixstart];
+            c_itmp = ixstart;
           }
 
-          i_0++;
+          ixstart++;
         }
       }
     }
 
-    if (1.0 > start_point_idx_0) {
-      ixstart = 0;
+    if (1.0 > count_wind) {
+      wind_valid = 0;
     } else {
-      ixstart = (int32_T)start_point_idx_0;
+      wind_valid = (int32_T)count_wind;
     }
 
-    b_ixstart = 1;
+    ixstart = 1;
     x_speed = scanning_B.price_fixSail[950];
-    i_0 = 0;
-    if (ixstart > 1) {
+    i = 0;
+    if (wind_valid > 1) {
       if (rtIsNaN(scanning_B.price_fixSail[950])) {
         itmp = 1;
         exitg1 = false;
-        while ((!exitg1) && (itmp + 1 <= ixstart)) {
-          b_ixstart = itmp + 1;
+        while ((!exitg1) && (itmp + 1 <= wind_valid)) {
+          ixstart = itmp + 1;
           if (!rtIsNaN(scanning_B.price_fixSail[950 + itmp])) {
             x_speed = scanning_B.price_fixSail[950 + itmp];
-            i_0 = itmp;
+            i = itmp;
             exitg1 = true;
           } else {
             itmp++;
@@ -2566,104 +2683,118 @@ void scanningModelClass::step()
         }
       }
 
-      if (b_ixstart < ixstart) {
-        while (b_ixstart + 1 <= ixstart) {
-          if (scanning_B.price_fixSail[950 + b_ixstart] > x_speed) {
-            x_speed = scanning_B.price_fixSail[950 + b_ixstart];
-            i_0 = b_ixstart;
+      if (ixstart < wind_valid) {
+        while (ixstart + 1 <= wind_valid) {
+          if (scanning_B.price_fixSail[950 + ixstart] > x_speed) {
+            x_speed = scanning_B.price_fixSail[950 + ixstart];
+            i = ixstart;
           }
 
-          b_ixstart++;
+          ixstart++;
         }
       }
     }
 
-    // '<S2>:1:59'
-    // '<S2>:1:60'
-    // '<S2>:1:61'
-    y_speed = std::cos(scanning_AngleDiff_f(scanning_B.price_fixSail[c_itmp], sf))
-      * length_time * std::cos(scanning_AngleDiff_f(rtb_speed_angle_d,
-      scanning_B.price_fixSail[c_itmp]));
-
     // '<S2>:1:62'
-    x_speed = std::cos(scanning_AngleDiff_f(scanning_B.price_fixSail[i_0], sf)) *
-      length_time * std::cos(scanning_AngleDiff_f(rtb_speed_angle_d,
-      scanning_B.price_fixSail[i_0]));
-
     // '<S2>:1:63'
     // '<S2>:1:64'
+    y_speed = cos(scanning_AngleDiff_l(scanning_B.price_fixSail[c_itmp],
+      length_time)) * end1_idx_0 * cos(scanning_AngleDiff_l(rtb_CenterPosX,
+      scanning_B.price_fixSail[c_itmp]));
+
+    // '<S2>:1:65'
+    x_speed = cos(scanning_AngleDiff_l(scanning_B.price_fixSail[i], length_time))
+      * end1_idx_0 * cos(scanning_AngleDiff_l(rtb_CenterPosX,
+      scanning_B.price_fixSail[i]));
+
+    // '<S2>:1:66'
+    // '<S2>:1:67'
     if (scanning_B.price_fixSail[570 + c_itmp] > 1.5) {
-      // '<S2>:1:65'
-      // '<S2>:1:67'
+      // '<S2>:1:68'
+      // '<S2>:1:69'
       y_speed *= b_tacking_force_discount;
     }
 
-    if (scanning_B.price_fixSail[570 + i_0] > 1.5) {
-      // '<S2>:1:70'
+    if ((scanning_B.price_fixSail[570 + c_itmp] < 1.5) &&
+        (scanning_B.price_fixSail[570 + c_itmp] > 0.5)) {
+      // '<S2>:1:71'
       // '<S2>:1:72'
+      y_speed = -100.0;
+    }
+
+    if (scanning_B.price_fixSail[570 + i] > 1.5) {
+      // '<S2>:1:74'
+      // '<S2>:1:75'
       x_speed *= b_tacking_force_discount;
     }
 
-    // '<S2>:1:77'
-    scanning_B.price[(int32_T)n - 1] = SailAngle_ground;
-    if (y_speed > x_speed) {
+    if ((scanning_B.price_fixSail[570 + i] < 1.5) && (scanning_B.price_fixSail
+         [570 + i] > 0.5)) {
+      // '<S2>:1:77'
       // '<S2>:1:78'
-      // '<S2>:1:79'
-      start_point_idx_1 = c_itmp + 1;
-
-      // '<S2>:1:80'
-      x_speed = y_speed;
-    } else {
-      // '<S2>:1:82'
-      start_point_idx_1 = i_0 + 1;
-
-      // '<S2>:1:83'
+      x_speed = -100.0;
     }
 
-    // '<S2>:1:85'
+    // '<S2>:1:80'
+    scanning_B.price[(int32_T)n - 1] = SailAngle_ground;
+    if (y_speed > x_speed) {
+      // '<S2>:1:81'
+      // '<S2>:1:82'
+      real_wind_speed_x = c_itmp + 1;
+
+      // '<S2>:1:83'
+      x_speed = y_speed;
+    } else {
+      // '<S2>:1:85'
+      real_wind_speed_x = i + 1;
+
+      // '<S2>:1:86'
+    }
+
+    // '<S2>:1:88'
     scanning_B.price[(int32_T)n + 189] = scanning_B.price_fixSail[(int32_T)
-      start_point_idx_1 - 1] / 3.1415926535897931 * 180.0;
+      real_wind_speed_x - 1] / 3.1415926535897931 * 180.0;
 
     // heading
-    // '<S2>:1:86'
+    // '<S2>:1:89'
     scanning_B.price[(int32_T)n + 379] = x_speed;
 
-    // '<S2>:1:87'
+    // '<S2>:1:90'
     scanning_B.price[(int32_T)n + 569] = scanning_B.price_fixSail[(int32_T)
-      start_point_idx_1 + 379];
+      real_wind_speed_x + 379];
 
-    // '<S2>:1:11'
+    // '<S2>:1:14'
   }
 
-  // '<S2>:1:91'
-  y_speed = WindSpeed_mean * std::cos(rtb_WindAngle_mean) + rtb_Horizontal_speed
-    * std::cos(Horizontal_speed_angle);
-
-  // '<S2>:1:92'
-  x_speed = WindSpeed_mean * std::sin(rtb_WindAngle_mean) + rtb_Horizontal_speed
-    * std::sin(Horizontal_speed_angle);
-
-  // WindAngle_ground=atan(relative_wind_E/relative_wind_N);
   // '<S2>:1:94'
-  sf = std::sqrt(y_speed * y_speed + x_speed * x_speed);
+  y_speed = point3_idx_0 * cos(point3_idx_1) + rtb_Horizontal_speed * cos
+    (Horizontal_speed_angle);
 
   // '<S2>:1:95'
+  x_speed = point3_idx_0 * sin(point3_idx_1) + rtb_Horizontal_speed * sin
+    (Horizontal_speed_angle);
+
+  // WindAngle_ground=atan(relative_wind_E/relative_wind_N);
+  // '<S2>:1:97'
+  end1_idx_0 = sqrt(y_speed * y_speed + x_speed * x_speed);
+
+  // '<S2>:1:98'
   length_time = Airmar_wind_angle + heading;
 
-  // '<S2>:1:97'
+  // '<S2>:1:100'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
   dead_sail_data[0] = (length_time / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
   dead_sail_data[1] = (length_time / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
   if (jibing > 1.5) {
-    // '<S2>:1:98'
-    // '<S2>:1:99'
+    // '<S2>:1:101'
+    // '<S2>:1:102'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
     dead_sail_data[0] = (length_time / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
-    dead_sail_data[1] = (sail_d_last + 90.0) + 720.0;
+    dead_sail_data[1] = ((sail_d_last + heading) + 90.0) + 720.0;
     dead_sail_data[2] = (length_time / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-    dead_sail_data[3] = (sail_d_last + 270.0) + 720.0;
+    dead_sail_data[3] = ((sail_d_last + heading) + 270.0) + 720.0;
   }
 
   //
@@ -2674,32 +2805,32 @@ void scanningModelClass::step()
   //      end
   //  end
   if (1.0 > length_sailangle) {
-    b_ixstart = 0;
+    wind_valid = 0;
   } else {
-    b_ixstart = (int32_T)length_sailangle;
+    wind_valid = (int32_T)length_sailangle;
   }
 
   ixstart = 1;
   x_speed = scanning_B.price[380];
   itmp = 0;
-  if (b_ixstart > 1) {
+  if (wind_valid > 1) {
     if (rtIsNaN(scanning_B.price[380])) {
-      i_0 = 2;
+      i = 2;
       exitg1 = false;
-      while ((!exitg1) && (i_0 <= b_ixstart)) {
-        ixstart = i_0;
-        if (!rtIsNaN(scanning_B.price[i_0 + 379])) {
-          x_speed = scanning_B.price[i_0 + 379];
-          itmp = i_0 - 1;
+      while ((!exitg1) && (i <= wind_valid)) {
+        ixstart = i;
+        if (!rtIsNaN(scanning_B.price[i + 379])) {
+          x_speed = scanning_B.price[i + 379];
+          itmp = i - 1;
           exitg1 = true;
         } else {
-          i_0++;
+          i++;
         }
       }
     }
 
-    if (ixstart < b_ixstart) {
-      while (ixstart + 1 <= b_ixstart) {
+    if (ixstart < wind_valid) {
+      while (ixstart + 1 <= wind_valid) {
         if (scanning_B.price[380 + ixstart] > x_speed) {
           x_speed = scanning_B.price[380 + ixstart];
           itmp = ixstart;
@@ -2710,87 +2841,90 @@ void scanningModelClass::step()
     }
   }
 
-  // '<S2>:1:116'
-  // '<S2>:1:121'
-  for (i_0 = 0; i_0 < 380; i_0++) {
-    drive_force[i_0] = -100.0;
+  // '<S2>:1:120'
+  // '<S2>:1:125'
+  for (i = 0; i < 380; i++) {
+    drive_force[i] = -100.0;
   }
 
-  // '<S2>:1:122'
+  // '<S2>:1:126'
   x_speed = rt_roundd_snf(heading / 3.1415926535897931 * 180.0 - 90.0);
 
-  // '<S2>:1:122'
-  ixstart = (int32_T)(rt_roundd_snf(heading / 3.1415926535897931 * 180.0 + 90.0)
-                      + (1.0 - x_speed));
+  // '<S2>:1:126'
+  wind_valid = (int32_T)(rt_roundd_snf(heading / 3.1415926535897931 * 180.0 +
+    90.0) + (1.0 - x_speed));
 
-  // '<S2>:1:122'
-  for (b_ixstart = 0; b_ixstart < ixstart; b_ixstart++) {
-    // '<S2>:1:122'
-    y_speed = x_speed + (real_T)b_ixstart;
+  // '<S2>:1:126'
+  for (ixstart = 0; ixstart < wind_valid; ixstart++) {
+    // '<S2>:1:126'
+    y_speed = x_speed + (real_T)ixstart;
     scanning_getSailForce_ground(length_time, y_speed / 180.0 *
-      3.1415926535897931, sf, &end2_idx_0, &start_point_idx_0,
-      &start_point_idx_1);
+      3.1415926535897931, end1_idx_0, &accumulate_wind_speed, &count_wind,
+      &real_wind_speed_x);
 
-    // '<S2>:1:124'
-    // '<S2>:1:125'
-    i_0 = (int32_T)((y_speed - rt_roundd_snf(heading / 3.1415926535897931 *
-      180.0 - 90.0)) + 1.0) - 1;
-    drive_force[i_0] = end2_idx_0 * std::cos(scanning_AngleDiff_f
-      (start_point_idx_0, heading));
-    drive_force[190 + i_0] = y_speed / 180.0 * 3.1415926535897931;
+    // '<S2>:1:128'
+    // '<S2>:1:129'
+    i = (int32_T)((y_speed - rt_roundd_snf(heading / 3.1415926535897931 * 180.0
+      - 90.0)) + 1.0) - 1;
+    drive_force[i] = accumulate_wind_speed * cos(scanning_AngleDiff_l(count_wind,
+      heading));
+    drive_force[190 + i] = y_speed / 180.0 * 3.1415926535897931;
 
-    // '<S2>:1:122'
+    // '<S2>:1:126'
   }
 
-  // '<S2>:1:131'
-  for (b_ixstart = 0; b_ixstart < 190; b_ixstart++) {
-    // '<S2>:1:131'
-    // '<S2>:1:132'
-    if (scanning_SailDeadZone(drive_force[190 + b_ixstart] / 3.1415926535897931 *
-         180.0, dead_sail_data, dead_sail_sizes) > 0.5) {
-      // '<S2>:1:133'
-      // '<S2>:1:134'
-      drive_force[b_ixstart] = -102.0;
+  // '<S2>:1:135'
+  for (wind_valid = 0; wind_valid < 190; wind_valid++) {
+    // '<S2>:1:135'
+    // '<S2>:1:136'
+    if (scanning_SailDeadZone(drive_force[190 + wind_valid] / 3.1415926535897931
+         * 180.0, dead_sail_data, dead_sail_sizes) > 0.5) {
+      // '<S2>:1:137'
+      // '<S2>:1:138'
+      drive_force[wind_valid] = -102.0;
 
       // -10002;
     }
 
-    // '<S2>:1:131'
+    // '<S2>:1:135'
   }
 
-  b_ixstart = 1;
-  start_point_idx_0 = drive_force[0];
+  wind_valid = 1;
+  x_speed = drive_force[0];
   ixstart = 0;
   if (rtIsNaN(drive_force[0])) {
-    i_0 = 1;
+    i = 1;
     exitg1 = false;
-    while ((!exitg1) && (i_0 + 1 < 191)) {
-      b_ixstart = i_0 + 1;
-      if (!rtIsNaN(drive_force[i_0])) {
-        start_point_idx_0 = drive_force[i_0];
-        ixstart = i_0;
+    while ((!exitg1) && (i + 1 < 191)) {
+      wind_valid = i + 1;
+      if (!rtIsNaN(drive_force[i])) {
+        x_speed = drive_force[i];
+        ixstart = i;
         exitg1 = true;
       } else {
-        i_0++;
+        i++;
       }
     }
   }
 
-  if (b_ixstart < 190) {
-    while (b_ixstart + 1 < 191) {
-      if (drive_force[b_ixstart] > start_point_idx_0) {
-        start_point_idx_0 = drive_force[b_ixstart];
-        ixstart = b_ixstart;
+  if (wind_valid < 190) {
+    while (wind_valid + 1 < 191) {
+      if (drive_force[wind_valid] > x_speed) {
+        x_speed = drive_force[wind_valid];
+        ixstart = wind_valid;
       }
 
-      b_ixstart++;
+      wind_valid++;
     }
   }
 
-  // '<S2>:1:139'
-  // '<S2>:1:140'
   // '<S2>:1:143'
-  end2_idx_0 = scanning_AngleDiff_f(drive_force[190 + ixstart], heading);
+  // '<S2>:1:144'
+  //  max_drive_force
+  //  drive_force
+  // '<S2>:1:147'
+  accumulate_wind_speed = scanning_AngleDiff_l(drive_force[190 + ixstart],
+    heading);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -2799,103 +2933,37 @@ void scanningModelClass::step()
   //  if abs(AngleDiff(heading,heading_d))>
   //
   //  end
-  if (std::abs(Airmar_wind_angle) < 0.52359877559829882) {
-    // '<S2>:1:151'
+  if (fabs(Airmar_wind_angle) < 0.52359877559829882) {
+    // '<S2>:1:155'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
-    // '<S2>:1:152'
-    end2_idx_0 = -Airmar_wind_angle;
+    // '<S2>:1:156'
+    accumulate_wind_speed = -Airmar_wind_angle;
   }
 
-  if (std::abs(end2_idx_0) > 1.5707963267948966) {
-    // '<S2>:1:156'
-    // '<S2>:1:157'
-    if (end2_idx_0 < 0.0) {
-      end2_idx_0 = -1.0;
-    } else if (end2_idx_0 > 0.0) {
-      end2_idx_0 = 1.0;
+  if (fabs(accumulate_wind_speed) > 1.5707963267948966) {
+    // '<S2>:1:160'
+    // '<S2>:1:161'
+    if (accumulate_wind_speed < 0.0) {
+      accumulate_wind_speed = -1.0;
+    } else if (accumulate_wind_speed > 0.0) {
+      accumulate_wind_speed = 1.0;
     } else {
-      if (end2_idx_0 == 0.0) {
-        end2_idx_0 = 0.0;
+      if (accumulate_wind_speed == 0.0) {
+        accumulate_wind_speed = 0.0;
       }
     }
 
-    end2_idx_0 *= 1.5707963267948966;
+    accumulate_wind_speed *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
-    // '<S2>:1:159'
-    // '<S2>:1:160'
-    end2_idx_0 = 1.5707963267948966;
+    // '<S2>:1:163'
+    // '<S2>:1:164'
+    accumulate_wind_speed = 1.5707963267948966;
   }
 
-  x_speed = scanning_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
-
-  // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
-  //   Inport: '<Root>/ahrs_Yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
-  //   UnitDelay: '<Root>/Unit Delay5'
-  //   UnitDelay: '<Root>/Unit Delay6'
-
-  // MATLAB Function 'MATLAB Function2': '<S3>:1'
-  // 能不能输出首向转速
-  // '<S3>:1:2'
-  y_speed = ((scanning_P.Ki * scanning_AngleDiff_p(Horizontal_speed_angle,
-    x_speed) * scanning_P.run_period + scanning_DW.UnitDelay5_DSTATE) +
-             scanning_P.Kp * scanning_AngleDiff_p(Horizontal_speed_angle,
-              x_speed)) + (scanning_AngleDiff_p(scanning_DW.UnitDelay6_DSTATE,
-    x_speed) / scanning_P.run_period - scanning_U.ahrs_Yaw_rate) * scanning_P.Kd;
-
-  // '<S3>:1:5'
-  // '<S3>:1:6'
-  if (std::abs(y_speed) > 0.43633231299858238) {
-    // '<S3>:1:7'
-    // '<S3>:1:8'
-    if (y_speed < 0.0) {
-      y_speed = -1.0;
-    } else if (y_speed > 0.0) {
-      y_speed = 1.0;
-    } else {
-      if (y_speed == 0.0) {
-        y_speed = 0.0;
-      }
-    }
-
-    y_speed *= 0.43633231299858238;
-  }
-
-  // Outport: '<Root>/rudder' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function2'
-
-  scanning_Y.rudder = y_speed;
-
-  // Outport: '<Root>/sail' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function1'
-
-  scanning_Y.sail = end2_idx_0;
-
-  // Outport: '<Root>/wind_angle_ground'
-  scanning_Y.wind_angle_ground = rtb_WindAngle_mean;
-
-  // Outport: '<Root>/wind_speed' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function6'
-
-  scanning_Y.wind_speed = WindSpeed_mean;
-
-  // Outport: '<Root>/speed_angle' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function7'
-
-  scanning_Y.speed_angle = Horizontal_speed_angle;
-
-  // Outport: '<Root>/leg' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function'
-
-  scanning_Y.leg = leg;
-
-  // Outport: '<Root>/los_heading'
-  scanning_Y.los_heading = rtb_speed_angle_d;
-
-  // Outport: '<Root>/speed_angle_d'
-  scanning_Y.speed_angle_d = x_speed;
+  //  sail_d
+  y_speed = scanning_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
 
   // Outport: '<Root>/sail_ground_d' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
@@ -2905,7 +2973,71 @@ void scanningModelClass::step()
   // Outport: '<Root>/drive_force' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  scanning_Y.drive_force = start_point_idx_0;
+  scanning_Y.drive_force = x_speed;
+
+  // Outport: '<Root>/wind_speed' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function7'
+
+  scanning_Y.wind_speed = point3_idx_0;
+
+  // Outport: '<Root>/speed_angle_d'
+  scanning_Y.speed_angle_d = y_speed;
+
+  // Outport: '<Root>/leg' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function'
+
+  scanning_Y.leg = leg;
+
+  // Outport: '<Root>/Horizontal Speed'
+  scanning_Y.HorizontalSpeed = rtb_Horizontal_speed;
+
+  // Outport: '<Root>/wind_angle_mean'
+  scanning_Y.wind_angle_mean = point3_idx_1;
+
+  // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
+  //   Inport: '<Root>/Yaw'
+  //   Inport: '<Root>/Yaw_rate'
+  //   UnitDelay: '<Root>/Unit Delay6'
+  //   UnitDelay: '<Root>/Unit Delay7'
+
+  // MATLAB Function 'MATLAB Function2': '<S3>:1'
+  // 能不能输出首向转速
+  //  aaa=AngleDiff(heading,speed_angle_d);
+  //  Horizontal_speed_angle
+  // '<S3>:1:4'
+  x_speed = ((scanning_P.Ki * scanning_AngleDiff_g(scanning_U.Yaw, y_speed) *
+              scanning_P.run_period + scanning_DW.UnitDelay6_DSTATE) +
+             scanning_P.Kp * scanning_AngleDiff_g(scanning_U.Yaw, y_speed)) +
+    (scanning_AngleDiff_g(scanning_DW.UnitDelay7_DSTATE, y_speed) /
+     scanning_P.run_period - scanning_U.Yaw_rate) * scanning_P.Kd;
+
+  // '<S3>:1:7'
+  // '<S3>:1:8'
+  if (fabs(x_speed) > 0.52359877559829882) {
+    // '<S3>:1:9'
+    // '<S3>:1:10'
+    if (x_speed < 0.0) {
+      x_speed = -1.0;
+    } else if (x_speed > 0.0) {
+      x_speed = 1.0;
+    } else {
+      if (x_speed == 0.0) {
+        x_speed = 0.0;
+      }
+    }
+
+    x_speed *= 0.52359877559829882;
+  }
+
+  // Outport: '<Root>/rudder' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function2'
+
+  scanning_Y.rudder = x_speed;
+
+  // Outport: '<Root>/sail' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function1'
+
+  scanning_Y.sail = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay15'
   memcpy(&scanning_DW.UnitDelay15_DSTATE[0], &rtb_pos_history[0], 300U * sizeof
@@ -2920,55 +3052,58 @@ void scanningModelClass::step()
 
   scanning_DW.UnitDelay_DSTATE = leg;
 
-  // Update for UnitDelay: '<Root>/Unit Delay4' incorporates:
+  // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
 
-  scanning_DW.UnitDelay4_DSTATE = end2_idx_1;
-
-  // Update for UnitDelay: '<Root>/Unit Delay2' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function3'
-
-  scanning_DW.UnitDelay2_DSTATE = rtb_path[0];
+  scanning_DW.UnitDelay5_DSTATE = end1_idx_1;
 
   // Update for UnitDelay: '<Root>/Unit Delay3' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
 
-  scanning_DW.UnitDelay3_DSTATE = rtb_path[101];
+  scanning_DW.UnitDelay3_DSTATE = rtb_path[0];
+
+  // Update for UnitDelay: '<Root>/Unit Delay4' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function3'
+
+  scanning_DW.UnitDelay4_DSTATE = rtb_path[201];
 
   // Update for UnitDelay: '<Root>/Unit Delay13'
   memcpy(&scanning_DW.UnitDelay13_DSTATE[0], &scanning_B.real_wind_history[0],
          6000U * sizeof(real_T));
 
-  // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
+  // Update for UnitDelay: '<Root>/Unit Delay8' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  scanning_DW.UnitDelay7_DSTATE = end2_idx_0;
+  scanning_DW.UnitDelay8_DSTATE = accumulate_wind_speed;
 
-  // Update for UnitDelay: '<Root>/Unit Delay8'
-  scanning_DW.UnitDelay8_DSTATE = x_speed;
+  // Update for UnitDelay: '<Root>/Unit Delay9'
+  scanning_DW.UnitDelay9_DSTATE = y_speed;
 
-  // Update for UnitDelay: '<Root>/Unit Delay9' incorporates:
+  // Update for UnitDelay: '<Root>/Unit Delay16' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
 
-  scanning_DW.UnitDelay9_DSTATE = 1.0;
+  scanning_DW.UnitDelay16_DSTATE = 1.0;
 
-  // Update for UnitDelay: '<Root>/Unit Delay11' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function5'
+  // Update for UnitDelay: '<Root>/Unit Delay10'
+  scanning_DW.UnitDelay10_DSTATE = rtb_tacking;
 
-  scanning_DW.UnitDelay11_DSTATE = loose_time;
+  // Update for UnitDelay: '<Root>/Unit Delay2' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function6'
+
+  scanning_DW.UnitDelay2_DSTATE = loose_time;
+
+  // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function2'
+
+  scanning_DW.UnitDelay7_DSTATE = y_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
+  //   Inport: '<Root>/Yaw'
   //   MATLAB Function: '<Root>/MATLAB Function2'
+  //   UnitDelay: '<Root>/Unit Delay6'
 
-  scanning_DW.UnitDelay6_DSTATE = x_speed;
-
-  // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
-  //   UnitDelay: '<Root>/Unit Delay5'
-
-  scanning_DW.UnitDelay5_DSTATE += scanning_P.Ki * scanning_AngleDiff_p
-    (Horizontal_speed_angle, x_speed) * scanning_P.run_period;
+  scanning_DW.UnitDelay6_DSTATE += scanning_P.Ki * scanning_AngleDiff_g
+    (scanning_U.Yaw, y_speed) * scanning_P.run_period;
 }
 
 // Model initialize function
@@ -2994,26 +3129,53 @@ void scanningModelClass::initialize()
   (void) memset((void *)&scanning_Y, 0,
                 sizeof(ExtY_scanning_T));
 
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay15'
+  memcpy(&scanning_DW.UnitDelay15_DSTATE[0],
+         &scanning_P.UnitDelay15_InitialCondition[0], 300U * sizeof(real_T));
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay14'
+  memcpy(&scanning_DW.UnitDelay14_DSTATE[0],
+         &scanning_P.UnitDelay14_InitialCondition[0], 800U * sizeof(real_T));
+
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay'
-  scanning_DW.UnitDelay_DSTATE = 1.0;
+  scanning_DW.UnitDelay_DSTATE = scanning_P.UnitDelay_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay5'
+  scanning_DW.UnitDelay5_DSTATE = scanning_P.UnitDelay5_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay3'
+  scanning_DW.UnitDelay3_DSTATE = scanning_P.UnitDelay3_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay4'
-  scanning_DW.UnitDelay4_DSTATE = 1.0;
+  scanning_DW.UnitDelay4_DSTATE = scanning_P.UnitDelay4_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay1'
-  scanning_DW.UnitDelay1_DSTATE = 0.1;
+  scanning_DW.UnitDelay1_DSTATE = scanning_P.UnitDelay1_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay13'
+  memcpy(&scanning_DW.UnitDelay13_DSTATE[0],
+         &scanning_P.UnitDelay13_InitialCondition[0], 6000U * sizeof(real_T));
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay8'
-  scanning_DW.UnitDelay8_DSTATE = 1.5707963267948966;
+  scanning_DW.UnitDelay8_DSTATE = scanning_P.UnitDelay8_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay9'
-  scanning_DW.UnitDelay9_DSTATE = 1.0;
+  scanning_DW.UnitDelay9_DSTATE = scanning_P.UnitDelay9_InitialCondition;
 
-  // InitializeConditions for UnitDelay: '<Root>/Unit Delay11'
-  scanning_DW.UnitDelay11_DSTATE = -1.0;
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay16'
+  scanning_DW.UnitDelay16_DSTATE = scanning_P.UnitDelay16_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay10'
+  scanning_DW.UnitDelay10_DSTATE = scanning_P.UnitDelay10_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay2'
+  scanning_DW.UnitDelay2_DSTATE = scanning_P.UnitDelay2_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay7'
+  scanning_DW.UnitDelay7_DSTATE = scanning_P.UnitDelay7_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay6'
-  scanning_DW.UnitDelay6_DSTATE = 1.5707963267948966;
+  scanning_DW.UnitDelay6_DSTATE = scanning_P.UnitDelay6_InitialCondition;
 }
 
 // Model terminate function
@@ -3029,16 +3191,515 @@ scanningModelClass::scanningModelClass()
     0.4,
     0.0,
     0.3,
-    5.0,
+    10.0,
+    50.0,
     50.0,
     1.0,
     3.0,
+    3.0,
     0.1,
 
-    { 0.0, 0.0, -160.0, -160.0, 0.0, 160.0, 0.0, 160.0 },
+    { 160.0, 160.0, 0.0, 0.0, 0.0, 160.0, 0.0, 160.0 },
     40.0,
+    0.0,
+    2.0,
+    0.6,
+    150.0,
+    20.0,
+    3.0,
+    -0.61,
     0.8,
-    10.0
+
+    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    },
+
+    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0 },
+    1.0,
+    1.0,
+    0.0,
+    0.0,
+    0.1,
+
+    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    },
+    0.0,
+    1.5707963267948966,
+    1.0,
+    1.0,
+    -1.0,
+    1.5707963267948966,
+    0.0
   };                                   // Modifiable parameters
 
   // Initialize tunable parameters

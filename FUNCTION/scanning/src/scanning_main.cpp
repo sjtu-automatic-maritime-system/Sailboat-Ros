@@ -78,10 +78,10 @@ void rt_OneStep(void) {
 void getInput(const sailboat_message::Sensor_msg::ConstPtr msg) {
     scanning_Obj.scanning_U.North = msg->Posx;
     scanning_Obj.scanning_U.East = msg->Posy;
-    scanning_Obj.scanning_U.ahrs_Roll = msg->Roll;
-    scanning_Obj.scanning_U.ahrs_Yaw = msg->Yaw;
-    scanning_Obj.scanning_U.ahrs_Roll_rate = msg->gx;
-    scanning_Obj.scanning_U.ahrs_Yaw_rate = msg->gz;
+    scanning_Obj.scanning_U.Roll = msg->Roll;
+    scanning_Obj.scanning_U.Yaw = msg->Yaw;
+    scanning_Obj.scanning_U.Roll_rate = msg->gx;
+    scanning_Obj.scanning_U.Yaw_rate = msg->gz;
     scanning_Obj.scanning_U.Airmar_wind_angle = msg->AWA;
     scanning_Obj.scanning_U.Airmar_wind_speed = msg->AWS;
 }
@@ -105,6 +105,12 @@ void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     scanning_Obj.scanning_P.ship_speed_history_len = config.ship_speed_history_len;
     scanning_Obj.scanning_P.tacking_force_discount = config.tacking_force_discount;
     scanning_Obj.scanning_P.wind_mean_time = config.wind_mean_time;
+    scanning_Obj.scanning_P.points_up_move                      = config.points_up_move                     ;
+    scanning_Obj.scanning_P.tacking_discount_decrease_windspeed = config.tacking_discount_decrease_windspeed;
+    scanning_Obj.scanning_P.jibing_time                         = config.jibing_time                        ;
+    scanning_Obj.scanning_P.tacking_time                        = config.tacking_time                       ;
+    scanning_Obj.scanning_P.upwind_R_expand_ratio               = config.upwind_R_expand_ratio              ;
+    scanning_Obj.scanning_P.start_counting                      = config.start_counting                     ;
 
     scanning_Obj.scanning_P.scanning_points[0] = config.point0_x;
     scanning_Obj.scanning_P.scanning_points[1] = config.point1_x;
@@ -143,9 +149,10 @@ void getOutput(sailboat_message::scanning_out& msg){
     msg.speed_angle = scanning_Obj.scanning_Y.speed_angle;
     msg.speed_angle_d = scanning_Obj.scanning_Y.speed_angle_d;
     msg.wind_speed = scanning_Obj.scanning_Y.wind_speed;
-    msg.wind_angle_ground = scanning_Obj.scanning_Y.wind_angle_ground;
+    msg.wind_angle_mean = scanning_Obj.scanning_Y.wind_angle_mean;
     msg.drive_force = scanning_Obj.scanning_Y.drive_force;
     msg.sail_ground_d = scanning_Obj.scanning_Y.sail_ground_d;
+    msg.horizontalSpeed = scanning_Obj.scanning_Y.HorizontalSpeed;
 
 }
 
@@ -162,6 +169,14 @@ void getOutParaPut(sailboat_message::scanning_para &msg){
     msg.ship_speed_history_len = scanning_Obj.scanning_P.ship_speed_history_len;
     msg.tacking_force_discount = scanning_Obj.scanning_P.tacking_force_discount;
     msg.wind_mean_time = scanning_Obj.scanning_P.wind_mean_time;
+
+    msg.points_up_move                      = scanning_Obj.scanning_P.points_up_move                     ;
+    msg.tacking_discount_decrease_windspeed = scanning_Obj.scanning_P.tacking_discount_decrease_windspeed;
+    msg.jibing_time                         = scanning_Obj.scanning_P.jibing_time                        ;
+    msg.tacking_time                        = scanning_Obj.scanning_P.tacking_time                       ;
+    msg.upwind_R_expand_ratio               = scanning_Obj.scanning_P.upwind_R_expand_ratio              ;
+    msg.start_counting                      = scanning_Obj.scanning_P.start_counting                     ;
+
 
     msg.point0_x = scanning_Obj.scanning_P.scanning_points[0];
     msg.point1_x = scanning_Obj.scanning_P.scanning_points[1];

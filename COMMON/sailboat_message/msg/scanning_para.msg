@@ -10,6 +10,12 @@ float64 run_period
 float64 ship_speed_history_len
 float64 tacking_force_discount
 float64 wind_mean_time
+float64 points_up_move
+float64 tacking_discount_decrease_windspeed
+float64 jibing_time
+float64 tacking_time
+float64 upwind_R_expand_ratio
+float64 start_counting
 float64 point0_x
 float64 point1_x
 float64 point2_x
