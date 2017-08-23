@@ -1,11 +1,11 @@
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'station_keeping'.
+// Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.261
+// Model version                  : 1.182
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 15:10:39 2017
+// C/C++ source code generated on : Wed Aug 23 15:56:21 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -14,10 +14,10 @@
 //
 #include <stddef.h>
 #include <stdio.h>                     // This ert_main.c example uses printf/fflush 
-#include "station_keeping.h"           // Model's header file
+#include "keeping.h"                   // Model's header file
 #include "rtwtypes.h"
 
-static station_keepingModelClass station_keeping_Obj;// Instance of model class
+static keepingModelClass keeping_Obj;  // Instance of model class
 
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -38,7 +38,7 @@ void rt_OneStep(void)
 
   // Check for overrun
   if (OverrunFlag) {
-    rtmSetErrorStatus(station_keeping_Obj.getRTM(), "Overrun");
+    rtmSetErrorStatus(keeping_Obj.getRTM(), "Overrun");
     return;
   }
 
@@ -49,7 +49,7 @@ void rt_OneStep(void)
   // Set model inputs here
 
   // Step the model
-  station_keeping_Obj.step();
+  keeping_Obj.step();
 
   // Get model outputs here
 
@@ -74,7 +74,7 @@ int_T main(int_T argc, const char *argv[])
   (void)(argv);
 
   // Initialize model
-  station_keeping_Obj.initialize();
+  keeping_Obj.initialize();
 
   // Attach rt_OneStep to a timer or interrupt service routine with
   //  period 0.1 seconds (the model's base sample time) here.  The
@@ -86,14 +86,14 @@ int_T main(int_T argc, const char *argv[])
          "Generated ERT main won't simulate model step behavior. "
          "To change this behavior select the 'MAT-file logging' option.\n");
   fflush((NULL));
-  while (rtmGetErrorStatus(station_keeping_Obj.getRTM()) == (NULL)) {
+  while (rtmGetErrorStatus(keeping_Obj.getRTM()) == (NULL)) {
     //  Perform other application tasks here
   }
 
   // Disable rt_OneStep() here
 
   // Terminate model
-  station_keeping_Obj.terminate();
+  keeping_Obj.terminate();
   return 0;
 }
 

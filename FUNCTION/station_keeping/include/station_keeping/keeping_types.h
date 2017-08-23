@@ -1,19 +1,19 @@
 //
-// File: scanning_types.h
+// File: keeping_types.h
 //
-// Code generated for Simulink model 'scanning'.
+// Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.277
+// Model version                  : 1.182
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Aug 23 14:22:40 2017
+// C/C++ source code generated on : Wed Aug 23 15:56:21 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
 // Code generation objectives: Unspecified
 // Validation result: Not run
 //
-#ifndef RTW_HEADER_scanning_types_h_
-#define RTW_HEADER_scanning_types_h_
+#ifndef RTW_HEADER_keeping_types_h_
+#define RTW_HEADER_keeping_types_h_
 #include "rtwtypes.h"
 
 // Custom Type definition for MATLAB Function: '<Root>/MATLAB Function1'
@@ -28,20 +28,20 @@ struct s84DK6d5DW1CHE2FSf2X4cF
 
 #endif                                 //struct_s84DK6d5DW1CHE2FSf2X4cF
 
-#ifndef typedef_s84DK6d5DW1CHE2FSf2X4cF_scann_T
-#define typedef_s84DK6d5DW1CHE2FSf2X4cF_scann_T
+#ifndef typedef_s84DK6d5DW1CHE2FSf2X4cF_keepi_T
+#define typedef_s84DK6d5DW1CHE2FSf2X4cF_keepi_T
 
-typedef struct s84DK6d5DW1CHE2FSf2X4cF s84DK6d5DW1CHE2FSf2X4cF_scann_T;
+typedef struct s84DK6d5DW1CHE2FSf2X4cF s84DK6d5DW1CHE2FSf2X4cF_keepi_T;
 
-#endif                                 //typedef_s84DK6d5DW1CHE2FSf2X4cF_scann_T
+#endif                                 //typedef_s84DK6d5DW1CHE2FSf2X4cF_keepi_T
 
 // Parameters (auto storage)
-typedef struct P_scanning_T_ P_scanning_T;
+typedef struct P_keeping_T_ P_keeping_T;
 
 // Forward declaration for rtModel
-typedef struct tag_RTM_scanning_T RT_MODEL_scanning_T;
+typedef struct tag_RTM_keeping_T RT_MODEL_keeping_T;
 
-#endif                                 // RTW_HEADER_scanning_types_h_
+#endif                                 // RTW_HEADER_keeping_types_h_
 
 //
 // File trailer for generated code.

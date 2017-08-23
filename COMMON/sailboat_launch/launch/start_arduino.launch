@@ -1,0 +1,3 @@
+<launch>
+        <node pkg="mach_onboat" type="arduino_comm.py" name="arduino"/>
+</launch>

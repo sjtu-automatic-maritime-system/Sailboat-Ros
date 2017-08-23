@@ -3,5 +3,5 @@
     <node pkg="sensor_onboat" type="WeatherStation_Talker.py" name="WTST_Talker"/>
     <node pkg="sensor_process" type="sensor_process" name="Sensor_Process"/>
     <node pkg="sensor_process" type="sensor_filters" name="Sensor_Filters"/>
-    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino"/>
+<!--    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino"/>-->
 </launch>

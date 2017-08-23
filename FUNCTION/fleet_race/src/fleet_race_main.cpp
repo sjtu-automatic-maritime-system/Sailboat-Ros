@@ -24,6 +24,7 @@
 #include "sailboat_message/fleet_race_para.h"
 
 #include <dynamic_reconfigure/server.h>
+#include <fleet_race/race_course.h>
 #include "fleet_race/fleet_race_Config.h"
 
 static race_courseModelClass race_course_Obj;// Instance of model class
@@ -73,10 +74,10 @@ void rt_OneStep(void) {
 void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     race_course_Obj.race_course_U.North = msg->Posx;
     race_course_Obj.race_course_U.East = msg->Posy;
-    race_course_Obj.race_course_U.Roll = msg->Roll;
-    race_course_Obj.race_course_U.Yaw = msg->Yaw;
-    race_course_Obj.race_course_U.Roll_rate = msg->gx;
-    race_course_Obj.race_course_U.Yaw_rate = msg->gz;
+    race_course_Obj.race_course_U.roll = msg->Roll;
+    race_course_Obj.race_course_U.yaw = msg->Yaw;
+    race_course_Obj.race_course_U.roll_rate = msg->gx;
+    race_course_Obj.race_course_U.yaw_rate = msg->gz;
     race_course_Obj.race_course_U.Airmar_wind_angle = msg->AWA;
     race_course_Obj.race_course_U.Airmar_wind_speed = msg->AWS;
 }
@@ -102,6 +103,10 @@ void FleetraceCfgcallback(fleet_race::fleet_race_Config &config, uint32_t level)
     race_course_Obj.race_course_P.upwind_leg = config.upwind_leg;
     race_course_Obj.race_course_P.wind_mean_time = config.wind_mean_time;
 
+    race_course_Obj.race_course_P.tacking_time =           config.tacking_time;
+    race_course_Obj.race_course_P.jibing_time  =           config.jibing_time;
+    race_course_Obj.race_course_P.tacking_force_discount = config.tacking_force_discount;
+
     race_course_Obj.race_course_P.race_points[0] = config.point0_x;
     race_course_Obj.race_course_P.race_points[1] = config.point1_x;
     race_course_Obj.race_course_P.race_points[2] = config.point2_x;
@@ -118,8 +123,8 @@ void getOutMachPut(sailboat_message::Mach_msg &msg) {
 
     msg.timestamp = ros::Time::now().toSec();
     msg.motor = 0;
-    msg.rudder = race_course_Obj.race_course_Y.Rudder;
-    msg.sail = race_course_Obj.race_course_Y.Sail;
+    msg.rudder = race_course_Obj.race_course_Y.rudder;
+    msg.sail = race_course_Obj.race_course_Y.sail;
 
     msg.PCCtrl = pcCtrl;
 
@@ -129,8 +134,8 @@ void getOutput(sailboat_message::fleet_race_out &msg) {
 
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = "base_link";
-    msg.Sail = race_course_Obj.race_course_Y.Sail;
-    msg.Rudder = race_course_Obj.race_course_Y.Rudder;
+    msg.Sail = race_course_Obj.race_course_Y.sail;
+    msg.Rudder = race_course_Obj.race_course_Y.rudder;
     msg.leg = race_course_Obj.race_course_Y.leg;
     msg.los_heading = race_course_Obj.race_course_Y.los_heading;
     msg.speed_angle = race_course_Obj.race_course_Y.speed_angle;
@@ -155,6 +160,10 @@ void getOutParaPut(sailboat_message::fleet_race_para &msg)
     msg.ship_speed_history_len= race_course_Obj.race_course_P.ship_speed_history_len;
     msg.upwind_leg            = race_course_Obj.race_course_P.upwind_leg;
     msg.wind_mean_time        = race_course_Obj.race_course_P.wind_mean_time;
+
+    msg.tacking_time           = race_course_Obj.race_course_P.tacking_time;
+    msg.jibing_time            = race_course_Obj.race_course_P.jibing_time;
+    msg.tacking_force_discount = race_course_Obj.race_course_P.tacking_force_discount;
 
     msg.point0_x = race_course_Obj.race_course_P.race_points[0];
     msg.point1_x = race_course_Obj.race_course_P.race_points[1];

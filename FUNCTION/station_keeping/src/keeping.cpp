@@ -1,19 +1,19 @@
 //
-// File: station_keeping.cpp
+// File: keeping.cpp
 //
-// Code generated for Simulink model 'station_keeping'.
+// Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.261
+// Model version                  : 1.182
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 15:10:39 2017
+// C/C++ source code generated on : Wed Aug 23 15:56:21 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
 // Code generation objectives: Unspecified
 // Validation result: Not run
 //
-#include "station_keeping.h"
-#include "station_keeping_private.h"
+#include "keeping.h"
+#include "keeping_private.h"
 
 real_T rt_atan2d_snf(real_T u0, real_T u1)
 {
@@ -70,8 +70,7 @@ real_T rt_roundd_snf(real_T u)
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_AngleDiff(real_T angle1,
-  real_T angle2)
+real_T keepingModelClass::keeping_AngleDiff(real_T angle1, real_T angle2)
 {
   real_T d;
   real_T r;
@@ -111,8 +110,7 @@ real_T station_keepingModelClass::station_keeping_AngleDiff(real_T angle1,
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function2'
-real_T station_keepingModelClass::station_keeping_AngleDiff_p(real_T angle1,
-  real_T angle2)
+real_T keepingModelClass::keeping_AngleDiff_o(real_T angle1, real_T angle2)
 {
   real_T d;
   real_T r;
@@ -152,8 +150,8 @@ real_T station_keepingModelClass::station_keeping_AngleDiff_p(real_T angle1,
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_SailDeadZone(real_T sail_check,
-  const real_T dead_sail_data[], const int32_T dead_sail_sizes[2])
+real_T keepingModelClass::keeping_SailDeadZone(real_T sail_check, const real_T
+  dead_sail_data[], const int32_T dead_sail_sizes[2])
 {
   real_T check;
   int32_T i;
@@ -172,8 +170,8 @@ real_T station_keepingModelClass::station_keeping_SailDeadZone(real_T sail_check
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_ppval(const real_T pp_breaks
-  [59], const real_T pp_coefs[232], real_T x)
+real_T keepingModelClass::keeping_ppval(const real_T pp_breaks[59], const real_T
+  pp_coefs[232], real_T x)
 {
   real_T v;
   real_T xloc;
@@ -206,7 +204,7 @@ real_T station_keepingModelClass::station_keeping_ppval(const real_T pp_breaks
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_interp1(real_T varargin_3)
+real_T keepingModelClass::keeping_interp1(real_T varargin_3)
 {
   real_T Vq;
   static real_T b_breaks[59] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
@@ -281,14 +279,14 @@ real_T station_keepingModelClass::station_keeping_interp1(real_T varargin_3)
   if (rtIsNaN(varargin_3)) {
     Vq = (rtNaN);
   } else {
-    Vq = station_keeping_ppval(b_breaks, b_coefs, varargin_3);
+    Vq = keeping_ppval(b_breaks, b_coefs, varargin_3);
   }
 
   return Vq;
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_interp1_n(real_T varargin_3)
+real_T keepingModelClass::keeping_interp1_b(real_T varargin_3)
 {
   real_T Vq;
   static real_T b_breaks[59] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
@@ -364,14 +362,14 @@ real_T station_keepingModelClass::station_keeping_interp1_n(real_T varargin_3)
   if (rtIsNaN(varargin_3)) {
     Vq = (rtNaN);
   } else {
-    Vq = station_keeping_ppval(b_breaks, b_coefs, varargin_3);
+    Vq = keeping_ppval(b_breaks, b_coefs, varargin_3);
   }
 
   return Vq;
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_interp1_nz(real_T varargin_3)
+real_T keepingModelClass::keeping_interp1_b0(real_T varargin_3)
 {
   real_T Vq;
   static real_T b_breaks[59] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
@@ -446,15 +444,15 @@ real_T station_keepingModelClass::station_keeping_interp1_nz(real_T varargin_3)
   if (rtIsNaN(varargin_3)) {
     Vq = (rtNaN);
   } else {
-    Vq = station_keeping_ppval(b_breaks, b_coefs, varargin_3);
+    Vq = keeping_ppval(b_breaks, b_coefs, varargin_3);
   }
 
   return Vq;
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_interiorSlope(real_T d1,
-  real_T d2, real_T w1, real_T w2)
+real_T keepingModelClass::keeping_interiorSlope(real_T d1, real_T d2, real_T w1,
+  real_T w2)
 {
   real_T s;
   s = 0.0;
@@ -482,8 +480,8 @@ real_T station_keepingModelClass::station_keeping_interiorSlope(real_T d1,
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_interp1_nz3(const real_T
-  varargin_2[5], real_T varargin_3)
+real_T keepingModelClass::keeping_interp1_b0r(const real_T varargin_2[5], real_T
+  varargin_3)
 {
   real_T Vq;
   real_T pp_coefs[16];
@@ -508,12 +506,12 @@ real_T station_keepingModelClass::station_keeping_interp1_nz3(const real_T
   del_idx_1 = (varargin_2[2] - varargin_2[1]) / 20000.0;
   del_idx_2 = (varargin_2[3] - varargin_2[2]) / 40000.0;
   del_idx_3 = (varargin_2[4] - varargin_2[3]) / 80000.0;
-  slopes_idx_1 = station_keeping_interiorSlope(del_idx_0, del_idx_1,
-    0.44444444444444442, 0.55555555555555558);
-  slopes_idx_2 = station_keeping_interiorSlope(del_idx_1, del_idx_2,
-    0.44444444444444442, 0.55555555555555558);
-  slopes_idx_3 = station_keeping_interiorSlope(del_idx_2, del_idx_3,
-    0.44444444444444442, 0.55555555555555558);
+  slopes_idx_1 = keeping_interiorSlope(del_idx_0, del_idx_1, 0.44444444444444442,
+    0.55555555555555558);
+  slopes_idx_2 = keeping_interiorSlope(del_idx_1, del_idx_2, 0.44444444444444442,
+    0.55555555555555558);
+  slopes_idx_3 = keeping_interiorSlope(del_idx_2, del_idx_3, 0.44444444444444442,
+    0.55555555555555558);
   xloc = (40000.0 * del_idx_0 - 10000.0 * del_idx_1) / 30000.0;
   if (del_idx_0 < 0.0) {
     signd1 = -1.0;
@@ -651,9 +649,9 @@ real_T station_keepingModelClass::station_keeping_interp1_nz3(const real_T
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-void station_keepingModelClass::station_kee_getSailForce_ground(real_T
-  WindAngle_ground, real_T SailAngle_ground, real_T WindSpeed, real_T *SailForce,
-  real_T *SailForceAngle_ground, real_T *Attack_angle)
+void keepingModelClass::keeping_getSailForce_ground(real_T WindAngle_ground,
+  real_T SailAngle_ground, real_T WindSpeed, real_T *SailForce, real_T
+  *SailForceAngle_ground, real_T *Attack_angle)
 {
   real_T Re;
   real_T SailForce_lift_1;
@@ -1117,55 +1115,54 @@ void station_keepingModelClass::station_kee_getSailForce_ground(real_T
 
   // 风的来向，翼的指向
   // 都是弧度
-  *Attack_angle = station_keeping_AngleDiff(SailAngle_ground, WindAngle_ground);
+  *Attack_angle = keeping_AngleDiff(SailAngle_ground, WindAngle_ground);
   Re = 1.21 * WindSpeed * 0.25 / 1.7899999999999998E-5;
-  SailForce_lift_1 = station_keeping_interp1(std::abs(*Attack_angle) /
+  SailForce_lift_1 = keeping_interp1(std::abs(*Attack_angle) /
     3.1415926535897931 * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
-  SailForce_drag_1 = station_keeping_interp1_n(std::abs(*Attack_angle) /
+  SailForce_drag_1 = keeping_interp1_b(std::abs(*Attack_angle) /
     3.1415926535897931 * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
-  SailForce_lift_2 = station_keeping_interp1_nz(std::abs(*Attack_angle) /
+  SailForce_lift_2 = keeping_interp1_b0(std::abs(*Attack_angle) /
     3.1415926535897931 * 180.0) * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
   SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     Vq = (rtNaN);
   } else {
-    Vq = station_keeping_ppval(h_breaks, h_coefs, SailForce_drag_16);
+    Vq = keeping_ppval(h_breaks, h_coefs, SailForce_drag_16);
   }
 
   SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     b_Vq = (rtNaN);
   } else {
-    b_Vq = station_keeping_ppval(h_breaks, g_coefs, SailForce_drag_16);
+    b_Vq = keeping_ppval(h_breaks, g_coefs, SailForce_drag_16);
   }
 
   SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     c_Vq = (rtNaN);
   } else {
-    c_Vq = station_keeping_ppval(h_breaks, f_coefs, SailForce_drag_16);
+    c_Vq = keeping_ppval(h_breaks, f_coefs, SailForce_drag_16);
   }
 
   SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     d_Vq = (rtNaN);
   } else {
-    d_Vq = station_keeping_ppval(h_breaks, e_coefs, SailForce_drag_16);
+    d_Vq = keeping_ppval(h_breaks, e_coefs, SailForce_drag_16);
   }
 
   SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     e_Vq = (rtNaN);
   } else {
-    e_Vq = station_keeping_ppval(h_breaks, d_coefs, SailForce_drag_16);
+    e_Vq = keeping_ppval(h_breaks, d_coefs, SailForce_drag_16);
   }
 
   SailForce_drag_16 = std::abs(*Attack_angle) / 3.1415926535897931 * 180.0;
   if (rtIsNaN(SailForce_drag_16)) {
     SailForce_drag_16 = (rtNaN);
   } else {
-    SailForce_drag_16 = station_keeping_ppval(h_breaks, c_coefs,
-      SailForce_drag_16);
+    SailForce_drag_16 = keeping_ppval(h_breaks, c_coefs, SailForce_drag_16);
   }
 
   SailForce_lift_16 = SailForce_drag_16 * 0.5 * 1.21 * (WindSpeed * WindSpeed) *
@@ -1174,8 +1171,7 @@ void station_keepingModelClass::station_kee_getSailForce_ground(real_T
   if (rtIsNaN(SailForce_drag_16)) {
     SailForce_drag_16 = (rtNaN);
   } else {
-    SailForce_drag_16 = station_keeping_ppval(h_breaks, b_coefs,
-      SailForce_drag_16);
+    SailForce_drag_16 = keeping_ppval(h_breaks, b_coefs, SailForce_drag_16);
   }
 
   SailForce_drag_16 = SailForce_drag_16 * 0.5 * 1.21 * (WindSpeed * WindSpeed) *
@@ -1190,13 +1186,13 @@ void station_keepingModelClass::station_kee_getSailForce_ground(real_T
       SailForce_lift_1_0[2] = b_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_lift_1_0[3] = d_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_lift_1_0[4] = SailForce_lift_16;
-      SailForce_lift_16 = station_keeping_interp1_nz3(SailForce_lift_1_0, Re);
+      SailForce_lift_16 = keeping_interp1_b0r(SailForce_lift_1_0, Re);
       SailForce_drag_1_0[0] = SailForce_drag_1;
       SailForce_drag_1_0[1] = Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_drag_1_0[2] = c_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_drag_1_0[3] = e_Vq * 0.5 * 1.21 * (WindSpeed * WindSpeed) * 0.55;
       SailForce_drag_1_0[4] = SailForce_drag_16;
-      SailForce_drag_16 = station_keeping_interp1_nz3(SailForce_drag_1_0, Re);
+      SailForce_drag_16 = keeping_interp1_b0r(SailForce_drag_1_0, Re);
     }
   }
 
@@ -1218,9 +1214,9 @@ void station_keepingModelClass::station_kee_getSailForce_ground(real_T
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T station_keepingModelClass::station_keeping_HeadingDeadZone(real_T
-  heading_check, real_T WindAngle_ground, real_T SailAngle_ground, real_T
-  tacking, real_T heading_d_last)
+real_T keepingModelClass::keeping_HeadingDeadZone(real_T heading_check, real_T
+  WindAngle_ground, real_T SailAngle_ground, real_T tacking, real_T
+  heading_d_last)
 {
   real_T check;
   real_T dead_heading[9];
@@ -1231,20 +1227,20 @@ real_T station_keepingModelClass::station_keeping_HeadingDeadZone(real_T
   // degree ;heading_d_last为角度
   memset(&dead_heading[0], 0, 9U * sizeof(real_T));
   dead_num = 2;
-  dead_heading[0] = (WindAngle_ground - 0.57595865315812866) +
+  dead_heading[0] = (WindAngle_ground - 0.78539816339744828) +
     12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 0.57595865315812866) +
+  dead_heading[3] = (WindAngle_ground + 0.78539816339744828) +
     12.566370614359172;
-  dead_heading[6] = 1.1519173063162573;
+  dead_heading[6] = 1.5707963267948966;
   dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
   dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
   dead_heading[7] = 3.1415926535897931;
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 66.0) - 3.0) / 180.0 *
+    dead_heading[2] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 66.0) + 3.0) + 360.0) / 180.0 *
+    dead_heading[5] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 4.0840704496667311;
+    dead_heading[8] = 3.246312408709453;
 
     // %%%%%dead_zone*2???
     dead_num = 3;
@@ -1267,7 +1263,11 @@ real_T station_keepingModelClass::station_keeping_HeadingDeadZone(real_T
     }
 
     if (heading < dead_heading[5]) {
-      check = 2.0;
+      if (tacking < 2.5) {
+        check = 2.0;
+      } else {
+        check = 1.0;
+      }
     }
   }
 
@@ -1275,21 +1275,22 @@ real_T station_keepingModelClass::station_keeping_HeadingDeadZone(real_T
 }
 
 // Model step function
-void station_keepingModelClass::step()
+void keepingModelClass::step()
 {
   real_T Horizontal_speed_angle;
   real_T x_speed;
   real_T y_speed;
   int32_T b;
-  real_T x;
   real_T WindSpeed_mean;
   real_T real_wind_speed_x;
   real_T real_wind_speed_y;
   int32_T wind_valid;
+  real_T accumulate_wind_speed;
+  real_T count_wind;
   real_T c;
+  real_T x;
   real_T loose_time;
   real_T heading;
-  real_T WindAngle_ground;
   real_T sail_d_last;
   real_T heading_d_last;
   real_T jibing;
@@ -1306,10 +1307,10 @@ void station_keepingModelClass::step()
   int32_T c_itmp;
   boolean_T exitg2;
   real_T rtb_WindAngle_mean;
-  real_T rtb_los_heading;
   real_T rtb_CenterPosY;
   real_T rtb_CenterPosX;
   real_T rtb_Horizontal_speed;
+  real_T rtb_tacking;
   int32_T rtb_sail_safe;
   real_T rtb_pos_history[300];
   real_T dead_sail_data[4];
@@ -1318,28 +1319,26 @@ void station_keepingModelClass::step()
   // MATLAB Function: '<Root>/MATLAB Function8' incorporates:
   //   Constant: '<Root>/Airmar_X'
   //   Constant: '<Root>/Airmar_Z'
-  //   Inport: '<Root>/East'
-  //   Inport: '<Root>/North'
-  //   Inport: '<Root>/ahrs_Roll'
-  //   Inport: '<Root>/ahrs_Yaw'
+  //   Inport: '<Root>/east'
+  //   Inport: '<Root>/north'
+  //   Inport: '<Root>/roll'
+  //   Inport: '<Root>/yaw'
 
   // MATLAB Function 'MATLAB Function8': '<S8>:1'
   // X前正后负 船尾看roll右正左负 NED大地坐标
   // '<S8>:1:3'
   // '<S8>:1:4'
-  rtb_CenterPosX = (station_keeping_U.North - -0.61 * std::cos
-                    (station_keeping_U.ahrs_Yaw)) - 0.8 * std::sin
-    (station_keeping_U.ahrs_Roll) * std::cos(station_keeping_U.ahrs_Yaw +
-    1.5707963267948966);
+  rtb_CenterPosX = (keeping_U.north - keeping_P.Airmar_X_Value * std::cos
+                    (keeping_U.yaw)) - keeping_P.Airmar_Z_Value * std::sin
+    (keeping_U.roll) * std::cos(keeping_U.yaw + 1.5707963267948966);
 
   // '<S8>:1:5'
-  rtb_CenterPosY = (station_keeping_U.East - -0.61 * std::sin
-                    (station_keeping_U.ahrs_Yaw)) - 0.8 * std::sin
-    (station_keeping_U.ahrs_Roll) * std::sin(station_keeping_U.ahrs_Yaw +
-    1.5707963267948966);
+  rtb_CenterPosY = (keeping_U.east - keeping_P.Airmar_X_Value * std::sin
+                    (keeping_U.yaw)) - keeping_P.Airmar_Z_Value * std::sin
+    (keeping_U.roll) * std::sin(keeping_U.yaw + 1.5707963267948966);
 
   // MATLAB Function: '<Root>/MATLAB Function7' incorporates:
-  //   Inport: '<Root>/ahrs_Yaw'
+  //   Inport: '<Root>/yaw'
   //   UnitDelay: '<Root>/Unit Delay14'
   //   UnitDelay: '<Root>/Unit Delay15'
 
@@ -1351,90 +1350,86 @@ void station_keepingModelClass::step()
   // '<S7>:1:7'
   rtb_pos_history[0] = rtb_CenterPosX;
   rtb_pos_history[100] = rtb_CenterPosY;
-  rtb_pos_history[200] = station_keeping_U.ahrs_Yaw;
+  rtb_pos_history[200] = keeping_U.yaw;
 
   // '<S7>:1:8'
-  for (wind_valid = 0; wind_valid < (int32_T)(station_keeping_P.pos_history_len
-        + -1.0); wind_valid++) {
+  for (wind_valid = 0; wind_valid < (int32_T)(keeping_P.pos_history_len + -1.0);
+       wind_valid++) {
     // '<S7>:1:8'
     // '<S7>:1:9'
     b = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
-    rtb_pos_history[wind_valid + 1] = station_keeping_DW.UnitDelay15_DSTATE[b -
-      1];
-    rtb_pos_history[wind_valid + 101] = station_keeping_DW.UnitDelay15_DSTATE[b
-      + 99];
-    rtb_pos_history[wind_valid + 201] = station_keeping_DW.UnitDelay15_DSTATE[b
-      + 199];
+    rtb_pos_history[wind_valid + 1] = keeping_DW.UnitDelay15_DSTATE[b - 1];
+    rtb_pos_history[wind_valid + 101] = keeping_DW.UnitDelay15_DSTATE[b + 99];
+    rtb_pos_history[wind_valid + 201] = keeping_DW.UnitDelay15_DSTATE[b + 199];
 
     // '<S7>:1:8'
   }
 
   // '<S7>:1:11'
   x_speed = (rtb_pos_history[0] - rtb_pos_history[(int32_T)
-             station_keeping_P.pos_history_len - 1]) /
-    ((station_keeping_P.pos_history_len - 1.0) * 0.1);
+             keeping_P.pos_history_len - 1]) / ((keeping_P.pos_history_len - 1.0)
+    * 0.1);
 
   // '<S7>:1:12'
   y_speed = (rtb_pos_history[100] - rtb_pos_history[(int32_T)
-             station_keeping_P.pos_history_len + 99]) /
-    ((station_keeping_P.pos_history_len - 1.0) * 0.1);
+             keeping_P.pos_history_len + 99]) / ((keeping_P.pos_history_len -
+    1.0) * 0.1);
 
   // '<S7>:1:13'
   // '<S7>:1:14'
   // '<S7>:1:15'
-  memset(&station_keeping_B.ship_speed_history[0], 0, 800U * sizeof(real_T));
+  memset(&keeping_B.ship_speed_history[0], 0, 800U * sizeof(real_T));
 
   // '<S7>:1:16'
-  station_keeping_B.ship_speed_history[0] = std::cos(station_keeping_U.ahrs_Yaw)
-    * x_speed + std::sin(station_keeping_U.ahrs_Yaw) * y_speed;
-  station_keeping_B.ship_speed_history[400] = -std::sin
-    (station_keeping_U.ahrs_Yaw) * x_speed + std::cos(station_keeping_U.ahrs_Yaw)
-    * y_speed;
+  keeping_B.ship_speed_history[0] = std::cos(keeping_U.yaw) * x_speed + std::sin
+    (keeping_U.yaw) * y_speed;
+  keeping_B.ship_speed_history[400] = -std::sin(keeping_U.yaw) * x_speed + std::
+    cos(keeping_U.yaw) * y_speed;
 
   // '<S7>:1:17'
-  for (wind_valid = 0; wind_valid < (int32_T)
-       (station_keeping_P.ship_speed_history_len + -1.0); wind_valid++) {
+  for (wind_valid = 0; wind_valid < (int32_T)(keeping_P.ship_speed_history_len +
+        -1.0); wind_valid++) {
     // '<S7>:1:17'
     // '<S7>:1:18'
     b = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
-    station_keeping_B.ship_speed_history[wind_valid + 1] =
-      station_keeping_DW.UnitDelay14_DSTATE[b - 1];
-    station_keeping_B.ship_speed_history[wind_valid + 401] =
-      station_keeping_DW.UnitDelay14_DSTATE[b + 399];
+    keeping_B.ship_speed_history[wind_valid + 1] =
+      keeping_DW.UnitDelay14_DSTATE[b - 1];
+    keeping_B.ship_speed_history[wind_valid + 401] =
+      keeping_DW.UnitDelay14_DSTATE[b + 399];
 
     // '<S7>:1:17'
   }
 
-  if (1.0 > station_keeping_P.ship_speed_history_len) {
+  if (1.0 > keeping_P.ship_speed_history_len) {
     b = 0;
   } else {
-    b = (int32_T)station_keeping_P.ship_speed_history_len;
+    b = (int32_T)keeping_P.ship_speed_history_len;
   }
 
   // '<S7>:1:20'
   if (b == 0) {
     x_speed = 0.0;
   } else {
-    x_speed = station_keeping_B.ship_speed_history[0];
+    x_speed = keeping_B.ship_speed_history[0];
     for (wind_valid = 2; wind_valid <= b; wind_valid++) {
-      x_speed += station_keeping_B.ship_speed_history[wind_valid - 1];
+      x_speed += keeping_B.ship_speed_history[wind_valid - 1];
     }
   }
 
   y_speed = x_speed / (real_T)b;
-  if (1.0 > station_keeping_P.ship_speed_history_len) {
+  if (1.0 > keeping_P.ship_speed_history_len) {
     wind_valid = 0;
   } else {
-    wind_valid = (int32_T)station_keeping_P.ship_speed_history_len;
+    wind_valid = (int32_T)keeping_P.ship_speed_history_len;
   }
 
   // '<S7>:1:21'
   if (wind_valid == 0) {
     x_speed = 0.0;
   } else {
-    x_speed = station_keeping_B.ship_speed_history[400];
+    x_speed = keeping_B.ship_speed_history[400];
     for (ixstart = 2; ixstart <= wind_valid; ixstart++) {
-      x_speed += station_keeping_B.ship_speed_history[ixstart + 399];
+      x_speed += keeping_B.ship_speed_history[ixstart + 399];
     }
   }
 
@@ -1444,51 +1439,23 @@ void station_keepingModelClass::step()
   if (std::abs(y_speed) < 0.1) {
     // '<S7>:1:23'
     // '<S7>:1:24'
-    Horizontal_speed_angle = station_keeping_U.ahrs_Yaw;
+    Horizontal_speed_angle = keeping_U.yaw;
   } else {
     // '<S7>:1:26'
-    Horizontal_speed_angle = station_keeping_U.ahrs_Yaw + rt_atan2d_snf(x_speed,
-      y_speed);
+    Horizontal_speed_angle = keeping_U.yaw + rt_atan2d_snf(x_speed, y_speed);
   }
 
   rtb_Horizontal_speed = std::sqrt(y_speed * y_speed + x_speed * x_speed);
-
-  // MATLAB Function: '<Root>/MATLAB Function'
-  // MATLAB Function 'MATLAB Function': '<S1>:1'
-  // '<S1>:1:2'
-  x = station_keeping_P.point_keeping[0] - rtb_CenterPosX;
-  x_speed = station_keeping_P.point_keeping[1] - rtb_CenterPosY;
-  if ((x == 0.0) && (x_speed > 0.0)) {
-    rtb_los_heading = 1.5707963267948966;
-  } else if ((x == 0.0) && (x_speed < 0.0)) {
-    rtb_los_heading = 4.71238898038469;
-  } else if ((x_speed == 0.0) && (x > 0.0)) {
-    rtb_los_heading = 0.0;
-  } else if ((x_speed == 0.0) && (x < 0.0)) {
-    rtb_los_heading = 3.1415926535897931;
-  } else if ((x > 0.0) && (x_speed > 0.0)) {
-    rtb_los_heading = std::atan(x_speed / x);
-  } else if ((x > 0.0) && (x_speed < 0.0)) {
-    rtb_los_heading = std::atan(x_speed / x) + 6.2831853071795862;
-  } else if ((x < 0.0) && (x_speed > 0.0)) {
-    rtb_los_heading = std::atan(x_speed / x) + 3.1415926535897931;
-  } else if ((x < 0.0) && (x_speed < 0.0)) {
-    rtb_los_heading = std::atan(x_speed / x) + 3.1415926535897931;
-  } else {
-    rtb_los_heading = 0.0;
-  }
-
-  // End of MATLAB Function: '<Root>/MATLAB Function'
 
   // MATLAB Function: '<Root>/MATLAB Function6' incorporates:
   //   Constant: '<Root>/Airmar_X'
   //   Constant: '<Root>/Airmar_Z'
   //   Inport: '<Root>/Airmar_wind_angle'
   //   Inport: '<Root>/Airmar_wind_speed'
-  //   Inport: '<Root>/ahrs_Roll'
-  //   Inport: '<Root>/ahrs_Roll_rate'
-  //   Inport: '<Root>/ahrs_Yaw'
-  //   Inport: '<Root>/ahrs_Yaw_rate'
+  //   Inport: '<Root>/roll'
+  //   Inport: '<Root>/roll_rate'
+  //   Inport: '<Root>/yaw'
+  //   Inport: '<Root>/yaw_rate'
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay13'
 
@@ -1496,26 +1463,24 @@ void station_keepingModelClass::step()
   // '<S6>:1:4'
   // '<S6>:1:5'
   // '<S6>:1:6'
-  real_wind_speed_x = std::cos(station_keeping_U.Airmar_wind_angle +
-    station_keeping_U.ahrs_Yaw) * station_keeping_U.Airmar_wind_speed - ((std::
-    cos(station_keeping_U.ahrs_Yaw + 1.5707963267948966) *
-    station_keeping_U.ahrs_Roll_rate * 0.8 + rtb_Horizontal_speed * std::cos
-    (Horizontal_speed_angle)) + std::cos(station_keeping_U.ahrs_Yaw +
-    1.5707963267948966) * station_keeping_U.ahrs_Yaw_rate * -0.61);
+  real_wind_speed_x = std::cos(keeping_U.Airmar_wind_angle + keeping_U.yaw) *
+    keeping_U.Airmar_wind_speed - ((std::cos(keeping_U.yaw + 1.5707963267948966)
+    * keeping_U.roll_rate * keeping_P.Airmar_Z_Value + rtb_Horizontal_speed *
+    std::cos(Horizontal_speed_angle)) + std::cos(keeping_U.yaw +
+    1.5707963267948966) * keeping_U.yaw_rate * keeping_P.Airmar_X_Value);
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%
   // '<S6>:1:7'
-  real_wind_speed_y = std::sin(station_keeping_U.Airmar_wind_angle +
-    station_keeping_U.ahrs_Yaw) * station_keeping_U.Airmar_wind_speed - ((std::
-    sin(station_keeping_U.ahrs_Yaw + 1.5707963267948966) *
-    station_keeping_U.ahrs_Roll_rate * 0.8 + rtb_Horizontal_speed * std::sin
-    (Horizontal_speed_angle)) + std::sin(station_keeping_U.ahrs_Yaw +
-    1.5707963267948966) * station_keeping_U.ahrs_Yaw_rate * -0.61);
+  real_wind_speed_y = std::sin(keeping_U.Airmar_wind_angle + keeping_U.yaw) *
+    keeping_U.Airmar_wind_speed - ((std::sin(keeping_U.yaw + 1.5707963267948966)
+    * keeping_U.roll_rate * keeping_P.Airmar_Z_Value + rtb_Horizontal_speed *
+    std::sin(Horizontal_speed_angle)) + std::sin(keeping_U.yaw +
+    1.5707963267948966) * keeping_U.yaw_rate * keeping_P.Airmar_X_Value);
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%
   // '<S6>:1:9'
-  if ((std::abs(station_keeping_U.ahrs_Roll) < 0.78539816339744828) && (std::abs
-       (station_keeping_U.ahrs_Roll_rate) < 1.0471975511965976)) {
+  if ((std::abs(keeping_U.roll) < 0.78539816339744828) && (std::abs
+       (keeping_U.roll_rate) < 1.0471975511965976)) {
     // '<S6>:1:12'
     // '<S6>:1:13'
     wind_valid = 1;
@@ -1525,27 +1490,27 @@ void station_keepingModelClass::step()
   }
 
   // '<S6>:1:17'
-  memset(&station_keeping_B.real_wind_history[0], 0, 6000U * sizeof(real_T));
+  memset(&keeping_B.real_wind_history[0], 0, 6000U * sizeof(real_T));
 
   // '<S6>:1:18'
-  station_keeping_B.real_wind_history[0] = real_wind_speed_x;
-  station_keeping_B.real_wind_history[2000] = real_wind_speed_y;
-  station_keeping_B.real_wind_history[4000] = wind_valid;
+  keeping_B.real_wind_history[0] = real_wind_speed_x;
+  keeping_B.real_wind_history[2000] = real_wind_speed_y;
+  keeping_B.real_wind_history[4000] = wind_valid;
 
   // '<S6>:1:20'
-  x_speed = rt_roundd_snf(station_keeping_P.wind_mean_time / 0.1);
+  x_speed = rt_roundd_snf(keeping_P.wind_mean_time / 0.1);
 
   // '<S6>:1:20'
   for (wind_valid = 0; wind_valid < (int32_T)(x_speed + -1.0); wind_valid++) {
     // '<S6>:1:20'
     // '<S6>:1:21'
     b = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
-    station_keeping_B.real_wind_history[wind_valid + 1] =
-      station_keeping_DW.UnitDelay13_DSTATE[b - 1];
-    station_keeping_B.real_wind_history[wind_valid + 2001] =
-      station_keeping_DW.UnitDelay13_DSTATE[b + 1999];
-    station_keeping_B.real_wind_history[wind_valid + 4001] =
-      station_keeping_DW.UnitDelay13_DSTATE[b + 3999];
+    keeping_B.real_wind_history[wind_valid + 1] =
+      keeping_DW.UnitDelay13_DSTATE[b - 1];
+    keeping_B.real_wind_history[wind_valid + 2001] =
+      keeping_DW.UnitDelay13_DSTATE[b + 1999];
+    keeping_B.real_wind_history[wind_valid + 4001] =
+      keeping_DW.UnitDelay13_DSTATE[b + 3999];
 
     // '<S6>:1:20'
   }
@@ -1557,39 +1522,39 @@ void station_keepingModelClass::step()
   y_speed = 0.0;
 
   // '<S6>:1:26'
-  rtb_CenterPosX = 0.0;
+  accumulate_wind_speed = 0.0;
 
   // '<S6>:1:27'
-  rtb_CenterPosY = 0.0;
+  count_wind = 0.0;
 
   // '<S6>:1:28'
-  c = station_keeping_P.wind_mean_time / 0.1;
+  c = keeping_P.wind_mean_time / 0.1;
 
   // '<S6>:1:28'
   for (wind_valid = 0; wind_valid < (int32_T)c; wind_valid++) {
     // '<S6>:1:28'
-    if (station_keeping_B.real_wind_history[4000 + wind_valid] > 0.5) {
+    if (keeping_B.real_wind_history[4000 + wind_valid] > 0.5) {
       // '<S6>:1:29'
       // '<S6>:1:30'
-      x_speed += station_keeping_B.real_wind_history[wind_valid];
+      x_speed += keeping_B.real_wind_history[wind_valid];
 
       // '<S6>:1:31'
-      y_speed += station_keeping_B.real_wind_history[2000 + wind_valid];
+      y_speed += keeping_B.real_wind_history[2000 + wind_valid];
 
       // '<S6>:1:32'
-      rtb_CenterPosX += std::sqrt(station_keeping_B.real_wind_history[2000 +
-        wind_valid] * station_keeping_B.real_wind_history[2000 + wind_valid] +
-        station_keeping_B.real_wind_history[wind_valid] *
-        station_keeping_B.real_wind_history[wind_valid]);
+      accumulate_wind_speed += std::sqrt(keeping_B.real_wind_history[2000 +
+        wind_valid] * keeping_B.real_wind_history[2000 + wind_valid] +
+        keeping_B.real_wind_history[wind_valid] *
+        keeping_B.real_wind_history[wind_valid]);
 
       // '<S6>:1:33'
-      rtb_CenterPosY++;
+      count_wind++;
     }
 
     // '<S6>:1:28'
   }
 
-  if (rtb_CenterPosY < 0.5) {
+  if (count_wind < 0.5) {
     // '<S6>:1:36'
     // '<S6>:1:37'
     // '<S6>:1:38'
@@ -1598,13 +1563,13 @@ void station_keepingModelClass::step()
       real_wind_speed_y * real_wind_speed_y);
   } else {
     // '<S6>:1:41'
-    real_wind_speed_x = x_speed / rtb_CenterPosY;
+    real_wind_speed_x = x_speed / count_wind;
 
     // '<S6>:1:42'
-    real_wind_speed_y = y_speed / rtb_CenterPosY;
+    real_wind_speed_y = y_speed / count_wind;
 
     // '<S6>:1:43'
-    WindSpeed_mean = rtb_CenterPosX / rtb_CenterPosY;
+    WindSpeed_mean = accumulate_wind_speed / count_wind;
   }
 
   if (std::abs(real_wind_speed_x) < 1.0E-5) {
@@ -1616,49 +1581,102 @@ void station_keepingModelClass::step()
   // '<S6>:1:48'
   rtb_WindAngle_mean = rt_atan2d_snf(real_wind_speed_y, real_wind_speed_x);
 
-  // MATLAB Function: '<Root>/MATLAB Function5' incorporates:
-  //   Inport: '<Root>/ahrs_Roll'
-  //   UnitDelay: '<Root>/Unit Delay11'
+  // Outport: '<Root>/wind_speed' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function6'
 
-  // MATLAB Function 'MATLAB Function4': '<S4>:1'
-  // '<S4>:1:14'
-  // '<S4>:1:19'
-  // MATLAB Function 'MATLAB Function5': '<S5>:1'
-  if (std::abs(station_keeping_U.ahrs_Roll) > station_keeping_P.max_roll_allowed)
-  {
-    // '<S5>:1:2'
-    // '<S5>:1:3'
-    loose_time = station_keeping_P.max_loose_time;
+  keeping_Y.wind_speed = WindSpeed_mean;
+
+  // Outport: '<Root>/wind_angle_ground'
+  keeping_Y.wind_angle_ground = rtb_WindAngle_mean;
+
+  // Outport: '<Root>/speed_angle' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function7'
+
+  keeping_Y.speed_angle = Horizontal_speed_angle;
+
+  // MATLAB Function: '<Root>/MATLAB Function'
+  // MATLAB Function 'MATLAB Function': '<S1>:1'
+  // '<S1>:1:2'
+  x = keeping_P.point_keeping[0] - rtb_CenterPosX;
+  x_speed = keeping_P.point_keeping[1] - rtb_CenterPosY;
+  if ((x == 0.0) && (x_speed > 0.0)) {
+    rtb_CenterPosY = 1.5707963267948966;
+  } else if ((x == 0.0) && (x_speed < 0.0)) {
+    rtb_CenterPosY = 4.71238898038469;
+  } else if ((x_speed == 0.0) && (x > 0.0)) {
+    rtb_CenterPosY = 0.0;
+  } else if ((x_speed == 0.0) && (x < 0.0)) {
+    rtb_CenterPosY = 3.1415926535897931;
+  } else if ((x > 0.0) && (x_speed > 0.0)) {
+    rtb_CenterPosY = std::atan(x_speed / x);
+  } else if ((x > 0.0) && (x_speed < 0.0)) {
+    rtb_CenterPosY = std::atan(x_speed / x) + 6.2831853071795862;
+  } else if ((x < 0.0) && (x_speed > 0.0)) {
+    rtb_CenterPosY = std::atan(x_speed / x) + 3.1415926535897931;
+  } else if ((x < 0.0) && (x_speed < 0.0)) {
+    rtb_CenterPosY = std::atan(x_speed / x) + 3.1415926535897931;
   } else {
-    // '<S5>:1:5'
-    loose_time = station_keeping_DW.UnitDelay11_DSTATE - 1.0;
+    rtb_CenterPosY = 0.0;
+  }
+
+  // End of MATLAB Function: '<Root>/MATLAB Function'
+
+  // Outport: '<Root>/los_heading'
+  keeping_Y.los_heading = rtb_CenterPosY;
+
+  // MATLAB Function: '<Root>/MATLAB Function4' incorporates:
+  //   UnitDelay: '<Root>/Unit Delay10'
+
+  // MATLAB Function 'MATLAB Function4': '<S5>:1'
+  if (keeping_DW.UnitDelay10_DSTATE > keeping_P.tacking_time) {
+    // '<S5>:1:9'
+    // '<S5>:1:10'
+    rtb_tacking = 2.0;
+  } else {
+    // '<S5>:1:12'
+    rtb_tacking = keeping_DW.UnitDelay10_DSTATE + 1.0;
+  }
+
+  // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
+  //   Inport: '<Root>/roll'
+  //   UnitDelay: '<Root>/Unit Delay1'
+
+  //  tacking=2;
+  // '<S5>:1:19'
+  // MATLAB Function 'MATLAB Function3': '<S4>:1'
+  if (std::abs(keeping_U.roll) > keeping_P.max_roll_allowed) {
+    // '<S4>:1:2'
+    // '<S4>:1:3'
+    loose_time = keeping_P.max_loose_time;
+  } else {
+    // '<S4>:1:5'
+    loose_time = keeping_DW.UnitDelay1_DSTATE - 1.0;
   }
 
   if (loose_time < 0.0) {
-    // '<S5>:1:7'
-    // '<S5>:1:8'
+    // '<S4>:1:7'
+    // '<S4>:1:8'
     rtb_sail_safe = 1;
   } else {
-    // '<S5>:1:10'
+    // '<S4>:1:10'
     rtb_sail_safe = 0;
   }
 
   // MATLAB Function: '<Root>/MATLAB Function1' incorporates:
   //   Inport: '<Root>/Airmar_wind_angle'
-  //   Inport: '<Root>/ahrs_Yaw'
-  //   MATLAB Function: '<Root>/MATLAB Function4'
+  //   Inport: '<Root>/yaw'
   //   MATLAB Function: '<Root>/MATLAB Function6'
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay7'
   //   UnitDelay: '<Root>/Unit Delay8'
   //   UnitDelay: '<Root>/Unit Delay9'
 
-  heading = station_keeping_U.ahrs_Yaw;
-  sail_d_last = station_keeping_DW.UnitDelay7_DSTATE;
-  heading_d_last = station_keeping_DW.UnitDelay8_DSTATE;
-  jibing = station_keeping_DW.UnitDelay9_DSTATE;
-  b_tacking_force_discount = station_keeping_P.tacking_force_discount;
-  Airmar_wind_angle = station_keeping_U.Airmar_wind_angle;
+  heading = keeping_U.yaw;
+  sail_d_last = keeping_DW.UnitDelay7_DSTATE;
+  heading_d_last = keeping_DW.UnitDelay8_DSTATE;
+  jibing = keeping_DW.UnitDelay9_DSTATE;
+  b_tacking_force_discount = keeping_P.tacking_force_discount;
+  Airmar_wind_angle = keeping_U.Airmar_wind_angle;
 
   // MATLAB Function 'MATLAB Function1': '<S2>:1'
   // yaw,yaw_rate,,attack_angle
@@ -1670,7 +1688,7 @@ void station_keepingModelClass::step()
     180.0) - 90.0)) + 1.0;
 
   // '<S2>:1:10'
-  memset(&station_keeping_B.price[0], 0, 760U * sizeof(real_T));
+  memset(&keeping_B.price[0], 0, 760U * sizeof(real_T));
 
   // '<S2>:1:11'
   x = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0);
@@ -1687,24 +1705,24 @@ void station_keepingModelClass::step()
     // '<S2>:1:12'
     n = (SailAngle_ground - (rt_roundd_snf(rtb_WindAngle_mean /
            3.1415926535897931 * 180.0) - 90.0)) + 1.0;
-    station_kee_getSailForce_ground(rtb_WindAngle_mean, SailAngle_ground / 180.0
-      * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y,
-      &WindAngle_ground, &x_speed);
+    keeping_getSailForce_ground(rtb_WindAngle_mean, SailAngle_ground / 180.0 *
+      3.1415926535897931, WindSpeed_mean, &real_wind_speed_y, &rtb_CenterPosX,
+      &x_speed);
 
     // '<S2>:1:23'
-    rtb_CenterPosY = (rt_roundd_snf((WindAngle_ground + 1.3089969389957472) /
-      3.1415926535897931 * 180.0) - rt_roundd_snf((WindAngle_ground -
+    count_wind = (rt_roundd_snf((rtb_CenterPosX + 1.3089969389957472) /
+      3.1415926535897931 * 180.0) - rt_roundd_snf((rtb_CenterPosX -
       1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
 
     // '<S2>:1:24'
-    memset(&station_keeping_B.price_fixSail[0], 0, 1140U * sizeof(real_T));
+    memset(&keeping_B.price_fixSail[0], 0, 1140U * sizeof(real_T));
 
     // '<S2>:1:25'
-    c = rt_roundd_snf((WindAngle_ground - 1.3089969389957472) /
-                      3.1415926535897931 * 180.0);
+    c = rt_roundd_snf((rtb_CenterPosX - 1.3089969389957472) / 3.1415926535897931
+                      * 180.0);
 
     // '<S2>:1:25'
-    ixstart = (int32_T)(rt_roundd_snf((WindAngle_ground + 1.3089969389957472) /
+    ixstart = (int32_T)(rt_roundd_snf((rtb_CenterPosX + 1.3089969389957472) /
       3.1415926535897931 * 180.0) + (1.0 - c));
 
     // '<S2>:1:25'
@@ -1713,63 +1731,59 @@ void station_keepingModelClass::step()
       x_speed = c + (real_T)wind_valid;
 
       // '<S2>:1:28'
-      real_wind_speed_x = (x_speed - rt_roundd_snf((WindAngle_ground -
+      real_wind_speed_x = (x_speed - rt_roundd_snf((rtb_CenterPosX -
         1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
 
       // '<S2>:1:29'
       x_speed = x_speed / 180.0 * 3.1415926535897931;
 
       // '<S2>:1:30'
-      y_speed = station_keeping_HeadingDeadZone(x_speed, rtb_WindAngle_mean,
-        SailAngle_ground / 180.0 * 3.1415926535897931, 2.0, heading_d_last /
-        3.1415926535897931 * 180.0);
+      y_speed = keeping_HeadingDeadZone(x_speed, rtb_WindAngle_mean,
+        SailAngle_ground / 180.0 * 3.1415926535897931, rtb_tacking,
+        heading_d_last / 3.1415926535897931 * 180.0);
 
       // speed_angle=heading_check+AngleDiff(heading_check,SailForceAngle_ground)/5;%%%加漂角,漂角怎样得到？ 
       // '<S2>:1:32'
-      rtb_CenterPosX = station_keeping_AngleDiff(rtb_los_heading, x_speed);
+      accumulate_wind_speed = keeping_AngleDiff(rtb_CenterPosY, x_speed);
       if ((y_speed > 0.5) && (y_speed < 1.5)) {
         // '<S2>:1:34'
         // '<S2>:1:35'
-        rtb_CenterPosX = 100.0;
+        accumulate_wind_speed = 100.0;
 
         // 10000;
       }
 
       // %%%
       // '<S2>:1:39'
-      station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x - 1] = x_speed;
+      keeping_B.price_fixSail[(int32_T)real_wind_speed_x - 1] = x_speed;
 
       // '<S2>:1:40'
-      station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 189] =
-        rtb_CenterPosX;
+      keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 189] =
+        accumulate_wind_speed;
 
       // '<S2>:1:41'
-      station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 379] =
-        WindAngle_ground;
+      keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 379] = rtb_CenterPosX;
 
       // '<S2>:1:42'
-      station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 569] =
-        y_speed;
-      if (rtb_CenterPosX < 0.0) {
+      keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 569] = y_speed;
+      if (accumulate_wind_speed < 0.0) {
         // '<S2>:1:43'
         // '<S2>:1:44'
-        station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 759] =
-          100.0;
+        keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 759] = 100.0;
       } else {
         // '<S2>:1:46'
-        station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 759] =
-          rtb_CenterPosX;
+        keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 759] =
+          accumulate_wind_speed;
       }
 
-      if (rtb_CenterPosX > 0.0) {
+      if (accumulate_wind_speed > 0.0) {
         // '<S2>:1:48'
         // '<S2>:1:49'
-        station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 949] =
-          -100.0;
+        keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 949] = -100.0;
       } else {
         // '<S2>:1:51'
-        station_keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 949] =
-          rtb_CenterPosX;
+        keeping_B.price_fixSail[(int32_T)real_wind_speed_x + 949] =
+          accumulate_wind_speed;
       }
 
       // '<S2>:1:25'
@@ -1777,23 +1791,23 @@ void station_keepingModelClass::step()
 
     // %%%
     // 正一个负一个
-    if (1.0 > rtb_CenterPosY) {
+    if (1.0 > count_wind) {
       wind_valid = 0;
     } else {
-      wind_valid = (int32_T)rtb_CenterPosY;
+      wind_valid = (int32_T)count_wind;
     }
 
     ixstart = 1;
-    x_speed = station_keeping_B.price_fixSail[760];
+    x_speed = keeping_B.price_fixSail[760];
     c_itmp = 0;
     if (wind_valid > 1) {
-      if (rtIsNaN(station_keeping_B.price_fixSail[760])) {
+      if (rtIsNaN(keeping_B.price_fixSail[760])) {
         ix = 1;
         exitg2 = false;
         while ((!exitg2) && (ix + 1 <= wind_valid)) {
           ixstart = ix + 1;
-          if (!rtIsNaN(station_keeping_B.price_fixSail[760 + ix])) {
-            x_speed = station_keeping_B.price_fixSail[760 + ix];
+          if (!rtIsNaN(keeping_B.price_fixSail[760 + ix])) {
+            x_speed = keeping_B.price_fixSail[760 + ix];
             c_itmp = ix;
             exitg2 = true;
           } else {
@@ -1804,8 +1818,8 @@ void station_keepingModelClass::step()
 
       if (ixstart < wind_valid) {
         while (ixstart + 1 <= wind_valid) {
-          if (station_keeping_B.price_fixSail[760 + ixstart] < x_speed) {
-            x_speed = station_keeping_B.price_fixSail[760 + ixstart];
+          if (keeping_B.price_fixSail[760 + ixstart] < x_speed) {
+            x_speed = keeping_B.price_fixSail[760 + ixstart];
             c_itmp = ixstart;
           }
 
@@ -1814,23 +1828,23 @@ void station_keepingModelClass::step()
       }
     }
 
-    if (1.0 > rtb_CenterPosY) {
+    if (1.0 > count_wind) {
       wind_valid = 0;
     } else {
-      wind_valid = (int32_T)rtb_CenterPosY;
+      wind_valid = (int32_T)count_wind;
     }
 
     ixstart = 1;
-    x_speed = station_keeping_B.price_fixSail[950];
+    x_speed = keeping_B.price_fixSail[950];
     ix = 0;
     if (wind_valid > 1) {
-      if (rtIsNaN(station_keeping_B.price_fixSail[950])) {
+      if (rtIsNaN(keeping_B.price_fixSail[950])) {
         itmp = 1;
         exitg2 = false;
         while ((!exitg2) && (itmp + 1 <= wind_valid)) {
           ixstart = itmp + 1;
-          if (!rtIsNaN(station_keeping_B.price_fixSail[950 + itmp])) {
-            x_speed = station_keeping_B.price_fixSail[950 + itmp];
+          if (!rtIsNaN(keeping_B.price_fixSail[950 + itmp])) {
+            x_speed = keeping_B.price_fixSail[950 + itmp];
             ix = itmp;
             exitg2 = true;
           } else {
@@ -1841,8 +1855,8 @@ void station_keepingModelClass::step()
 
       if (ixstart < wind_valid) {
         while (ixstart + 1 <= wind_valid) {
-          if (station_keeping_B.price_fixSail[950 + ixstart] > x_speed) {
-            x_speed = station_keeping_B.price_fixSail[950 + ixstart];
+          if (keeping_B.price_fixSail[950 + ixstart] > x_speed) {
+            x_speed = keeping_B.price_fixSail[950 + ixstart];
             ix = ixstart;
           }
 
@@ -1854,34 +1868,45 @@ void station_keepingModelClass::step()
     // '<S2>:1:59'
     // '<S2>:1:60'
     // '<S2>:1:61'
-    y_speed = std::cos(station_keeping_AngleDiff
-                       (station_keeping_B.price_fixSail[c_itmp],
-                        WindAngle_ground)) * real_wind_speed_y * std::cos
-      (station_keeping_AngleDiff(rtb_los_heading,
-        station_keeping_B.price_fixSail[c_itmp]));
+    y_speed = std::cos(keeping_AngleDiff(keeping_B.price_fixSail[c_itmp],
+      rtb_CenterPosX)) * real_wind_speed_y * std::cos(keeping_AngleDiff
+      (rtb_CenterPosY, keeping_B.price_fixSail[c_itmp]));
 
     // '<S2>:1:62'
-    x_speed = std::cos(station_keeping_AngleDiff
-                       (station_keeping_B.price_fixSail[ix], WindAngle_ground)) *
-      real_wind_speed_y * std::cos(station_keeping_AngleDiff(rtb_los_heading,
-      station_keeping_B.price_fixSail[ix]));
+    x_speed = std::cos(keeping_AngleDiff(keeping_B.price_fixSail[ix],
+      rtb_CenterPosX)) * real_wind_speed_y * std::cos(keeping_AngleDiff
+      (rtb_CenterPosY, keeping_B.price_fixSail[ix]));
 
     // '<S2>:1:63'
     // '<S2>:1:64'
-    if (station_keeping_B.price_fixSail[570 + c_itmp] > 1.5) {
+    if (keeping_B.price_fixSail[570 + c_itmp] > 1.5) {
       // '<S2>:1:65'
-      // '<S2>:1:67'
+      // '<S2>:1:66'
       y_speed *= b_tacking_force_discount;
     }
 
-    if (station_keeping_B.price_fixSail[570 + ix] > 1.5) {
-      // '<S2>:1:70'
+    if ((keeping_B.price_fixSail[570 + c_itmp] < 1.5) &&
+        (keeping_B.price_fixSail[570 + c_itmp] > 0.5)) {
+      // '<S2>:1:68'
+      // '<S2>:1:69'
+      y_speed = -100.0;
+    }
+
+    if (keeping_B.price_fixSail[570 + ix] > 1.5) {
+      // '<S2>:1:71'
       // '<S2>:1:72'
       x_speed *= b_tacking_force_discount;
     }
 
+    if ((keeping_B.price_fixSail[570 + ix] < 1.5) && (keeping_B.price_fixSail
+         [570 + ix] > 0.5)) {
+      // '<S2>:1:74'
+      // '<S2>:1:75'
+      x_speed = -100.0;
+    }
+
     // '<S2>:1:77'
-    station_keeping_B.price[(int32_T)n - 1] = SailAngle_ground;
+    keeping_B.price[(int32_T)n - 1] = SailAngle_ground;
     if (y_speed > x_speed) {
       // '<S2>:1:78'
       // '<S2>:1:79'
@@ -1897,16 +1922,16 @@ void station_keepingModelClass::step()
     }
 
     // '<S2>:1:85'
-    station_keeping_B.price[(int32_T)n + 189] = station_keeping_B.price_fixSail
-      [(int32_T)real_wind_speed_x - 1] / 3.1415926535897931 * 180.0;
+    keeping_B.price[(int32_T)n + 189] = keeping_B.price_fixSail[(int32_T)
+      real_wind_speed_x - 1] / 3.1415926535897931 * 180.0;
 
     // heading
     // '<S2>:1:86'
-    station_keeping_B.price[(int32_T)n + 379] = x_speed;
+    keeping_B.price[(int32_T)n + 379] = x_speed;
 
     // '<S2>:1:87'
-    station_keeping_B.price[(int32_T)n + 569] = station_keeping_B.price_fixSail
-      [(int32_T)real_wind_speed_x + 379];
+    keeping_B.price[(int32_T)n + 569] = keeping_B.price_fixSail[(int32_T)
+      real_wind_speed_x + 379];
 
     // '<S2>:1:11'
   }
@@ -1924,24 +1949,24 @@ void station_keepingModelClass::step()
   real_wind_speed_y = std::sqrt(y_speed * y_speed + x_speed * x_speed);
 
   // '<S2>:1:96'
-  WindAngle_ground = Airmar_wind_angle + heading;
+  rtb_CenterPosX = Airmar_wind_angle + heading;
 
   // '<S2>:1:98'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
-  dead_sail_data[0] = (WindAngle_ground / 3.1415926535897931 * 180.0 - 7.0) +
+  dead_sail_data[0] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 - 7.0) +
     720.0;
-  dead_sail_data[1] = (WindAngle_ground / 3.1415926535897931 * 180.0 + 7.0) +
+  dead_sail_data[1] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 + 7.0) +
     720.0;
   if (jibing > 1.5) {
     // '<S2>:1:99'
     // '<S2>:1:100'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
-    dead_sail_data[0] = (WindAngle_ground / 3.1415926535897931 * 180.0 - 7.0) +
+    dead_sail_data[0] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 - 7.0) +
       720.0;
     dead_sail_data[1] = (sail_d_last + 90.0) + 720.0;
-    dead_sail_data[2] = (WindAngle_ground / 3.1415926535897931 * 180.0 + 7.0) +
+    dead_sail_data[2] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 + 7.0) +
       720.0;
     dead_sail_data[3] = (sail_d_last + 270.0) + 720.0;
   }
@@ -1960,16 +1985,16 @@ void station_keepingModelClass::step()
   }
 
   ixstart = 1;
-  x_speed = station_keeping_B.price[380];
+  x_speed = keeping_B.price[380];
   itmp = 0;
   if (wind_valid > 1) {
-    if (rtIsNaN(station_keeping_B.price[380])) {
+    if (rtIsNaN(keeping_B.price[380])) {
       ix = 2;
       exitg2 = false;
       while ((!exitg2) && (ix <= wind_valid)) {
         ixstart = ix;
-        if (!rtIsNaN(station_keeping_B.price[ix + 379])) {
-          x_speed = station_keeping_B.price[ix + 379];
+        if (!rtIsNaN(keeping_B.price[ix + 379])) {
+          x_speed = keeping_B.price[ix + 379];
           itmp = ix - 1;
           exitg2 = true;
         } else {
@@ -1980,8 +2005,8 @@ void station_keepingModelClass::step()
 
     if (ixstart < wind_valid) {
       while (ixstart + 1 <= wind_valid) {
-        if (station_keeping_B.price[380 + ixstart] > x_speed) {
-          x_speed = station_keeping_B.price[380 + ixstart];
+        if (keeping_B.price[380 + ixstart] > x_speed) {
+          x_speed = keeping_B.price[380 + ixstart];
           itmp = ixstart;
         }
 
@@ -2007,16 +2032,16 @@ void station_keepingModelClass::step()
   for (ixstart = 0; ixstart < wind_valid; ixstart++) {
     // '<S2>:1:123'
     y_speed = x_speed + (real_T)ixstart;
-    station_kee_getSailForce_ground(WindAngle_ground, y_speed / 180.0 *
-      3.1415926535897931, real_wind_speed_y, &rtb_CenterPosX, &rtb_CenterPosY,
+    keeping_getSailForce_ground(rtb_CenterPosX, y_speed / 180.0 *
+      3.1415926535897931, real_wind_speed_y, &accumulate_wind_speed, &count_wind,
       &real_wind_speed_x);
 
     // '<S2>:1:125'
     // '<S2>:1:126'
     b = (int32_T)((y_speed - rt_roundd_snf(heading / 3.1415926535897931 * 180.0
       - 90.0)) + 1.0) - 1;
-    drive_force[b] = rtb_CenterPosX * std::cos(station_keeping_AngleDiff
-      (rtb_CenterPosY, heading));
+    drive_force[b] = accumulate_wind_speed * std::cos(keeping_AngleDiff
+      (count_wind, heading));
     drive_force[190 + b] = y_speed / 180.0 * 3.1415926535897931;
 
     // '<S2>:1:123'
@@ -2026,8 +2051,8 @@ void station_keepingModelClass::step()
   for (wind_valid = 0; wind_valid < 190; wind_valid++) {
     // '<S2>:1:132'
     // '<S2>:1:133'
-    if (station_keeping_SailDeadZone(drive_force[190 + wind_valid] /
-         3.1415926535897931 * 180.0, dead_sail_data, dead_sail_sizes) > 0.5) {
+    if (keeping_SailDeadZone(drive_force[190 + wind_valid] / 3.1415926535897931 *
+         180.0, dead_sail_data, dead_sail_sizes) > 0.5) {
       // '<S2>:1:134'
       // '<S2>:1:135'
       drive_force[wind_valid] = -102.0;
@@ -2069,7 +2094,7 @@ void station_keepingModelClass::step()
 
   // '<S2>:1:141'
   // '<S2>:1:144'
-  rtb_CenterPosX = station_keeping_AngleDiff(drive_force[190 + ixstart], heading);
+  accumulate_wind_speed = keeping_AngleDiff(drive_force[190 + ixstart], heading);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -2082,53 +2107,54 @@ void station_keepingModelClass::step()
     // '<S2>:1:152'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
     // '<S2>:1:153'
-    rtb_CenterPosX = -Airmar_wind_angle;
+    accumulate_wind_speed = -Airmar_wind_angle;
   }
 
-  if (std::abs(rtb_CenterPosX) > 1.5707963267948966) {
+  if (std::abs(accumulate_wind_speed) > 1.5707963267948966) {
     // '<S2>:1:157'
     // '<S2>:1:158'
-    if (rtb_CenterPosX < 0.0) {
-      rtb_CenterPosX = -1.0;
-    } else if (rtb_CenterPosX > 0.0) {
-      rtb_CenterPosX = 1.0;
+    if (accumulate_wind_speed < 0.0) {
+      accumulate_wind_speed = -1.0;
+    } else if (accumulate_wind_speed > 0.0) {
+      accumulate_wind_speed = 1.0;
     } else {
-      if (rtb_CenterPosX == 0.0) {
-        rtb_CenterPosX = 0.0;
+      if (accumulate_wind_speed == 0.0) {
+        accumulate_wind_speed = 0.0;
       }
     }
 
-    rtb_CenterPosX *= 1.5707963267948966;
+    accumulate_wind_speed *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
     // '<S2>:1:160'
     // '<S2>:1:161'
-    rtb_CenterPosX = 1.5707963267948966;
+    accumulate_wind_speed = 1.5707963267948966;
   }
 
-  x_speed = station_keeping_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+  x_speed = keeping_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+
+  // Outport: '<Root>/speed_angle_d'
+  keeping_Y.speed_angle_d = x_speed;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
-  //   Inport: '<Root>/ahrs_Yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
+  //   Inport: '<Root>/yaw'
+  //   Inport: '<Root>/yaw_rate'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
   // '<S3>:1:2'
-  y_speed = ((station_keeping_P.Ki * station_keeping_AngleDiff_p
-              (Horizontal_speed_angle, x_speed) * station_keeping_P.run_period +
-              station_keeping_DW.UnitDelay5_DSTATE) + station_keeping_P.Kp *
-             station_keeping_AngleDiff_p(Horizontal_speed_angle, x_speed)) +
-    (station_keeping_AngleDiff_p(station_keeping_DW.UnitDelay6_DSTATE, x_speed) /
-     station_keeping_P.run_period - station_keeping_U.ahrs_Yaw_rate) *
-    station_keeping_P.Kd;
+  y_speed = ((keeping_P.Ki * keeping_AngleDiff_o(keeping_U.yaw, x_speed) *
+              keeping_P.run_period + keeping_DW.UnitDelay5_DSTATE) +
+             keeping_P.Kp * keeping_AngleDiff_o(keeping_U.yaw, x_speed)) +
+    (keeping_AngleDiff_o(keeping_DW.UnitDelay6_DSTATE, x_speed) /
+     keeping_P.run_period - keeping_U.yaw_rate) * keeping_P.Kd;
 
   // '<S3>:1:5'
   // '<S3>:1:6'
-  if (std::abs(y_speed) > 0.43633231299858238) {
+  if (std::abs(y_speed) > 0.52359877559829882) {
     // '<S3>:1:7'
     // '<S3>:1:8'
     if (y_speed < 0.0) {
@@ -2141,85 +2167,68 @@ void station_keepingModelClass::step()
       }
     }
 
-    y_speed *= 0.43633231299858238;
+    y_speed *= 0.52359877559829882;
   }
 
   // Outport: '<Root>/rudder' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  station_keeping_Y.rudder = y_speed;
+  keeping_Y.rudder = y_speed;
 
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  station_keeping_Y.sail = rtb_CenterPosX;
-
-  // Outport: '<Root>/wind_speed' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function6'
-
-  station_keeping_Y.wind_speed = WindSpeed_mean;
-
-  // Outport: '<Root>/wind_angle_ground'
-  station_keeping_Y.wind_angle_ground = rtb_WindAngle_mean;
-
-  // Outport: '<Root>/speed_angle' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function7'
-
-  station_keeping_Y.speed_angle = Horizontal_speed_angle;
-
-  // Outport: '<Root>/speed_angle_d'
-  station_keeping_Y.speed_angle_d = x_speed;
-
-  // Outport: '<Root>/los_heading'
-  station_keeping_Y.los_heading = rtb_los_heading;
-
-  // Update for UnitDelay: '<Root>/Unit Delay15'
-  memcpy(&station_keeping_DW.UnitDelay15_DSTATE[0], &rtb_pos_history[0], 300U *
-         sizeof(real_T));
-
-  // Update for UnitDelay: '<Root>/Unit Delay14'
-  memcpy(&station_keeping_DW.UnitDelay14_DSTATE[0],
-         &station_keeping_B.ship_speed_history[0], 800U * sizeof(real_T));
+  keeping_Y.sail = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay13'
-  memcpy(&station_keeping_DW.UnitDelay13_DSTATE[0],
-         &station_keeping_B.real_wind_history[0], 6000U * sizeof(real_T));
+  memcpy(&keeping_DW.UnitDelay13_DSTATE[0], &keeping_B.real_wind_history[0],
+         6000U * sizeof(real_T));
+
+  // Update for UnitDelay: '<Root>/Unit Delay15'
+  memcpy(&keeping_DW.UnitDelay15_DSTATE[0], &rtb_pos_history[0], 300U * sizeof
+         (real_T));
+
+  // Update for UnitDelay: '<Root>/Unit Delay14'
+  memcpy(&keeping_DW.UnitDelay14_DSTATE[0], &keeping_B.ship_speed_history[0],
+         800U * sizeof(real_T));
 
   // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  station_keeping_DW.UnitDelay7_DSTATE = rtb_CenterPosX;
+  keeping_DW.UnitDelay7_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay8'
-  station_keeping_DW.UnitDelay8_DSTATE = x_speed;
+  keeping_DW.UnitDelay8_DSTATE = x_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay9' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
 
-  station_keeping_DW.UnitDelay9_DSTATE = 1.0;
+  keeping_DW.UnitDelay9_DSTATE = 1.0;
 
-  // Update for UnitDelay: '<Root>/Unit Delay11' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function5'
+  // Update for UnitDelay: '<Root>/Unit Delay10'
+  keeping_DW.UnitDelay10_DSTATE = rtb_tacking;
 
-  station_keeping_DW.UnitDelay11_DSTATE = loose_time;
+  // Update for UnitDelay: '<Root>/Unit Delay1' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function3'
+
+  keeping_DW.UnitDelay1_DSTATE = loose_time;
 
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  station_keeping_DW.UnitDelay6_DSTATE = x_speed;
+  keeping_DW.UnitDelay6_DSTATE = x_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
+  //   Inport: '<Root>/yaw'
   //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
 
-  station_keeping_DW.UnitDelay5_DSTATE += station_keeping_P.Ki *
-    station_keeping_AngleDiff_p(Horizontal_speed_angle, x_speed) *
-    station_keeping_P.run_period;
+  keeping_DW.UnitDelay5_DSTATE += keeping_P.Ki * keeping_AngleDiff_o
+    (keeping_U.yaw, x_speed) * keeping_P.run_period;
 }
 
 // Model initialize function
-void station_keepingModelClass::initialize()
+void keepingModelClass::initialize()
 {
   // Registration code
 
@@ -2227,71 +2236,582 @@ void station_keepingModelClass::initialize()
   rt_InitInfAndNaN(sizeof(real_T));
 
   // initialize error status
-  rtmSetErrorStatus((&station_keeping_M), (NULL));
+  rtmSetErrorStatus((&keeping_M), (NULL));
 
   // states (dwork)
-  (void) memset((void *)&station_keeping_DW, 0,
-                sizeof(DW_station_keeping_T));
+  (void) memset((void *)&keeping_DW, 0,
+                sizeof(DW_keeping_T));
 
   // external inputs
-  (void) memset((void *)&station_keeping_U, 0,
-                sizeof(ExtU_station_keeping_T));
+  (void) memset((void *)&keeping_U, 0,
+                sizeof(ExtU_keeping_T));
 
   // external outputs
-  (void) memset((void *)&station_keeping_Y, 0,
-                sizeof(ExtY_station_keeping_T));
+  (void) memset((void *)&keeping_Y, 0,
+                sizeof(ExtY_keeping_T));
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay13'
+  memcpy(&keeping_DW.UnitDelay13_DSTATE[0],
+         &keeping_P.UnitDelay13_InitialCondition[0], 6000U * sizeof(real_T));
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay15'
+  memcpy(&keeping_DW.UnitDelay15_DSTATE[0],
+         &keeping_P.UnitDelay15_InitialCondition[0], 300U * sizeof(real_T));
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay14'
+  memcpy(&keeping_DW.UnitDelay14_DSTATE[0],
+         &keeping_P.UnitDelay14_InitialCondition[0], 800U * sizeof(real_T));
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay7'
+  keeping_DW.UnitDelay7_DSTATE = keeping_P.UnitDelay7_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay8'
-  station_keeping_DW.UnitDelay8_DSTATE = 1.5707963267948966;
+  keeping_DW.UnitDelay8_DSTATE = keeping_P.UnitDelay8_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay9'
-  station_keeping_DW.UnitDelay9_DSTATE = 1.0;
+  keeping_DW.UnitDelay9_DSTATE = keeping_P.UnitDelay9_InitialCondition;
 
-  // InitializeConditions for UnitDelay: '<Root>/Unit Delay11'
-  station_keeping_DW.UnitDelay11_DSTATE = -1.0;
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay10'
+  keeping_DW.UnitDelay10_DSTATE = keeping_P.UnitDelay10_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay1'
+  keeping_DW.UnitDelay1_DSTATE = keeping_P.UnitDelay1_InitialCondition;
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay6'
-  station_keeping_DW.UnitDelay6_DSTATE = 1.5707963267948966;
+  keeping_DW.UnitDelay6_DSTATE = keeping_P.UnitDelay6_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay5'
+  keeping_DW.UnitDelay5_DSTATE = keeping_P.UnitDelay5_InitialCondition;
 }
 
 // Model terminate function
-void station_keepingModelClass::terminate()
+void keepingModelClass::terminate()
 {
   // (no terminate code required)
 }
 
 // Constructor
-station_keepingModelClass::station_keepingModelClass()
+keepingModelClass::keepingModelClass()
 {
-  P_station_keeping_T station_keeping_P_temp = {
+  P_keeping_T keeping_P_temp = {
     0.4,
     0.0,
     0.3,
     50.0,
+    50.0,
     1.0,
 
-    { 100.0, 100.0 },
+    { -100.0, 100.0 },
     3.0,
     0.1,
     40.0,
+    0.6,
+    150.0,
+    3.0,
     0.8,
-    10.0
+    -0.61,
+
+    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    },
+
+    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    },
+
+    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0 },
+    0.0,
+    1.5707963267948966,
+    1.0,
+    1.0,
+    -1.0,
+    1.5707963267948966,
+    0.0
   };                                   // Modifiable parameters
 
   // Initialize tunable parameters
-  station_keeping_P = station_keeping_P_temp;
+  keeping_P = keeping_P_temp;
 }
 
 // Destructor
-station_keepingModelClass::~station_keepingModelClass()
+keepingModelClass::~keepingModelClass()
 {
   // Currently there is no destructor body generated.
 }
 
 // Real-Time Model get method
-RT_MODEL_station_keeping_T * station_keepingModelClass::getRTM()
+RT_MODEL_keeping_T * keepingModelClass::getRTM()
 {
-  return (&station_keeping_M);
+  return (&keeping_M);
 }
 
 //

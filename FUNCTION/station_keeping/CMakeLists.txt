@@ -49,7 +49,7 @@ set( station_keeping_SRC
         src/rt_nonfinite.cpp
         src/rtGetInf.cpp
         src/rtGetNaN.cpp
-        src/station_keeping.cpp
+        src/keeping.cpp
         )
 
 add_executable( ${PROJECT_NAME} ${station_keeping_SRC} )

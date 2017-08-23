@@ -1,19 +1,19 @@
 //
-// File: station_keeping_private.h
+// File: keeping_private.h
 //
-// Code generated for Simulink model 'station_keeping'.
+// Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.261
+// Model version                  : 1.182
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Jul 06 15:10:39 2017
+// C/C++ source code generated on : Wed Aug 23 15:56:21 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
 // Code generation objectives: Unspecified
 // Validation result: Not run
 //
-#ifndef RTW_HEADER_station_keeping_private_h_
-#define RTW_HEADER_station_keeping_private_h_
+#ifndef RTW_HEADER_keeping_private_h_
+#define RTW_HEADER_keeping_private_h_
 #include "rtwtypes.h"
 #ifndef __RTWTYPES_H__
 #error This file requires rtwtypes.h to be included
@@ -22,7 +22,7 @@
 extern real_T rt_atan2d_snf(real_T u0, real_T u1);
 extern real_T rt_roundd_snf(real_T u);
 
-#endif                                 // RTW_HEADER_station_keeping_private_h_
+#endif                                 // RTW_HEADER_keeping_private_h_
 
 //
 // File trailer for generated code.
