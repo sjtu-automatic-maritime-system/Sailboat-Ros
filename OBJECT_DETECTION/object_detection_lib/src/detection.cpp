@@ -1,5 +1,4 @@
 #include <opencv2/opencv.hpp>
-//#include <opencv2/contrib/contrib.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -46,7 +45,7 @@ namespace detection {
 //        cv::Mat gray;
 
         std::vector<cv::Vec3f> circles;
-        cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 200, 100, 0, 0);
+        cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 200, 100, 0, 100);
 
         for (size_t i = 0; i < circles.size(); i++) {
             cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
