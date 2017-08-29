@@ -1,3 +1,4 @@
+<!-- -->
 <launch>
 	<!-- declare arg to be passed in -->
 	<arg name="load_model" default="false"/>

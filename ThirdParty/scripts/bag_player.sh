@@ -5,7 +5,7 @@
 #--tab --title "rviz" -e "sh -c 'sleep 2;rviz -d bag_visulization.rviz'" \
 
 #bag_file="/media/jianyun/MyPassport/KITTI_DATA/RawData/Data/BAG/2011_09_26/kitti_2011_09_26_drive_0015_synced.bag"
-bag_file="/home/jianyun/BAG/bag_0824/bag_0824_water/camera/test2.bag"
+bag_file="/home/jianyun/BAG/bag_0824/bag_0824_water/camera/test1.bag"
 
 echo "load ros user settings..."
 source ~/catkin_ws/devel/setup.bash
