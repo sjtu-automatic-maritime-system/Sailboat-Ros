@@ -182,12 +182,14 @@ class WTST:
             # 8 = Simulator Mode
             self.GPSIndicator = int(self.parsedata[6])
             # Latitude, to the nearest .0001 minute
-            latitude = float(self.parsedata[2])
+            self.UTCtime = float(self.parsedata[1])
+            self.latitude = float(self.parsedata[2])
             # Longitude, to the nearest .0001 minute
-            longitude = float(self.parsedata[4])
+            self.longitude = float(self.parsedata[4])
 
-            self.Latitude = self.gps_chang(latitude)
-            self.Longitude = self.gps_chang(longitude)
+
+            self.Latitude = self.gps_chang(self.latitude)
+            self.Longitude = self.gps_chang(self.longitude)
             #
             self.PosX, self.PosY = self.w84_calc_ne(self.Latitude, self.Longitude)
             # Number of satellites in use, 0-12
@@ -311,6 +313,7 @@ class dataWrapper:
     """docstring for dataWrapper"""
     def __init__(self):
         self.GPSIndicator = 'GPSIndicator'
+        self.UTCtime = 'UTCtime'
         self.Latitude = 'Latitude'
         self.Longitude ='Longitude'
         self.PosX = 'PosX'
@@ -345,6 +348,8 @@ class dataWrapper:
         msg.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
+        if wtst.isset(self.UTCtime):
+            msg.UTCtime = wtst.UTCtime
         if wtst.isset(self.Latitude):
             msg.Latitude = wtst.Latitude
         if wtst.isset(self.Longitude):
@@ -375,6 +380,8 @@ class dataWrapper:
         msgPro.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msgPro.GPSIndicator = wtst.GPSIndicator
+        if wtst.isset(self.UTCtime):
+            msgPro.UTCtime = wtst.UTCtime
         if wtst.isset(self.Latitude):
             msgPro.Latitude = wtst.Latitude
         if wtst.isset(self.Longitude):

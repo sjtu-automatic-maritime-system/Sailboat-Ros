@@ -1,4 +1,4 @@
 <launch>
     <node pkg="fleet_race" type="fleet_race" name="fleet_race"/>
-    <node pkg="rosbag" type="record" name="fleet_race_record" args=" -o /home/sjtu-sailboat/rosbag/fleet_race /wtst /ahrs /mach /sensor /sensor2 /arduino /fleet_race_out /fleet_race_para"/>
+    <node pkg="rosbag" type="record" name="fleet_race_record" args=" -o /home/sjtu-sailboat/rosbag/fleet_race --split --duration=20m /wtst /ahrs /mach /sensor /sensor2 /arduino /fleet_race_out /fleet_race_para"/>
 </launch>

@@ -1,5 +1,6 @@
 Header header
 int16 GPSIndicator
+float64 UTCtime
 float64 Latitude
 float64 Longitude
 float64 PosX
