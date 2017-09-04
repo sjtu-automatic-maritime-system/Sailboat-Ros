@@ -26,8 +26,11 @@ INIT_COMMANDS = """$PAMTC,BAUD,38400
 """
 
 # lat/lon of original point, use to caculate posx/posy (north and east are positive)
-ORIGIN_LAT = 31.0231632
-ORIGIN_LON = 121.4251289
+# ORIGIN_LAT = 31.0231632
+# ORIGIN_LON = 121.4251289
+
+ORIGIN_LAT = 59.4217483333
+ORIGIN_LON = 10.4666916667
 
 # XOR checksum 
 # example data = "$WIMWV,43.1,R,0.4,N,A"  
