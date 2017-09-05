@@ -1,3 +1,3 @@
 nohup roslaunch sailboat_launch scanning.launch &
-sleep 2s
+sleep 5s
 echo "start scanning"

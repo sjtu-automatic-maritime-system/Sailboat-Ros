@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-11-40-16.bag
-mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-13-40-39.bag
-mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-11-04-37.bag
-mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-14-14-38.bag
-mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-11-23-54.bag
-mkdir ~/rosbag/2017-08-24/fleet_race_2017-08-24-11-58-27.bag
-mkdir ~/rosbag/2017-08-24/station_keeping_2017-08-24-12-12-22.bag
+mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-11-40-16
+mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-13-40-39
+mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-11-04-37
+mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-14-14-38
+mkdir ~/rosbag/2017-08-24/scanning_2017-08-24-11-23-54
+mkdir ~/rosbag/2017-08-24/fleet_race_2017-08-24-11-58-27
+mkdir ~/rosbag/2017-08-24/station_keeping_2017-08-24-12-12-22
 
 rostopic echo -b ~/rosbag/2017-08-24/scanning_2017-08-24-11-40-16.bag -p /ahrs          > ~/rosbag/2017-08-24/scanning_2017_08_24_11_40_16/ahrs.txt
 rostopic echo -b ~/rosbag/2017-08-24/scanning_2017-08-24-11-40-16.bag -p /arduino       > ~/rosbag/2017-08-24/scanning_2017_08_24_11_40_16/arduino.txt

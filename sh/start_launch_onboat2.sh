@@ -1,4 +1,4 @@
 nohup roslaunch sailboat_launch start_arduino.launch &
-sleep 2s
+sleep 5s
 echo "start launch onboat"
 rosnode list

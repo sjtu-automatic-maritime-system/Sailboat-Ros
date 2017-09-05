@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.182
+// Model version                  : 1.186
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Aug 23 15:56:21 2017
+// C/C++ source code generated on : Tue Sep 05 06:48:57 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -2132,48 +2132,57 @@ void keepingModelClass::step()
     accumulate_wind_speed = 1.5707963267948966;
   }
 
-  x_speed = keeping_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+  y_speed = keeping_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
 
   // Outport: '<Root>/speed_angle_d'
-  keeping_Y.speed_angle_d = x_speed;
+  keeping_Y.speed_angle_d = y_speed;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
-  //   Inport: '<Root>/yaw'
   //   Inport: '<Root>/yaw_rate'
+  //   MATLAB Function: '<Root>/MATLAB Function6'
+  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
+  x_speed = keeping_P.Kp;
+
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
-  // '<S3>:1:2'
-  y_speed = ((keeping_P.Ki * keeping_AngleDiff_o(keeping_U.yaw, x_speed) *
-              keeping_P.run_period + keeping_DW.UnitDelay5_DSTATE) +
-             keeping_P.Kp * keeping_AngleDiff_o(keeping_U.yaw, x_speed)) +
-    (keeping_AngleDiff_o(keeping_DW.UnitDelay6_DSTATE, x_speed) /
+  if (WindSpeed_mean > 3.0) {
+    // '<S3>:1:2'
+    // '<S3>:1:3'
+    x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kp;
+  }
+
+  // '<S3>:1:6'
+  x_speed = ((keeping_P.Ki * keeping_AngleDiff_o(Horizontal_speed_angle, y_speed)
+              * keeping_P.run_period + keeping_DW.UnitDelay5_DSTATE) + x_speed *
+             keeping_AngleDiff_o(Horizontal_speed_angle, y_speed)) +
+    (keeping_AngleDiff_o(keeping_DW.UnitDelay6_DSTATE, y_speed) /
      keeping_P.run_period - keeping_U.yaw_rate) * keeping_P.Kd;
 
-  // '<S3>:1:5'
-  // '<S3>:1:6'
-  if (std::abs(y_speed) > 0.52359877559829882) {
-    // '<S3>:1:7'
-    // '<S3>:1:8'
-    if (y_speed < 0.0) {
-      y_speed = -1.0;
-    } else if (y_speed > 0.0) {
-      y_speed = 1.0;
+  // '<S3>:1:9'
+  // '<S3>:1:10'
+  if (std::abs(x_speed) > 0.52359877559829882) {
+    // '<S3>:1:11'
+    // '<S3>:1:12'
+    if (x_speed < 0.0) {
+      x_speed = -1.0;
+    } else if (x_speed > 0.0) {
+      x_speed = 1.0;
     } else {
-      if (y_speed == 0.0) {
-        y_speed = 0.0;
+      if (x_speed == 0.0) {
+        x_speed = 0.0;
       }
     }
 
-    y_speed *= 0.52359877559829882;
+    x_speed *= 0.52359877559829882;
   }
 
   // Outport: '<Root>/rudder' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  keeping_Y.rudder = y_speed;
+  keeping_Y.rudder = x_speed;
 
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
@@ -2198,7 +2207,7 @@ void keepingModelClass::step()
   keeping_DW.UnitDelay7_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay8'
-  keeping_DW.UnitDelay8_DSTATE = x_speed;
+  keeping_DW.UnitDelay8_DSTATE = y_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay9' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
@@ -2216,15 +2225,15 @@ void keepingModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  keeping_DW.UnitDelay6_DSTATE = x_speed;
+  keeping_DW.UnitDelay6_DSTATE = y_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
-  //   Inport: '<Root>/yaw'
   //   MATLAB Function: '<Root>/MATLAB Function2'
+  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
 
   keeping_DW.UnitDelay5_DSTATE += keeping_P.Ki * keeping_AngleDiff_o
-    (keeping_U.yaw, x_speed) * keeping_P.run_period;
+    (Horizontal_speed_angle, y_speed) * keeping_P.run_period;
 }
 
 // Model initialize function
@@ -2294,19 +2303,19 @@ void keepingModelClass::terminate()
 keepingModelClass::keepingModelClass()
 {
   P_keeping_T keeping_P_temp = {
-    0.4,
+    0.3,
     0.0,
     0.3,
-    50.0,
+    40.0,
     50.0,
     1.0,
 
-    { -100.0, 100.0 },
+    { -151.061785525, 366.770497586 },
     3.0,
     0.1,
     40.0,
     0.6,
-    150.0,
+    40.0,
     3.0,
     0.8,
     -0.61,
