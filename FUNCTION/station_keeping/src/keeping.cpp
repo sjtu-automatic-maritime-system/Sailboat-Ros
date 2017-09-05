@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.186
+// Model version                  : 1.188
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Sep 05 06:48:57 2017
+// C/C++ source code generated on : Tue Sep 05 10:32:45 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -2138,12 +2138,14 @@ void keepingModelClass::step()
   keeping_Y.speed_angle_d = y_speed;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
+  //   Inport: '<Root>/yaw'
   //   Inport: '<Root>/yaw_rate'
   //   MATLAB Function: '<Root>/MATLAB Function6'
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
+  heading = keeping_U.yaw;
   x_speed = keeping_P.Kp;
 
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
@@ -2154,18 +2156,24 @@ void keepingModelClass::step()
     x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kp;
   }
 
-  // '<S3>:1:6'
-  x_speed = ((keeping_P.Ki * keeping_AngleDiff_o(Horizontal_speed_angle, y_speed)
-              * keeping_P.run_period + keeping_DW.UnitDelay5_DSTATE) + x_speed *
-             keeping_AngleDiff_o(Horizontal_speed_angle, y_speed)) +
-    (keeping_AngleDiff_o(keeping_DW.UnitDelay6_DSTATE, y_speed) /
-     keeping_P.run_period - keeping_U.yaw_rate) * keeping_P.Kd;
+  if (rtb_Horizontal_speed > 0.3) {
+    // '<S3>:1:5'
+    // '<S3>:1:6'
+    heading = Horizontal_speed_angle;
+  }
 
-  // '<S3>:1:9'
   // '<S3>:1:10'
+  x_speed = ((keeping_P.Ki * keeping_AngleDiff_o(heading, y_speed) *
+              keeping_P.run_period + keeping_DW.UnitDelay5_DSTATE) + x_speed *
+             keeping_AngleDiff_o(heading, y_speed)) + (keeping_AngleDiff_o
+    (keeping_DW.UnitDelay6_DSTATE, y_speed) / keeping_P.run_period -
+    keeping_U.yaw_rate) * keeping_P.Kd;
+
+  // '<S3>:1:13'
+  // '<S3>:1:14'
   if (std::abs(x_speed) > 0.52359877559829882) {
-    // '<S3>:1:11'
-    // '<S3>:1:12'
+    // '<S3>:1:15'
+    // '<S3>:1:16'
     if (x_speed < 0.0) {
       x_speed = -1.0;
     } else if (x_speed > 0.0) {
@@ -2229,11 +2237,10 @@ void keepingModelClass::step()
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
 
-  keeping_DW.UnitDelay5_DSTATE += keeping_P.Ki * keeping_AngleDiff_o
-    (Horizontal_speed_angle, y_speed) * keeping_P.run_period;
+  keeping_DW.UnitDelay5_DSTATE += keeping_P.Ki * keeping_AngleDiff_o(heading,
+    y_speed) * keeping_P.run_period;
 }
 
 // Model initialize function
@@ -2305,7 +2312,7 @@ keepingModelClass::keepingModelClass()
   P_keeping_T keeping_P_temp = {
     0.3,
     0.0,
-    0.3,
+    0.4,
     40.0,
     50.0,
     1.0,
@@ -2316,7 +2323,7 @@ keepingModelClass::keepingModelClass()
     40.0,
     0.6,
     40.0,
-    3.0,
+    4.0,
     0.8,
     -0.61,
 
