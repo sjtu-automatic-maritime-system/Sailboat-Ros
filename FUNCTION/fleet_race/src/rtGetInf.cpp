@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'race_course'.
 //
-// Model version                  : 1.272
+// Model version                  : 1.278
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Aug 23 15:44:20 2017
+// C/C++ source code generated on : Tue Sep 05 07:00:18 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic

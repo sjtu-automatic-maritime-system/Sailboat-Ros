@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'race_course'.
 //
-// Model version                  : 1.272
+// Model version                  : 1.278
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Aug 23 15:44:20 2017
+// C/C++ source code generated on : Tue Sep 05 07:00:18 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -2234,26 +2234,33 @@ void race_courseModelClass::step()
   y_speed = race_course_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
-  //   Inport: '<Root>/yaw'
   //   Inport: '<Root>/yaw_rate'
+  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
+  x_speed = race_course_P.Kp;
+
   // MATLAB Function 'MATLAB Function2': '<S2>:1'
   // 能不能输出首向转速
-  // '<S2>:1:2'
-  x_speed = ((race_course_P.Ki * race_course_AngleDiff_k(race_course_U.yaw,
-    y_speed) * race_course_P.run_period + race_course_DW.UnitDelay5_DSTATE) +
-             race_course_P.Kp * race_course_AngleDiff_k(race_course_U.yaw,
-              y_speed)) + (race_course_AngleDiff_k
-    (race_course_DW.UnitDelay6_DSTATE, y_speed) / race_course_P.run_period -
-    race_course_U.yaw_rate) * race_course_P.Kd;
+  if (0.0 > 3.0) {
+    // '<S2>:1:2'
+    // '<S2>:1:3'
+    x_speed = ((0.0 - 3.0) / 6.0 + 1.0) * race_course_P.Kp;
+  }
 
   // '<S2>:1:5'
-  // '<S2>:1:6'
-  if (std::abs(x_speed) > 0.43633231299858238) {
-    // '<S2>:1:7'
-    // '<S2>:1:8'
+  x_speed = ((race_course_P.Ki * race_course_AngleDiff_k(Horizontal_speed_angle,
+    y_speed) * race_course_P.run_period + race_course_DW.UnitDelay5_DSTATE) +
+             x_speed * race_course_AngleDiff_k(Horizontal_speed_angle, y_speed))
+    + (race_course_AngleDiff_k(race_course_DW.UnitDelay6_DSTATE, y_speed) /
+       race_course_P.run_period - race_course_U.yaw_rate) * race_course_P.Kd;
+
+  // '<S2>:1:8'
+  // '<S2>:1:9'
+  if (std::abs(x_speed) > 0.57595865315812866) {
+    // '<S2>:1:10'
+    // '<S2>:1:11'
     if (x_speed < 0.0) {
       x_speed = -1.0;
     } else if (x_speed > 0.0) {
@@ -2264,7 +2271,7 @@ void race_courseModelClass::step()
       }
     }
 
-    x_speed *= 0.43633231299858238;
+    x_speed *= 0.57595865315812866;
   }
 
   // Outport: '<Root>/rudder' incorporates:
@@ -2344,12 +2351,12 @@ void race_courseModelClass::step()
   race_course_DW.UnitDelay6_DSTATE = y_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
-  //   Inport: '<Root>/yaw'
   //   MATLAB Function: '<Root>/MATLAB Function2'
+  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
 
   race_course_DW.UnitDelay5_DSTATE += race_course_P.Ki * race_course_AngleDiff_k
-    (race_course_U.yaw, y_speed) * race_course_P.run_period;
+    (Horizontal_speed_angle, y_speed) * race_course_P.run_period;
 }
 
 // Model initialize function
@@ -2422,23 +2429,24 @@ void race_courseModelClass::terminate()
 race_courseModelClass::race_courseModelClass()
 {
   P_race_course_T race_course_P_temp = {
-    0.4,
+    0.2,
     0.0,
     0.3,
     5.0,
     10.0,
-    7.0,
+    14.0,
     50.0,
     40.0,
     1.0,
     3.0,
 
-    { 0.0, 0.0, 136.0, 0.0, 0.0, 160.0, 80.0, 0.0 },
+    { 61.7727, 250.0986, 213.67, 61.7727, 103.4579, 112.1993, 207.2186, 103.4579
+    },
     0.1,
     40.0,
     0.6,
-    80.0,
-    3.0,
+    70.0,
+    2.0,
     3.0,
     -0.61,
     0.8,
