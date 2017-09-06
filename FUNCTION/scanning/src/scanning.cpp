@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.277
+// Model version                  : 1.290
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Aug 23 14:22:40 2017
+// C/C++ source code generated on : Wed Sep 06 06:37:15 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1402,38 +1402,38 @@ void scanningModelClass::step()
   real_T y_speed;
   int32_T b;
   real_T leg;
+  real_T WindSpeed_mean;
   real_T real_wind_speed_x;
+  real_T real_wind_speed_y;
   int32_T wind_valid;
   real_T accumulate_wind_speed;
   real_T count_wind;
+  real_T c;
+  real_T b_R;
+  real_T tn;
   int32_T begin;
-  real_T length_time;
+  real_T i;
   int32_T itmp;
   int32_T ixstart;
   int32_T c_itmp;
   boolean_T exitg1;
-  real_T loose_time;
-  real_T heading;
-  real_T sail_d_last;
-  real_T jibing;
-  real_T b_tacking_force_discount;
-  real_T Airmar_wind_angle;
-  real_T length_sailangle;
-  real_T SailAngle_ground;
-  real_T n;
   real_T drive_force[380];
-  real_T x;
   real_T rtb_Horizontal_speed;
+  real_T rtb_WindAngle_mean;
   real_T rtb_CenterPosY;
   real_T rtb_CenterPosX;
   real_T rtb_path[402];
-  real_T rtb_tacking;
   int32_T rtb_sail_safe;
   real_T rtb_pos_history[300];
-  int32_T i;
+  int32_T i_0;
   real_T dead_sail_data[4];
   int32_T dead_sail_sizes[2];
+  real_T GPS_data;
+  real_T rtb_point_start_idx_0;
+  real_T rtb_point_start_idx_1;
   real_T GPS_data_idx_0;
+  real_T point2_idx_0;
+  real_T point2_idx_1;
   real_T point3_idx_0;
   real_T point3_idx_1;
   real_T end1_idx_0;
@@ -1481,10 +1481,10 @@ void scanningModelClass::step()
        wind_valid++) {
     // '<S8>:1:8'
     // '<S8>:1:9'
-    i = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
-    rtb_pos_history[wind_valid + 1] = scanning_DW.UnitDelay15_DSTATE[i - 1];
-    rtb_pos_history[wind_valid + 101] = scanning_DW.UnitDelay15_DSTATE[i + 99];
-    rtb_pos_history[wind_valid + 201] = scanning_DW.UnitDelay15_DSTATE[i + 199];
+    i_0 = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
+    rtb_pos_history[wind_valid + 1] = scanning_DW.UnitDelay15_DSTATE[i_0 - 1];
+    rtb_pos_history[wind_valid + 101] = scanning_DW.UnitDelay15_DSTATE[i_0 + 99];
+    rtb_pos_history[wind_valid + 201] = scanning_DW.UnitDelay15_DSTATE[i_0 + 199];
 
     // '<S8>:1:8'
   }
@@ -1515,11 +1515,11 @@ void scanningModelClass::step()
        ixstart++) {
     // '<S8>:1:17'
     // '<S8>:1:18'
-    i = (int32_T)((2.0 + (real_T)ixstart) - 1.0);
+    i_0 = (int32_T)((2.0 + (real_T)ixstart) - 1.0);
     scanning_B.ship_speed_history[ixstart + 1] =
-      scanning_DW.UnitDelay14_DSTATE[i - 1];
+      scanning_DW.UnitDelay14_DSTATE[i_0 - 1];
     scanning_B.ship_speed_history[ixstart + 401] =
-      scanning_DW.UnitDelay14_DSTATE[i + 399];
+      scanning_DW.UnitDelay14_DSTATE[i_0 + 399];
 
     // '<S8>:1:17'
   }
@@ -1580,189 +1580,202 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay'
 
   leg = scanning_DW.UnitDelay_DSTATE;
+  y_speed = scanning_P.start_counting;
 
   // MATLAB Function 'MATLAB Function': '<S1>:1'
   // '<S1>:1:3'
   // '<S1>:1:4'
   // '<S1>:1:5'
   // '<S1>:1:6'
-  // '<S1>:1:7'
+  if (scanning_DW.UnitDelay_DSTATE < 0.5) {
+    // '<S1>:1:8'
+    // '<S1>:1:9'
+    y_speed = 0.0;
+  }
+
+  // '<S1>:1:12'
+  rtb_point_start_idx_0 = (scanning_P.scanning_points[0] * 15.0 +
+    scanning_P.scanning_points[2]) / 16.0;
+  rtb_point_start_idx_1 = (scanning_P.scanning_points[4] * 15.0 +
+    scanning_P.scanning_points[6]) / 16.0;
+
+  // '<S1>:1:13'
+  accumulate_wind_speed = rtb_point_start_idx_0 - rtb_CenterPosX;
+  x_speed = rtb_point_start_idx_1 - rtb_CenterPosY;
+  if ((sqrt(accumulate_wind_speed * accumulate_wind_speed + x_speed * x_speed) <
+       10.0) && (scanning_DW.UnitDelay_DSTATE < 0.5)) {
+    // '<S1>:1:14'
+    // '<S1>:1:15'
+    leg = 1.0;
+  }
+
+  // '<S1>:1:20'
   accumulate_wind_speed = scanning_P.scanning_points[2] -
     scanning_P.scanning_points[0];
-  y_speed = scanning_P.scanning_points[6] - scanning_P.scanning_points[4];
-  count_wind = sqrt(accumulate_wind_speed * accumulate_wind_speed + y_speed *
-                    y_speed);
+  count_wind = scanning_P.scanning_points[6] - scanning_P.scanning_points[4];
+  real_wind_speed_y = sqrt(accumulate_wind_speed * accumulate_wind_speed +
+    count_wind * count_wind);
   GPS_data_idx_0 = (scanning_P.scanning_points[0] - scanning_P.scanning_points[2])
-    / count_wind * scanning_P.points_up_move;
+    / real_wind_speed_y * scanning_P.points_up_move;
   end1_idx_1 = (scanning_P.scanning_points[4] - scanning_P.scanning_points[6]) /
-    count_wind * scanning_P.points_up_move;
+    real_wind_speed_y * scanning_P.points_up_move;
 
-  // '<S1>:1:8'
+  // '<S1>:1:21'
   point1_idx_0 = scanning_P.scanning_points[0] + GPS_data_idx_0;
 
-  // '<S1>:1:9'
-  y_speed = scanning_P.scanning_points[1] + GPS_data_idx_0;
-  accumulate_wind_speed = scanning_P.scanning_points[5] + end1_idx_1;
+  // '<S1>:1:22'
+  point2_idx_0 = scanning_P.scanning_points[1] + GPS_data_idx_0;
+  point2_idx_1 = scanning_P.scanning_points[5] + end1_idx_1;
 
-  // '<S1>:1:10'
+  // '<S1>:1:23'
   point3_idx_0 = scanning_P.scanning_points[2] + GPS_data_idx_0;
   point3_idx_1 = scanning_P.scanning_points[6] + end1_idx_1;
 
-  // '<S1>:1:11'
+  // '<S1>:1:24'
   GPS_data_idx_0 += scanning_P.scanning_points[3];
-  real_wind_speed_x = scanning_P.scanning_points[7] + end1_idx_1;
+  GPS_data = scanning_P.scanning_points[7] + end1_idx_1;
 
-  // '<S1>:1:13'
-  x_speed = scanning_GetAngle(y_speed - GPS_data_idx_0, accumulate_wind_speed -
-    real_wind_speed_x);
+  // '<S1>:1:27'
+  x_speed = scanning_GetAngle(point2_idx_0 - GPS_data_idx_0, point2_idx_1 -
+    GPS_data);
 
-  // '<S1>:1:14'
+  // '<S1>:1:28'
   // %%%%%%%%%
-  // '<S1>:1:15'
+  // '<S1>:1:29'
   // %%%%%%%%%%
-  // '<S1>:1:16'
+  // '<S1>:1:30'
   // %%%%%%%%%
-  if ((((scanning_DW.UnitDelay_DSTATE > 3.5) && (scanning_DW.UnitDelay_DSTATE <
-         4.5)) || ((scanning_DW.UnitDelay_DSTATE > 1.5) &&
-                   (scanning_DW.UnitDelay_DSTATE < 2.5))) && (scanning_AngleDiff
-       (x_speed, scanning_GetAngle(rtb_CenterPosX - (point3_idx_0 * 15.5 +
-          GPS_data_idx_0 * 0.5) / 16.0, rtb_CenterPosY - (point3_idx_1 * 15.5 +
-          real_wind_speed_x * 0.5) / 16.0)) < 0.0) && (scanning_P.start_counting
-       > 0.5)) {
-    // '<S1>:1:17'
+  if ((((leg > 3.5) && (leg < 4.5)) || ((leg > 1.5) && (leg < 2.5))) &&
+      (scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
+         (point3_idx_0 * 15.5 + GPS_data_idx_0 * 0.5) / 16.0, rtb_CenterPosY -
+         (point3_idx_1 * 15.5 + GPS_data * 0.5) / 16.0)) < 0.0) && (y_speed >
+       0.5)) {
+    // '<S1>:1:31'
     // 2,4
-    // '<S1>:1:18'
-    leg = scanning_DW.UnitDelay_DSTATE + 1.0;
-  } else if ((((scanning_DW.UnitDelay_DSTATE > 0.5) &&
-               (scanning_DW.UnitDelay_DSTATE < 1.5)) ||
-              ((scanning_DW.UnitDelay_DSTATE > 2.5) &&
-               (scanning_DW.UnitDelay_DSTATE < 3.5)) ||
-              ((scanning_DW.UnitDelay_DSTATE > 4.5) &&
-               (scanning_DW.UnitDelay_DSTATE < 5.5)) ||
-              ((scanning_DW.UnitDelay_DSTATE > 6.5) &&
-               (scanning_DW.UnitDelay_DSTATE < 7.5))) && ((scanning_AngleDiff
-               (x_speed, scanning_GetAngle(rtb_CenterPosX - (GPS_data_idx_0 *
-      15.5 + point3_idx_0 * 0.5) / 16.0, rtb_CenterPosY - (real_wind_speed_x *
-      15.5 + point3_idx_1 * 0.5) / 16.0)) > 0.0) && (scanning_P.start_counting >
-    0.5))) {
-    // '<S1>:1:20'
+    // '<S1>:1:32'
+    leg++;
+  } else if ((((leg > 0.5) && (leg < 1.5)) || ((leg > 2.5) && (leg < 3.5)) ||
+              ((leg > 4.5) && (leg < 5.5)) || ((leg > 6.5) && (leg < 7.5))) &&
+             ((scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
+      (GPS_data_idx_0 * 15.5 + point3_idx_0 * 0.5) / 16.0, rtb_CenterPosY -
+      (GPS_data * 15.5 + point3_idx_1 * 0.5) / 16.0)) > 0.0) && (y_speed > 0.5)))
+  {
+    // '<S1>:1:34'
     // 1,3,5,7
-    // '<S1>:1:21'
-    leg = scanning_DW.UnitDelay_DSTATE + 1.0;
+    // '<S1>:1:35'
+    leg++;
   } else {
-    if ((((scanning_DW.UnitDelay_DSTATE > 5.5) && (scanning_DW.UnitDelay_DSTATE <
-           6.5)) || ((scanning_DW.UnitDelay_DSTATE > 7.5) &&
-                     (scanning_DW.UnitDelay_DSTATE < 8.5))) &&
+    if ((((leg > 5.5) && (leg < 6.5)) || ((leg > 7.5) && (leg < 8.5))) &&
         (scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
            (point3_idx_0 * 7.5 + GPS_data_idx_0 * 8.5) / 16.0, rtb_CenterPosY -
-           (point3_idx_1 * 7.5 + real_wind_speed_x * 8.5) / 16.0)) < 0.0) &&
-        (scanning_P.start_counting > 0.5)) {
-      // '<S1>:1:23'
+           (point3_idx_1 * 7.5 + GPS_data * 8.5) / 16.0)) < 0.0) && (y_speed >
+         0.5)) {
+      // '<S1>:1:37'
       // 6,8
-      // '<S1>:1:24'
-      leg = scanning_DW.UnitDelay_DSTATE + 1.0;
+      // '<S1>:1:38'
+      leg++;
     }
   }
 
   if (leg > 8.5) {
-    // '<S1>:1:27'
-    // '<S1>:1:28'
+    // '<S1>:1:41'
+    // '<S1>:1:42'
     leg = 7.5;
   }
 
-  // '<S1>:1:30'
+  // '<S1>:1:44'
   end1_idx_0 = ((8.5 - leg) * point1_idx_0 + (leg - 0.5) * point3_idx_0) / 8.0;
   end1_idx_1 = ((scanning_P.scanning_points[4] + end1_idx_1) * (8.5 - leg) +
                 (leg - 0.5) * point3_idx_1) / 8.0;
 
-  // '<S1>:1:31'
-  point1_idx_0 = ((8.5 - leg) * y_speed + (leg - 0.5) * GPS_data_idx_0) / 8.0;
-  y_speed = ((8.5 - leg) * accumulate_wind_speed + (leg - 0.5) *
-             real_wind_speed_x) / 8.0;
+  // '<S1>:1:45'
+  point1_idx_0 = ((8.5 - leg) * point2_idx_0 + (leg - 0.5) * GPS_data_idx_0) /
+    8.0;
+  point2_idx_0 = ((8.5 - leg) * point2_idx_1 + (leg - 0.5) * GPS_data) / 8.0;
   if ((leg > 7.4) && (leg < 7.6)) {
-    // '<S1>:1:32'
-    // '<S1>:1:33'
+    // '<S1>:1:46'
+    // '<S1>:1:47'
     leg = 9.0;
   }
 
   if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) > 0.5) && (leg < 4.5)) {
-    // '<S1>:1:36'
+    // '<S1>:1:50'
     // 1,3
-    // '<S1>:1:37'
+    // '<S1>:1:51'
     point3_idx_0 = end1_idx_0;
     point3_idx_1 = end1_idx_1;
 
-    // '<S1>:1:38'
+    // '<S1>:1:52'
     GPS_data_idx_0 = point1_idx_0;
-    end1_idx_1 = y_speed;
+    end1_idx_1 = point2_idx_0;
   } else if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) < 0.5) && (leg < 4.5))
   {
-    // '<S1>:1:39'
+    // '<S1>:1:53'
     // 2,4
-    // '<S1>:1:40'
+    // '<S1>:1:54'
     point3_idx_0 = point1_idx_0;
-    point3_idx_1 = y_speed;
+    point3_idx_1 = point2_idx_0;
 
-    // '<S1>:1:41'
+    // '<S1>:1:55'
     GPS_data_idx_0 = end1_idx_0;
   } else if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) > 0.5) && (leg > 4.5) &&
              (leg < 7.5)) {
-    // '<S1>:1:42'
+    // '<S1>:1:56'
     // 5,7
-    // '<S1>:1:43'
+    // '<S1>:1:57'
     point3_idx_0 = (end1_idx_0 + point1_idx_0) / 2.0;
-    point3_idx_1 = (end1_idx_1 + y_speed) / 2.0;
+    point3_idx_1 = (end1_idx_1 + point2_idx_0) / 2.0;
 
-    // '<S1>:1:44'
+    // '<S1>:1:58'
     GPS_data_idx_0 = point1_idx_0;
-    end1_idx_1 = y_speed;
+    end1_idx_1 = point2_idx_0;
   } else if ((rt_roundd_snf(leg - floor(leg / 2.0) * 2.0) < 0.5) && (leg > 4.5) &&
              (leg < 7.5)) {
-    // '<S1>:1:45'
+    // '<S1>:1:59'
     // 6
-    // '<S1>:1:46'
+    // '<S1>:1:60'
     point3_idx_0 = point1_idx_0;
-    point3_idx_1 = y_speed;
+    point3_idx_1 = point2_idx_0;
 
-    // '<S1>:1:47'
+    // '<S1>:1:61'
     GPS_data_idx_0 = (end1_idx_0 + point1_idx_0) / 2.0;
-    end1_idx_1 = (end1_idx_1 + y_speed) / 2.0;
+    end1_idx_1 = (end1_idx_1 + point2_idx_0) / 2.0;
   } else if (leg > 7.5) {
-    // '<S1>:1:48'
+    // '<S1>:1:62'
     // 8,9
-    // '<S1>:1:49'
+    // '<S1>:1:63'
     point3_idx_0 = point1_idx_0;
-    point3_idx_1 = y_speed;
+    point3_idx_1 = point2_idx_0;
 
-    // '<S1>:1:50'
+    // '<S1>:1:64'
     GPS_data_idx_0 = end1_idx_0;
   } else {
-    // '<S1>:1:52'
+    // '<S1>:1:66'
     point3_idx_0 = point1_idx_0;
-    point3_idx_1 = y_speed;
+    point3_idx_1 = point2_idx_0;
 
-    // '<S1>:1:53'
+    // '<S1>:1:67'
     GPS_data_idx_0 = end1_idx_0;
   }
 
   // %%%%%%%%%%%%%%end_point再延伸一段
-  // '<S1>:1:57'
+  // '<S1>:1:73'
   point1_idx_0 = (GPS_data_idx_0 * 13.0 + point3_idx_0 * -3.0) / 10.0;
-  y_speed = (end1_idx_1 * 13.0 + point3_idx_1 * -3.0) / 10.0;
+  point2_idx_0 = (end1_idx_1 * 13.0 + point3_idx_1 * -3.0) / 10.0;
 
-  // '<S1>:1:59'
-  // '<S1>:1:60'
+  // '<S1>:1:75'
+  // '<S1>:1:76'
   for (wind_valid = 0; wind_valid < 201; wind_valid++) {
-    // '<S1>:1:60'
-    // '<S1>:1:61'
+    // '<S1>:1:76'
+    // '<S1>:1:77'
     rtb_path[wind_valid] = ((201.0 - (1.0 + (real_T)wind_valid)) * point3_idx_0
       + ((1.0 + (real_T)wind_valid) - 1.0) * point1_idx_0) / 200.0;
 
-    // '<S1>:1:62'
+    // '<S1>:1:78'
     rtb_path[201 + wind_valid] = ((201.0 - (1.0 + (real_T)wind_valid)) *
-      point3_idx_1 + ((1.0 + (real_T)wind_valid) - 1.0) * y_speed) / 200.0;
+      point3_idx_1 + ((1.0 + (real_T)wind_valid) - 1.0) * point2_idx_0) / 200.0;
 
-    // '<S1>:1:60'
+    // '<S1>:1:76'
   }
 
   // MATLAB Function: '<Root>/MATLAB Function7' incorporates:
@@ -1777,8 +1790,8 @@ void scanningModelClass::step()
   //   MATLAB Function: '<Root>/MATLAB Function8'
   //   UnitDelay: '<Root>/Unit Delay13'
 
-  // '<S1>:1:65'
-  // '<S1>:1:66'
+  // '<S1>:1:81'
+  // '<S1>:1:82'
   // MATLAB Function 'MATLAB Function7': '<S7>:1'
   // '<S7>:1:4'
   // '<S7>:1:5'
@@ -1791,7 +1804,7 @@ void scanningModelClass::step()
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%
   // '<S7>:1:7'
-  end1_idx_0 = sin(scanning_U.Airmar_wind_angle + scanning_U.Yaw) *
+  real_wind_speed_y = sin(scanning_U.Airmar_wind_angle + scanning_U.Yaw) *
     scanning_U.Airmar_wind_speed - ((sin(scanning_U.Yaw + 1.5707963267948966) *
     scanning_U.Roll_rate * scanning_P.Airmar_Z_Value + rtb_Horizontal_speed *
     sin(Horizontal_speed_angle)) + sin(scanning_U.Yaw + 1.5707963267948966) *
@@ -1814,7 +1827,7 @@ void scanningModelClass::step()
 
   // '<S7>:1:18'
   scanning_B.real_wind_history[0] = real_wind_speed_x;
-  scanning_B.real_wind_history[2000] = end1_idx_0;
+  scanning_B.real_wind_history[2000] = real_wind_speed_y;
   scanning_B.real_wind_history[4000] = wind_valid;
 
   // '<S7>:1:20'
@@ -1824,13 +1837,13 @@ void scanningModelClass::step()
   for (wind_valid = 0; wind_valid < (int32_T)(y_speed + -1.0); wind_valid++) {
     // '<S7>:1:20'
     // '<S7>:1:21'
-    i = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
+    i_0 = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
     scanning_B.real_wind_history[wind_valid + 1] =
-      scanning_DW.UnitDelay13_DSTATE[i - 1];
+      scanning_DW.UnitDelay13_DSTATE[i_0 - 1];
     scanning_B.real_wind_history[wind_valid + 2001] =
-      scanning_DW.UnitDelay13_DSTATE[i + 1999];
+      scanning_DW.UnitDelay13_DSTATE[i_0 + 1999];
     scanning_B.real_wind_history[wind_valid + 4001] =
-      scanning_DW.UnitDelay13_DSTATE[i + 3999];
+      scanning_DW.UnitDelay13_DSTATE[i_0 + 3999];
 
     // '<S7>:1:20'
   }
@@ -1848,10 +1861,10 @@ void scanningModelClass::step()
   count_wind = 0.0;
 
   // '<S7>:1:28'
-  point1_idx_0 = rt_roundd_snf(scanning_P.wind_mean_time / 0.1);
+  c = rt_roundd_snf(scanning_P.wind_mean_time / 0.1);
 
   // '<S7>:1:28'
-  for (wind_valid = 0; wind_valid < (int32_T)point1_idx_0; wind_valid++) {
+  for (wind_valid = 0; wind_valid < (int32_T)c; wind_valid++) {
     // '<S7>:1:28'
     if (scanning_B.real_wind_history[4000 + wind_valid] > 0.5) {
       // '<S7>:1:29'
@@ -1879,17 +1892,17 @@ void scanningModelClass::step()
     // '<S7>:1:37'
     // '<S7>:1:38'
     // '<S7>:1:39'
-    point3_idx_0 = sqrt(real_wind_speed_x * real_wind_speed_x + end1_idx_0 *
-                        end1_idx_0);
+    WindSpeed_mean = sqrt(real_wind_speed_x * real_wind_speed_x +
+                          real_wind_speed_y * real_wind_speed_y);
   } else {
     // '<S7>:1:41'
     real_wind_speed_x = x_speed / count_wind;
 
     // '<S7>:1:42'
-    end1_idx_0 = y_speed / count_wind;
+    real_wind_speed_y = y_speed / count_wind;
 
     // '<S7>:1:43'
-    point3_idx_0 = accumulate_wind_speed / count_wind;
+    WindSpeed_mean = accumulate_wind_speed / count_wind;
   }
 
   if (fabs(real_wind_speed_x) < 1.0E-5) {
@@ -1899,7 +1912,7 @@ void scanningModelClass::step()
   }
 
   // '<S7>:1:48'
-  point3_idx_1 = rt_atan2d_snf(end1_idx_0, real_wind_speed_x);
+  rtb_WindAngle_mean = rt_atan2d_snf(real_wind_speed_y, real_wind_speed_x);
 
   // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function'
@@ -1908,7 +1921,7 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay4'
   //   UnitDelay: '<Root>/Unit Delay5'
 
-  end1_idx_0 = scanning_P.R;
+  b_R = scanning_P.R;
   accumulate_wind_speed = scanning_DW.UnitDelay5_DSTATE;
   y_speed = scanning_DW.UnitDelay1_DSTATE;
 
@@ -1918,7 +1931,7 @@ void scanningModelClass::step()
   // '<S4>:1:5'
   // '<S4>:1:6'
   x_speed = fabs(scanning_AngleDiff_lg(scanning_GetAngle_n(rtb_path[199] -
-    rtb_path[0], rtb_path[400] - rtb_path[201]), point3_idx_1));
+    rtb_path[0], rtb_path[400] - rtb_path[201]), rtb_WindAngle_mean));
 
   //  if upwind_angle<pi/2 && upwind_angle>pi/6
   //      R=R+(pi/2-upwind_angle)*upwind_R_expand_ratio;
@@ -1928,8 +1941,8 @@ void scanningModelClass::step()
   if (x_speed < 0.89759790102565518) {
     // '<S4>:1:12'
     // '<S4>:1:13'
-    end1_idx_0 = (0.89759790102565518 - x_speed) *
-      scanning_P.upwind_R_expand_ratio / 3.1415926535897931 * 3.5 + scanning_P.R;
+    b_R = (0.89759790102565518 - x_speed) * scanning_P.upwind_R_expand_ratio /
+      3.1415926535897931 * 3.5 + scanning_P.R;
   }
 
   // '<S4>:1:16'
@@ -1963,7 +1976,9 @@ void scanningModelClass::step()
   // '<S4>:1:29'
   scanning_DW.UnitDelay1_DSTATE = y_speed + 0.1;
 
-  // MATLAB Function: '<Root>/MATLAB Function3'
+  // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
+  //   UnitDelay: '<Root>/Unit Delay'
+
   // 世界时间
   // '<S4>:1:31'
   // '<S4>:1:36'
@@ -1992,8 +2007,8 @@ void scanningModelClass::step()
 
   //  find the nearest setpoint
   // '<S4>:1:53'
-  for (i = 0; i < 1000; i++) {
-    scanning_B.Dis[i] = (rtInf);
+  for (i_0 = 0; i_0 < 1000; i_0++) {
+    scanning_B.Dis[i_0] = (rtInf);
   }
 
   if (accumulate_wind_speed + 50.0 >= 200.0) {
@@ -2016,7 +2031,7 @@ void scanningModelClass::step()
 
       ixstart = 1;
       x_speed = scanning_B.Dis[0];
-      i = 1;
+      i_0 = 1;
       if (rtIsNaN(scanning_B.Dis[0])) {
         itmp = 2;
         exitg1 = false;
@@ -2024,7 +2039,7 @@ void scanningModelClass::step()
           ixstart = itmp;
           if (!rtIsNaN(scanning_B.Dis[itmp - 1])) {
             x_speed = scanning_B.Dis[itmp - 1];
-            i = itmp;
+            i_0 = itmp;
             exitg1 = true;
           } else {
             itmp++;
@@ -2036,7 +2051,7 @@ void scanningModelClass::step()
         while (ixstart + 1 < 1001) {
           if (scanning_B.Dis[ixstart] < x_speed) {
             x_speed = scanning_B.Dis[ixstart];
-            i = ixstart + 1;
+            i_0 = ixstart + 1;
           }
 
           ixstart++;
@@ -2045,7 +2060,7 @@ void scanningModelClass::step()
 
       // '<S4>:1:60'
       // '<S4>:1:61'
-      end1_idx_1 = (((real_T)i + accumulate_wind_speed) - 50.0) - 1.0;
+      tn = (((real_T)i_0 + accumulate_wind_speed) - 50.0) - 1.0;
     } else {
       // '<S4>:1:63'
       for (wind_valid = 0; wind_valid < 200; wind_valid++) {
@@ -2062,16 +2077,16 @@ void scanningModelClass::step()
       x_speed = scanning_B.Dis[0];
       c_itmp = 1;
       if (rtIsNaN(scanning_B.Dis[0])) {
-        i = 2;
+        i_0 = 2;
         exitg1 = false;
-        while ((!exitg1) && (i < 1001)) {
-          ixstart = i;
-          if (!rtIsNaN(scanning_B.Dis[i - 1])) {
-            x_speed = scanning_B.Dis[i - 1];
-            c_itmp = i;
+        while ((!exitg1) && (i_0 < 1001)) {
+          ixstart = i_0;
+          if (!rtIsNaN(scanning_B.Dis[i_0 - 1])) {
+            x_speed = scanning_B.Dis[i_0 - 1];
+            c_itmp = i_0;
             exitg1 = true;
           } else {
-            i++;
+            i_0++;
           }
         }
       }
@@ -2088,7 +2103,7 @@ void scanningModelClass::step()
       }
 
       // '<S4>:1:66'
-      end1_idx_1 = c_itmp;
+      tn = c_itmp;
 
       // (1:Dislen)
     }
@@ -2111,16 +2126,16 @@ void scanningModelClass::step()
     x_speed = scanning_B.Dis[0];
     ixstart = 1;
     if (rtIsNaN(scanning_B.Dis[0])) {
-      i = 2;
+      i_0 = 2;
       exitg1 = false;
-      while ((!exitg1) && (i < 1001)) {
-        wind_valid = i;
-        if (!rtIsNaN(scanning_B.Dis[i - 1])) {
-          x_speed = scanning_B.Dis[i - 1];
-          ixstart = i;
+      while ((!exitg1) && (i_0 < 1001)) {
+        wind_valid = i_0;
+        if (!rtIsNaN(scanning_B.Dis[i_0 - 1])) {
+          x_speed = scanning_B.Dis[i_0 - 1];
+          ixstart = i_0;
           exitg1 = true;
         } else {
-          i++;
+          i_0++;
         }
       }
     }
@@ -2138,7 +2153,7 @@ void scanningModelClass::step()
 
     // '<S4>:1:73'
     // '<S4>:1:74'
-    end1_idx_1 = (((real_T)ixstart + accumulate_wind_speed) - 50.0) - 1.0;
+    tn = (((real_T)ixstart + accumulate_wind_speed) - 50.0) - 1.0;
   } else {
     // '<S4>:1:76'
     for (wind_valid = 0; wind_valid < (int32_T)(accumulate_wind_speed + 50.0);
@@ -2156,16 +2171,16 @@ void scanningModelClass::step()
     x_speed = scanning_B.Dis[0];
     itmp = 1;
     if (rtIsNaN(scanning_B.Dis[0])) {
-      i = 2;
+      i_0 = 2;
       exitg1 = false;
-      while ((!exitg1) && (i < 1001)) {
-        ixstart = i;
-        if (!rtIsNaN(scanning_B.Dis[i - 1])) {
-          x_speed = scanning_B.Dis[i - 1];
-          itmp = i;
+      while ((!exitg1) && (i_0 < 1001)) {
+        ixstart = i_0;
+        if (!rtIsNaN(scanning_B.Dis[i_0 - 1])) {
+          x_speed = scanning_B.Dis[i_0 - 1];
+          itmp = i_0;
           exitg1 = true;
         } else {
-          i++;
+          i_0++;
         }
       }
     }
@@ -2182,21 +2197,21 @@ void scanningModelClass::step()
     }
 
     // '<S4>:1:79'
-    end1_idx_1 = itmp;
+    tn = itmp;
   }
 
   // 得到tn是最近路径点
   // LOS algorithm
-  if (end1_idx_1 > 200.0) {
+  if (tn > 200.0) {
     // '<S4>:1:87'
     // '<S4>:1:88'
-    end1_idx_1 = 200.0;
+    tn = 200.0;
   }
 
-  if (end1_idx_1 <= 1.0) {
+  if (tn <= 1.0) {
     // '<S4>:1:90'
     // '<S4>:1:91'
-    end1_idx_1 = 2.0;
+    tn = 2.0;
 
     // '<S4>:1:92'
     begin = 1;
@@ -2208,14 +2223,14 @@ void scanningModelClass::step()
     wind_valid = 1;
   } else {
     // '<S4>:1:97'
-    x_speed = scanning_GetAngle_n(rtb_path[(int32_T)end1_idx_1 - 1] - rtb_path
-      [(int32_T)(end1_idx_1 - 1.0) - 1], rtb_path[(int32_T)end1_idx_1 + 200] -
-      rtb_path[(int32_T)(end1_idx_1 - 1.0) + 200]);
+    x_speed = scanning_GetAngle_n(rtb_path[(int32_T)tn - 1] - rtb_path[(int32_T)
+                                  (tn - 1.0) - 1], rtb_path[(int32_T)tn + 200] -
+      rtb_path[(int32_T)(tn - 1.0) + 200]);
 
     // '<S4>:1:98'
-    y_speed = scanning_GetAngle_n(rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] -
-      rtb_path[(int32_T)end1_idx_1 - 1], rtb_path[(int32_T)(end1_idx_1 + 1.0) +
-      200] - rtb_path[(int32_T)end1_idx_1 + 200]);
+    y_speed = scanning_GetAngle_n(rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_path
+      [(int32_T)tn - 1], rtb_path[(int32_T)(tn + 1.0) + 200] - rtb_path[(int32_T)
+      tn + 200]);
     if (x_speed - y_speed > 3.1415926535897931) {
       // '<S4>:1:99'
       // '<S4>:1:100'
@@ -2230,8 +2245,7 @@ void scanningModelClass::step()
 
     // '<S4>:1:104'
     accumulate_wind_speed = scanning_GetAngle_n(rtb_CenterPosX - rtb_path
-      [(int32_T)end1_idx_1 - 1], rtb_CenterPosY - rtb_path[(int32_T)end1_idx_1 +
-      200]);
+      [(int32_T)tn - 1], rtb_CenterPosY - rtb_path[(int32_T)tn + 200]);
 
     // '<S4>:1:105'
     count_wind = fabs(scanning_AngleDiff_lg(y_speed, x_speed));
@@ -2257,16 +2271,16 @@ void scanningModelClass::step()
     }
   }
 
-  if (end1_idx_1 >= 200.0) {
+  if (tn >= 200.0) {
     // '<S4>:1:118'
     // '<S4>:1:119'
-    end1_idx_1 = 199.0;
+    tn = 199.0;
   }
 
   if (wind_valid == 0) {
     // '<S4>:1:121'
     // '<S4>:1:122'
-    end1_idx_1--;
+    tn--;
   }
 
   // '<S4>:1:124'
@@ -2274,70 +2288,66 @@ void scanningModelClass::step()
   // '<S4>:1:126'
   // '<S4>:1:127'
   // '<S4>:1:130'
-  y_speed = rtb_path[(int32_T)end1_idx_1 + 200] - rtb_path[(int32_T)(end1_idx_1
-    + 1.0) + 200];
-  x_speed = rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] - rtb_path[(int32_T)
-    end1_idx_1 - 1];
-  count_wind = fabs((((rtb_path[(int32_T)end1_idx_1 + 200] - rtb_path[(int32_T)
-                       (end1_idx_1 + 1.0) + 200]) * rtb_CenterPosX + (rtb_path
-    [(int32_T)(end1_idx_1 + 1.0) - 1] - rtb_path[(int32_T)end1_idx_1 - 1]) *
-                      rtb_CenterPosY) - rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1]
-                     * rtb_path[(int32_T)end1_idx_1 + 200]) + rtb_path[(int32_T)
-                    (end1_idx_1 + 1.0) + 200] * rtb_path[(int32_T)end1_idx_1 - 1])
-    / sqrt(y_speed * y_speed + x_speed * x_speed);
+  x_speed = rtb_path[(int32_T)tn + 200] - rtb_path[(int32_T)(tn + 1.0) + 200];
+  accumulate_wind_speed = rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_path[(int32_T)
+    tn - 1];
+  real_wind_speed_y = fabs((((rtb_path[(int32_T)tn + 200] - rtb_path[(int32_T)
+    (tn + 1.0) + 200]) * rtb_CenterPosX + (rtb_path[(int32_T)(tn + 1.0) - 1] -
+    rtb_path[(int32_T)tn - 1]) * rtb_CenterPosY) - rtb_path[(int32_T)(tn + 1.0)
+    - 1] * rtb_path[(int32_T)tn + 200]) + rtb_path[(int32_T)(tn + 1.0) + 200] *
+    rtb_path[(int32_T)tn - 1]) / sqrt(x_speed * x_speed + accumulate_wind_speed *
+    accumulate_wind_speed);
 
   // '<S4>:1:131'
-  x_speed = rtb_path[(int32_T)end1_idx_1 + 200] - rtb_CenterPosY;
-  y_speed = rtb_path[(int32_T)end1_idx_1 - 1] - rtb_CenterPosX;
-  accumulate_wind_speed = sqrt(x_speed * x_speed + y_speed * y_speed);
+  count_wind = rtb_path[(int32_T)tn + 200] - rtb_CenterPosY;
+  x_speed = rtb_path[(int32_T)tn - 1] - rtb_CenterPosX;
+  accumulate_wind_speed = sqrt(count_wind * count_wind + x_speed * x_speed);
 
   // '<S4>:1:132'
-  x_speed = rtb_path[(int32_T)(end1_idx_1 + 1.0) + 200] - rtb_CenterPosY;
-  y_speed = rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] - rtb_CenterPosX;
+  x_speed = rtb_path[(int32_T)(tn + 1.0) + 200] - rtb_CenterPosY;
+  y_speed = rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_CenterPosX;
   x_speed = sqrt(x_speed * x_speed + y_speed * y_speed);
   if (wind_valid == 1) {
     // '<S4>:1:135'
     // '<S4>:1:137'
-    x_speed = rtb_path[(int32_T)end1_idx_1 - 1] - rtb_path[(int32_T)(end1_idx_1
-      + 1.0) - 1];
-    y_speed = rtb_path[(int32_T)end1_idx_1 + 200] - rtb_path[(int32_T)
-      (end1_idx_1 + 1.0) + 200];
+    x_speed = rtb_path[(int32_T)tn - 1] - rtb_path[(int32_T)(tn + 1.0) - 1];
+    y_speed = rtb_path[(int32_T)tn + 200] - rtb_path[(int32_T)(tn + 1.0) + 200];
     y_speed = sqrt(x_speed * x_speed + y_speed * y_speed);
 
     // '<S4>:1:138'
-    real_wind_speed_x = rtb_path[(int32_T)end1_idx_1 - 1];
+    real_wind_speed_x = rtb_path[(int32_T)tn - 1];
 
     // '<S4>:1:139'
-    x_speed = rtb_path[(int32_T)end1_idx_1 + 200];
+    x_speed = rtb_path[(int32_T)tn + 200];
   } else {
-    if (count_wind > accumulate_wind_speed) {
+    if (real_wind_speed_y > accumulate_wind_speed) {
       // '<S4>:1:141'
       // '<S4>:1:142'
-      count_wind = accumulate_wind_speed;
+      real_wind_speed_y = accumulate_wind_speed;
     }
 
-    if (count_wind > x_speed) {
+    if (real_wind_speed_y > x_speed) {
       // '<S4>:1:144'
       // '<S4>:1:145'
-      count_wind = x_speed;
+      real_wind_speed_y = x_speed;
     }
 
     // '<S4>:1:147'
     accumulate_wind_speed = sqrt(accumulate_wind_speed * accumulate_wind_speed -
-      count_wind * count_wind);
+      real_wind_speed_y * real_wind_speed_y);
 
     // '<S4>:1:148'
-    y_speed = sqrt(x_speed * x_speed - count_wind * count_wind);
+    y_speed = sqrt(x_speed * x_speed - real_wind_speed_y * real_wind_speed_y);
 
     // '<S4>:1:149'
     real_wind_speed_x = y_speed / (accumulate_wind_speed + y_speed) * rtb_path
-      [(int32_T)end1_idx_1 - 1] + accumulate_wind_speed / (accumulate_wind_speed
-      + y_speed) * rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1];
+      [(int32_T)tn - 1] + accumulate_wind_speed / (accumulate_wind_speed +
+      y_speed) * rtb_path[(int32_T)(tn + 1.0) - 1];
 
     // '<S4>:1:150'
-    x_speed = y_speed / (accumulate_wind_speed + y_speed) * rtb_path[(int32_T)
-      end1_idx_1 + 200] + accumulate_wind_speed / (accumulate_wind_speed +
-      y_speed) * rtb_path[(int32_T)(end1_idx_1 + 1.0) + 200];
+    x_speed = y_speed / (accumulate_wind_speed + y_speed) * rtb_path[(int32_T)tn
+      + 200] + accumulate_wind_speed / (accumulate_wind_speed + y_speed) *
+      rtb_path[(int32_T)(tn + 1.0) + 200];
   }
 
   if (begin == 1) {
@@ -2351,42 +2361,40 @@ void scanningModelClass::step()
 
   // （sn_x,sn_y)是精确投影点
   // R=100+L/5;
-  if (!(end1_idx_0 <= count_wind)) {
+  if (!(b_R <= real_wind_speed_y)) {
     // '<S4>:1:167'
-    end1_idx_0 = sqrt(end1_idx_0 * end1_idx_0 - count_wind * count_wind);
-    if (end1_idx_0 <= y_speed) {
+    real_wind_speed_y = sqrt(b_R * b_R - real_wind_speed_y * real_wind_speed_y);
+    if (real_wind_speed_y <= y_speed) {
       // '<S4>:1:168'
       // '<S4>:1:169'
-      real_wind_speed_x += (rtb_path[(int32_T)(end1_idx_1 + 1.0) - 1] -
-                            real_wind_speed_x) * (end1_idx_0 / y_speed);
+      real_wind_speed_x += (rtb_path[(int32_T)(tn + 1.0) - 1] -
+                            real_wind_speed_x) * (real_wind_speed_y / y_speed);
 
       // '<S4>:1:170'
-      x_speed += (rtb_path[(int32_T)(end1_idx_1 + 1.0) + 200] - x_speed) *
-        (end1_idx_0 / y_speed);
+      x_speed += (rtb_path[(int32_T)(tn + 1.0) + 200] - x_speed) *
+        (real_wind_speed_y / y_speed);
     } else {
       // '<S4>:1:172'
-      GPS_data_idx_0 = end1_idx_1;
+      i = tn;
 
       // '<S4>:1:173'
-      end1_idx_0 -= y_speed;
+      real_wind_speed_y -= y_speed;
 
       //              while GetDistance(x_set(i),y_set(i),x_set(i+1),y_set(i+1))==0 
       //                  i=i+1;
       //              end
-      while ((end1_idx_0 >= 0.0) && (GPS_data_idx_0 < 200.0)) {
+      while ((real_wind_speed_y >= 0.0) && (i < 200.0)) {
         // '<S4>:1:177'
         // '<S4>:1:178'
-        GPS_data_idx_0++;
+        i++;
 
         // '<S4>:1:179'
-        x_speed = rtb_path[(int32_T)GPS_data_idx_0 - 1] - rtb_path[(int32_T)
-          (GPS_data_idx_0 + 1.0) - 1];
-        y_speed = rtb_path[(int32_T)GPS_data_idx_0 + 200] - rtb_path[(int32_T)
-          (GPS_data_idx_0 + 1.0) + 200];
-        end1_idx_0 -= sqrt(x_speed * x_speed + y_speed * y_speed);
+        x_speed = rtb_path[(int32_T)i - 1] - rtb_path[(int32_T)(i + 1.0) - 1];
+        y_speed = rtb_path[(int32_T)i + 200] - rtb_path[(int32_T)(i + 1.0) + 200];
+        real_wind_speed_y -= sqrt(x_speed * x_speed + y_speed * y_speed);
       }
 
-      if (GPS_data_idx_0 >= 200.0) {
+      if (i >= 200.0) {
         // '<S4>:1:181'
         // '<S4>:1:182'
         real_wind_speed_x = rtb_path[200];
@@ -2395,34 +2403,29 @@ void scanningModelClass::step()
         x_speed = rtb_path[401];
       } else {
         // '<S4>:1:185'
-        x_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] - rtb_path
-          [(int32_T)GPS_data_idx_0 - 1];
-        y_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
-          [(int32_T)GPS_data_idx_0 + 200];
-        accumulate_wind_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] -
-          rtb_path[(int32_T)GPS_data_idx_0 - 1];
-        count_wind = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
-          [(int32_T)GPS_data_idx_0 + 200];
+        x_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
+        y_speed = rtb_path[(int32_T)(i + 1.0) + 200] - rtb_path[(int32_T)i + 200];
+        accumulate_wind_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path
+          [(int32_T)i - 1];
+        count_wind = rtb_path[(int32_T)(i + 1.0) + 200] - rtb_path[(int32_T)i +
+          200];
         real_wind_speed_x = (sqrt(x_speed * x_speed + y_speed * y_speed) +
-                             end1_idx_0) / sqrt(accumulate_wind_speed *
+                             real_wind_speed_y) / sqrt(accumulate_wind_speed *
           accumulate_wind_speed + count_wind * count_wind) * (rtb_path[(int32_T)
-          (GPS_data_idx_0 + 1.0) - 1] - rtb_path[(int32_T)GPS_data_idx_0 - 1]) +
-          rtb_path[(int32_T)GPS_data_idx_0 - 1];
+          (i + 1.0) - 1] - rtb_path[(int32_T)i - 1]) + rtb_path[(int32_T)i - 1];
 
         // '<S4>:1:186'
-        x_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] - rtb_path
-          [(int32_T)GPS_data_idx_0 - 1];
-        y_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
-          [(int32_T)GPS_data_idx_0 + 200];
-        accumulate_wind_speed = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) - 1] -
-          rtb_path[(int32_T)GPS_data_idx_0 - 1];
-        count_wind = rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] - rtb_path
-          [(int32_T)GPS_data_idx_0 + 200];
-        x_speed = (sqrt(x_speed * x_speed + y_speed * y_speed) + end1_idx_0) /
-          sqrt(accumulate_wind_speed * accumulate_wind_speed + count_wind *
-               count_wind) * (rtb_path[(int32_T)(GPS_data_idx_0 + 1.0) + 200] -
-                              rtb_path[(int32_T)GPS_data_idx_0 + 200]) +
-          rtb_path[(int32_T)GPS_data_idx_0 + 200];
+        x_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
+        y_speed = rtb_path[(int32_T)(i + 1.0) + 200] - rtb_path[(int32_T)i + 200];
+        accumulate_wind_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path
+          [(int32_T)i - 1];
+        count_wind = rtb_path[(int32_T)(i + 1.0) + 200] - rtb_path[(int32_T)i +
+          200];
+        x_speed = (sqrt(x_speed * x_speed + y_speed * y_speed) +
+                   real_wind_speed_y) / sqrt(accumulate_wind_speed *
+          accumulate_wind_speed + count_wind * count_wind) * (rtb_path[(int32_T)
+          (i + 1.0) + 200] - rtb_path[(int32_T)i + 200]) + rtb_path[(int32_T)i +
+          200];
       }
     }
   } else {
@@ -2431,15 +2434,24 @@ void scanningModelClass::step()
     // '<S4>:1:165'
   }
 
-  // '<S4>:1:191'
+  if (scanning_DW.UnitDelay_DSTATE < 0.5) {
+    // '<S4>:1:190'
+    // '<S4>:1:191'
+    real_wind_speed_x = rtb_point_start_idx_0;
+
+    // '<S4>:1:192'
+    x_speed = rtb_point_start_idx_1;
+  }
+
+  // '<S4>:1:194'
   // Heading_d=speed_angle_d-drift_angle;
   //  Saim_x
   //  Saim_y
-  rtb_CenterPosX = scanning_GetAngle_n(real_wind_speed_x - rtb_CenterPosX,
-    x_speed - rtb_CenterPosY);
+  end1_idx_0 = scanning_GetAngle_n(real_wind_speed_x - rtb_CenterPosX, x_speed -
+    rtb_CenterPosY);
 
   // Outport: '<Root>/los_heading'
-  scanning_Y.los_heading = rtb_CenterPosX;
+  scanning_Y.los_heading = end1_idx_0;
 
   // MATLAB Function: '<Root>/MATLAB Function4' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
@@ -2449,17 +2461,17 @@ void scanningModelClass::step()
   if (scanning_DW.UnitDelay10_DSTATE > scanning_P.tacking_time) {
     // '<S5>:1:8'
     // '<S5>:1:9'
-    rtb_tacking = 2.0;
+    point2_idx_0 = 2.0;
   } else {
     // '<S5>:1:11'
-    rtb_tacking = scanning_DW.UnitDelay10_DSTATE + 1.0;
+    point2_idx_0 = scanning_DW.UnitDelay10_DSTATE + 1.0;
   }
 
   //  tacking=2;
   if (b > 0.5) {
     // '<S5>:1:14'
     // '<S5>:1:16'
-    rtb_tacking = 1.0;
+    point2_idx_0 = 1.0;
   }
 
   // MATLAB Function: '<Root>/MATLAB Function6' incorporates:
@@ -2471,13 +2483,13 @@ void scanningModelClass::step()
   if (fabs(scanning_U.Roll) > scanning_P.max_roll_allowed) {
     // '<S6>:1:2'
     // '<S6>:1:3'
-    loose_time = scanning_P.max_loose_time;
+    point2_idx_1 = scanning_P.max_loose_time;
   } else {
     // '<S6>:1:5'
-    loose_time = scanning_DW.UnitDelay2_DSTATE - 1.0;
+    point2_idx_1 = scanning_DW.UnitDelay2_DSTATE - 1.0;
   }
 
-  if (loose_time < 0.0) {
+  if (point2_idx_1 < 0.0) {
     // '<S6>:1:7'
     // '<S6>:1:8'
     rtb_sail_safe = 1;
@@ -2495,86 +2507,86 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay8'
   //   UnitDelay: '<Root>/Unit Delay9'
 
-  heading = scanning_U.Yaw;
-  sail_d_last = scanning_DW.UnitDelay8_DSTATE;
-  rtb_CenterPosY = scanning_DW.UnitDelay9_DSTATE;
-  jibing = scanning_DW.UnitDelay16_DSTATE;
-  b_tacking_force_discount = scanning_P.tacking_force_discount;
-  Airmar_wind_angle = scanning_U.Airmar_wind_angle;
+  GPS_data = scanning_U.Yaw;
+  point1_idx_0 = scanning_DW.UnitDelay8_DSTATE;
+  rtb_CenterPosX = scanning_DW.UnitDelay9_DSTATE;
+  point3_idx_0 = scanning_DW.UnitDelay16_DSTATE;
+  rtb_CenterPosY = scanning_P.tacking_force_discount;
+  point3_idx_1 = scanning_U.Airmar_wind_angle;
 
   // MATLAB Function 'MATLAB Function1': '<S2>:1'
   // yaw,yaw_rate,,attack_angle
   // jibing的标准是多少度？
   // SailAngle_ground为角度、sail_d为弧度、
-  if (point3_idx_0 < scanning_P.tacking_discount_decrease_windspeed) {
+  if (WindSpeed_mean < scanning_P.tacking_discount_decrease_windspeed) {
     // '<S2>:1:4'
     // '<S2>:1:5'
-    b_tacking_force_discount = scanning_P.tacking_force_discount - 0.2;
+    rtb_CenterPosY = scanning_P.tacking_force_discount - 0.2;
   }
 
   // los_heading
   // '<S2>:1:11'
-  length_sailangle = ((rt_roundd_snf(point3_idx_1 / 3.1415926535897931 * 180.0)
-                       + 90.0) - (rt_roundd_snf(point3_idx_1 /
+  end1_idx_1 = ((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0)
+                 + 90.0) - (rt_roundd_snf(rtb_WindAngle_mean /
     3.1415926535897931 * 180.0) - 90.0)) + 1.0;
 
   // '<S2>:1:13'
   memset(&scanning_B.price[0], 0, 760U * sizeof(real_T));
 
   // '<S2>:1:14'
-  x = rt_roundd_snf(point3_idx_1 / 3.1415926535897931 * 180.0);
+  GPS_data_idx_0 = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0);
 
   // '<S2>:1:14'
-  b = (int32_T)((rt_roundd_snf(point3_idx_1 / 3.1415926535897931 * 180.0) + 90.0)
-                + (1.0 - (x - 90.0)));
+  b = (int32_T)((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0)
+                 + 90.0) + (1.0 - (GPS_data_idx_0 - 90.0)));
 
   // '<S2>:1:14'
   for (begin = 0; begin < b; begin++) {
     // '<S2>:1:14'
-    SailAngle_ground = (x - 90.0) + (real_T)begin;
+    rtb_point_start_idx_0 = (GPS_data_idx_0 - 90.0) + (real_T)begin;
 
     // '<S2>:1:15'
-    n = (SailAngle_ground - (rt_roundd_snf(point3_idx_1 / 3.1415926535897931 *
-           180.0) - 90.0)) + 1.0;
-    scanning_getSailForce_ground(point3_idx_1, SailAngle_ground / 180.0 *
-      3.1415926535897931, point3_idx_0, &end1_idx_0, &length_time, &x_speed);
+    rtb_point_start_idx_1 = (rtb_point_start_idx_0 - (rt_roundd_snf
+      (rtb_WindAngle_mean / 3.1415926535897931 * 180.0) - 90.0)) + 1.0;
+    scanning_getSailForce_ground(rtb_WindAngle_mean, rtb_point_start_idx_0 /
+      180.0 * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y, &b_R,
+      &x_speed);
 
     // '<S2>:1:26'
-    count_wind = (rt_roundd_snf((length_time + 1.3089969389957472) /
-      3.1415926535897931 * 180.0) - rt_roundd_snf((length_time -
-      1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
+    count_wind = (rt_roundd_snf((b_R + 1.3089969389957472) / 3.1415926535897931 *
+      180.0) - rt_roundd_snf((b_R - 1.3089969389957472) / 3.1415926535897931 *
+      180.0)) + 1.0;
 
     // '<S2>:1:27'
     memset(&scanning_B.price_fixSail[0], 0, 1140U * sizeof(real_T));
 
     // '<S2>:1:28'
-    point1_idx_0 = rt_roundd_snf((length_time - 1.3089969389957472) /
-      3.1415926535897931 * 180.0);
+    c = rt_roundd_snf((b_R - 1.3089969389957472) / 3.1415926535897931 * 180.0);
 
     // '<S2>:1:28'
-    wind_valid = (int32_T)(rt_roundd_snf((length_time + 1.3089969389957472) /
-      3.1415926535897931 * 180.0) + (1.0 - point1_idx_0));
+    wind_valid = (int32_T)(rt_roundd_snf((b_R + 1.3089969389957472) /
+      3.1415926535897931 * 180.0) + (1.0 - c));
 
     // '<S2>:1:28'
     for (ixstart = 0; ixstart < wind_valid; ixstart++) {
       // '<S2>:1:28'
-      GPS_data_idx_0 = point1_idx_0 + (real_T)ixstart;
+      i = c + (real_T)ixstart;
 
       // '<S2>:1:31'
-      real_wind_speed_x = (GPS_data_idx_0 - rt_roundd_snf((length_time -
-        1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
+      real_wind_speed_x = (i - rt_roundd_snf((b_R - 1.3089969389957472) /
+        3.1415926535897931 * 180.0)) + 1.0;
 
       // '<S2>:1:32'
-      x_speed = GPS_data_idx_0 / 180.0 * 3.1415926535897931;
+      x_speed = i / 180.0 * 3.1415926535897931;
 
       // '<S2>:1:33'
-      y_speed = scanning_HeadingDeadZone(x_speed, point3_idx_1, SailAngle_ground
-        / 180.0 * 3.1415926535897931, rtb_tacking, rtb_CenterPosY /
-        3.1415926535897931 * 180.0);
+      y_speed = scanning_HeadingDeadZone(x_speed, rtb_WindAngle_mean,
+        rtb_point_start_idx_0 / 180.0 * 3.1415926535897931, point2_idx_0,
+        rtb_CenterPosX / 3.1415926535897931 * 180.0);
 
       // speed_angle=heading_check+AngleDiff(heading_check,SailForceAngle_ground)/5;%%%加漂角,漂角怎样得到？ 
       // '<S2>:1:35'
-      accumulate_wind_speed = scanning_AngleDiff_l(rtb_CenterPosX, x_speed);
+      accumulate_wind_speed = scanning_AngleDiff_l(end1_idx_0, x_speed);
       if ((y_speed > 0.5) && (y_speed < 1.5)) {
         // '<S2>:1:37'
         // '<S2>:1:38'
@@ -2592,7 +2604,7 @@ void scanningModelClass::step()
         accumulate_wind_speed;
 
       // '<S2>:1:44'
-      scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 379] = length_time;
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 379] = b_R;
 
       // '<S2>:1:45'
       scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 569] = y_speed;
@@ -2632,16 +2644,16 @@ void scanningModelClass::step()
     c_itmp = 0;
     if (wind_valid > 1) {
       if (rtIsNaN(scanning_B.price_fixSail[760])) {
-        i = 1;
+        i_0 = 1;
         exitg1 = false;
-        while ((!exitg1) && (i + 1 <= wind_valid)) {
-          ixstart = i + 1;
-          if (!rtIsNaN(scanning_B.price_fixSail[760 + i])) {
-            x_speed = scanning_B.price_fixSail[760 + i];
-            c_itmp = i;
+        while ((!exitg1) && (i_0 + 1 <= wind_valid)) {
+          ixstart = i_0 + 1;
+          if (!rtIsNaN(scanning_B.price_fixSail[760 + i_0])) {
+            x_speed = scanning_B.price_fixSail[760 + i_0];
+            c_itmp = i_0;
             exitg1 = true;
           } else {
-            i++;
+            i_0++;
           }
         }
       }
@@ -2666,7 +2678,7 @@ void scanningModelClass::step()
 
     ixstart = 1;
     x_speed = scanning_B.price_fixSail[950];
-    i = 0;
+    i_0 = 0;
     if (wind_valid > 1) {
       if (rtIsNaN(scanning_B.price_fixSail[950])) {
         itmp = 1;
@@ -2675,7 +2687,7 @@ void scanningModelClass::step()
           ixstart = itmp + 1;
           if (!rtIsNaN(scanning_B.price_fixSail[950 + itmp])) {
             x_speed = scanning_B.price_fixSail[950 + itmp];
-            i = itmp;
+            i_0 = itmp;
             exitg1 = true;
           } else {
             itmp++;
@@ -2687,7 +2699,7 @@ void scanningModelClass::step()
         while (ixstart + 1 <= wind_valid) {
           if (scanning_B.price_fixSail[950 + ixstart] > x_speed) {
             x_speed = scanning_B.price_fixSail[950 + ixstart];
-            i = ixstart;
+            i_0 = ixstart;
           }
 
           ixstart++;
@@ -2698,21 +2710,21 @@ void scanningModelClass::step()
     // '<S2>:1:62'
     // '<S2>:1:63'
     // '<S2>:1:64'
-    y_speed = cos(scanning_AngleDiff_l(scanning_B.price_fixSail[c_itmp],
-      length_time)) * end1_idx_0 * cos(scanning_AngleDiff_l(rtb_CenterPosX,
+    y_speed = cos(scanning_AngleDiff_l(scanning_B.price_fixSail[c_itmp], b_R)) *
+      real_wind_speed_y * cos(scanning_AngleDiff_l(end1_idx_0,
       scanning_B.price_fixSail[c_itmp]));
 
     // '<S2>:1:65'
-    x_speed = cos(scanning_AngleDiff_l(scanning_B.price_fixSail[i], length_time))
-      * end1_idx_0 * cos(scanning_AngleDiff_l(rtb_CenterPosX,
-      scanning_B.price_fixSail[i]));
+    x_speed = cos(scanning_AngleDiff_l(scanning_B.price_fixSail[i_0], b_R)) *
+      real_wind_speed_y * cos(scanning_AngleDiff_l(end1_idx_0,
+      scanning_B.price_fixSail[i_0]));
 
     // '<S2>:1:66'
     // '<S2>:1:67'
     if (scanning_B.price_fixSail[570 + c_itmp] > 1.5) {
       // '<S2>:1:68'
       // '<S2>:1:69'
-      y_speed *= b_tacking_force_discount;
+      y_speed *= rtb_CenterPosY;
     }
 
     if ((scanning_B.price_fixSail[570 + c_itmp] < 1.5) &&
@@ -2722,21 +2734,21 @@ void scanningModelClass::step()
       y_speed = -100.0;
     }
 
-    if (scanning_B.price_fixSail[570 + i] > 1.5) {
+    if (scanning_B.price_fixSail[570 + i_0] > 1.5) {
       // '<S2>:1:74'
       // '<S2>:1:75'
-      x_speed *= b_tacking_force_discount;
+      x_speed *= rtb_CenterPosY;
     }
 
-    if ((scanning_B.price_fixSail[570 + i] < 1.5) && (scanning_B.price_fixSail
-         [570 + i] > 0.5)) {
+    if ((scanning_B.price_fixSail[570 + i_0] < 1.5) &&
+        (scanning_B.price_fixSail[570 + i_0] > 0.5)) {
       // '<S2>:1:77'
       // '<S2>:1:78'
       x_speed = -100.0;
     }
 
     // '<S2>:1:80'
-    scanning_B.price[(int32_T)n - 1] = SailAngle_ground;
+    scanning_B.price[(int32_T)rtb_point_start_idx_1 - 1] = rtb_point_start_idx_0;
     if (y_speed > x_speed) {
       // '<S2>:1:81'
       // '<S2>:1:82'
@@ -2746,55 +2758,56 @@ void scanningModelClass::step()
       x_speed = y_speed;
     } else {
       // '<S2>:1:85'
-      real_wind_speed_x = i + 1;
+      real_wind_speed_x = i_0 + 1;
 
       // '<S2>:1:86'
     }
 
     // '<S2>:1:88'
-    scanning_B.price[(int32_T)n + 189] = scanning_B.price_fixSail[(int32_T)
-      real_wind_speed_x - 1] / 3.1415926535897931 * 180.0;
+    scanning_B.price[(int32_T)rtb_point_start_idx_1 + 189] =
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x - 1] /
+      3.1415926535897931 * 180.0;
 
     // heading
     // '<S2>:1:89'
-    scanning_B.price[(int32_T)n + 379] = x_speed;
+    scanning_B.price[(int32_T)rtb_point_start_idx_1 + 379] = x_speed;
 
     // '<S2>:1:90'
-    scanning_B.price[(int32_T)n + 569] = scanning_B.price_fixSail[(int32_T)
-      real_wind_speed_x + 379];
+    scanning_B.price[(int32_T)rtb_point_start_idx_1 + 569] =
+      scanning_B.price_fixSail[(int32_T)real_wind_speed_x + 379];
 
     // '<S2>:1:14'
   }
 
   // '<S2>:1:94'
-  y_speed = point3_idx_0 * cos(point3_idx_1) + rtb_Horizontal_speed * cos
-    (Horizontal_speed_angle);
+  x_speed = WindSpeed_mean * cos(rtb_WindAngle_mean) + rtb_Horizontal_speed *
+    cos(Horizontal_speed_angle);
 
   // '<S2>:1:95'
-  x_speed = point3_idx_0 * sin(point3_idx_1) + rtb_Horizontal_speed * sin
-    (Horizontal_speed_angle);
+  y_speed = WindSpeed_mean * sin(rtb_WindAngle_mean) + rtb_Horizontal_speed *
+    sin(Horizontal_speed_angle);
 
   // WindAngle_ground=atan(relative_wind_E/relative_wind_N);
   // '<S2>:1:97'
-  end1_idx_0 = sqrt(y_speed * y_speed + x_speed * x_speed);
+  real_wind_speed_y = sqrt(x_speed * x_speed + y_speed * y_speed);
 
   // '<S2>:1:98'
-  length_time = Airmar_wind_angle + heading;
+  b_R = point3_idx_1 + GPS_data;
 
   // '<S2>:1:100'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
-  dead_sail_data[0] = (length_time / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
-  dead_sail_data[1] = (length_time / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-  if (jibing > 1.5) {
+  dead_sail_data[0] = (b_R / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
+  dead_sail_data[1] = (b_R / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
+  if (point3_idx_0 > 1.5) {
     // '<S2>:1:101'
     // '<S2>:1:102'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
-    dead_sail_data[0] = (length_time / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
-    dead_sail_data[1] = ((sail_d_last + heading) + 90.0) + 720.0;
-    dead_sail_data[2] = (length_time / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-    dead_sail_data[3] = ((sail_d_last + heading) + 270.0) + 720.0;
+    dead_sail_data[0] = (b_R / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
+    dead_sail_data[1] = ((point1_idx_0 + GPS_data) + 90.0) + 720.0;
+    dead_sail_data[2] = (b_R / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
+    dead_sail_data[3] = ((point1_idx_0 + GPS_data) + 270.0) + 720.0;
   }
 
   //
@@ -2804,10 +2817,10 @@ void scanningModelClass::step()
   //          price(i,3)=-102;%-10002;
   //      end
   //  end
-  if (1.0 > length_sailangle) {
+  if (1.0 > end1_idx_1) {
     wind_valid = 0;
   } else {
-    wind_valid = (int32_T)length_sailangle;
+    wind_valid = (int32_T)end1_idx_1;
   }
 
   ixstart = 1;
@@ -2815,16 +2828,16 @@ void scanningModelClass::step()
   itmp = 0;
   if (wind_valid > 1) {
     if (rtIsNaN(scanning_B.price[380])) {
-      i = 2;
+      i_0 = 2;
       exitg1 = false;
-      while ((!exitg1) && (i <= wind_valid)) {
-        ixstart = i;
-        if (!rtIsNaN(scanning_B.price[i + 379])) {
-          x_speed = scanning_B.price[i + 379];
-          itmp = i - 1;
+      while ((!exitg1) && (i_0 <= wind_valid)) {
+        ixstart = i_0;
+        if (!rtIsNaN(scanning_B.price[i_0 + 379])) {
+          x_speed = scanning_B.price[i_0 + 379];
+          itmp = i_0 - 1;
           exitg1 = true;
         } else {
-          i++;
+          i_0++;
         }
       }
     }
@@ -2843,32 +2856,31 @@ void scanningModelClass::step()
 
   // '<S2>:1:120'
   // '<S2>:1:125'
-  for (i = 0; i < 380; i++) {
-    drive_force[i] = -100.0;
+  for (i_0 = 0; i_0 < 380; i_0++) {
+    drive_force[i_0] = -100.0;
   }
 
   // '<S2>:1:126'
-  x_speed = rt_roundd_snf(heading / 3.1415926535897931 * 180.0 - 90.0);
+  x_speed = rt_roundd_snf(GPS_data / 3.1415926535897931 * 180.0 - 90.0);
 
   // '<S2>:1:126'
-  wind_valid = (int32_T)(rt_roundd_snf(heading / 3.1415926535897931 * 180.0 +
+  wind_valid = (int32_T)(rt_roundd_snf(GPS_data / 3.1415926535897931 * 180.0 +
     90.0) + (1.0 - x_speed));
 
   // '<S2>:1:126'
   for (ixstart = 0; ixstart < wind_valid; ixstart++) {
     // '<S2>:1:126'
     y_speed = x_speed + (real_T)ixstart;
-    scanning_getSailForce_ground(length_time, y_speed / 180.0 *
-      3.1415926535897931, end1_idx_0, &accumulate_wind_speed, &count_wind,
-      &real_wind_speed_x);
+    scanning_getSailForce_ground(b_R, y_speed / 180.0 * 3.1415926535897931,
+      real_wind_speed_y, &accumulate_wind_speed, &count_wind, &real_wind_speed_x);
 
     // '<S2>:1:128'
     // '<S2>:1:129'
-    i = (int32_T)((y_speed - rt_roundd_snf(heading / 3.1415926535897931 * 180.0
-      - 90.0)) + 1.0) - 1;
-    drive_force[i] = accumulate_wind_speed * cos(scanning_AngleDiff_l(count_wind,
-      heading));
-    drive_force[190 + i] = y_speed / 180.0 * 3.1415926535897931;
+    i_0 = (int32_T)((y_speed - rt_roundd_snf(GPS_data / 3.1415926535897931 *
+      180.0 - 90.0)) + 1.0) - 1;
+    drive_force[i_0] = accumulate_wind_speed * cos(scanning_AngleDiff_l
+      (count_wind, GPS_data));
+    drive_force[190 + i_0] = y_speed / 180.0 * 3.1415926535897931;
 
     // '<S2>:1:126'
   }
@@ -2893,16 +2905,16 @@ void scanningModelClass::step()
   x_speed = drive_force[0];
   ixstart = 0;
   if (rtIsNaN(drive_force[0])) {
-    i = 1;
+    i_0 = 1;
     exitg1 = false;
-    while ((!exitg1) && (i + 1 < 191)) {
-      wind_valid = i + 1;
-      if (!rtIsNaN(drive_force[i])) {
-        x_speed = drive_force[i];
-        ixstart = i;
+    while ((!exitg1) && (i_0 + 1 < 191)) {
+      wind_valid = i_0 + 1;
+      if (!rtIsNaN(drive_force[i_0])) {
+        x_speed = drive_force[i_0];
+        ixstart = i_0;
         exitg1 = true;
       } else {
-        i++;
+        i_0++;
       }
     }
   }
@@ -2923,8 +2935,7 @@ void scanningModelClass::step()
   //  max_drive_force
   //  drive_force
   // '<S2>:1:147'
-  accumulate_wind_speed = scanning_AngleDiff_l(drive_force[190 + ixstart],
-    heading);
+  count_wind = scanning_AngleDiff_l(drive_force[190 + ixstart], GPS_data);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -2933,37 +2944,38 @@ void scanningModelClass::step()
   //  if abs(AngleDiff(heading,heading_d))>
   //
   //  end
-  if (fabs(Airmar_wind_angle) < 0.52359877559829882) {
+  if (fabs(point3_idx_1) < 0.52359877559829882) {
     // '<S2>:1:155'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
     // '<S2>:1:156'
-    accumulate_wind_speed = -Airmar_wind_angle;
+    count_wind = -point3_idx_1;
   }
 
-  if (fabs(accumulate_wind_speed) > 1.5707963267948966) {
+  if (fabs(count_wind) > 1.5707963267948966) {
     // '<S2>:1:160'
     // '<S2>:1:161'
-    if (accumulate_wind_speed < 0.0) {
-      accumulate_wind_speed = -1.0;
-    } else if (accumulate_wind_speed > 0.0) {
-      accumulate_wind_speed = 1.0;
+    if (count_wind < 0.0) {
+      count_wind = -1.0;
+    } else if (count_wind > 0.0) {
+      count_wind = 1.0;
     } else {
-      if (accumulate_wind_speed == 0.0) {
-        accumulate_wind_speed = 0.0;
+      if (count_wind == 0.0) {
+        count_wind = 0.0;
       }
     }
 
-    accumulate_wind_speed *= 1.5707963267948966;
+    count_wind *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
     // '<S2>:1:163'
     // '<S2>:1:164'
-    accumulate_wind_speed = 1.5707963267948966;
+    count_wind = 1.5707963267948966;
   }
 
   //  sail_d
-  y_speed = scanning_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+  accumulate_wind_speed = scanning_B.price[190 + itmp] / 180.0 *
+    3.1415926535897931;
 
   // Outport: '<Root>/sail_ground_d' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
@@ -2978,10 +2990,10 @@ void scanningModelClass::step()
   // Outport: '<Root>/wind_speed' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function7'
 
-  scanning_Y.wind_speed = point3_idx_0;
+  scanning_Y.wind_speed = WindSpeed_mean;
 
   // Outport: '<Root>/speed_angle_d'
-  scanning_Y.speed_angle_d = y_speed;
+  scanning_Y.speed_angle_d = accumulate_wind_speed;
 
   // Outport: '<Root>/leg' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function'
@@ -2992,30 +3004,52 @@ void scanningModelClass::step()
   scanning_Y.HorizontalSpeed = rtb_Horizontal_speed;
 
   // Outport: '<Root>/wind_angle_mean'
-  scanning_Y.wind_angle_mean = point3_idx_1;
+  scanning_Y.wind_angle_mean = rtb_WindAngle_mean;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/Yaw'
   //   Inport: '<Root>/Yaw_rate'
+  //   MATLAB Function: '<Root>/MATLAB Function7'
+  //   MATLAB Function: '<Root>/MATLAB Function8'
   //   UnitDelay: '<Root>/Unit Delay6'
   //   UnitDelay: '<Root>/Unit Delay7'
+
+  GPS_data = scanning_U.Yaw;
+  x_speed = scanning_P.Kp;
+  y_speed = scanning_P.Kd;
 
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
   //  aaa=AngleDiff(heading,speed_angle_d);
   //  Horizontal_speed_angle
-  // '<S3>:1:4'
-  x_speed = ((scanning_P.Ki * scanning_AngleDiff_g(scanning_U.Yaw, y_speed) *
-              scanning_P.run_period + scanning_DW.UnitDelay6_DSTATE) +
-             scanning_P.Kp * scanning_AngleDiff_g(scanning_U.Yaw, y_speed)) +
-    (scanning_AngleDiff_g(scanning_DW.UnitDelay7_DSTATE, y_speed) /
-     scanning_P.run_period - scanning_U.Yaw_rate) * scanning_P.Kd;
+  if (WindSpeed_mean > 3.0) {
+    // '<S3>:1:4'
+    // '<S3>:1:5'
+    x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * scanning_P.Kp;
 
-  // '<S3>:1:7'
-  // '<S3>:1:8'
-  if (fabs(x_speed) > 0.52359877559829882) {
+    // '<S3>:1:6'
+    y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * scanning_P.Kd;
+  }
+
+  if (rtb_Horizontal_speed > 0.3) {
     // '<S3>:1:9'
     // '<S3>:1:10'
+    GPS_data = Horizontal_speed_angle;
+  }
+
+  // '<S3>:1:13'
+  x_speed = ((scanning_P.Ki * scanning_AngleDiff_g(GPS_data,
+    accumulate_wind_speed) * scanning_P.run_period +
+              scanning_DW.UnitDelay6_DSTATE) + x_speed * scanning_AngleDiff_g
+             (GPS_data, accumulate_wind_speed)) + (scanning_AngleDiff_g
+    (scanning_DW.UnitDelay7_DSTATE, accumulate_wind_speed) /
+    scanning_P.run_period - scanning_U.Yaw_rate) * y_speed;
+
+  // '<S3>:1:16'
+  // '<S3>:1:17'
+  if (fabs(x_speed) > 0.69813170079773179) {
+    // '<S3>:1:18'
+    // '<S3>:1:19'
     if (x_speed < 0.0) {
       x_speed = -1.0;
     } else if (x_speed > 0.0) {
@@ -3026,7 +3060,7 @@ void scanningModelClass::step()
       }
     }
 
-    x_speed *= 0.52359877559829882;
+    x_speed *= 0.69813170079773179;
   }
 
   // Outport: '<Root>/rudder' incorporates:
@@ -3037,7 +3071,7 @@ void scanningModelClass::step()
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  scanning_Y.sail = accumulate_wind_speed;
+  scanning_Y.sail = count_wind;
 
   // Update for UnitDelay: '<Root>/Unit Delay15'
   memcpy(&scanning_DW.UnitDelay15_DSTATE[0], &rtb_pos_history[0], 300U * sizeof
@@ -3055,7 +3089,7 @@ void scanningModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
 
-  scanning_DW.UnitDelay5_DSTATE = end1_idx_1;
+  scanning_DW.UnitDelay5_DSTATE = tn;
 
   // Update for UnitDelay: '<Root>/Unit Delay3' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
@@ -3074,10 +3108,10 @@ void scanningModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay8' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  scanning_DW.UnitDelay8_DSTATE = accumulate_wind_speed;
+  scanning_DW.UnitDelay8_DSTATE = count_wind;
 
   // Update for UnitDelay: '<Root>/Unit Delay9'
-  scanning_DW.UnitDelay9_DSTATE = y_speed;
+  scanning_DW.UnitDelay9_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay16' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
@@ -3085,25 +3119,24 @@ void scanningModelClass::step()
   scanning_DW.UnitDelay16_DSTATE = 1.0;
 
   // Update for UnitDelay: '<Root>/Unit Delay10'
-  scanning_DW.UnitDelay10_DSTATE = rtb_tacking;
+  scanning_DW.UnitDelay10_DSTATE = point2_idx_0;
 
   // Update for UnitDelay: '<Root>/Unit Delay2' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function6'
 
-  scanning_DW.UnitDelay2_DSTATE = loose_time;
+  scanning_DW.UnitDelay2_DSTATE = point2_idx_1;
 
   // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  scanning_DW.UnitDelay7_DSTATE = y_speed;
+  scanning_DW.UnitDelay7_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
-  //   Inport: '<Root>/Yaw'
   //   MATLAB Function: '<Root>/MATLAB Function2'
   //   UnitDelay: '<Root>/Unit Delay6'
 
-  scanning_DW.UnitDelay6_DSTATE += scanning_P.Ki * scanning_AngleDiff_g
-    (scanning_U.Yaw, y_speed) * scanning_P.run_period;
+  scanning_DW.UnitDelay6_DSTATE += scanning_P.Ki * scanning_AngleDiff_g(GPS_data,
+    accumulate_wind_speed) * scanning_P.run_period;
 }
 
 // Model initialize function
@@ -3190,7 +3223,7 @@ scanningModelClass::scanningModelClass()
   P_scanning_T scanning_P_temp = {
     0.4,
     0.0,
-    0.3,
+    0.5,
     10.0,
     50.0,
     50.0,
@@ -3201,7 +3234,7 @@ scanningModelClass::scanningModelClass()
 
     { 160.0, 160.0, 0.0, 0.0, 0.0, 160.0, 0.0, 160.0 },
     40.0,
-    0.0,
+    1.0,
     2.0,
     0.6,
     150.0,
@@ -3286,7 +3319,7 @@ scanningModelClass::scanningModelClass()
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0 },
-    1.0,
+    0.0,
     1.0,
     0.0,
     0.0,

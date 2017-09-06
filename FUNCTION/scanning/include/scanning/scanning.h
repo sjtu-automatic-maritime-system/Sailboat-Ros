@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.277
+// Model version                  : 1.290
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Aug 23 14:22:40 2017
+// C/C++ source code generated on : Wed Sep 06 06:37:15 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -160,7 +160,7 @@ struct P_scanning_T_ {
   real_T UnitDelay14_InitialCondition[800];// Expression: zeros(400,2)
                                            //  Referenced by: '<Root>/Unit Delay14'
 
-  real_T UnitDelay_InitialCondition;   // Expression: 1
+  real_T UnitDelay_InitialCondition;   // Expression: 0
                                        //  Referenced by: '<Root>/Unit Delay'
 
   real_T UnitDelay5_InitialCondition;  // Expression: 1
