@@ -43,7 +43,37 @@ if __name__ == '__main__':
     # n4, e4 = w84_calc_ne(lat4, lon4)
     # print('n4: {}, e4: {}'.format(n4, e4))
 
+
     ## station keeping
-    lat5, lon5 = 59.425784, 10.4731249
-    n5, e5 = w84_calc_ne(lat5, lon5)
-    print('n5: {}, e5: {}'.format(n5, e5)) # n5:-151.061785525, e5: 366.770497586
+    # lat5, lon5 = 59.425784, 10.4731249
+    # n5, e5 = w84_calc_ne(lat5, lon5)
+    # print('n5: {}, e5: {}'.format(n5, e5)) # n5:-151.061785525, e5: 366.770497586
+
+
+    ## scanning
+    coords = []
+    lat1, lon1 = 59.427246, 10.46841500000005
+    coords.append((lat1, lon1))
+    lat2, lon2 = 59.427164, 10.469155
+    coords.append((lat2, lon2))
+    lat3, lon3 = 59.426946, 10.471205000000054
+    coords.append((lat3, lon3))
+    lat4, lon4 = 59.427093, 10.469810000000052
+    coords.append((lat4, lon4))
+    lat5, lon5 = 59.426946, 10.471205000000054
+    coords.append((lat5, lon5))
+    lat6, lon6 = 59.428332, 10.471762000000012
+    coords.append((lat6, lon6))
+    lat7, lon7 = 59.428621, 10.46901600000001
+    coords.append((lat7, lon7))
+    lat8, lon8 = 59.427928, 10.468714999999975
+    coords.append((lat8, lon8))
+    lat9, lon9 = 59.427759, 10.470109999999977
+    coords.append((lat9, lon9))
+    lat10, lon10 = 59.427093, 10.469810000000052
+    coords.append((lat10, lon10))
+
+    with open('scanning_coord.txt', 'wb') as f:
+        for lat, lon in coords:
+            n, e = w84_calc_ne(lat, lon)
+            f.write('{}, {}\n'.format(n, e))

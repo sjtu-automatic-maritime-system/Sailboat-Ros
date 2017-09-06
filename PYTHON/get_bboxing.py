@@ -14,20 +14,23 @@ def draw_bbox(img, pts, color=(0, 255, 0), thickness=2):
     cv2.line(img, pts[3], pts[0], thickness=thickness, color=color)
     return img
 
+bbox = BoundingBox()
+bbox.confidence
 
 def callback(img_msg, bbox):
     img = bridge.imgmsg_to_cv2(img_msg, desired_encoding='bgr8')
-    pts = []
-    pt1 = (bbox.x, bbox.y)
-    pts.append(pt1)
-    pt2 = (bbox.x + bbox.width, bbox.y)
-    pts.append(pt2)
-    pt3 = (bbox.x + bbox.width, bbox.y + bbox.height)
-    pts.append(pt3)
-    pt4 = (bbox.x, bbox.y + bbox.height)
-    pts.append(pt4)
-    img_bbox = draw_bbox(img, pts)
-    cv2.imshow("img_bbox", img_bbox)
+    if bbox.confidence > 0:
+        pts = []
+        pt1 = (bbox.x, bbox.y)
+        pts.append(pt1)
+        pt2 = (bbox.x + bbox.width, bbox.y)
+        pts.append(pt2)
+        pt3 = (bbox.x + bbox.width, bbox.y + bbox.height)
+        pts.append(pt3)
+        pt4 = (bbox.x, bbox.y + bbox.height)
+        pts.append(pt4)
+        img = draw_bbox(img, pts)
+    cv2.imshow("img_bbox", img)
     cv2.waitKey(5)
     img_bbox_pub.publish(bridge.cv2_to_imgmsg(img))
 
