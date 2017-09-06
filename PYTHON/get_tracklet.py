@@ -1,14 +1,17 @@
 import rospy
 from sailboat_message.msg import WTST_msg
 
-day = '03'
+# race = 'fleet_race'
+race = 'station_keeping'
+day = '05'
 
 
 def callback(wtst_msg):
     timestamp = wtst_msg.UTCtime
     lon = wtst_msg.Longitude
     lat = wtst_msg.Latitude
-    row = '{timestamp}{day}, {lon}, {lat}\n'.format(timestamp=timestamp, day=day, lon=lon, lat=lat)
+    row = '{timestamp}{day}, {lat}, {lon}\n'.format(timestamp=int(timestamp*10), day=day, lat=int(lat*10000000), lon=int(lon*10000000))
+    # row = '{timestamp}{day}, {lat}, {lon}\n'.format(timestamp=int(timestamp*10), day=day, lat=lat, lon=lon)
     f.write(row)
 
 
@@ -19,7 +22,7 @@ def main():
 
 
 if __name__ == '__main__':
-    saveto = 'sjtu_tracklet_09{}.csv'.format(day)
+    saveto = 'sjtu_{}_09{}.csv'.format(race, day)
     f = open(saveto, 'wb')
     try:
         main()
