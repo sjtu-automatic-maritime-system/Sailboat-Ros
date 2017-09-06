@@ -15,6 +15,10 @@ source ~/catkin_ws/devel/setup.bash
 'roslaunch tld_tracker ros_tld_gui.launch image_topic:=/camera/image_raw'
 
 
+'roslaunch tld_tracker ros_tld_tracker.launch image_topic:=/camera/image_raw/compressed'
+'roslaunch tld_tracker ros_tld_gui.launch image_topic:=/camera/image_raw/compressed'
+
+
 'roslaunch tld_tracker ros_tld_gui.launch image_topic:=/kitti/camera_color_left/image_raw'
 'roslaunch tld_tracker ros_tld_tracker.launch image_topic:=/kitti/camera_color_left/image_raw'
 
