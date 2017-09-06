@@ -14,8 +14,6 @@ def draw_bbox(img, pts, color=(0, 255, 0), thickness=2):
     cv2.line(img, pts[3], pts[0], thickness=thickness, color=color)
     return img
 
-bbox = BoundingBox()
-bbox.confidence
 
 def callback(img_msg, bbox):
     img = bridge.imgmsg_to_cv2(img_msg, desired_encoding='bgr8')
