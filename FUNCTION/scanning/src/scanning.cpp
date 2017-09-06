@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.290
+// Model version                  : 1.291
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Sep 06 06:37:15 2017
+// C/C++ source code generated on : Wed Sep 06 10:37:57 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1648,7 +1648,7 @@ void scanningModelClass::step()
   if ((((leg > 3.5) && (leg < 4.5)) || ((leg > 1.5) && (leg < 2.5))) &&
       (scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
          (point3_idx_0 * 15.5 + GPS_data_idx_0 * 0.5) / 16.0, rtb_CenterPosY -
-         (point3_idx_1 * 15.5 + GPS_data * 0.5) / 16.0)) < 0.0) && (y_speed >
+         (point3_idx_1 * 15.5 + GPS_data * 0.5) / 16.0)) > 0.0) && (y_speed >
        0.5)) {
     // '<S1>:1:31'
     // 2,4
@@ -1658,7 +1658,7 @@ void scanningModelClass::step()
               ((leg > 4.5) && (leg < 5.5)) || ((leg > 6.5) && (leg < 7.5))) &&
              ((scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
       (GPS_data_idx_0 * 15.5 + point3_idx_0 * 0.5) / 16.0, rtb_CenterPosY -
-      (GPS_data * 15.5 + point3_idx_1 * 0.5) / 16.0)) > 0.0) && (y_speed > 0.5)))
+      (GPS_data * 15.5 + point3_idx_1 * 0.5) / 16.0)) < 0.0) && (y_speed > 0.5)))
   {
     // '<S1>:1:34'
     // 1,3,5,7
@@ -1668,7 +1668,7 @@ void scanningModelClass::step()
     if ((((leg > 5.5) && (leg < 6.5)) || ((leg > 7.5) && (leg < 8.5))) &&
         (scanning_AngleDiff(x_speed, scanning_GetAngle(rtb_CenterPosX -
            (point3_idx_0 * 7.5 + GPS_data_idx_0 * 8.5) / 16.0, rtb_CenterPosY -
-           (point3_idx_1 * 7.5 + GPS_data * 8.5) / 16.0)) < 0.0) && (y_speed >
+           (point3_idx_1 * 7.5 + GPS_data * 8.5) / 16.0)) > 0.0) && (y_speed >
          0.5)) {
       // '<S1>:1:37'
       // 6,8
@@ -3232,7 +3232,8 @@ scanningModelClass::scanningModelClass()
     3.0,
     0.1,
 
-    { 160.0, 160.0, 0.0, 0.0, 0.0, 160.0, 0.0, 160.0 },
+    { -21.6120843588, 132.791776067, 11.8086646501, 164.987097613, 257.793415924,
+      289.409768069, 99.4278459233, 133.541719602 },
     40.0,
     1.0,
     2.0,
