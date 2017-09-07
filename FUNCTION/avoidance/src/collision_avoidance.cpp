@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'collision_avoidance'.
 //
-// Model version                  : 1.305
+// Model version                  : 1.307
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Sep 07 11:56:34 2017
+// C/C++ source code generated on : Thu Sep 07 12:12:58 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -3140,8 +3140,8 @@ void scanningModelClass::step()
 
   // '<S4>:1:13'
   if ((rtb_UnitDelay16 > 0.5) && (std::abs(collision_avoidance_AngleDiff_p
-        (heading, accumulate_wind_speed)) > 1.0466666666666666)) {
-    // '<S4>:1:14'
+        (heading, accumulate_wind_speed)) > 0.69777777777777772)) {
+    // '<S4>:1:15'
     // '<S4>:1:16'
     GPS_data_idx_0 = collision_avoidance_AngleDiff_p(heading,
       accumulate_wind_speed);
@@ -3163,26 +3163,26 @@ void scanningModelClass::step()
 
   if (std::abs(collision_avoidance_AngleDiff_p(heading, accumulate_wind_speed)) <
       0.17453292519943295) {
-    // '<S4>:1:20'
     // '<S4>:1:21'
+    // '<S4>:1:22'
     y_speed = 0.0;
   }
 
   if (y_speed > 80.0) {
-    // '<S4>:1:23'
-    // '<S4>:1:24'
+    // '<S4>:1:25'
+    // '<S4>:1:26'
     wall_angle = -0.69813170079773179;
   } else {
     if (y_speed < -80.0) {
-      // '<S4>:1:25'
-      // '<S4>:1:26'
+      // '<S4>:1:27'
+      // '<S4>:1:28'
       wall_angle = 0.69813170079773179;
     }
   }
 
   if (std::abs(wall_angle) > 0.69813170079773179) {
-    // '<S4>:1:29'
-    // '<S4>:1:30'
+    // '<S4>:1:31'
+    // '<S4>:1:32'
     if (wall_angle < 0.0) {
       wall_angle = -1.0;
     } else if (wall_angle > 0.0) {
