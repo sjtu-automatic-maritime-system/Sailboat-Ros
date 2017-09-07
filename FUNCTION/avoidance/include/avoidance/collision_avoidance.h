@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'collision_avoidance'.
 //
-// Model version                  : 1.295
+// Model version                  : 1.305
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Sep 06 22:21:04 2017
+// C/C++ source code generated on : Thu Sep 07 11:56:34 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -166,7 +166,7 @@ struct P_collision_avoidance_T_ {
   real_T Airmar_Z_Value;               // Expression: 0.8
                                        //  Referenced by: '<Root>/Airmar_Z'
 
-  real_T UnitDelay17_InitialCondition; // Expression: 1
+  real_T UnitDelay17_InitialCondition; // Expression: 0
                                        //  Referenced by: '<Root>/Unit Delay17'
 
   real_T UnitDelay18_InitialCondition[500];// Expression: zeros([500,1])

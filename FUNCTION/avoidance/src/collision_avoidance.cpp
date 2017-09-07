@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'collision_avoidance'.
 //
-// Model version                  : 1.295
+// Model version                  : 1.305
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Sep 06 22:21:04 2017
+// C/C++ source code generated on : Thu Sep 07 11:56:34 2017
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1439,16 +1439,18 @@ void scanningModelClass::step()
   int32_T ix;
   int32_T c_itmp;
   boolean_T exitg1;
+  real_T loose_time;
+  real_T heading;
   real_T length_sailangle;
-  real_T SailAngle_ground;
   real_T n;
   real_T drive_force[380];
-  real_T x;
   real_T rtb_Horizontal_speed;
   real_T rtb_WindAngle_mean;
+  real_T rtb_UnitDelay16;
   real_T rtb_CenterPosY;
   real_T rtb_CenterPosX;
   real_T rtb_obstacle_his[500];
+  real_T rtb_tacking;
   int32_T rtb_sail_safe;
   real_T rtb_path[222];
   real_T rtb_pos_history[300];
@@ -1456,7 +1458,6 @@ void scanningModelClass::step()
   real_T dead_sail_data[4];
   int32_T dead_sail_sizes[2];
   real_T rtb_obstacle_idx_0;
-  real_T obstacle_idx_0;
   real_T rtb_start_point_idx_0;
   real_T rtb_start_point_idx_1;
   real_T GPS_data_idx_0;
@@ -1490,10 +1491,8 @@ void scanningModelClass::step()
     collision_avoidance_P.Airmar_Z_Value * std::sin(collision_avoidance_U.roll) *
     std::sin(collision_avoidance_U.Airmar_yaw + 1.5707963267948966);
 
-  // Outport: '<Root>/leg' incorporates:
-  //   UnitDelay: '<Root>/Unit Delay16'
-
-  collision_avoidance_Y.leg = collision_avoidance_DW.UnitDelay16_DSTATE;
+  // UnitDelay: '<Root>/Unit Delay16'
+  rtb_UnitDelay16 = collision_avoidance_DW.UnitDelay16_DSTATE;
 
   // MATLAB Function: '<Root>/MATLAB Function10' incorporates:
   //   Inport: '<Root>/camera_confidence'
@@ -1584,7 +1583,7 @@ void scanningModelClass::step()
   // MATLAB Function: '<Root>/MATLAB Function' incorporates:
   //   UnitDelay: '<Root>/Unit Delay16'
 
-  obstacle_idx_0 = rtb_obstacle_idx_0;
+  length_sailangle = rtb_obstacle_idx_0;
   leg = collision_avoidance_DW.UnitDelay16_DSTATE;
   y_speed = collision_avoidance_P.start_counting;
 
@@ -1614,7 +1613,7 @@ void scanningModelClass::step()
   if (leg < 2.5) {
     // '<S1>:1:13'
     // '<S1>:1:14'
-    obstacle_idx_0 = 0.0;
+    length_sailangle = 0.0;
   }
 
   // '<S1>:1:16'
@@ -1699,7 +1698,7 @@ void scanningModelClass::step()
       collision_avoidance_P.points[4];
   }
 
-  if (obstacle_idx_0 < 0.5) {
+  if (length_sailangle < 0.5) {
     // '<S1>:1:48'
     // '<S1>:1:49'
     for (wind_valid = 0; wind_valid < 101; wind_valid++) {
@@ -2559,24 +2558,24 @@ void scanningModelClass::step()
        collision_avoidance_P.tacking_speed)) {
     // '<S6>:1:8'
     // '<S6>:1:9'
-    GPS_data_idx_1 = 2.0;
+    rtb_tacking = 2.0;
   } else {
     // '<S6>:1:11'
-    GPS_data_idx_1 = collision_avoidance_DW.UnitDelay10_DSTATE + 1.0;
+    rtb_tacking = collision_avoidance_DW.UnitDelay10_DSTATE + 1.0;
   }
 
   //  tacking=2;
   if (rtb_sail_safe > 0.5) {
     // '<S6>:1:14'
     // '<S6>:1:16'
-    GPS_data_idx_1 = 1.0;
+    rtb_tacking = 1.0;
   }
 
   // '<S6>:1:18'
-  if (rtb_Horizontal_speed > 0.5) {
+  if (rtb_Horizontal_speed > 0.8) {
     // '<S6>:1:19'
     // '<S6>:1:20'
-    GPS_data_idx_1 = 2.0;
+    rtb_tacking = 2.0;
   }
 
   // MATLAB Function: '<Root>/MATLAB Function5' incorporates:
@@ -2588,13 +2587,13 @@ void scanningModelClass::step()
       collision_avoidance_P.max_roll_allowed) {
     // '<S7>:1:2'
     // '<S7>:1:3'
-    end2_idx_0 = collision_avoidance_P.max_loose_time;
+    loose_time = collision_avoidance_P.max_loose_time;
   } else {
     // '<S7>:1:5'
-    end2_idx_0 = collision_avoidance_DW.UnitDelay11_DSTATE - 1.0;
+    loose_time = collision_avoidance_DW.UnitDelay11_DSTATE - 1.0;
   }
 
-  if (end2_idx_0 < 0.0) {
+  if (loose_time < 0.0) {
     // '<S7>:1:7'
     // '<S7>:1:8'
     rtb_sail_safe = 1;
@@ -2612,12 +2611,12 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay8'
   //   UnitDelay: '<Root>/Unit Delay9'
 
-  end2_idx_1 = collision_avoidance_U.Airmar_yaw;
-  obstacle_idx_0 = collision_avoidance_DW.UnitDelay7_DSTATE;
+  heading = collision_avoidance_U.Airmar_yaw;
+  GPS_data_idx_1 = collision_avoidance_DW.UnitDelay7_DSTATE;
   rtb_CenterPosX = collision_avoidance_DW.UnitDelay8_DSTATE;
-  rtb_start_point_idx_0 = collision_avoidance_DW.UnitDelay9_DSTATE;
+  end2_idx_0 = collision_avoidance_DW.UnitDelay9_DSTATE;
   rtb_CenterPosY = collision_avoidance_P.tacking_force_discount;
-  rtb_start_point_idx_1 = collision_avoidance_U.Airmar_wind_angle;
+  end2_idx_1 = collision_avoidance_U.Airmar_wind_angle;
 
   // MATLAB Function 'MATLAB Function1': '<S2>:1'
   // yaw,yaw_rate,,attack_angle
@@ -2640,22 +2639,23 @@ void scanningModelClass::step()
   memset(&collision_avoidance_B.price[0], 0, 760U * sizeof(real_T));
 
   // '<S2>:1:14'
-  x = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0);
+  rtb_start_point_idx_0 = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
+    180.0);
 
   // '<S2>:1:14'
   i_0 = (int32_T)((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0)
-                   + 90.0) + (1.0 - (x - 90.0)));
+                   + 90.0) + (1.0 - (rtb_start_point_idx_0 - 90.0)));
 
   // '<S2>:1:14'
   for (begin = 0; begin < i_0; begin++) {
     // '<S2>:1:14'
-    SailAngle_ground = (x - 90.0) + (real_T)begin;
+    rtb_start_point_idx_1 = (rtb_start_point_idx_0 - 90.0) + (real_T)begin;
 
     // '<S2>:1:15'
-    n = (SailAngle_ground - (rt_roundd_snf(rtb_WindAngle_mean /
+    n = (rtb_start_point_idx_1 - (rt_roundd_snf(rtb_WindAngle_mean /
            3.1415926535897931 * 180.0) - 90.0)) + 1.0;
-    collision_a_getSailForce_ground(rtb_WindAngle_mean, SailAngle_ground / 180.0
-      * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y, &b_R,
+    collision_a_getSailForce_ground(rtb_WindAngle_mean, rtb_start_point_idx_1 /
+      180.0 * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y, &b_R,
       &wall_angle);
 
     // '<S2>:1:26'
@@ -2687,7 +2687,7 @@ void scanningModelClass::step()
 
       // '<S2>:1:33'
       y_speed = collision_avoid_HeadingDeadZone(wall_angle, rtb_WindAngle_mean,
-        SailAngle_ground / 180.0 * 3.1415926535897931, GPS_data_idx_1,
+        rtb_start_point_idx_1 / 180.0 * 3.1415926535897931, rtb_tacking,
         rtb_CenterPosX / 3.1415926535897931 * 180.0);
 
       // speed_angle=heading_check+AngleDiff(heading_check,SailForceAngle_ground)/5;%%%加漂角,漂角怎样得到？ 
@@ -2862,7 +2862,7 @@ void scanningModelClass::step()
     }
 
     // '<S2>:1:80'
-    collision_avoidance_B.price[(int32_T)n - 1] = SailAngle_ground;
+    collision_avoidance_B.price[(int32_T)n - 1] = rtb_start_point_idx_1;
     if (y_speed > wall_angle) {
       // '<S2>:1:81'
       // '<S2>:1:82'
@@ -2906,22 +2906,22 @@ void scanningModelClass::step()
   real_wind_speed_y = std::sqrt(wall_angle * wall_angle + y_speed * y_speed);
 
   // '<S2>:1:98'
-  b_R = rtb_start_point_idx_1 + end2_idx_1;
+  b_R = end2_idx_1 + heading;
 
   // '<S2>:1:100'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
   dead_sail_data[0] = (b_R / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
   dead_sail_data[1] = (b_R / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-  if (rtb_start_point_idx_0 > 1.5) {
+  if (end2_idx_0 > 1.5) {
     // '<S2>:1:101'
     // '<S2>:1:102'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
     dead_sail_data[0] = (b_R / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
-    dead_sail_data[1] = ((obstacle_idx_0 + end2_idx_1) + 90.0) + 720.0;
+    dead_sail_data[1] = ((GPS_data_idx_1 + heading) + 90.0) + 720.0;
     dead_sail_data[2] = (b_R / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-    dead_sail_data[3] = ((obstacle_idx_0 + end2_idx_1) + 270.0) + 720.0;
+    dead_sail_data[3] = ((GPS_data_idx_1 + heading) + 270.0) + 720.0;
   }
 
   //
@@ -2975,11 +2975,11 @@ void scanningModelClass::step()
   }
 
   // '<S2>:1:126'
-  wall_angle = rt_roundd_snf(end2_idx_1 / 3.1415926535897931 * 180.0 - 90.0);
+  wall_angle = rt_roundd_snf(heading / 3.1415926535897931 * 180.0 - 90.0);
 
   // '<S2>:1:126'
-  ixstart = (int32_T)(rt_roundd_snf(end2_idx_1 / 3.1415926535897931 * 180.0 +
-    90.0) + (1.0 - wall_angle));
+  ixstart = (int32_T)(rt_roundd_snf(heading / 3.1415926535897931 * 180.0 + 90.0)
+                      + (1.0 - wall_angle));
 
   // '<S2>:1:126'
   for (wind_valid = 0; wind_valid < ixstart; wind_valid++) {
@@ -2990,10 +2990,10 @@ void scanningModelClass::step()
 
     // '<S2>:1:128'
     // '<S2>:1:129'
-    i_0 = (int32_T)((y_speed - rt_roundd_snf(end2_idx_1 / 3.1415926535897931 *
+    i_0 = (int32_T)((y_speed - rt_roundd_snf(heading / 3.1415926535897931 *
       180.0 - 90.0)) + 1.0) - 1;
     drive_force[i_0] = accumulate_wind_speed * std::cos
-      (collision_avoidance_AngleDiff_f(count_wind, end2_idx_1));
+      (collision_avoidance_AngleDiff_f(count_wind, heading));
     drive_force[190 + i_0] = y_speed / 180.0 * 3.1415926535897931;
 
     // '<S2>:1:126'
@@ -3050,7 +3050,7 @@ void scanningModelClass::step()
   //  drive_force
   // '<S2>:1:147'
   count_wind = collision_avoidance_AngleDiff_f(drive_force[190 + ixstart],
-    end2_idx_1);
+    heading);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -3059,11 +3059,11 @@ void scanningModelClass::step()
   //  if abs(AngleDiff(heading,heading_d))>
   //
   //  end
-  if (std::abs(rtb_start_point_idx_1) < 0.52359877559829882) {
+  if (std::abs(end2_idx_1) < 0.52359877559829882) {
     // '<S2>:1:155'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
     // '<S2>:1:156'
-    count_wind = -rtb_start_point_idx_1;
+    count_wind = -end2_idx_1;
   }
 
   if (std::abs(count_wind) > 1.5707963267948966) {
@@ -3110,7 +3110,7 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
-  end2_idx_1 = collision_avoidance_U.Airmar_yaw;
+  heading = collision_avoidance_U.Airmar_yaw;
   wall_angle = collision_avoidance_P.Kp;
   y_speed = collision_avoidance_P.Kd;
 
@@ -3128,24 +3128,61 @@ void scanningModelClass::step()
   if (rtb_Horizontal_speed > 0.3) {
     // '<S4>:1:8'
     // '<S4>:1:9'
-    end2_idx_1 = Horizontal_speed_angle;
+    heading = Horizontal_speed_angle;
   }
 
   // '<S4>:1:12'
-  wall_angle = ((collision_avoidance_P.Ki * collision_avoidance_AngleDiff_p
-                 (end2_idx_1, accumulate_wind_speed) *
-                 collision_avoidance_P.run_period +
-                 collision_avoidance_DW.UnitDelay5_DSTATE) + wall_angle *
-                collision_avoidance_AngleDiff_p(end2_idx_1,
-    accumulate_wind_speed)) + (collision_avoidance_AngleDiff_p
-    (collision_avoidance_DW.UnitDelay6_DSTATE, accumulate_wind_speed) /
-    collision_avoidance_P.run_period - collision_avoidance_U.yaw_rate) * y_speed;
+  wall_angle = (collision_avoidance_AngleDiff_p
+                (collision_avoidance_DW.UnitDelay6_DSTATE, accumulate_wind_speed)
+                / collision_avoidance_P.run_period -
+                collision_avoidance_U.yaw_rate) * y_speed + wall_angle *
+    collision_avoidance_AngleDiff_p(heading, accumulate_wind_speed);
 
-  // '<S4>:1:15'
-  // '<S4>:1:16'
-  if (std::abs(wall_angle) > 0.43633231299858238) {
-    // '<S4>:1:17'
+  // '<S4>:1:13'
+  if ((rtb_UnitDelay16 > 0.5) && (std::abs(collision_avoidance_AngleDiff_p
+        (heading, accumulate_wind_speed)) > 1.0466666666666666)) {
+    // '<S4>:1:14'
+    // '<S4>:1:16'
+    GPS_data_idx_0 = collision_avoidance_AngleDiff_p(heading,
+      accumulate_wind_speed);
+    if (GPS_data_idx_0 < 0.0) {
+      GPS_data_idx_0 = -1.0;
+    } else if (GPS_data_idx_0 > 0.0) {
+      GPS_data_idx_0 = 1.0;
+    } else {
+      if (GPS_data_idx_0 == 0.0) {
+        GPS_data_idx_0 = 0.0;
+      }
+    }
+
+    y_speed = collision_avoidance_DW.UnitDelay5_DSTATE + GPS_data_idx_0;
+  } else {
     // '<S4>:1:18'
+    y_speed = collision_avoidance_DW.UnitDelay5_DSTATE;
+  }
+
+  if (std::abs(collision_avoidance_AngleDiff_p(heading, accumulate_wind_speed)) <
+      0.17453292519943295) {
+    // '<S4>:1:20'
+    // '<S4>:1:21'
+    y_speed = 0.0;
+  }
+
+  if (y_speed > 80.0) {
+    // '<S4>:1:23'
+    // '<S4>:1:24'
+    wall_angle = -0.69813170079773179;
+  } else {
+    if (y_speed < -80.0) {
+      // '<S4>:1:25'
+      // '<S4>:1:26'
+      wall_angle = 0.69813170079773179;
+    }
+  }
+
+  if (std::abs(wall_angle) > 0.69813170079773179) {
+    // '<S4>:1:29'
+    // '<S4>:1:30'
     if (wall_angle < 0.0) {
       wall_angle = -1.0;
     } else if (wall_angle > 0.0) {
@@ -3156,7 +3193,7 @@ void scanningModelClass::step()
       }
     }
 
-    wall_angle *= 0.43633231299858238;
+    wall_angle *= 0.69813170079773179;
   }
 
   // Outport: '<Root>/rudder' incorporates:
@@ -3182,6 +3219,9 @@ void scanningModelClass::step()
   //   MATLAB Function: '<Root>/MATLAB Function6'
 
   collision_avoidance_Y.wind_speed = WindSpeed_mean;
+
+  // Outport: '<Root>/leg'
+  collision_avoidance_Y.leg = rtb_UnitDelay16;
 
   // Outport: '<Root>/obstacle_judge' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function'
@@ -3238,12 +3278,12 @@ void scanningModelClass::step()
   collision_avoidance_DW.UnitDelay9_DSTATE = 1.0;
 
   // Update for UnitDelay: '<Root>/Unit Delay10'
-  collision_avoidance_DW.UnitDelay10_DSTATE = GPS_data_idx_1;
+  collision_avoidance_DW.UnitDelay10_DSTATE = rtb_tacking;
 
   // Update for UnitDelay: '<Root>/Unit Delay11' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function5'
 
-  collision_avoidance_DW.UnitDelay11_DSTATE = end2_idx_0;
+  collision_avoidance_DW.UnitDelay11_DSTATE = loose_time;
 
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
@@ -3252,11 +3292,8 @@ void scanningModelClass::step()
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   UnitDelay: '<Root>/Unit Delay5'
 
-  collision_avoidance_DW.UnitDelay5_DSTATE += collision_avoidance_P.Ki *
-    collision_avoidance_AngleDiff_p(end2_idx_1, accumulate_wind_speed) *
-    collision_avoidance_P.run_period;
+  collision_avoidance_DW.UnitDelay5_DSTATE = y_speed;
 }
 
 // Model initialize function
@@ -3377,21 +3414,22 @@ scanningModelClass::scanningModelClass()
     1.0,
     0.2,
 
-    { 20.0, 20.0, 0.0, 0.0, 0.0, 150.0, 0.0, 150.0 },
+    { -25.5111717432, 95.6947446668, -14.5937270673, 106.38938435, 155.167985617,
+      66.8465422728, 170.663971491, 82.6830992716 },
     3.0,
     0.1,
     40.0,
     1.0,
     2.0,
     0.6,
-    0.3,
+    0.4,
     40.0,
     20.0,
     3.0,
-    12.0,
+    34.0,
     -0.61,
     0.8,
-    1.0,
+    0.0,
 
     { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
