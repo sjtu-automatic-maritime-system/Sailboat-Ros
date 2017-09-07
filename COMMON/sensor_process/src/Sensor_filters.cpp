@@ -24,8 +24,8 @@ void callback(const sailboat_message::Ahrs_msg::ConstPtr& msg1, const sailboat_m
     SensorMsg[3] = msg1->gz;
     SensorMsg[4] = msg2->PosX;
     SensorMsg[5] = msg2->PosY;
-    SensorMsg[6] = msg1->roll;
-    SensorMsg[7] = msg1->yaw;
+    SensorMsg[6] = msg2->Roll/57.3;
+    SensorMsg[7] = msg2->Yaw/57.3;
     SensorMsg[8] = msg2->WindAngle/57.3;
     SensorMsg[9] = msg2->WindSpeed*0.514;
     if (SensorMsg[8]>3.1415926)
