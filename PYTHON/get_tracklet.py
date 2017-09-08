@@ -2,8 +2,12 @@ import rospy
 from sailboat_message.msg import WTST_msg
 
 # race = 'fleet_race'
-race = 'station_keeping'
-day = '05'
+# day = '04'
+# race = 'station_keeping'
+# day = '05'
+race = 'scanning'
+day = '06'
+
 
 
 def callback(wtst_msg):
