@@ -35,8 +35,8 @@ void CSensorProcess::ProcessMsg() {
     SensorMsg[4] = AhrsMsg[6];
     SensorMsg[5] = WtstMsg[4];
     SensorMsg[6] = WtstMsg[5];
-    SensorMsg[7] = AhrsMsg[1];
-    SensorMsg[8] = AhrsMsg[3];
+    SensorMsg[7] = WtstMsg[6];
+    SensorMsg[8] = WtstMsg[8];
     SensorMsg[9] = WtstMsg[9];
     SensorMsg[10] = WtstMsg[10];
 }

@@ -54,9 +54,11 @@ add_message_files(
         station_keeping_out.msg
         fleet_race_out.msg
         scanning_out.msg
+        avoidance_out.msg
         station_keeping_para.msg
         fleet_race_para.msg
         scanning_para.msg
+        avoidance_para.msg
 
         Mach_msg.msg
         GPS_msg.msg
