@@ -28,8 +28,8 @@ def callback(img_msg, bbox):
         pt4 = (bbox.x, bbox.y + bbox.height)
         pts.append(pt4)
         img = draw_bbox(img, pts)
-    cv2.imshow("img_bbox", img)
-    cv2.waitKey(5)
+    # cv2.imshow("img_bbox", img)
+    # cv2.waitKey(5)
     img_bbox_pub.publish(bridge.cv2_to_imgmsg(img))
 
 
@@ -39,7 +39,8 @@ def main():
     img_bbox_pub = rospy.Publisher('/img_with_bbox', Image, queue_size=2)
     bridge = CvBridge()
 
-    img_sub = message_filters.Subscriber('/camera/image_raw', Image)
+    # img_sub = message_filters.Subscriber('/camera/image_raw', Image)
+    img_sub = message_filters.Subscriber('/camera/image_undistorted', Image)
     bbox_sub = message_filters.Subscriber('/tld_tracked_object', BoundingBox)
 
     ts = message_filters.ApproximateTimeSynchronizer([img_sub, bbox_sub], queue_size=10,
