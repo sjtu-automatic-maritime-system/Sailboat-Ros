@@ -40,7 +40,8 @@ def main():
     bridge = CvBridge()
 
     # img_sub = message_filters.Subscriber('/camera/image_raw', Image)
-    img_sub = message_filters.Subscriber('/camera/image_undistorted', Image)
+    # img_sub = message_filters.Subscriber('/camera/image_undistorted', Image)
+    img_sub = message_filters.Subscriber('/camera/image_undistorted_rotated', Image)
     bbox_sub = message_filters.Subscriber('/tld_tracked_object', BoundingBox)
 
     ts = message_filters.ApproximateTimeSynchronizer([img_sub, bbox_sub], queue_size=10,

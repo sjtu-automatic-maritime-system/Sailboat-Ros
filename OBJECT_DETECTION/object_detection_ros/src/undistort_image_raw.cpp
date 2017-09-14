@@ -60,14 +60,14 @@ void callback(const sailboat_message::Ahrs_msgConstPtr &ahrs_msg, const sensor_m
     pub_img_undistorted.publish(img_undistorted_msg);
 
     if (1) {
-        double roll = ahrs_msg->roll * 57.3; //deg
-        cv::Point2f center = cv::Point2f(src_img.cols / 2, src_img.rows / 2);  // 旋转中心
+        double roll = -ahrs_msg->roll * 57.3; //deg
+        cv::Point2f center = cv::Point2f(img_undistorted.cols / 2, img_undistorted.rows / 2);  // 旋转中心
 
         cv::Mat rotateMat;
         rotateMat = cv::getRotationMatrix2D(center, roll, 1);
 
         cv::Mat rotateImg;
-        cv::warpAffine(src_img, rotateImg, rotateMat, src_img.size());
+        cv::warpAffine(img_undistorted, rotateImg, rotateMat, img_undistorted.size());
 
         sensor_msgs::ImagePtr img_undistorted_rotated_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8",
                                                                                rotateImg).toImageMsg();

@@ -27,16 +27,17 @@ using namespace std;
 //using namespace cv;
 
 
-void callback(const sensor_msgs::ImageConstPtr &img_in) {
-    cv::Mat src_img;
-    cv_bridge::toCvShare(img_in, "bgr8")->image.copyTo(src_img);
+void callback(const tld_msgs::BoundingBoxConstPtr &bbox_msg) {
+    // x, y bbox upper left corner coord
+    int x = bbox_msg->x;
+    int y = bbox_msg->y;
+    int height = bbox_msg->height;
+    int width = bbox_msg->width;
+    // x_center y_center center point of bbox
+    int x_center = x + width / 2;
+    int y_center = y + height / 2;
 
-    cv::Mat img_undistorted;
-    cv::undistort(src_img, img_undistorted, cameraMatrix, distCoeffs);
 
-    sensor_msgs::ImagePtr img_undistorted_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8",
-                                                                   img_undistorted).toImageMsg();
-    pub_img_undistorted.publish(img_undistorted_msg);
 
 }
 
@@ -45,15 +46,8 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "undistort_image");
     ros::NodeHandle nh;
 
-    ros::Publisher sensor_pub = nh.advertise<sailboat_message::Sensor_msg>("sensor", 2);
-    message_filters::Subscriber<tld_msgs::BoundingBox> bbox_sub(nh, "/tld_tracked_object", 2);
-    message_filters::Subscriber<sensor_msgs::Image> img_sub(nh, "/camera/image_undistorted", 2);
-    message_filters::S
-
-    typedef sync_policies::ApproximateTime<sailboat_message::Ahrs_msg, sailboat_message::WTST_msg> MySyncPolicy;
-    // ApproximateTime takes a queue size as its constructor argument, hence MySyncPolicy(10)
-    Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), ahrs_sub, wtst_sub);
-    sync.registerCallback(boost::bind(&callback, _1, _2));
+//    ros::Publisher sensor_pub = nh.advertise<sailboat_message::Sensor_msg>("sensor", 2);
+    ros::Subscriber bbox_sub = nh.subscribe("/tld_tracked_object", 2, &callback);
 
     ros::spin();
     return 0;
