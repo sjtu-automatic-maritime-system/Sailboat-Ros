@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <math.h>
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -12,10 +13,11 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 
+
 #include "tld_msgs/BoundingBox.h"
 #include "sailboat_message/Ahrs_msg.h"
 #include "sailboat_message/WTST_msg.h"
-
+#include "geometry_msgs/Point.h"
 
 #define IMG_WIDTH 1296
 #define IMG_HEIGHT 964
@@ -26,6 +28,7 @@
 using namespace std;
 //using namespace cv;
 
+ros::Publisher obs_pub;
 
 void callback(const tld_msgs::BoundingBoxConstPtr &bbox_msg) {
     // x, y bbox upper left corner coord
@@ -37,6 +40,15 @@ void callback(const tld_msgs::BoundingBoxConstPtr &bbox_msg) {
     int x_center = x + width / 2;
     int y_center = y + height / 2;
 
+    double direction = (x_center - IMG_HEIGHT/2) / IMG_WIDTH * FOV;
+    double distance = (IMG_HEIGHT - y_center) / PIXELS_TO_BOW * DISTANCE_TO_BOW;
+
+    geometry_msgs::Point obs_pos;
+    obs_pos.x = distance*cos(direction/57.3);
+    obs_pos.y = distance*sin(direction/57.3);
+    obs_pos.z = 0;
+
+    obs_pub.publish(obs_pos);
 
 
 }
@@ -46,7 +58,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "undistort_image");
     ros::NodeHandle nh;
 
-//    ros::Publisher sensor_pub = nh.advertise<sailboat_message::Sensor_msg>("sensor", 2);
+    obs_pub = nh.advertise<geometry_msgs::Point>("/obs_position", 2);
     ros::Subscriber bbox_sub = nh.subscribe("/tld_tracked_object", 2, &callback);
 
     ros::spin();
