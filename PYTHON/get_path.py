@@ -11,7 +11,7 @@ target_x = [0, 10]
 target_y = [0, 10]
 
 marker = Marker()
-marker.header.frame_id = 'WTST'
+marker.header.frame_id = 'map'
 marker.type = marker.POINTS
 marker.action = marker.ADD
 marker.pose.orientation.w = 1
@@ -68,9 +68,11 @@ path_obs = Path()
 
 
 def ego_cb(wtst_msg):
+    print 'in ego callback'
     global count
     po_ego = PoseStamped()
     po_ego.header = wtst_msg.header
+    po_ego.header.frame_id = 'map'
     # po.pose.position.x = wtst_msg.PosX
     # po.pose.position.y = wtst_msg.PosY
     po_ego.pose.position.x = wtst_msg.PosY  ## change x and y to plot
@@ -86,10 +88,11 @@ def ego_cb(wtst_msg):
     count += 1
 
 #
-def obs_cb(obs_pos):
+def obs_boat_cb(obs_pos):
+    print 'in obs boat callback'
     po_obs = PoseStamped()
     po_obs.header = po_obs.header
-    po_obs.header.frame_id = 'WTST'
+    po_obs.header.frame_id = 'map'
     # po_obs.position.x = obs_pos.x
     # po_obs.position.y = obs_pos.y
     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
@@ -97,19 +100,36 @@ def obs_cb(obs_pos):
     print obs_pos.point.y, obs_pos.point.x
 
     path_obs.poses.append(po_obs)
-    path_obs.header.frame_id = 'WTST'
+    path_obs.header.frame_id = 'map'
     path_obs.header = obs_pos.header
-    path_pub_obs.publish(path_obs)
+    path_pub_obs_boat.publish(path_obs)
+
+def obs_ground_cb(obs_pos):
+    print 'in obs ground callback'
+    po_obs = PoseStamped()
+    po_obs.header = po_obs.header
+    po_obs.header.frame_id = 'map'
+    # po_obs.position.x = obs_pos.x
+    # po_obs.position.y = obs_pos.y
+    po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
+    po_obs.pose.position.y = obs_pos.point.x
+    print obs_pos.point.y, obs_pos.point.x
+
+    path_obs.poses.append(po_obs)
+    path_obs.header.frame_id = 'map'
+    path_obs.header = obs_pos.header
+    path_pub_obs_ground.publish(path_obs)
 
 
 
 def main():
-    global path_pub_ego, path_pub_obs, points_pub
+    global path_pub_ego, path_pub_obs_boat, path_pub_obs_ground, points_pub
     rospy.init_node('get_path', anonymous=True)
 
     points_pub = rospy.Publisher('/target_points', Marker, queue_size=2)
     path_pub_ego = rospy.Publisher('/path_ego', Path, queue_size=2)
-    path_pub_obs = rospy.Publisher('/path_obs', Path, queue_size=2)
+    path_pub_obs_boat = rospy.Publisher('/path_obs_boat', Path, queue_size=2)
+    path_pub_obs_ground = rospy.Publisher('/path_obs_ground', Path, queue_size=2)
 
     # wtst_sub = message_filters.Subscriber('/wtst', WTST_msg)
     # obs_pos_sub = message_filters.Subscriber('/obs_position', Point)
@@ -119,7 +139,8 @@ def main():
     # ts.registerCallback(callback)
 
     rospy.Subscriber('/wtst', WTST_msg, ego_cb)
-    rospy.Subscriber('/obs_position', PointStamped, obs_cb)
+    # rospy.Subscriber('/obs_boat_position', PointStamped, obs_boat_cb)
+    rospy.Subscriber('/obs_ground_position', PointStamped, obs_ground_cb)
 
 
 if __name__ == '__main__':
