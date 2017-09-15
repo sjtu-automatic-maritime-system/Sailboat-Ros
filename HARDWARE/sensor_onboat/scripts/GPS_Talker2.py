@@ -12,7 +12,8 @@ import logging
 # gnss receiver address
 # if using serial port, set it something like to "COM1" or "/dev/tty1"
 # GNSS_URL = "/dev/ttyUSB0"
-GNSS_URL = "socket://192.168.1.101:40000"
+#todo
+GNSS_URL = "socket://192.168.1.102:40000"
 # serial port baudrate
 BAUDRATE = 115200
 # connection timeout in seconds
@@ -261,7 +262,7 @@ def console_logger():
 
 
 def talker():  # ros message publish
-    pub = rospy.Publisher('gps', GPS_msg, queue_size=5)
+    pub = rospy.Publisher('gps_2', GPS_msg, queue_size=5)
     rospy.init_node('gps_talker', anonymous=True)
     rate = rospy.Rate(5)  # 5hz
 
