@@ -48,3 +48,6 @@ target_link_libraries(img_undistortion ${catkin_LIBRARIES})
 
 add_executable(obs_position src/obs_position.cpp)
 target_link_libraries(obs_position ${catkin_LIBRARIES})
+
+add_executable(obs_position_intrinsic src/obs_position_intrinsic.cpp)
+target_link_libraries(obs_position_intrinsic ${catkin_LIBRARIES})

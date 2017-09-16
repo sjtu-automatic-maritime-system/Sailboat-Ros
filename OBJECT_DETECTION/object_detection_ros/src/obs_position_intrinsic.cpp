@@ -14,6 +14,7 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 //#include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/Image.h>
 
 #include "tld_msgs/BoundingBox.h"
 #include "sailboat_message/Ahrs_msg.h"
@@ -37,6 +38,23 @@ using Eigen::MatrixXd;
 ros::Publisher obs_boat_pub;
 ros::Publisher obs_ground_pub;
 Eigen::Matrix4d T_boat_to_ground;
+
+MatrixXd cameraMatrix(3, 3);
+MatrixXd K(4, 4);
+
+void get_camera_info() {
+//  camera info from file ../camera_info/0.yaml
+//  camera matrix: [816.118268598647, 0, 680.6511245884145, 0, 822.0196620588329, 458.230641061779, 0, 0, 1]
+    cameraMatrix << 816.118268598647, 0.000000, 680.6511245884145,
+            0.000000, 822.0196620588329, 458.230641061779,
+            0, 0, 1;
+
+    K << 816.118268598647, 0.000000, 680.6511245884145, 0,
+            0.000000, 822.0196620588329, 458.230641061779, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 0;
+}
+
 
 Eigen::Affine3d create_rotation_matrix(double ax, double ay, double az) {
     Eigen::Affine3d rx = Eigen::Affine3d(Eigen::AngleAxisd(ax, Eigen::Vector3d(1, 0, 0)));
@@ -98,6 +116,28 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_msg) {
 
 }
 
+void img_cb(const sensor_msgs::ImageConstPtr &img_in) {
+    std::cout << "in img callback" << std::endl;
+    cv::Mat src_img;
+    cv_bridge::toCvShare(img_in, "bgr8")->image.copyTo(src_img);
+
+    VectorXd h_pt_cam(4);
+    h_pt_cam << 0, 0.1, 0.2, 1;
+    std::cout << h_pt_cam << std::endl;
+
+    VectorXd h_pt_img = K * h_pt_cam;
+
+    h_pt_img[0] = h_pt_img[0] / h_pt_img[2];
+    h_pt_img[1] = h_pt_img[1] / h_pt_img[2];
+    h_pt_img[2] = h_pt_img[2] / h_pt_img[2];
+
+    std::cout << "pt_img: " << h_pt_img << std::endl;
+    cv::Point ppp((int) h_pt_img[0], (int) h_pt_img[1]);
+    cv::circle(src_img, ppp, 2, cv::Scalar(0, 255, 0), 2);
+    cv::imshow("img_with_projected_pt", src_img);
+    cv::waitKey(5);
+}
+
 
 //void callback(const sailboat_message::WTST_msgConstPtr &wtst_msg,
 //              const tld_msgs::BoundingBoxConstPtr &bbox_msg) {
@@ -144,14 +184,17 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_msg) {
 
 
 int main(int argc, char **argv) {
+    get_camera_info();
     ros::init(argc, argv, "obs_position");
     ros::NodeHandle nh;
 
     obs_boat_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_boat_position", 2);
     obs_ground_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_ground_position", 2);
 
-    ros::Subscriber bbox_sub = nh.subscribe("/tld_tracked_object", 2, &bbox_cb);
-    ros::Subscriber wtst_sub = nh.subscribe("/wtst", 2, &wtst_cb);
+//    ros::Subscriber bbox_sub = nh.subscribe("/tld_tracked_object", 2, &bbox_cb);
+//    ros::Subscriber wtst_sub = nh.subscribe("/wtst", 2, &wtst_cb);
+    ros::Subscriber img_sub = nh.subscribe("/camera/image_undistorted_rotated", 2, &img_cb);
+//    ros::Subscriber img_sub = nh.subscribe("/camera/image_raw", 2, &img_cb);
 
 
 //    message_filters::Subscriber<sailboat_message::WTST_msg> wtst_sub(nh, "/wtst", 2);

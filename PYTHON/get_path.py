@@ -93,8 +93,6 @@ def obs_boat_cb(obs_pos):
     po_obs = PoseStamped()
     po_obs.header = po_obs.header
     po_obs.header.frame_id = 'map'
-    # po_obs.position.x = obs_pos.x
-    # po_obs.position.y = obs_pos.y
     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
     po_obs.pose.position.y = obs_pos.point.x
     print obs_pos.point.y, obs_pos.point.x
