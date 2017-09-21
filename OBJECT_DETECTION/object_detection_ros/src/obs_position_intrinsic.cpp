@@ -28,7 +28,9 @@
 #define PIXELS_TO_BOW 50 // pixels
 
 #define FOCAL_LENGTH 820
-#define DISTANCE_CAM_TO_WATER 0.4 // distance from obstacle plane to camera center
+#define DISTANCE_CAM_TO_WATER 0.3 // distance from obstacle plane to camera center
+#define BOAT_LENGTH 1.5  // m
+
 
 using namespace std;
 //using namespace cv;
@@ -40,7 +42,12 @@ ros::Publisher obs_ground_pub;
 Eigen::Matrix4d T_boat_to_ground;
 
 MatrixXd cameraMatrix(3, 3);
+MatrixXd cameraMatrix_inv(3, 3);
 MatrixXd K(4, 4);
+Eigen::Matrix4d T_boat_to_cam(4, 4);
+Eigen::Matrix4d T_cam_to_boat(4, 4);
+Eigen::Matrix4d P_boat_to_img(4, 4);
+Eigen::Matrix3d M_Mat(3, 3);
 
 void get_camera_info() {
 //  camera info from file ../camera_info/0.yaml
@@ -53,6 +60,26 @@ void get_camera_info() {
             0.000000, 822.0196620588329, 458.230641061779, 0,
             0, 0, 1, 0,
             0, 0, 0, 0;
+    cameraMatrix_inv = cameraMatrix.inverse();
+}
+
+
+Eigen::Vector4d get_3d_point_from_pixel(Eigen::Vector3d pixel){
+    Eigen::Vector3d p_camera = cameraMatrix_inv * pixel;
+//    std::cout << "test" << p_camera[0] << std::endl;
+    Eigen::Vector4d h_p_camera;
+    h_p_camera << p_camera[0], p_camera[1], p_camera[2], 1;  //??todo not right
+    Eigen::Vector4d p_boat = T_cam_to_boat*h_p_camera;
+    Eigen::Vector4d h_camera_centor;
+    h_camera_centor << 0, 0, 0, 1;
+    Eigen::Vector4d c_boat = T_cam_to_boat*h_camera_centor;
+
+    double lambda = (0 - c_boat[2])/p_boat[2];
+    double x = c_boat[0] + lambda*p_boat[0];
+    double y = c_boat[1] + lambda*p_boat[1];
+    Eigen::Vector4d p;
+    p << x, y, 0, 1;
+    return p;
 }
 
 
@@ -61,6 +88,28 @@ Eigen::Affine3d create_rotation_matrix(double ax, double ay, double az) {
     Eigen::Affine3d ry = Eigen::Affine3d(Eigen::AngleAxisd(ay, Eigen::Vector3d(0, 1, 0)));
     Eigen::Affine3d rz = Eigen::Affine3d(Eigen::AngleAxisd(az, Eigen::Vector3d(0, 0, 1)));
     return rz * ry * rx;
+}
+
+void get_tf_boat_camera() {
+    // father-frame:camera, child-frame:boat  roll: zyx:90(yaw),-90(pitch),0(roll)
+    // translation: 0, 0.3(DISTANCE_CAM_TO_WATER), -0.7(BOAT_LENGTH/2)
+    // NOTE: boat_coord: x-forward, y-right, z-down, origin point in the water plane
+    Eigen::Affine3d r = create_rotation_matrix(0, -M_PI_2, -M_PI_2);
+//    Eigen::Affine3d t(Eigen::Translation3d(Eigen::Vector3d(0, DISTANCE_CAM_TO_WATER, -BOAT_LENGTH / 2)));
+    Eigen::Affine3d t(Eigen::Translation3d(Eigen::Vector3d(0, 0, -BOAT_LENGTH / 2)));
+    T_boat_to_cam = (t * r).matrix();
+    T_cam_to_boat = T_boat_to_cam.inverse();
+
+    P_boat_to_img = K * T_boat_to_cam;
+    std::cout << "P_boat_to_img: " << P_boat_to_img << std::endl;
+
+    // reverse procedure
+//    Eigen::Transform<double, 3, Eigen::Affine> P_affine(P_boat_to_img);
+    Eigen::Affine3d P_affine;
+    P_affine.matrix() = P_boat_to_img;
+    M_Mat = P_affine.rotation();
+    std::cout << "M_Mat: " << M_Mat << std::endl;
+
 }
 
 
@@ -121,19 +170,49 @@ void img_cb(const sensor_msgs::ImageConstPtr &img_in) {
     cv::Mat src_img;
     cv_bridge::toCvShare(img_in, "bgr8")->image.copyTo(src_img);
 
-    VectorXd h_pt_cam(4);
-    h_pt_cam << 0, 0.1, 0.2, 1;
-    std::cout << h_pt_cam << std::endl;
+    std::vector<Eigen::VectorXd> pts;
+    Eigen::VectorXd h_pt_boat(4);
+    h_pt_boat << 10, -3, 0, 1;
+    std::cout << "test" << h_pt_boat[0] << std::endl;
+    pts.push_back(h_pt_boat);
+//    h_pt_boat << 10, 3, 0, 1;
+//    pts.push_back(h_pt_boat);
+//    h_pt_boat << 6, 3, 0, 1;
+//    pts.push_back(h_pt_boat);
+    h_pt_boat << 6, -3, 0, 1;
+    pts.push_back(h_pt_boat);
 
-    VectorXd h_pt_img = K * h_pt_cam;
+    for (int i = 0; i < pts.size(); i++) {
+//        VectorXd h_pt_cam = T_boat_to_cam * pts[i];
+//        std::cout << h_pt_cam << std::endl;
 
-    h_pt_img[0] = h_pt_img[0] / h_pt_img[2];
-    h_pt_img[1] = h_pt_img[1] / h_pt_img[2];
-    h_pt_img[2] = h_pt_img[2] / h_pt_img[2];
+//        VectorXd h_pt_img = K * h_pt_cam;
+        Eigen::VectorXd h_pt_img = P_boat_to_img * pts[i];
 
-    std::cout << "pt_img: " << h_pt_img << std::endl;
-    cv::Point ppp((int) h_pt_img[0], (int) h_pt_img[1]);
-    cv::circle(src_img, ppp, 2, cv::Scalar(0, 255, 0), 2);
+        h_pt_img[0] = h_pt_img[0] / h_pt_img[2];
+        h_pt_img[1] = h_pt_img[1] / h_pt_img[2];
+        h_pt_img[2] = h_pt_img[2] / h_pt_img[2];
+
+        std::cout << "pt_img: " << h_pt_img << std::endl;
+        cv::Point ppp((int) h_pt_img[0], (int) h_pt_img[1]);
+        cv::circle(src_img, ppp, 2, cv::Scalar(0, 255, 0), 2);
+    }
+
+    //reverse (10, -3)->(416, 458) (6, -3)->(214, 458)
+    pts.clear();
+    Eigen::Vector3d h_pt_img;
+    h_pt_img << 416, 458, 1;
+    pts.push_back(h_pt_img);
+    h_pt_img << 214, 458, 1;
+    pts.push_back(h_pt_img);
+    for (int i = 0; i < pts.size(); i++) {
+        Eigen::Vector4d p_boat_reverse = get_3d_point_from_pixel(pts[i]);
+        std::cout << "pt_reverse: " << p_boat_reverse << std::endl;
+    }
+
+
+
+
     cv::imshow("img_with_projected_pt", src_img);
     cv::waitKey(5);
 }
@@ -185,6 +264,7 @@ void img_cb(const sensor_msgs::ImageConstPtr &img_in) {
 
 int main(int argc, char **argv) {
     get_camera_info();
+    get_tf_boat_camera();
     ros::init(argc, argv, "obs_position");
     ros::NodeHandle nh;
 
