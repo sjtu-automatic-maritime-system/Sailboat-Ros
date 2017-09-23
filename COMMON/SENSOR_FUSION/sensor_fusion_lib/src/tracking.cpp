@@ -50,6 +50,47 @@ Tracking::Tracking() {
 
 }
 
+
+
+Tracking::Tracking(MatrixXd R, float ax_noise, float ay_noise) {
+    is_initialized_ = false;
+    previous_timestamp_ = 0;
+
+    //create a 4D state vector, we don't know yet the values of the x state
+    kf_.x_ = VectorXd(4);
+
+    //state covariance matrix P
+    kf_.P_ = MatrixXd(4, 4);
+    kf_.P_ << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1000, 0,
+            0, 0, 0, 1000;
+
+
+    //measurement covariance
+    kf_.R_ = MatrixXd(2, 2);
+    kf_.R_ = R;
+
+    //measurement matrix
+    kf_.H_ = MatrixXd(2, 4);
+    kf_.H_ << 1, 0, 0, 0,
+            0, 1, 0, 0;
+
+    //the initial transition matrix F_
+    kf_.F_ = MatrixXd(4, 4);
+    kf_.F_ << 1, 0, 1, 0,
+            0, 1, 0, 1,
+            0, 0, 1, 0,
+            0, 0, 0, 1;
+
+    //set the acceleration noise components
+    noise_ax = ax_noise;
+    noise_ay = ay_noise;
+
+}
+
+
+
 Tracking::~Tracking() {
 
 }

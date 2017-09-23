@@ -17,6 +17,7 @@ def draw_bbox(img, pts, color=(0, 255, 0), thickness=2):
 
 def callback(img_msg, bbox):
     img = bridge.imgmsg_to_cv2(img_msg, desired_encoding='bgr8')
+    print('bbox x: {}, y {}'.format(bbox.x, bbox.y))
     if bbox.confidence > 0:
         pts = []
         pt1 = (bbox.x, bbox.y)
@@ -28,8 +29,8 @@ def callback(img_msg, bbox):
         pt4 = (bbox.x, bbox.y + bbox.height)
         pts.append(pt4)
         img = draw_bbox(img, pts)
-    # cv2.imshow("img_bbox", img)
-    # cv2.waitKey(5)
+    cv2.imshow("img_bbox", img)
+    cv2.waitKey(5)
     img_bbox_pub.publish(bridge.cv2_to_imgmsg(img))
 
 

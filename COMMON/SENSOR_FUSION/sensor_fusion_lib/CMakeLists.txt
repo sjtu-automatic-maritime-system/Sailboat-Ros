@@ -55,7 +55,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
     ${catkin_INCLUDE_DIRS}
 )
 

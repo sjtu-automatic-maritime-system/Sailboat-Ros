@@ -6,9 +6,8 @@ from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PointStamped
 import message_filters
 
-
 target_x = [0, 10]
-target_y = [0, 10]
+target_y = [0, 0]
 
 marker = Marker()
 marker.header.frame_id = 'map'
@@ -31,7 +30,11 @@ for xx, yy in zip(target_x, target_y):
 
 count = 0
 path_ego = Path()
-path_obs = Path()
+path_obs_boat = Path()
+path_obs_ground = Path()
+path_obs_filter_ground = Path()
+
+
 
 # obs_pos = PointStamped()
 # obs_pos.point.x
@@ -87,20 +90,21 @@ def ego_cb(wtst_msg):
         count = 0
     count += 1
 
+
 #
 def obs_boat_cb(obs_pos):
     print 'in obs boat callback'
     po_obs = PoseStamped()
-    po_obs.header = po_obs.header
+    po_obs.header = obs_pos.header
     po_obs.header.frame_id = 'map'
     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
     po_obs.pose.position.y = obs_pos.point.x
-    print obs_pos.point.y, obs_pos.point.x
+    # print obs_pos.point.y, obs_pos.point.x
 
-    path_obs.poses.append(po_obs)
-    path_obs.header.frame_id = 'map'
-    path_obs.header = obs_pos.header
-    path_pub_obs_boat.publish(path_obs)
+    path_obs_boat.poses.append(po_obs)
+    path_obs_boat.header.frame_id = 'map'
+    path_pub_obs_boat.publish(path_obs_boat)
+
 
 def obs_ground_cb(obs_pos):
     print 'in obs ground callback'
@@ -111,23 +115,40 @@ def obs_ground_cb(obs_pos):
     # po_obs.position.y = obs_pos.y
     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
     po_obs.pose.position.y = obs_pos.point.x
-    print obs_pos.point.y, obs_pos.point.x
+    # print obs_pos.point.y, obs_pos.point.x
 
-    path_obs.poses.append(po_obs)
-    path_obs.header.frame_id = 'map'
-    path_obs.header = obs_pos.header
-    path_pub_obs_ground.publish(path_obs)
+    path_obs_ground.poses.append(po_obs)
+    path_obs_ground.header = obs_pos.header
+    path_obs_ground.header.frame_id = 'map'
+    path_pub_obs_ground.publish(path_obs_ground)
 
+def obs_ground_filter_cb(obs_pos):
+    print 'in obs ground filter callback'
+    po_obs = PoseStamped()
+    po_obs.header = po_obs.header
+    po_obs.header.frame_id = 'map'
+    # po_obs.position.x = obs_pos.x
+    # po_obs.position.y = obs_pos.y
+    po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
+    po_obs.pose.position.y = obs_pos.point.x
+    # print obs_pos.point.y, obs_pos.point.x
+
+    path_obs_filter_ground.poses.append(po_obs)
+    path_obs_filter_ground.header = obs_pos.header
+    path_obs_filter_ground.header.frame_id = 'map'
+    path_pub_obs_filter_ground.publish(path_obs_filter_ground)
 
 
 def main():
-    global path_pub_ego, path_pub_obs_boat, path_pub_obs_ground, points_pub
+    global path_pub_ego, path_pub_obs_boat, path_pub_obs_ground, points_pub, path_pub_obs_filter_ground
     rospy.init_node('get_path', anonymous=True)
 
     points_pub = rospy.Publisher('/target_points', Marker, queue_size=2)
     path_pub_ego = rospy.Publisher('/path_ego', Path, queue_size=2)
     path_pub_obs_boat = rospy.Publisher('/path_obs_boat', Path, queue_size=2)
     path_pub_obs_ground = rospy.Publisher('/path_obs_ground', Path, queue_size=2)
+    path_pub_obs_filter_ground = rospy.Publisher('/path_obs_filter_ground', Path, queue_size=2)
+
 
     # wtst_sub = message_filters.Subscriber('/wtst', WTST_msg)
     # obs_pos_sub = message_filters.Subscriber('/obs_position', Point)
@@ -137,8 +158,9 @@ def main():
     # ts.registerCallback(callback)
 
     rospy.Subscriber('/wtst', WTST_msg, ego_cb)
-    # rospy.Subscriber('/obs_boat_position', PointStamped, obs_boat_cb)
+    rospy.Subscriber('/obs_boat_position', PointStamped, obs_boat_cb)
     rospy.Subscriber('/obs_ground_position', PointStamped, obs_ground_cb)
+    rospy.Subscriber('/obs_ground_filter_position', PointStamped, obs_ground_filter_cb)
 
 
 if __name__ == '__main__':

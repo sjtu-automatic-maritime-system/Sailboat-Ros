@@ -7,8 +7,8 @@
 #include <sstream>
 #include <vector>
 
-#include "measurement_package.h"
-#include "tracking.h"
+#include "sensor_fusion_lib/measurement_package.h"
+#include "sensor_fusion_lib/tracking.h"
 #include "sensor_fusion_msg/GpsMeasurement.h"
 #include "sensor_fusion_msg/GpsKF.h"
 #include "sailboat_message/WTST_msg.h"

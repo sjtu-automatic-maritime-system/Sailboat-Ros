@@ -14,6 +14,7 @@ set(catkin_package_DEPENDENCIES
         cv_bridge
         image_transport
         object_detection_lib
+        sensor_fusion_lib
         )
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -51,3 +52,6 @@ target_link_libraries(obs_position ${catkin_LIBRARIES})
 
 add_executable(obs_position_intrinsic src/obs_position_intrinsic.cpp)
 target_link_libraries(obs_position_intrinsic ${catkin_LIBRARIES})
+
+add_executable(obs_position_new src/obs_position_new.cpp)
+target_link_libraries(obs_position_new ${catkin_LIBRARIES} sensor_fusion_lib)

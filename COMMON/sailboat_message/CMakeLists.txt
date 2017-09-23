@@ -72,6 +72,8 @@ add_message_files(
         Sailboat_Simulation_msg.msg
         Target_msg.msg
 
+        Detected_obs.msg
+
 )
 
 ## Generate added messages and services with any dependencies listed here
