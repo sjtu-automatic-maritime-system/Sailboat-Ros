@@ -15,8 +15,13 @@
 class Tracking {
 public:
     Tracking();
+
+    Tracking(MatrixXd R, float ax_noise, float ay_noise);
+
     virtual ~Tracking();
+
     void ProcessMeasurement(const MeasurementPackage &measurement_pack);
+
     KalmanFilter kf_;
 
 private:
