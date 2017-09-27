@@ -1,3 +1,5 @@
+不再使用这个方法
+
 ros by example
 
 sudo apt-get install chrony

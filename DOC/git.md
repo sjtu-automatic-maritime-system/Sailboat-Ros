@@ -1,24 +1,32 @@
+检查：
+gitk
+
+添加：
 git add .
 git add --all
 
-git diff
-
-git rm --cached <文件>
-git reset HEAD <文件>
-
+现状：
 git status -s
 git status
 
+上传：
 git commit -m 'test'
-git push 
+git push origin master
 
+恢复：
+git log
+git rm --cached <文件>
+git reset HEAD <文件>
 git reset --hard HEAD^
 
+下载：
 git pull
 
-尚未缓存的改动：git diff
-查看已缓存的改动： git diff --cached
-查看已缓存的与未缓存的所有改动：git diff HEAD
-显示摘要而非整个 diff：git diff --stat
+改动：
+git diff                尚未缓存的改动
+git diff --cached       查看已缓存的改动
+git diff HEAD           查看已缓存的与未缓存的所有改动
+diff：git diff --stat   显示摘要而非整个
 
-要查看当前配置有哪些远程仓库，可以用命令：git remote
+查看当前配置有哪些远程仓库：
+git remote
