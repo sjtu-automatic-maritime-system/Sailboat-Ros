@@ -43,5 +43,5 @@ target_link_libraries(object_detection ${catkin_LIBRARIES} object_detection_lib)
 add_executable(mytest src/test.cpp)
 target_link_libraries(mytest ${catkin_LIBRARIES} object_detection_lib)
 
-add_executable(img_undistortion src/undistort_image_raw.cpp)
-target_link_libraries(img_undistortion ${catkin_LIBRARIES})
+#add_executable(img_undistortion src/undistort_image_raw.cpp)
+#target_link_libraries(img_undistortion ${catkin_LIBRARIES})
