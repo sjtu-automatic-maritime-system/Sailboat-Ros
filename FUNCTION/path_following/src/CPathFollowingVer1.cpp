@@ -2,7 +2,7 @@
 // Created by hywel on 17-5-6.
 //
 
-#include "path_following_lib/CPathFollowingVer1.h"
+#include "path_following/CPathFollowingVer1.h"
 
 CPathFollowingVer1::CPathFollowingVer1() {
     pathX = new double[8];

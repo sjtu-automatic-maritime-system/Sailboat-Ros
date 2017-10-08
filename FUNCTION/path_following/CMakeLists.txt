@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
         rospy
         sailboat_message
         std_msgs
-        path_following_lib
         )
 
 
@@ -23,11 +22,10 @@ generate_dynamic_reconfigure_options(
         #   cfg/DynReconf2.cfg
 )
 
-
 catkin_package(
         #  INCLUDE_DIRS include
         LIBRARIES path_following
-        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs path_following_lib
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs
         DEPENDS system_lib
 )
 
@@ -43,6 +41,13 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS})
 
-add_executable(path_following_ver1 src/PathFollowing.cpp)
-target_link_libraries(path_following_ver1 ${catkin_LIBRARIES})
-add_dependencies(path_following_ver1 ${catkin_EXPORTED_TARGETS})
+
+set( path_following_SRC
+        src/PathFollowing.cpp
+        src/CPathFollowingVer1.cpp
+        )
+
+add_executable( ${PROJECT_NAME} ${path_following_SRC} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} path_following_gencfg)
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
+

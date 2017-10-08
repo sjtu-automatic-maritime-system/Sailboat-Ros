@@ -6,7 +6,7 @@
 #include "sailboat_message/Sensor_msg.h"//改成处理过后的Sensor_msg
 #include "sailboat_message/Target_msg.h"
 
-#include "path_following_lib/CPathFollowingVer1.h"
+#include "path_following/CPathFollowingVer1.h"
 #include <dynamic_reconfigure/server.h>
 #include "path_following/path_following_point_Config.h"
 

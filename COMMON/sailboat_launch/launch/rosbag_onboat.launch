@@ -1,3 +1,3 @@
 <launch>
-    <!-- node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/WTST/PosX"/ -->
+    <node pkg="rosbag" type="record" name="sensor_record" args=" -o /home/sjtu-sailboat/rosbag/sensor --split --duration=20m /wtst /ahrs /mach /sensor /sensor2 /arduino"/>
 </launch>
