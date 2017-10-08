@@ -169,6 +169,7 @@ class dataWrapper:
         self.gz    = 'gz'
         self.ax    = 'ax'
         self.ay    = 'ay'
+        self.az    = 'az'
 
 
     def pubData(self,msg,ahrs):
