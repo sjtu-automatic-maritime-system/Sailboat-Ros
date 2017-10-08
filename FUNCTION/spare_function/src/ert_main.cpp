@@ -1,24 +1,25 @@
 //
 // File: ert_main.cpp
 //
-// Code generated for Simulink model 'scanning'.
+// Code generated for Simulink model 'sailboat_ap_ok'.
 //
-// Model version                  : 1.291
+// Model version                  : 1.226
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Sep 06 10:37:57 2017
+// C/C++ source code generated on : Sun Oct 08 15:19:58 2017
 //
 // Target selection: ert.tlc
-// Embedded hardware selection: 32-bit Generic
-// Code generation objectives: Unspecified
+// Embedded hardware selection: Intel->x86-64 (Linux 64)
+// Code generation objectives:
+//    1. Execution efficiency
+//    2. RAM efficiency
 // Validation result: Not run
 //
 #include <stddef.h>
 #include <stdio.h>                     // This ert_main.c example uses printf/fflush 
-#include "scanning.h"                  // Model's header file
+#include "sailboat_ap_ok.h"            // Model's header file
 #include "rtwtypes.h"
 
-
-static scanningModelClass scanning_Obj;// Instance of model class
+static sailboat_ap_okModelClass rtObj; // Instance of model class
 
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -39,7 +40,7 @@ void rt_OneStep(void)
 
   // Check for overrun
   if (OverrunFlag) {
-    rtmSetErrorStatus(scanning_Obj.getRTM(), "Overrun");
+    rtmSetErrorStatus(rtObj.getRTM(), "Overrun");
     return;
   }
 
@@ -50,7 +51,7 @@ void rt_OneStep(void)
   // Set model inputs here
 
   // Step the model
-  scanning_Obj.step();
+  rtObj.step();
 
   // Get model outputs here
 
@@ -75,7 +76,7 @@ int_T main(int_T argc, const char *argv[])
   (void)(argv);
 
   // Initialize model
-  scanning_Obj.initialize();
+  rtObj.initialize();
 
   // Attach rt_OneStep to a timer or interrupt service routine with
   //  period 0.1 seconds (the model's base sample time) here.  The
@@ -87,14 +88,14 @@ int_T main(int_T argc, const char *argv[])
          "Generated ERT main won't simulate model step behavior. "
          "To change this behavior select the 'MAT-file logging' option.\n");
   fflush((NULL));
-  while (rtmGetErrorStatus(scanning_Obj.getRTM()) == (NULL)) {
+  while (rtmGetErrorStatus(rtObj.getRTM()) == (NULL)) {
     //  Perform other application tasks here
   }
 
   // Disable rt_OneStep() here
 
   // Terminate model
-  scanning_Obj.terminate();
+  rtObj.terminate();
   return 0;
 }
 

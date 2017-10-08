@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="spare_function" type="spare_function" name="spare_function"/>
+    <node pkg="rosbag" type="record" name="spare_function_record" args=" -o ~/rosbag/spare_function --split --duration=60m /wtst /ahrs /mach /sensor /arduino /spare_function_out /spare_function_para"/>
+</launch>

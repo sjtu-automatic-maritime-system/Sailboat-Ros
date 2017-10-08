@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 nohup roslaunch pointgrey_camera_driver camera.launch &
 sleep 2s
 model_file="$(rospack find tld_tracker)/tld_models/norway_inside_0906"

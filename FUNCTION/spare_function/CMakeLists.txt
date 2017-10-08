@@ -13,11 +13,26 @@ find_package(catkin REQUIRED COMPONENTS
         rospy
         sailboat_message
         std_msgs
+        message_generation
         )
+
+
+add_message_files(
+        FILES
+        spare_function_out.msg
+        spare_function_para.msg
+)
 
 generate_dynamic_reconfigure_options(
         cfg/spare_function.cfg
 )
+
+generate_messages(
+        DEPENDENCIES
+        std_msgs
+)
+
+
 
 ###################################
 ## catkin specific configuration ##
@@ -31,7 +46,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES spare_function
-        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs message_runtime
         DEPENDS system_lib
 )
 
@@ -42,10 +57,11 @@ include_directories(
         ${catkin_INCLUDE_DIRS})
 
 set( spare_function_SRC
-        src/example.cpp
+        src/spare_function_main.cpp
+        src/sailboat_ap_ok.cpp
         )
 
 
-#add_executable( ${PROJECT_NAME} ${spare_function_SRC} )
-#add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} spare_function_gencfg)
-#target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
+add_executable( ${PROJECT_NAME} ${spare_function_SRC} )
+add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} spare_function_gencfg)
+target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )

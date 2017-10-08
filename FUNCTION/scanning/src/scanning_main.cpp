@@ -29,10 +29,10 @@
 #include "scanning/scanning_Config.h"
 
 
-
 static scanningModelClass scanning_Obj;// Instance of model class
 int pcCtrl = 0;
 ros::Publisher scanning_para_pub;
+
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
 // is what makes the generated code "real-time".  The function rt_OneStep is
@@ -87,7 +87,7 @@ void getInput(const sailboat_message::Sensor_msg::ConstPtr msg) {
 }
 
 void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
-    ROS_INFO("Reconfigure Request: %f %f %f",config.Kp,config.Ki,config.Kd);
+    ROS_INFO("Reconfigure Request: %f %f %f", config.Kp, config.Ki, config.Kd);
 
     if (config.PC_Ctrl == true)
         pcCtrl = 1;
@@ -105,12 +105,12 @@ void ScanningCfgcallback(scanning::scanning_Config &config, uint32_t level) {
     scanning_Obj.scanning_P.ship_speed_history_len = config.ship_speed_history_len;
     scanning_Obj.scanning_P.tacking_force_discount = config.tacking_force_discount;
     scanning_Obj.scanning_P.wind_mean_time = config.wind_mean_time;
-    scanning_Obj.scanning_P.points_up_move                      = config.points_up_move                     ;
+    scanning_Obj.scanning_P.points_up_move = config.points_up_move;
     scanning_Obj.scanning_P.tacking_discount_decrease_windspeed = config.tacking_discount_decrease_windspeed;
-    scanning_Obj.scanning_P.jibing_time                         = config.jibing_time                        ;
-    scanning_Obj.scanning_P.tacking_time                        = config.tacking_time                       ;
-    scanning_Obj.scanning_P.upwind_R_expand_ratio               = config.upwind_R_expand_ratio              ;
-    scanning_Obj.scanning_P.start_counting                      = config.start_counting                     ;
+    scanning_Obj.scanning_P.jibing_time = config.jibing_time;
+    scanning_Obj.scanning_P.tacking_time = config.tacking_time;
+    scanning_Obj.scanning_P.upwind_R_expand_ratio = config.upwind_R_expand_ratio;
+    scanning_Obj.scanning_P.start_counting = config.start_counting;
 
     scanning_Obj.scanning_P.scanning_points[0] = config.point0_x;
     scanning_Obj.scanning_P.scanning_points[1] = config.point1_x;
@@ -128,7 +128,7 @@ void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     getInput(msg);
 }
 
-void getOutMachPut(sailboat_message::Mach_msg& msg){
+void getOutMachPut(sailboat_message::Mach_msg &msg) {
 
     msg.timestamp = ros::Time::now().toSec();
     msg.motor = 0;
@@ -138,7 +138,7 @@ void getOutMachPut(sailboat_message::Mach_msg& msg){
 
 }
 
-void getOutput(sailboat_message::scanning_out& msg){
+void getOutput(sailboat_message::scanning_out &msg) {
 
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = "base_link";
@@ -156,7 +156,7 @@ void getOutput(sailboat_message::scanning_out& msg){
 
 }
 
-void getOutParaPut(sailboat_message::scanning_para &msg){
+void getOutParaPut(sailboat_message::scanning_para &msg) {
 
     msg.Kp = scanning_Obj.scanning_P.Kp;
     msg.Ki = scanning_Obj.scanning_P.Ki;
@@ -170,12 +170,12 @@ void getOutParaPut(sailboat_message::scanning_para &msg){
     msg.tacking_force_discount = scanning_Obj.scanning_P.tacking_force_discount;
     msg.wind_mean_time = scanning_Obj.scanning_P.wind_mean_time;
 
-    msg.points_up_move                      = scanning_Obj.scanning_P.points_up_move                     ;
+    msg.points_up_move = scanning_Obj.scanning_P.points_up_move;
     msg.tacking_discount_decrease_windspeed = scanning_Obj.scanning_P.tacking_discount_decrease_windspeed;
-    msg.jibing_time                         = scanning_Obj.scanning_P.jibing_time                        ;
-    msg.tacking_time                        = scanning_Obj.scanning_P.tacking_time                       ;
-    msg.upwind_R_expand_ratio               = scanning_Obj.scanning_P.upwind_R_expand_ratio              ;
-    msg.start_counting                      = scanning_Obj.scanning_P.start_counting                     ;
+    msg.jibing_time = scanning_Obj.scanning_P.jibing_time;
+    msg.tacking_time = scanning_Obj.scanning_P.tacking_time;
+    msg.upwind_R_expand_ratio = scanning_Obj.scanning_P.upwind_R_expand_ratio;
+    msg.start_counting = scanning_Obj.scanning_P.start_counting;
 
 
     msg.point0_x = scanning_Obj.scanning_P.scanning_points[0];

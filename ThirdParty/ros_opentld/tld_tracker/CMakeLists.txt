@@ -23,6 +23,7 @@ set(OPENTLD_OUTPUT_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../)
 
 include(ExternalProject)
 
+# todo
 externalproject_add(opentld
   PREFIX libopentld
   SVN_REPOSITORY  https://github.com/Ronan0912/OpenTLD/trunk/
