@@ -150,34 +150,70 @@ class AHRS():
     def close(self):
         self.ahrs_ser.close()
 
+    def isset(self,dataname):
+        try:
+            type (eval('self.'+dataname))
+        except:
+            return 0
+        else:
+            return 1
 
+class dataWrapper:
+    """docstring for dataWrapper"""
+    def __init__(self):
+        self.Roll  = 'Roll'
+        self.Pitch = 'Pitch'
+        self.Yaw   = 'Yaw'
+        self.gx    = 'gx'
+        self.gy    = 'gy'
+        self.gz    = 'gz'
+        self.ax    = 'ax'
+        self.ay    = 'ay'
+
+
+    def pubData(self,msg,ahrs):
+        msg.header.stamp = rospy.Time.now()
+        msg.header.frame_id = 'AHRS'
+
+        if ahrs.isset(self.Roll):
+            msg.roll = ahrs.Roll
+        if ahrs.isset(self.Pitch):
+            msg.pitch = ahrs.Pitch
+        if ahrs.isset(self.Yaw):
+            msg.yaw = ahrs.Yaw
+        if ahrs.isset(self.gx):
+            msg.gx = ahrs.gx
+        if ahrs.isset(self.gy):
+            msg.gy = ahrs.gy
+        if ahrs.isset(self.gz):
+            msg.gz = ahrs.gz
+        if ahrs.isset(self.ax):
+            msg.ax = ahrs.ax
+        if ahrs.isset(self.ay):
+            msg.ay = ahrs.ay
+        if ahrs.isset(self.az):
+            msg.az = ahrs.az
+        return msg
 
 
 def talker():#ros message publish
     pub = rospy.Publisher('ahrs', Ahrs_msg, queue_size=5)
     rospy.init_node('ahrs_talker', anonymous=True)
-    rate = rospy.Rate(20) # 10hz
+    rate = rospy.Rate(20) # 10hzahrs_
 
     ahrs = AHRS()
-    ahrs_msg = Ahrs_msg()
+    msg = Ahrs_msg()
+
+    datawrapper = dataWrapper()
+
     for ii in range(10):
         ahrs.update()
     try:
         while not rospy.is_shutdown():
             ahrs.update()
-            ahrs_msg.header.stamp = rospy.Time.now()
-            ahrs_msg.header.frame_id = 'AHRS'
             #ahrs_msg.timestamp = rospy.get_time()
 
-            ahrs_msg.roll = ahrs.Roll
-            ahrs_msg.pitch = ahrs.Pitch
-            ahrs_msg.yaw = ahrs.Yaw
-            ahrs_msg.gx = ahrs.gx
-            ahrs_msg.gy = ahrs.gy
-            ahrs_msg.gz = ahrs.gz
-            ahrs_msg.ax = ahrs.ax
-            ahrs_msg.ay = ahrs.ay
-            ahrs_msg.az = ahrs.az
+            ahrs_msg= datawrapper.pubData(msg,ahrs)
             #show data
             #rospy.loginfo(ahrs_msg.roll)
             pub.publish(ahrs_msg)
