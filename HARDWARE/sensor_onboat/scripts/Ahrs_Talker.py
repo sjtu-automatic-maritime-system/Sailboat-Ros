@@ -218,7 +218,7 @@ def talker():#ros message publish
             #show data
             #rospy.loginfo(ahrs_msg.roll)
             pub.publish(ahrs_msg)
-            rate.sleep()            
+            rate.sleep()
     except rospy.ROSInterruptException:
         pass
     finally:
