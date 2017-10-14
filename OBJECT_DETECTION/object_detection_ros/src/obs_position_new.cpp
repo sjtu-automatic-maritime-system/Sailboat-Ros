@@ -24,6 +24,7 @@
 
 #include "sensor_fusion_lib/measurement_package.h"
 #include "sensor_fusion_lib/tracking.h"
+#include "sensor_fusion_msg/GpsKF.h"
 
 
 #define BOAT_LENGTH 1.5  // m
@@ -88,6 +89,7 @@ void obs_cb(const sailboat_message::Detected_obsConstPtr &obs_msg) {
         MeasurementPackage measurement;
         measurement.sensor_type_ = MeasurementPackage::LASER;
         measurement.timestamp_ = obs_msg->header.stamp.toSec();
+        std::cout << "timestamp: " << measurement.timestamp_ << std::endl;
         measurement.raw_measurements_ = Eigen::VectorXd(2);
         measurement.raw_measurements_ << obs_pos_g.point.x, obs_pos_g.point.y;
         tracking.ProcessMeasurement(measurement);
@@ -98,13 +100,15 @@ void obs_cb(const sailboat_message::Detected_obsConstPtr &obs_msg) {
         std::cout << "x, y after filter \n" << x_f << ", " << y_f << std::endl;
         std::cout << "vx, vy after filter \n" << v_x << ", " << v_y << std::endl;
 
-        geometry_msgs::PointStamped obs_pos_f_g;
-        obs_pos_f_g.header = obs_msg->header;
-        obs_pos_f_g.header.frame_id = "map";
-        obs_pos_f_g.point.x = x_f;
-        obs_pos_f_g.point.y = y_f;
-        obs_pos_f_g.point.z = 0;
-        obs_ground_filter_pub.publish(obs_pos_f_g);
+        sensor_fusion_msg::GpsKF GPSmsg;
+        GPSmsg.header = obs_msg->header;
+        GPSmsg.header.frame_id = "map";
+        GPSmsg.posx = tracking.kf_.x_[0];
+        GPSmsg.posy = tracking.kf_.x_[1];
+        GPSmsg.velx = tracking.kf_.x_[2];
+        GPSmsg.vely = tracking.kf_.x_[3];
+
+        obs_ground_filter_pub.publish(GPSmsg);
 
     }
 
@@ -142,25 +146,27 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
 
     Eigen::MatrixXd KF_R(2, 2); //measurement covariance
-    KF_R << 0.225, 0,
-            0, 0.225;
-    float noise_ax = 0.5;
-    float noise_ay = 0.5;
+    KF_R << 1000, 0,
+            0, 1000;
+    float noise_ax = 0.01;
+    float noise_ay = 0.01;
     tracking = Tracking(KF_R, noise_ax, noise_ay);
 
     obs_boat_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_boat_position", 2);
     obs_ground_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_ground_position", 2);
-    obs_ground_filter_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_ground_filter_position", 2);
+//    obs_ground_filter_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_ground_filter_position", 2);
+    obs_ground_filter_pub = nh.advertise<sensor_fusion_msg::GpsKF>("/obs_ground_filter_position", 2);
 
     ros::Subscriber wtst_sub = nh.subscribe("/wtst", 2, &wtst_cb);
+    ros::Subscriber obs_sub = nh.subscribe("/detected_obs", 2, &obs_cb);
 
-    message_filters::Subscriber<sailboat_message::Detected_obs> obs_sub(nh, "/detected_obs", 2);
-    message_filters::Subscriber<sensor_msgs::Image> img_sub(nh, "/camera/image_undistorted", 2);
+//    message_filters::Subscriber<sailboat_message::Detected_obs> obs_sub(nh, "/detected_obs", 2);
+//    message_filters::Subscriber<sensor_msgs::Image> img_sub(nh, "/camera/image_undistorted", 2);
 
-    typedef message_filters::sync_policies::ApproximateTime<sailboat_message::Detected_obs, sensor_msgs::Image> MySyncPolicy;
+//    typedef message_filters::sync_policies::ApproximateTime<sailboat_message::Detected_obs, sensor_msgs::Image> MySyncPolicy;
     // ApproximateTime takes a queue size as its constructor argument, hence MySyncPolicy(10)
-    message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(1), obs_sub, img_sub);
-    sync.registerCallback(boost::bind(&obs_img_cb, _1, _2));
+//    message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(1), obs_sub, img_sub);
+//    sync.registerCallback(boost::bind(&obs_img_cb, _1, _2));
 
 
     image_transport::ImageTransport it(nh);

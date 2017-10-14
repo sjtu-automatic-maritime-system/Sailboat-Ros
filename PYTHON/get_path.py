@@ -4,6 +4,7 @@ from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped, Point
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PointStamped
+from sensor_fusion_msg.msg import GpsKF
 import message_filters
 
 target_x = [0, 10]
@@ -33,7 +34,6 @@ path_ego = Path()
 path_obs_boat = Path()
 path_obs_ground = Path()
 path_obs_filter_ground = Path()
-
 
 
 # obs_pos = PointStamped()
@@ -109,32 +109,40 @@ def obs_boat_cb(obs_pos):
 def obs_ground_cb(obs_pos):
     print 'in obs ground callback'
     po_obs = PoseStamped()
-    po_obs.header = po_obs.header
-    po_obs.header.frame_id = 'map'
+    # po_obs.header = obs_pos.header
+    # po_obs.header.frame_id = 'map'
     # po_obs.position.x = obs_pos.x
     # po_obs.position.y = obs_pos.y
     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
     po_obs.pose.position.y = obs_pos.point.x
     # print obs_pos.point.y, obs_pos.point.x
+
+    if 1:
+        row = '{x} {y}\n'.format(x=obs_pos.point.x, y=obs_pos.point.y)
+        f1.write(row)
 
     path_obs_ground.poses.append(po_obs)
     path_obs_ground.header = obs_pos.header
     path_obs_ground.header.frame_id = 'map'
     path_pub_obs_ground.publish(path_obs_ground)
 
-def obs_ground_filter_cb(obs_pos):
+
+def obs_ground_filter_cb(GPSmsg):
     print 'in obs ground filter callback'
     po_obs = PoseStamped()
-    po_obs.header = po_obs.header
-    po_obs.header.frame_id = 'map'
-    # po_obs.position.x = obs_pos.x
-    # po_obs.position.y = obs_pos.y
-    po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
-    po_obs.pose.position.y = obs_pos.point.x
-    # print obs_pos.point.y, obs_pos.point.x
+    # po_obs.header = GPSmsg.header
+    # po_obs.header.frame_id = 'map'
+    po_obs.pose.position.x = GPSmsg.posy  ## change x and y to plot
+    po_obs.pose.position.y = GPSmsg.posx
+
+    if 1:
+        row = '{x} {y}\n'.format(x=GPSmsg.posx, y=GPSmsg.posy)
+        f2.write(row)
+        row = '{velx} {vely}\n'.format(velx=GPSmsg.velx, vely=GPSmsg.vely)
+        f3.write(row)
 
     path_obs_filter_ground.poses.append(po_obs)
-    path_obs_filter_ground.header = obs_pos.header
+    path_obs_filter_ground.header = GPSmsg.header
     path_obs_filter_ground.header.frame_id = 'map'
     path_pub_obs_filter_ground.publish(path_obs_filter_ground)
 
@@ -149,7 +157,6 @@ def main():
     path_pub_obs_ground = rospy.Publisher('/path_obs_ground', Path, queue_size=2)
     path_pub_obs_filter_ground = rospy.Publisher('/path_obs_filter_ground', Path, queue_size=2)
 
-
     # wtst_sub = message_filters.Subscriber('/wtst', WTST_msg)
     # obs_pos_sub = message_filters.Subscriber('/obs_position', Point)
     #
@@ -160,10 +167,14 @@ def main():
     rospy.Subscriber('/wtst', WTST_msg, ego_cb)
     rospy.Subscriber('/obs_boat_position', PointStamped, obs_boat_cb)
     rospy.Subscriber('/obs_ground_position', PointStamped, obs_ground_cb)
-    rospy.Subscriber('/obs_ground_filter_position', PointStamped, obs_ground_filter_cb)
+    # rospy.Subscriber('/obs_ground_filter_position', PointStamped, obs_ground_filter_cb)
+    rospy.Subscriber('/obs_ground_filter_position', GpsKF, obs_ground_filter_cb)
 
 
 if __name__ == '__main__':
+    f1 = open('obs_pos_ground.csv', 'wb')
+    f2 = open('obs_pos_ground_filter.csv', 'wb')
+    f3 = open('obs_vel_ground_filter.csv', 'wb')
     try:
         main()
         rospy.spin()

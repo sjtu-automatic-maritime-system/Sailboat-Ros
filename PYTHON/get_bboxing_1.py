@@ -84,9 +84,13 @@ def callback(img_msg, bbox):
     detectd_obs.header.frame_id = 'camera'
     if bbox.confidence > 0:
         depth, distance, direction = get_circle_pos(img, bbox)
+        detectd_obs.header.stamp = img_msg.header.stamp
         detectd_obs.depth = depth
         detectd_obs.direction = direction
         detectd_obs.distance = distance
+        if 1:
+            row = '{depth} {distance} {direction}\n'.format(depth=depth, distance=distance, direction=direction)
+            f.write(row)
         pts = []
         pt1 = (bbox.x, bbox.y)
         pts.append(pt1)
@@ -123,4 +127,6 @@ def main():
 
 
 if __name__ == '__main__':
+    saveto = 'obs_distance_direction.csv'
+    f = open(saveto, 'wb')
     main()

@@ -57,6 +57,7 @@ void callback(const sailboat_message::Ahrs_msgConstPtr &ahrs_msg, const sensor_m
 
     sensor_msgs::ImagePtr img_undistorted_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8",
                                                                    img_undistorted).toImageMsg();
+    img_undistorted_msg->header = img_in->header;
     pub_img_undistorted.publish(img_undistorted_msg);
 
     if (1) {
@@ -71,6 +72,7 @@ void callback(const sailboat_message::Ahrs_msgConstPtr &ahrs_msg, const sensor_m
 
         sensor_msgs::ImagePtr img_undistorted_rotated_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8",
                                                                                rotateImg).toImageMsg();
+        img_undistorted_rotated_msg->header =img_in->header;
         pub_img_undistorted_rotated.publish(img_undistorted_rotated_msg);
     }
 

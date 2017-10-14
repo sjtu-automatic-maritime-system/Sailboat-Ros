@@ -101,7 +101,7 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         //cout << "Kalman Filter Initialization " << endl;
 
         //set the state with the initial location and zero velocity
-        kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+        kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0.1, 0.1;
 
         previous_timestamp_ = measurement_pack.timestamp_;
         is_initialized_ = true;
@@ -110,6 +110,7 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     //compute the time elapsed between the current and previous measurements
     double dt = (measurement_pack.timestamp_ - previous_timestamp_);	//dt - expressed in seconds
+    std::cout << "dt = " << dt << std::endl;
     previous_timestamp_ = measurement_pack.timestamp_;
 
     //1. Modify the F matrix so that the time is integrated
@@ -136,6 +137,8 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     kf_.Update(measurement_pack.raw_measurements_);
 
 //    std::cout << "x_= " << kf_.x_ << std::endl;
+//    std::cout << "noise_ax= " << noise_ax << std::endl;
+//    std::cout << "R = " << kf_.Q_ << std::endl;
 //    std::cout << "P_= " << kf_.P_ << std::endl;
 
 }
