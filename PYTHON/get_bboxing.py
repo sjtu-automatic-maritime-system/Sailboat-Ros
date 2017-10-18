@@ -7,7 +7,7 @@ from cv_bridge import CvBridge
 import cv2
 
 
-def draw_bbox(img, pts, color=(0, 255, 0), thickness=2):
+def draw_bbox(img, pts, color=(0, 255, 0), thickness=5):
     cv2.line(img, pts[0], pts[1], thickness=thickness, color=color)
     cv2.line(img, pts[1], pts[2], thickness=thickness, color=color)
     cv2.line(img, pts[2], pts[3], thickness=thickness, color=color)
@@ -29,8 +29,8 @@ def callback(img_msg, bbox):
         pt4 = (bbox.x, bbox.y + bbox.height)
         pts.append(pt4)
         img = draw_bbox(img, pts)
-    cv2.imshow("img_bbox", img)
-    cv2.waitKey(5)
+    # cv2.imshow("img_bbox", img)
+    # cv2.waitKey(5)
     img_bbox_pub.publish(bridge.cv2_to_imgmsg(img))
 
 

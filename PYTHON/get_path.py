@@ -36,39 +36,6 @@ path_obs_ground = Path()
 path_obs_filter_ground = Path()
 
 
-# obs_pos = PointStamped()
-# obs_pos.point.x
-
-# def callback(wtst_msg, obs_pos):
-#     global count
-#     po_ego = PoseStamped()
-#     po_ego.header = wtst_msg.header
-#     # po.pose.position.x = wtst_msg.PosX
-#     # po.pose.position.y = wtst_msg.PosY
-#     po_ego.pose.position.x = wtst_msg.PosY  ## change x and y to plot
-#     po_ego.pose.position.y = wtst_msg.PosX
-#     path_ego.poses.append(po_ego)
-#
-#     po_obs = PoseStamped()
-#     po_obs.header = wtst_msg.header
-#     # po_obs.position.x = obs_pos.x
-#     # po_obs.position.y = obs_pos.y
-#     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
-#     po_obs.pose.position.y = obs_pos.point.y
-#     path_obs.poses.append(po_obs)
-#
-#
-#     if count == 10:  # no need to publish path every callback, or the rviz would be very slow
-#         path_ego.header = wtst_msg.header
-#         path_pub_ego.publish(path_ego)
-#         path_obs.header = wtst_msg.header
-#         # path_obs.header.frame_id = 'WTST'
-#         path_pub_obs.publish(path_obs)
-#         marker.header = wtst_msg.header
-#         points_pub.publish(marker)
-#         count = 0
-#     count += 1
-
 
 def ego_cb(wtst_msg):
     print 'in ego callback'
@@ -109,10 +76,6 @@ def obs_boat_cb(obs_pos):
 def obs_ground_cb(obs_pos):
     print 'in obs ground callback'
     po_obs = PoseStamped()
-    # po_obs.header = obs_pos.header
-    # po_obs.header.frame_id = 'map'
-    # po_obs.position.x = obs_pos.x
-    # po_obs.position.y = obs_pos.y
     po_obs.pose.position.x = obs_pos.point.y  ## change x and y to plot
     po_obs.pose.position.y = obs_pos.point.x
     # print obs_pos.point.y, obs_pos.point.x

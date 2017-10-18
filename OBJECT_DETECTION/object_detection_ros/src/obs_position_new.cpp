@@ -146,10 +146,10 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
 
     Eigen::MatrixXd KF_R(2, 2); //measurement covariance
-    KF_R << 1000, 0,
-            0, 1000;
-    float noise_ax = 0.01;
-    float noise_ay = 0.01;
+    KF_R << 100, 0,
+            0, 100;
+    float noise_ax = 0.001;
+    float noise_ay = 0.001;
     tracking = Tracking(KF_R, noise_ax, noise_ay);
 
     obs_boat_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_boat_position", 2);

@@ -7,11 +7,36 @@ from cv_bridge import CvBridge
 import cv2
 import numpy as np
 import math
+import camera_info
 
-BALL_DIAMETER = 0.4  # m
+BALL_DIAMETER = 0.3  # m
 FOCAL_LENGTH = 455.0  # pixel
 RESIZE_RATIO = 10.0
 SHOW_SIZE = 200  # pixel
+
+
+def project_reverse_intrinsic(u, v):
+    pt_boat = camera_info.img_to_boat(u, v)
+    depth = math.fabs(pt_boat[0])
+    distance = math.sqrt(pt_boat[0] ** 2 + pt_boat[1] ** 2)
+    direction = math.atan(pt_boat[1] / pt_boat[0])
+    print 'intrinsic method: {}, {}, {}'.format(depth, distance, direction)
+    if 1:
+        row = '{depth} {distance} {direction}\n'.format(depth=depth, distance=distance, direction=direction)
+        f2.write(row)
+    return depth, distance, direction
+
+
+def project_reverse_geometry_1(u, v):
+    h = math.fabs(v - camera_info.IMG_CENTER_Y)
+    depth = camera_info.DISTANCE_CAM_TO_WATER * camera_info.FOCAL_LENGTH / h
+    direction = math.atan((u - camera_info.IMG_CENTER_X) / camera_info.FOCAL_LENGTH)
+    distance = depth / math.cos(direction)
+    print 'geometry 1 : {}, {}, {}'.format(depth, distance, direction)
+    if 1:
+        row = '{depth} {distance} {direction}\n'.format(depth=depth, distance=distance, direction=direction)
+        f3.write(row)
+    return depth, distance, direction
 
 
 def get_circle_pos(img, bbox):
@@ -31,7 +56,7 @@ def get_circle_pos(img, bbox):
         gray = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
         circles = circles.reshape(-1, 3)
         for cir in circles:
-            cv2.circle(gray, (cir[0], cir[1]), cir[2], color=(0, 0, 255), thickness=3)
+            cv2.circle(gray, (cir[0], cir[1]), cir[2], color=(0, 0, 255), thickness=6)
             break
 
         # cv2.imshow('circle', gray)
@@ -39,7 +64,7 @@ def get_circle_pos(img, bbox):
 
         img_resize = cv2.resize(img_resize, (SHOW_SIZE, SHOW_SIZE))
         gray = cv2.resize(gray, (SHOW_SIZE, SHOW_SIZE))
-        y_offset = int(img_h / 20)
+        y_offset = int(img_h / 15)
         x_offset = int(img_w / 1.6)
         img[y_offset:(y_offset + SHOW_SIZE), x_offset:(x_offset + SHOW_SIZE)] = img_resize
         img[(y_offset):(y_offset + SHOW_SIZE), (x_offset + SHOW_SIZE + 10):(x_offset + 2 * SHOW_SIZE + 10)] = gray
@@ -48,25 +73,29 @@ def get_circle_pos(img, bbox):
         radius = circles[0][2] / RESIZE_RATIO
         # print('circle_center: {}'.format(center))
 
-        depth = BALL_DIAMETER * FOCAL_LENGTH / (2 * radius)
+        depth = BALL_DIAMETER * camera_info.FOCAL_LENGTH / (2 * radius)
         # print('depth: {}'.format(depth))
-        direction = math.atan((center[0] - img_w / 2.0) / FOCAL_LENGTH)
+        direction = math.atan((center[0] - img_w / 2.0) / camera_info.FOCAL_LENGTH)
         distance = depth / math.cos(direction)
+        print 'geometry 2 : {}, {}, {}'.format(depth, distance, direction)
 
+        # set background
+        background = np.zeros(shape=(190, 550, 3))
+        img[60:250, 60:610] = background
         cv2.putText(img, 'depth   : {0:.2f} m.'.format(depth),
-                    (img_w / 15, img_h / 8), cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.5, color=(0, 255, 0), thickness=3)
+                    (img_w / 15, img_h / 8), cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.5, color=(0, 255, 0), thickness=4)
         cv2.putText(img, 'distance: {0:.2f} m.'.format(distance),
                     (img_w / 15, img_h / 8 + 50), cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.5, color=(0, 255, 0),
-                    thickness=3)
+                    thickness=4)
         cv2.putText(img, 'direction: {1:.2f} deg.'.format(depth, direction * 57.3),
                     (img_w / 15, img_h / 8 + 100), cv2.FONT_HERSHEY_SIMPLEX, fontScale=1.5, color=(0, 255, 0),
-                    thickness=3)
+                    thickness=4)
 
-        return depth, distance, direction
-    return 0, 0, 0
+        return center, radius, depth, distance, direction
+    return (0, 0), 0, 0, 0, 0
 
 
-def draw_bbox(img, pts, color=(0, 255, 0), thickness=2):
+def draw_bbox(img, pts, color=(0, 255, 0), thickness=4):
     cv2.line(img, pts[0], pts[1], thickness=thickness, color=color)
     cv2.line(img, pts[1], pts[2], thickness=thickness, color=color)
     cv2.line(img, pts[2], pts[3], thickness=thickness, color=color)
@@ -83,14 +112,19 @@ def callback(img_msg, bbox):
     detectd_obs.header = img_msg.header
     detectd_obs.header.frame_id = 'camera'
     if bbox.confidence > 0:
-        depth, distance, direction = get_circle_pos(img, bbox)
+        center, radius, depth, distance, direction = get_circle_pos(img, bbox)
+        u, v = center[0], center[1] + radius
+        project_reverse_intrinsic(u, v)
+        project_reverse_geometry_1(u, v)
+
         detectd_obs.header.stamp = img_msg.header.stamp
         detectd_obs.depth = depth
         detectd_obs.direction = direction
         detectd_obs.distance = distance
         if 1:
             row = '{depth} {distance} {direction}\n'.format(depth=depth, distance=distance, direction=direction)
-            f.write(row)
+            f1.write(row)
+
         pts = []
         pt1 = (bbox.x, bbox.y)
         pts.append(pt1)
@@ -114,7 +148,6 @@ def main():
     bridge = CvBridge()
     obs_pub = rospy.Publisher('/detected_obs', Detected_obs, queue_size=2)
 
-
     # img_sub = message_filters.Subscriber('/camera/image_raw', Image)
     # img_sub = message_filters.Subscriber('/camera/image_undistorted', Image)
     img_sub = message_filters.Subscriber('/camera/image_undistorted_rotated', Image)
@@ -127,6 +160,7 @@ def main():
 
 
 if __name__ == '__main__':
-    saveto = 'obs_distance_direction.csv'
-    f = open(saveto, 'wb')
+    f1 = open('obs_distance_direction_geo2.csv', 'wb')
+    f2 = open('obs_distance_direction_intr.csv', 'wb')
+    f3 = open('obs_distance_direction_geo1.csv', 'wb')
     main()

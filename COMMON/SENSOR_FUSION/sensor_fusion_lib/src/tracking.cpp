@@ -101,7 +101,7 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         //cout << "Kalman Filter Initialization " << endl;
 
         //set the state with the initial location and zero velocity
-        kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0.1, 0.1;
+        kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
 
         previous_timestamp_ = measurement_pack.timestamp_;
         is_initialized_ = true;
