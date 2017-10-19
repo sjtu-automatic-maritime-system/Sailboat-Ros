@@ -17,7 +17,7 @@
  *
  */
 
-#include "main.hpp"
+#include "main_test.hpp"
 #include <signal.h>
 #include <ros/ros.h>
 

@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
             0, 100;
     float noise_ax = 0.001;
     float noise_ay = 0.001;
-    tracking = Tracking(KF_R, noise_ax, noise_ay);
+    tracking.InitTracking(KF_R, noise_ax, noise_ay);
 
     obs_boat_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_boat_position", 2);
     obs_ground_pub = nh.advertise<geometry_msgs::PointStamped>("/obs_ground_position", 2);

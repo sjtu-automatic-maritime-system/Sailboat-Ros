@@ -5,13 +5,13 @@ project(path_planning_astar)
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
+if (COMPILER_SUPPORTS_CXX11)
     set(CMAKE_CXX_FLAGS "-std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
+elseif (COMPILER_SUPPORTS_CXX0X)
     set(CMAKE_CXX_FLAGS "-std=c++0x")
-else()
+else ()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+endif ()
 
 
 ## Catkin packages required for both building and running (<depend> entries in package.xml)
@@ -19,6 +19,7 @@ set(catkin_package_DEPENDENCIES
         ## set dependencies here
         roscpp
         std_msgs
+        sensor_fusion_lib
         )
 
 ## Find catkin macros and libraries
@@ -27,7 +28,6 @@ set(catkin_package_DEPENDENCIES
 find_package(catkin REQUIRED COMPONENTS
         ${catkin_package_DEPENDENCIES}
         )
-
 
 
 catkin_package(
@@ -43,9 +43,8 @@ include_directories(
 )
 
 
-
-#add_executable(astar_test src/Astar.cpp src/main.cpp)
-#target_link_libraries(astar_test ${catkin_LIBRARIES})
+add_executable(astar_test src/Astar.cpp src/main_test.cpp)
+target_link_libraries(astar_test ${catkin_LIBRARIES} sensor_fusion_lib)
 
 add_executable(astar_ros src/Astar.cpp src/main_ros.cpp)
 target_link_libraries(astar_ros ${catkin_LIBRARIES})

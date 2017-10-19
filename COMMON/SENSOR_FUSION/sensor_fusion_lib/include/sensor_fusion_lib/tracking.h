@@ -14,9 +14,9 @@
 
 class Tracking {
 public:
-    Tracking();
+    void InitTracking(MatrixXd _R, float _noise_ax, float _noise_ay, float _init_vx=0, float _init_vy=0);
 
-    Tracking(MatrixXd R, float ax_noise, float ay_noise);
+//    Tracking(MatrixXd R, float ax_noise, float ay_noise);
 
     virtual ~Tracking();
 
@@ -31,6 +31,8 @@ private:
     //acceleration noise components
     float noise_ax;
     float noise_ay;
+    float init_vx;
+    float init_vy;
 
 };
 

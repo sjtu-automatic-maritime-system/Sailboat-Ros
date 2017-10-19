@@ -23,7 +23,7 @@
  *      Author: Ronan Chauvin
  */
 
-#include "main.hpp"
+#include "main_test.hpp"
 #include <ros/time.h>
 #include <ros/duration.h>
 #include <sensor_msgs/image_encodings.h>

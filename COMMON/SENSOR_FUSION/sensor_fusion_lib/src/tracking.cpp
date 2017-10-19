@@ -12,9 +12,52 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
 
-Tracking::Tracking() {
+//Tracking::Tracking() {
+//    is_initialized_ = false;
+//    previous_timestamp_ = 0;
+//
+//    //create a 4D state vector, we don't know yet the values of the x state
+//    kf_.x_ = VectorXd(4);
+//
+//    //state covariance matrix P
+//    kf_.P_ = MatrixXd(4, 4);
+//    kf_.P_ << 1, 0, 0, 0,
+//            0, 1, 0, 0,
+//            0, 0, 1000, 0,
+//            0, 0, 0, 1000;
+//
+//
+//    //measurement covariance
+//    kf_.R_ = MatrixXd(2, 2);
+//    kf_.R_ << 0.0225, 0,
+//            0, 0.0225;
+//
+//    //measurement matrix
+//    kf_.H_ = MatrixXd(2, 4);
+//    kf_.H_ << 1, 0, 0, 0,
+//            0, 1, 0, 0;
+//
+//    //the initial transition matrix F_
+//    kf_.F_ = MatrixXd(4, 4);
+//    kf_.F_ << 1, 0, 1, 0,
+//            0, 1, 0, 1,
+//            0, 0, 1, 0,
+//            0, 0, 0, 1;
+//
+//    //set the acceleration noise components
+//    noise_ax = 5;
+//    noise_ay = 5;
+//
+//}
+
+
+
+void Tracking::InitTracking(MatrixXd _R, float _noise_ax, float _noise_ay, float _init_vx, float _init_vy) {
     is_initialized_ = false;
     previous_timestamp_ = 0;
+
+    init_vx = _init_vx;
+    init_vy = _init_vy;
 
     //create a 4D state vector, we don't know yet the values of the x state
     kf_.x_ = VectorXd(4);
@@ -29,8 +72,7 @@ Tracking::Tracking() {
 
     //measurement covariance
     kf_.R_ = MatrixXd(2, 2);
-    kf_.R_ << 0.0225, 0,
-            0, 0.0225;
+    kf_.R_ = _R;
 
     //measurement matrix
     kf_.H_ = MatrixXd(2, 4);
@@ -45,47 +87,8 @@ Tracking::Tracking() {
             0, 0, 0, 1;
 
     //set the acceleration noise components
-    noise_ax = 5;
-    noise_ay = 5;
-
-}
-
-
-
-Tracking::Tracking(MatrixXd R, float ax_noise, float ay_noise) {
-    is_initialized_ = false;
-    previous_timestamp_ = 0;
-
-    //create a 4D state vector, we don't know yet the values of the x state
-    kf_.x_ = VectorXd(4);
-
-    //state covariance matrix P
-    kf_.P_ = MatrixXd(4, 4);
-    kf_.P_ << 1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1000, 0,
-            0, 0, 0, 1000;
-
-
-    //measurement covariance
-    kf_.R_ = MatrixXd(2, 2);
-    kf_.R_ = R;
-
-    //measurement matrix
-    kf_.H_ = MatrixXd(2, 4);
-    kf_.H_ << 1, 0, 0, 0,
-            0, 1, 0, 0;
-
-    //the initial transition matrix F_
-    kf_.F_ = MatrixXd(4, 4);
-    kf_.F_ << 1, 0, 1, 0,
-            0, 1, 0, 1,
-            0, 0, 1, 0,
-            0, 0, 0, 1;
-
-    //set the acceleration noise components
-    noise_ax = ax_noise;
-    noise_ay = ay_noise;
+    noise_ax = _noise_ax;
+    noise_ay = _noise_ay;
 
 }
 
@@ -101,7 +104,7 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         //cout << "Kalman Filter Initialization " << endl;
 
         //set the state with the initial location and zero velocity
-        kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+        kf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], init_vx, init_vy;
 
         previous_timestamp_ = measurement_pack.timestamp_;
         is_initialized_ = true;
@@ -110,7 +113,7 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     //compute the time elapsed between the current and previous measurements
     double dt = (measurement_pack.timestamp_ - previous_timestamp_);	//dt - expressed in seconds
-    std::cout << "dt = " << dt << std::endl;
+//    std::cout << "dt = " << dt << std::endl;
     previous_timestamp_ = measurement_pack.timestamp_;
 
     //1. Modify the F matrix so that the time is integrated
