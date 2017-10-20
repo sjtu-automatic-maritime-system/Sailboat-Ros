@@ -72,6 +72,10 @@ add_message_files(
         Sailboat_Simulation_msg.msg
         Target_msg.msg
 
+
+        traj_following_para.msg
+        traj_following_out.msg
+
 )
 
 ## Generate added messages and services with any dependencies listed here

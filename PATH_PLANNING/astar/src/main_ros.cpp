@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <list>
 #include "Astar.h"
 #include <math.h>
 #include <eigen3/Eigen/Eigen>
@@ -23,6 +25,7 @@ double extend = 10;
 double resolution = 2;
 Astar astar;
 Eigen::Vector2d obs_gps_ne(0, 0);
+std::list<double> wind_list;
 
 
 using namespace std;
@@ -50,8 +53,8 @@ Eigen::Vector2d map2ned(Eigen::Vector2i &map_coord, Eigen::Vector2d &origin_ne,
     return ne;
 }
 
-vector<vector<int> > mapGeneration(int n_row, int n_col, vector<Eigen::Vector2i> objs_map) {
-    vector<vector<int> > map;
+vector <vector<int>> mapGeneration(int n_row, int n_col, vector <Eigen::Vector2i> objs_map) {
+    vector <vector<int>> map;
     for (int row = 0; row < n_row; row++) {
         vector<int> tmp;
         for (int col = 0; col < n_col; col++) {
@@ -78,11 +81,23 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
     double heading = (wtst_in->Yaw) / 57.3;
 //    double wind = wtst_in->TrueWindAngle;
     double wind = (wtst_in->WindAngle) / 57.3 + heading;
-//    cout << heading << ", " << wind << endl;
-//    wind = -M_PI_4 * 1.4;
+    wind_list.pop_front();
+    wind_list.push_back(wind);
+    int cnt = 0;
+    double wind_sum_x = 0;
+    double wind_sum_y = 0;
+    for (auto wind_tmp:wind_list) {
+        if (wind_tmp == 0) continue;
+        wind_sum_x += 1 * cos(wind_tmp);
+        wind_sum_y += 1 * sin(wind_tmp);
+        cnt++;
+    }
+    wind = atan2(wind_sum_y / cnt, wind_sum_x / cnt);
+    cout << "wind angle: " << ", " << wind << endl;
+
 
     Eigen::Vector2d start_ne(wtst_in->PosX, wtst_in->PosY);
-    Eigen::Vector2d end_ne(-50.0, 30.0);
+    Eigen::Vector2d end_ne(-60.0, 20.0);
 //
     double x_small = min(start_ne[0], end_ne[0]);
     double x_big = max(start_ne[0], end_ne[0]);
@@ -97,7 +112,7 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
 //    cout << "end_map: " << end_map[0] << ", " << end_map[1] << endl;
 //
 
-    vector<Eigen::Vector2i> objs_map;
+    vector <Eigen::Vector2i> objs_map;
 //    Eigen::Vector2d obj_ne_1(-30, 5);
 //    objs_map.push_back(ned2map(obj_ne_1, origin_ne, n_row, n_col, resolution));
 //    Eigen::Vector2d obj_ne_2(-40, 10);
@@ -115,7 +130,7 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
     cout << "obs_gps: " << obs_gps_ne[0] << ", " << obs_gps_ne[1] << endl;
     objs_map.push_back(ned2map(obs_gps_ne, origin_ne, n_row, n_col, resolution));
 
-    vector<vector<int> > maze = mapGeneration(n_row, n_col, objs_map);
+    vector <vector<int>> maze = mapGeneration(n_row, n_col, objs_map);
 
     //设置起始和结束点
     Point start(start_map[0], start_map[1]);
@@ -124,7 +139,7 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
     astar.InitAstar(maze, wind, heading);
 
     //A*算法找寻路径
-    list<Point *> path = astar.GetPath(start, end, false);
+    list < Point * > path = astar.GetPath(start, end, false);
     cout << "###############" << endl;
     nav_msgs::Path traj;
     for (auto &p:path) {
@@ -172,6 +187,10 @@ int main(int argc, char **argv) {
 
     ros::init(argc, argv, "path_planning_astar");
     ros::NodeHandle nh;
+
+    for (int i = 0; i < 30; i++) {
+        wind_list.push_back(0);
+    }
 
     ros::Subscriber wtst_sub = nh.subscribe("/wtst", 2, &wtst_cb);
     ros::Subscriber obs_gps_sub = nh.subscribe("/gps_2", 2, &obs_gps_cb);
