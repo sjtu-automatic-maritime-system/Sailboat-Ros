@@ -229,7 +229,7 @@ int_T main(int_T argc, char **argv) {
     ros::Subscriber path_sub;
     ros::Publisher traj_following_pub;
     ros::Publisher mach_pub;
-    traj_following_pub = nh.advertise<sailboat_message::traj_following_out>("scanning_out", 2);
+    traj_following_pub = nh.advertise<sailboat_message::traj_following_out>("traj_following_out", 2);
 //    scanning_para_pub = nh.advertise<sailboat_message::scanning_para>("scanning_para", 2);
     mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
