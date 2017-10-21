@@ -9,6 +9,7 @@ Panels:
         - /Grid1
         - /Path1
         - /Marker1
+        - /Path2
       Splitter Ratio: 0.5
     Tree Height: 747
   - Class: rviz/Selection
@@ -81,6 +82,28 @@ Visualization Manager:
         "": true
       Queue Size: 100
       Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 85; 255
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.03
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /ego_path
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -113,11 +136,11 @@ Visualization Manager:
         Value: false
       Name: Current View
       Near Clip Distance: 0.01
-      Scale: 10.5992
+      Scale: 10.5705
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 13.8534
-      Y: -26.8982
+      X: 21.8946
+      Y: -29.9255
     Saved: ~
 Window Geometry:
   Displays:
@@ -135,5 +158,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1867
-  X: 84
-  Y: 27
+  X: 308
+  Y: 118

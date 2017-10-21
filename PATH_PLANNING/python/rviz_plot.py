@@ -22,8 +22,12 @@ def callback(obs_gps):
     marker.points = []
     marker.header = obs_gps.header
     marker.header.frame_id = 'world'
-    target_x = [0, obs_gps.posy]
-    target_y = [0, obs_gps.posx]
+    if obs_gps.posx == 0 and obs_gps.posy == 0:
+        target_x = [0, 10]
+        target_y = [0, -40]
+    else:
+        target_x = [0, obs_gps.posy]
+        target_y = [0, obs_gps.posx]
     print('obs_gps: {}, {}'.format(obs_gps.posx, obs_gps.posy))
 
     for xx, yy in zip(target_x, target_y):

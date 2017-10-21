@@ -53,8 +53,8 @@ Eigen::Vector2d map2ned(Eigen::Vector2i &map_coord, Eigen::Vector2d &origin_ne,
     return ne;
 }
 
-vector <vector<int>> mapGeneration(int n_row, int n_col, vector <Eigen::Vector2i> objs_map) {
-    vector <vector<int>> map;
+vector<vector<int>> mapGeneration(int n_row, int n_col, vector<Eigen::Vector2i> objs_map) {
+    vector<vector<int>> map;
     for (int row = 0; row < n_row; row++) {
         vector<int> tmp;
         for (int col = 0; col < n_col; col++) {
@@ -73,8 +73,14 @@ vector <vector<int>> mapGeneration(int n_row, int n_col, vector <Eigen::Vector2i
 }
 
 void obs_gps_cb(const sailboat_message::GPS_msgConstPtr &obs_gps_in) {
-    obs_gps_ne[0] = obs_gps_in->posx;
-    obs_gps_ne[1] = obs_gps_in->posy;
+    if (obs_gps_in->posx == 0 && obs_gps_in->posy == 0) {
+        obs_gps_ne[0] = -40;
+        obs_gps_ne[1] = 10;
+    } else {
+        obs_gps_ne[0] = obs_gps_in->posx;
+        obs_gps_ne[1] = obs_gps_in->posy;
+    }
+
 }
 
 void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
@@ -112,7 +118,7 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
 //    cout << "end_map: " << end_map[0] << ", " << end_map[1] << endl;
 //
 
-    vector <Eigen::Vector2i> objs_map;
+    vector<Eigen::Vector2i> objs_map;
 //    Eigen::Vector2d obj_ne_1(-30, 5);
 //    objs_map.push_back(ned2map(obj_ne_1, origin_ne, n_row, n_col, resolution));
 //    Eigen::Vector2d obj_ne_2(-40, 10);
@@ -130,7 +136,7 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
     cout << "obs_gps: " << obs_gps_ne[0] << ", " << obs_gps_ne[1] << endl;
     objs_map.push_back(ned2map(obs_gps_ne, origin_ne, n_row, n_col, resolution));
 
-    vector <vector<int>> maze = mapGeneration(n_row, n_col, objs_map);
+    vector<vector<int>> maze = mapGeneration(n_row, n_col, objs_map);
 
     //设置起始和结束点
     Point start(start_map[0], start_map[1]);
@@ -139,7 +145,7 @@ void wtst_cb(const sailboat_message::WTST_msgConstPtr &wtst_in) {
     astar.InitAstar(maze, wind, heading);
 
     //A*算法找寻路径
-    list < Point * > path = astar.GetPath(start, end, false);
+    list<Point *> path = astar.GetPath(start, end, false);
     cout << "###############" << endl;
     nav_msgs::Path traj;
     for (auto &p:path) {
