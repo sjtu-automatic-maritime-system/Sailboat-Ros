@@ -15,6 +15,5 @@ float64 tacking_force_discount       # Variable: tacking_force_discount
 float64 tacking_time                 # Variable: tacking_time
 float64 upwind_R_expand_ratio        # Variable: upwind_R_expand_ratio
 float64 wind_mean_time               # Variable: wind_mean_time
-float64 Airmar_X_Value               # Expression: -0.61
-float64 Airmar_Z_Value               # Expression: 0.8
+
                                      #  Referenced by: '<Root>/Airmar_Z'

@@ -48,3 +48,6 @@ include_directories(
 
 add_executable(astar_ros src/Astar.cpp src/main_ros.cpp)
 target_link_libraries(astar_ros ${catkin_LIBRARIES})
+
+add_executable(astar_simulation_ros src/Astar.cpp src/main_simulation_ros.cpp)
+target_link_libraries(astar_simulation_ros ${catkin_LIBRARIES})

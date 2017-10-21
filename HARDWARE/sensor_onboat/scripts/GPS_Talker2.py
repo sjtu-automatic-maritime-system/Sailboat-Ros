@@ -13,7 +13,7 @@ import logging
 # if using serial port, set it something like to "COM1" or "/dev/tty1"
 # GNSS_URL = "/dev/ttyUSB0"
 #todo
-GNSS_URL = "socket://192.168.1.102:40000"
+GNSS_URL = "socket://192.168.1.100:40000"
 # serial port baudrate
 BAUDRATE = 115200
 # connection timeout in seconds

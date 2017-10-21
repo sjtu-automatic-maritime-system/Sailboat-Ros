@@ -24,19 +24,21 @@ set(catkin_package_DEPENDENCIES
         std_msgs
         )
 
-#generate_dynamic_reconfigure_options(
-#        cfg/traj_following.cfg
+find_package(catkin REQUIRED COMPONENTS
+        ${catkin_package_DEPENDENCIES}
+        )
+
+
+generate_dynamic_reconfigure_options(
+       cfg/traj_following.cfg
 #        #   cfg/DynReconf1.cfg
 #        #   cfg/DynReconf2.cfg
-#)
+)
 
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-        ${catkin_package_DEPENDENCIES}
-        )
 
 
 catkin_package(
@@ -71,5 +73,5 @@ set( traj_following_SRC
         )
 
 add_executable(traj_following_ros ${traj_following_SRC})
-#add_dependencies(traj_following_ros ${catkin_EXPORTED_TARGETS} traj_following_gencfg)
+add_dependencies(traj_following_ros ${catkin_EXPORTED_TARGETS} traj_following_gencfg)
 target_link_libraries(traj_following_ros ${catkin_LIBRARIES})

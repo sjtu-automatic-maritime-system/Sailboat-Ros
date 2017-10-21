@@ -28,11 +28,11 @@
 #include <dynamic_reconfigure/server.h>
 #include <traj_following/path_following.h>
 
-//#include "traj_following/traj_following_Config.h"
+#include "traj_following/traj_following_Config.h"
 
 static scanningModelClass path_following_Obj;// Instance of model class
 int pcCtrl = 0;
-ros::Publisher path_following_para_pub;
+ros::Publisher traj_following_para_pub;
 
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -104,43 +104,36 @@ void getInput(const sailboat_message::Sensor_msg::ConstPtr msg) {
     path_following_Obj.path_following_U.Airmar_wind_speed = msg->AWS;
 }
 
-//void path_followingCfgcallback(path_following::path_following_Config &config, uint32_t level) {
-//    ROS_INFO("Reconfigure Request: %f %f %f", config.Kp, config.Ki, config.Kd);
-//
-//    if (config.PC_Ctrl == true)
-//        pcCtrl = 1;
-//    else
-//        pcCtrl = 0;
-//
-//    path_following_Obj.path_following_P.Kp = config.Kp;
-//    path_following_Obj.path_following_P.Ki = config.Ki;
-//    path_following_Obj.path_following_P.Kd = config.Kd;
-//    path_following_Obj.path_following_P.R = config.R;
-//    path_following_Obj.path_following_P.max_loose_time = config.max_loose_time;
-//    path_following_Obj.path_following_P.max_roll_allowed = config.max_roll_allowed;
-//    path_following_Obj.path_following_P.pos_history_len = config.pos_history_len;
-//    path_following_Obj.path_following_P.run_period = config.run_period;
-//    path_following_Obj.path_following_P.ship_speed_history_len = config.ship_speed_history_len;
-//    path_following_Obj.path_following_P.tacking_force_discount = config.tacking_force_discount;
-//    path_following_Obj.path_following_P.wind_mean_time = config.wind_mean_time;
-//    path_following_Obj.path_following_P.points_up_move = config.points_up_move;
-//    path_following_Obj.path_following_P.tacking_discount_decrease_windspeed = config.tacking_discount_decrease_windspeed;
-//    path_following_Obj.path_following_P.jibing_time = config.jibing_time;
-//    path_following_Obj.path_following_P.tacking_time = config.tacking_time;
-//    path_following_Obj.path_following_P.upwind_R_expand_ratio = config.upwind_R_expand_ratio;
-//    path_following_Obj.path_following_P.start_counting = config.start_counting;
-//
-//    path_following_Obj.path_following_P.path_following_points[0] = config.point0_x;
-//    path_following_Obj.path_following_P.path_following_points[1] = config.point1_x;
-//    path_following_Obj.path_following_P.path_following_points[2] = config.point2_x;
-//    path_following_Obj.path_following_P.path_following_points[3] = config.point3_x;
-//
-//    path_following_Obj.path_following_P.path_following_points[4] = config.point0_y;
-//    path_following_Obj.path_following_P.path_following_points[5] = config.point1_y;
-//    path_following_Obj.path_following_P.path_following_points[6] = config.point2_y;
-//    path_following_Obj.path_following_P.path_following_points[7] = config.point3_y;
-//}
-//
+void traj_followingCfgcallback(traj_following::traj_following_Config &config, uint32_t level) {
+    ROS_INFO("Reconfigure Request: %f %f %f", config.Kp, config.Ki, config.Kd);
+
+    if (config.PC_Ctrl == true)
+        pcCtrl = 1;
+    else
+        pcCtrl = 0;
+
+    path_following_Obj.path_following_P.Kp = config.Kp;
+    path_following_Obj.path_following_P.Ki = config.Ki;
+    path_following_Obj.path_following_P.Kd = config.Kd;
+    path_following_Obj.path_following_P.R = config.R;
+    path_following_Obj.path_following_P.jibing_time = config.jibing_time;
+    path_following_Obj.path_following_P.leg = config.leg;
+
+    path_following_Obj.path_following_P.max_loose_time = config.max_loose_time;
+    path_following_Obj.path_following_P.max_roll_allowed = config.max_roll_allowed;
+    path_following_Obj.path_following_P.pos_history_len = config.pos_history_len;
+    path_following_Obj.path_following_P.run_period = config.run_period;
+    path_following_Obj.path_following_P.ship_speed_history_len = config.ship_speed_history_len;
+    path_following_Obj.path_following_P.tacking_force_discount = config.tacking_force_discount;
+    path_following_Obj.path_following_P.tacking_discount_decrease_windspeed = config.tacking_discount_decrease_windspeed;
+    path_following_Obj.path_following_P.tacking_time = config.tacking_time;
+
+    path_following_Obj.path_following_P.wind_mean_time = config.wind_mean_time;
+    path_following_Obj.path_following_P.upwind_R_expand_ratio = config.upwind_R_expand_ratio;
+
+
+}
+
 
 void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     getInput(msg);
@@ -177,37 +170,29 @@ void getOutput(sailboat_message::traj_following_out &msg) {
 
 }
 
-//void getOutParaPut(sailboat_message::path_following_para &msg) {
-//
-//    msg.Kp = path_following_Obj.path_following_P.Kp;
-//    msg.Ki = path_following_Obj.path_following_P.Ki;
-//    msg.Kd = path_following_Obj.path_following_P.Kd;
-//    msg.R = path_following_Obj.path_following_P.R;
-//    msg.max_loose_time = path_following_Obj.path_following_P.max_loose_time;
-//    msg.max_roll_allowed = path_following_Obj.path_following_P.max_roll_allowed;
-//    msg.pos_history_len = path_following_Obj.path_following_P.pos_history_len;
-//    msg.run_period = path_following_Obj.path_following_P.run_period;
-//    msg.ship_speed_history_len = path_following_Obj.path_following_P.ship_speed_history_len;
-//    msg.tacking_force_discount = path_following_Obj.path_following_P.tacking_force_discount;
-//    msg.wind_mean_time = path_following_Obj.path_following_P.wind_mean_time;
-//
-//    msg.points_up_move = path_following_Obj.path_following_P.points_up_move;
-//    msg.tacking_discount_decrease_windspeed = path_following_Obj.path_following_P.tacking_discount_decrease_windspeed;
-//    msg.jibing_time = path_following_Obj.path_following_P.jibing_time;
-//    msg.tacking_time = path_following_Obj.path_following_P.tacking_time;
-//    msg.upwind_R_expand_ratio = path_following_Obj.path_following_P.upwind_R_expand_ratio;
-//    msg.start_counting = path_following_Obj.path_following_P.start_counting;
-//
-//
-//    msg.point0_x = path_following_Obj.path_following_P.path_following_points[0];
-//    msg.point1_x = path_following_Obj.path_following_P.path_following_points[1];
-//    msg.point2_x = path_following_Obj.path_following_P.path_following_points[2];
-//    msg.point3_x = path_following_Obj.path_following_P.path_following_points[3];
-//    msg.point0_y = path_following_Obj.path_following_P.path_following_points[4];
-//    msg.point1_y = path_following_Obj.path_following_P.path_following_points[5];
-//    msg.point2_y = path_following_Obj.path_following_P.path_following_points[6];
-//    msg.point3_y = path_following_Obj.path_following_P.path_following_points[7];
-//}
+void getOutParaPut(sailboat_message::traj_following_para &msg) {
+
+    msg.Kp = path_following_Obj.path_following_P.Kp;
+    msg.Ki = path_following_Obj.path_following_P.Ki;
+    msg.Kd = path_following_Obj.path_following_P.Kd;
+    msg.R = path_following_Obj.path_following_P.R;
+    msg.leg = path_following_Obj.path_following_P.leg;
+    msg.max_loose_time = path_following_Obj.path_following_P.max_loose_time;
+    msg.max_roll_allowed = path_following_Obj.path_following_P.max_roll_allowed;
+    msg.pos_history_len = path_following_Obj.path_following_P.pos_history_len;
+    msg.run_period = path_following_Obj.path_following_P.run_period;
+    msg.ship_speed_history_len = path_following_Obj.path_following_P.ship_speed_history_len;
+    msg.tacking_force_discount = path_following_Obj.path_following_P.tacking_force_discount;
+    msg.wind_mean_time = path_following_Obj.path_following_P.wind_mean_time;
+    msg.tacking_discount_decrease_windspeed = path_following_Obj.path_following_P.tacking_discount_decrease_windspeed;
+    msg.jibing_time = path_following_Obj.path_following_P.jibing_time;
+    msg.tacking_time = path_following_Obj.path_following_P.tacking_time;
+    msg.upwind_R_expand_ratio = path_following_Obj.path_following_P.upwind_R_expand_ratio;
+
+
+
+
+}
 
 //
 // The example "main" function illustrates what is required by your
@@ -233,11 +218,11 @@ int_T main(int_T argc, char **argv) {
 //    scanning_para_pub = nh.advertise<sailboat_message::scanning_para>("scanning_para", 2);
     mach_pub = nh.advertise<sailboat_message::Mach_msg>("mach", 2);
 
-//    dynamic_reconfigure::Server<scanning::scanning_Config> server;
-//    dynamic_reconfigure::Server<scanning::scanning_Config>::CallbackType f;
+    dynamic_reconfigure::Server<traj_following::traj_following_Config> server;
+    dynamic_reconfigure::Server<traj_following::traj_following_Config>::CallbackType f;
 
-//    f = boost::bind(&ScanningCfgcallback, _1, _2);
-//    server.setCallback(f);
+    f = boost::bind(&traj_followingCfgcallback, _1, _2);
+    server.setCallback(f);
 
 //    dynamic_reconfigure::Server<scanning::pcCtrl_Config> server2;
 //    dynamic_reconfigure::Server<scanning::pcCtrl_Config>::CallbackType f2;
@@ -257,14 +242,14 @@ int_T main(int_T argc, char **argv) {
         rt_OneStep();
         sailboat_message::traj_following_out msg;
         sailboat_message::Mach_msg msgMach;
-//        sailboat_message::traj_following_para msgPara;
+        sailboat_message::traj_following_para msgPara;
 
         getOutMachPut(msgMach);
         getOutput(msg);
-//        getOutParaPut(msgPara);
+        getOutParaPut(msgPara);
 
         traj_following_pub.publish(msg);
-//        scanning_para_pub.publish(msgPara);
+        traj_following_para_pub.publish(msgPara);
         mach_pub.publish(msgMach);
 
         loop_rate.sleep();

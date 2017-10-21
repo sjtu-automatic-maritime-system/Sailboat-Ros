@@ -76,6 +76,9 @@ add_message_files(
         traj_following_para.msg
         traj_following_out.msg
 
+        Point.msg
+        PointArray.msg
+
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -83,7 +86,6 @@ generate_messages(
         DEPENDENCIES
         std_msgs
 )
-
 
 
 catkin_package(

@@ -26,11 +26,12 @@ INIT_COMMANDS = """$PAMTC,BAUD,38400
 """
 
 # lat/lon of original point, use to caculate posx/posy (north and east are positive)
-# ORIGIN_LAT = 31.0231632
-# ORIGIN_LON = 121.4251289
 
-ORIGIN_LAT = 59.427139999999994
-ORIGIN_LON = 10.466643333333332
+ORIGIN_LAT = 31.0231632
+ORIGIN_LON = 121.4251289
+
+#ORIGIN_LAT = 59.427139999999994
+#ORIGIN_LON = 10.466643333333332
 
 # XOR checksum 
 # example data = "$WIMWV,43.1,R,0.4,N,A"  
@@ -448,7 +449,7 @@ class dataWrapper:
 def talker():  # ros message publish
 
     pub = rospy.Publisher('wtst', WTST_msg, queue_size=1)
-    #pub = rospy.Publisher('WTST', WTST_Pro_msg, queue_size=1)
+    pub_pro = rospy.Publisher('wtst_pro', WTST_Pro_msg, queue_size=1)
     rospy.init_node('wtst_talker', anonymous=True)
     rate = rospy.Rate(20)  # 20hz
 
@@ -456,7 +457,7 @@ def talker():  # ros message publish
     wtst.set_origin(ORIGIN_LAT, ORIGIN_LON)
 
     msg = WTST_msg()
-    #msgPro = WTST_Pro_msg()
+    msgPro = WTST_Pro_msg()
     datawrapper = dataWrapper()
 
     try:
@@ -472,10 +473,10 @@ def talker():  # ros message publish
             wtst.update()
 
             wtst_msg = datawrapper.pubData(msg,wtst)
-            #wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
+            wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
 
             pub.publish(wtst_msg)
-            #pub.publish(wtst_pro_msg)
+            pub_pro.publish(wtst_pro_msg)
             rate.sleep()
     except rospy.ROSInterruptException as e:
         print(e)
