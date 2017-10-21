@@ -38,6 +38,9 @@ static double extend = 10;
 static double resolution = 2;
 static double loop_T = 2.0;
 
+static double end_x = -60;
+static double end_y = 20;
+
 Astar astar;
 
 std::vector<Eigen::Vector2d> obs_ne_vector;
@@ -54,9 +57,9 @@ Eigen::Vector2i ned2map(Eigen::Vector2d &ne, Eigen::Vector2d &origin,
                         int n_row, int n_col, double resolution) {
     int row = (int) (ne[0] - origin[0]) / resolution;
     row = n_row - 1 - row;
-    row = min(max(0, row), n_row);
+    row = min(max(0, row), n_row-1);
     int col = (int) (ne[1] - origin[1]) / resolution;
-    col = min(max(0, col), n_col);
+    col = min(max(0, col), n_col-1);
     Eigen::Vector2i map_coord(row, col);
     return map_coord;
 }
@@ -64,10 +67,10 @@ Eigen::Vector2i ned2map(Eigen::Vector2d &ne, Eigen::Vector2d &origin,
 Eigen::Vector2d map2ned(Eigen::Vector2i &map_coord, Eigen::Vector2d &origin_ne,
                         int n_row, int n_col, double resolution) {
     int row = n_row - 1 - map_coord[0];
-    row = min(max(0, row), n_row);
+    row = min(max(0, row), n_row-1);
     double north = origin_ne[0] + row * resolution;
     int col = map_coord[1];
-    col = min(max(0, col), n_col);
+    col = min(max(0, col), n_col-1);
     double east = origin_ne[1] + col * resolution;
     Eigen::Vector2d ne(north, east);
     return ne;
@@ -85,10 +88,11 @@ vector<vector<int> > mapGeneration(int n_row, int n_col, vector<Eigen::Vector2i>
     for (auto obj_map:objs_map) {
         map[obj_map[0]][obj_map[1]] = 1;
         map[max(obj_map[0] - 1, 0)][obj_map[1]] = 1;
-        map[min(obj_map[0] + 1, n_row)][obj_map[1]] = 1;
+        map[min(obj_map[0] + 1, n_row-1)][obj_map[1]] = 1;
         map[obj_map[0]][max(obj_map[1] - 1, 0)] = 1;
-        map[obj_map[0]][min(obj_map[1] + 1, n_col)] = 1;
+        map[obj_map[0]][min(obj_map[1] + 1, n_col-1)] = 1;
     }
+    cout << "in map genertion " << map[0][0] << endl;
     return map;
 }
 
@@ -96,6 +100,8 @@ void cfg_cb(path_planning_astar::path_planning_Config &config, uint32_t level) {
     extend = config.map_extend;
     resolution = config.map_resolution;
     loop_T = config.loop_T;
+    end_x = -config.end_x;
+    end_y = config.end_y;
 }
 
 
@@ -128,6 +134,8 @@ void sensor_cb(const sailboat_message::Sensor_msgConstPtr &sensor_in) {
                 end_ne[1] = target_points_ne[tar_cnt][1];
             }
         }
+//        end_ne << end_x, end_y;
+//        end_ne << -20, 20;
         cout << "start: " << start_ne[0] << ", " << start_ne[1] << endl;
         cout << "end  : " << end_ne[0] << ", " << end_ne[1] << endl;
 //
@@ -135,13 +143,16 @@ void sensor_cb(const sailboat_message::Sensor_msgConstPtr &sensor_in) {
         double x_big = max(start_ne[0], end_ne[0]);
         double y_small = min(start_ne[1], end_ne[1]);
         double y_big = max(start_ne[1], end_ne[1]);
+        cout << "x_small: " << x_small << ", " << "y_small: " << y_small << endl;
+        cout << "x_big: " << x_big << ", " << "y_big: " << y_big << endl;
         int n_row = (int) (x_big - x_small + 2 * extend) / resolution + 1;
         int n_col = (int) (y_big - y_small + 2 * extend) / resolution + 1;
+        cout << "n_row: " << n_row << ", " << "n_col: " << n_col << endl;
         Eigen::Vector2d origin_ne(x_small - extend, y_small - extend);
         Eigen::Vector2i start_map = ned2map(start_ne, origin_ne, n_row, n_col, resolution);
-//    cout << "start_map: " << start_map[0] << ", " << start_map[1] << endl;
+        cout << "start_map: " << start_map[0] << ", " << start_map[1] << endl;
         Eigen::Vector2i end_map = ned2map(end_ne, origin_ne, n_row, n_col, resolution);
-//    cout << "end_map: " << end_map[0] << ", " << end_map[1] << endl;
+        cout << "end_map: " << end_map[0] << ", " << end_map[1] << endl;
 //
 
         vector<Eigen::Vector2i> objs_map;
@@ -164,6 +175,7 @@ void sensor_cb(const sailboat_message::Sensor_msgConstPtr &sensor_in) {
         Point start(start_map[0], start_map[1]);
         //Point end(6, 10);
         Point end(end_map[0], end_map[1]);
+
         astar.InitAstar(maze, wind, heading);
 
         //A*算法找寻路径
