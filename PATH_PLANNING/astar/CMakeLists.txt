@@ -17,6 +17,7 @@ endif ()
 ## Catkin packages required for both building and running (<depend> entries in package.xml)
 set(catkin_package_DEPENDENCIES
         ## set dependencies here
+        dynamic_reconfigure
         roscpp
         std_msgs
         sensor_fusion_lib
@@ -28,6 +29,13 @@ set(catkin_package_DEPENDENCIES
 find_package(catkin REQUIRED COMPONENTS
         ${catkin_package_DEPENDENCIES}
         )
+
+
+generate_dynamic_reconfigure_options(
+        cfg/path_planning_Config.cfg
+        #   cfg/DynReconf1.cfg
+        #   cfg/DynReconf2.cfg
+)
 
 
 catkin_package(

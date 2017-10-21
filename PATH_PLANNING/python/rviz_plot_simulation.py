@@ -9,15 +9,12 @@ from sailboat_message.msg import Sensor_msg
 marker = Marker()
 marker.type = marker.POINTS
 marker.action = marker.ADD
-marker.pose.orientation.w = 1
 marker.scale.x = 4.0
 marker.scale.y = 4.0
-marker.scale.z = 0.0
 marker.color.r = 1.0
-marker.color.g = 1.0
+marker.color.g = 0.0
 marker.color.b = 0
 marker.color.a = 0.5
-
 
 def obs_cb(obs_array):
     marker.points = []
@@ -37,7 +34,38 @@ def obs_cb(obs_array):
         p.y = yy
         marker.points.append(p)
 
-    points_pub.publish(marker)
+    obs_pub.publish(marker)
+
+
+marker2 = Marker()
+marker2.type = marker.POINTS
+marker2.action = marker.ADD
+marker2.scale.x = 2.0
+marker2.scale.y = 2.0
+marker2.color.r = 0.0
+marker2.color.g = 1.0
+marker2.color.b = 0
+marker2.color.a = 0.5
+
+def tar_cb(tar_array):
+    marker2.points = []
+    marker2.header = tar_array.header
+    marker2.header.frame_id = 'world'
+
+    target_x = [0]
+    target_y = [0]
+    for i, pt in enumerate(tar_array.points):
+        target_x.append(pt.y)
+        target_y.append(pt.x)
+        print('obs_{}: {}, {}'.format(i, pt.x, pt.y))
+
+    for xx, yy in zip(target_x, target_y):
+        p = Point()
+        p.x = xx
+        p.y = yy
+        marker2.points.append(p)
+
+    tar_pub.publish(marker2)
 
 
 path = Path()
@@ -60,12 +88,14 @@ def sensor_cb(sensor_msg):
     count += 1
 
 def main():
-    global path_pub, points_pub
+    global path_pub, obs_pub, tar_pub
     rospy.init_node('path_planning_plot', anonymous=True)
-    points_pub = rospy.Publisher('/obs_points', Marker, queue_size=2)
+    obs_pub = rospy.Publisher('/obs_points', Marker, queue_size=2)
+    tar_pub = rospy.Publisher('/tar_points', Marker, queue_size=2)
     path_pub = rospy.Publisher('/ego_path', Path, queue_size=2)
 
     rospy.Subscriber('/obstacle_coords', PointArray, obs_cb)
+    rospy.Subscriber('/target_coords', PointArray, tar_cb)
     rospy.Subscriber('/sensor', Sensor_msg, sensor_cb)
 
 

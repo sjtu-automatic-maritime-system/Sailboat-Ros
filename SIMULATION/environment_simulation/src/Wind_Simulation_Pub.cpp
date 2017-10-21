@@ -17,7 +17,7 @@ void callback(environment_simulation::wind_simulation_Config &config, uint32_t l
   //ROS_INFO("Reconfigure Request: %f %f %d",
   //       config.Sail_Angle,config.Rudder_Angle,
   //       config.size);
-  TWA = config.TWA;
+  TWA = config.TWA/57.3;
   TWS = config.TWS;
 }
 

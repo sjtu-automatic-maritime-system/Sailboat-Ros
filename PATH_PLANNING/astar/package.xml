@@ -47,6 +47,7 @@
     <depend>roscpp</depend>
     <depend>rospy</depend>
     <depend>std_msgs</depend>
+    <depend>dynamic_reconfigure</depend>
     <depend>sensor_fusion_lib</depend>
 
 
