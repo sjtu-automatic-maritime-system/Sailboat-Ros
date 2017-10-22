@@ -6,8 +6,8 @@ import math
 from scipy.interpolate import splprep, splev
 import os
 
-plt.rcParams['font.sans-serif']=['Droid Sans Fallback'] #用来正常显示中文标签
-plt.rcParams['axes.unicode_minus']=False #用来正常显示负
+plt.rcParams['font.sans-serif'] = ['Droid Sans Fallback']  # 用来正常显示中文标签
+plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负
 
 
 def get_spline(path_x, path_y, heading):
@@ -24,6 +24,15 @@ def get_spline(path_x, path_y, heading):
     x_new, y_new = splev(u_new, tck, der=0)
     return x_new, y_new
 
+
+quiver_settings_1 = {'scale': 1,
+                     'units': 'xy',
+                     'width': 0.2}
+
+quiver_settings_2 = {'scale': 1,
+                     'units': 'xy',
+                     'width': 0.15,
+                     'color': 'g'}
 
 if __name__ == '__main__':
 
@@ -62,47 +71,47 @@ if __name__ == '__main__':
     print('wind: {}'.format(wind))
     print('heading: {}'.format(heading))
 
-    windVecLength = 3
+    windVecLength = 1.8
     windVec = [windVecLength * math.cos(wind), windVecLength * math.sin(wind)]
 
-    headingVecLength = 1
+    headingVecLength = 1.8
     headingVec = [headingVecLength * math.cos(heading), headingVecLength * math.sin(heading)]
 
-    plt.figure(dpi=200)
+    plt.figure()
     # plt.figure(figsize=(6, 4), dpi=98)
     p1 = plt.subplot(111)
     p1.plot(np.array(path_y), np.array(path_x), label=u'规划路径')
     p1.plot(np.array(path_y_f), np.array(path_x_f), label=u'光滑路径')
     p1.plot(np.array(obs_y), np.array(obs_x), 'ro', label=u'障碍物')
-    p1.scatter([path_y[0]], [path_x[0]], s=20, c='green') #start
-    p1.scatter([path_y[-1]], [path_x[-1]], s=20, c='green') #end
+    p1.scatter([path_y[0]], [path_x[0]], s=20, c='green')  # start
+    p1.scatter([path_y[-1]], [path_x[-1]], s=20, c='green')  # end
 
+    p1.quiver(np.array(2), np.array(2), np.ones((1, 1)) * windVec[1], np.ones((1, 1)) * windVec[0], **quiver_settings_1)
+    p1.text(2, 2, s=u'风向', fontsize=8, color='magenta')
 
-    x, y = np.array([2, 2 + windVec[1]]), np.array([2, 2 + windVec[0]])
-    p1.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], color='k')
-    p1.text(2, 2, s=u'风向', fontsize=6, color='magenta')
+    p1.quiver(path_y[0], path_x[0], np.ones((1, 1)) * headingVec[1], np.ones((1, 1)) * headingVec[0], **quiver_settings_2)
 
-    x, y = np.array([path_y[0], path_y[0] + headingVec[1]]), np.array([path_x[0], path_x[0] + headingVec[0]])
-    p1.quiver(x[:-1], y[:-1], x[1:] - x[:-1], y[1:] - y[:-1], color='green')
-
-    p1.text(path_y[0], path_x[0], s=u'起点', fontsize=6, color='black')
-    p1.text(path_y[-1], path_x[-1], s=u'终点', fontsize=6, color='black')
+    p1.text(path_y[0], path_x[0], s=u'起点', fontsize=8, color='black')
+    p1.text(path_y[-1], path_x[-1], s=u'终点', fontsize=8, color='black')
 
     # p1.set_title('upwind')
-    p1.legend(loc='upper right', fontsize=6)
+    p1.legend(loc='upper right', fontsize=8)
     p1.axis([0, n_col - 1, n_row - 1, 0])
-    p1.set_xticks(np.arange(0, n_col + 1, 1))
+    p1.set_xticks(np.arange(0, n_col, 1))
     p1.tick_params(labelsize=6)
-    p1.set_yticks(np.arange(0, n_row + 1, 1))
+    p1.set_yticks(np.arange(0, n_row, 1))
     p1.xaxis.tick_top()
-    p1.grid(True)
+    p1.grid(linestyle='--', linewidth=0.5)
     p1.set_aspect(1)
+
+    plt.tight_layout()
 
     file_folder = 'test_imgs/'
     if not os.path.exists(file_folder):
         os.system('mkdir -p ' + file_folder)
     # file_path = os.path.join(file_folder, '{}.eps'.format("test"))
-    file_path = os.path.join(file_folder, '{}.png'.format("test"))
+    file_path = os.path.join(file_folder, '{}.svg'.format("test"))
+    # file_path = os.path.join(file_folder, '{}.png'.format("test"))
     print("saving file {} ...".format(file_path))
     plt.savefig(file_path)
     plt.show()

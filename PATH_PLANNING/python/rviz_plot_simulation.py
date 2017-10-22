@@ -9,8 +9,8 @@ from sailboat_message.msg import Sensor_msg
 marker = Marker()
 marker.type = marker.POINTS
 marker.action = marker.ADD
-marker.scale.x = 4.0
-marker.scale.y = 4.0
+marker.scale.x = 2
+marker.scale.y = 2
 marker.color.r = 1.0
 marker.color.g = 0.0
 marker.color.b = 0
@@ -21,8 +21,8 @@ def obs_cb(obs_array):
     marker.header = obs_array.header
     marker.header.frame_id = 'world'
 
-    target_x = [0]
-    target_y = [0]
+    target_x = []
+    target_y = []
     for i, pt in enumerate(obs_array.points):
         target_x.append(pt.y)
         target_y.append(pt.x)

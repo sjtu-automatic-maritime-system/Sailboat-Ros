@@ -23,7 +23,7 @@
 #include "path_planning_astar/path_planning_Config.h"
 
 
-//#define __SAVE_FILE__
+#define __SAVE_FILE__
 
 using namespace std;
 
@@ -55,10 +55,10 @@ int tar_cnt = 0;
 
 Eigen::Vector2i ned2map(Eigen::Vector2d &ne, Eigen::Vector2d &origin,
                         int n_row, int n_col, double resolution) {
-    int row = (int) (ne[0] - origin[0]) / resolution;
+    int row = round (ne[0] - origin[0]) / resolution;
     row = n_row - 1 - row;
     row = min(max(0, row), n_row-1);
-    int col = (int) (ne[1] - origin[1]) / resolution;
+    int col = round (ne[1] - origin[1]) / resolution;
     col = min(max(0, col), n_col-1);
     Eigen::Vector2i map_coord(row, col);
     return map_coord;
