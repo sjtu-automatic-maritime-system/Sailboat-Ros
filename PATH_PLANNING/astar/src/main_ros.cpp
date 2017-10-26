@@ -37,6 +37,10 @@ static double extend = 10;
 static double resolution = 2;
 static double loop_T = 2.0;
 
+static double alpha = 1;
+static double beta = 1;
+
+
 static int obs_switch = 0;
 
 Astar astar;
@@ -100,6 +104,8 @@ void cfg_cb(path_planning_astar::path_planning_Config &config, uint32_t level) {
     resolution = config.map_resolution;
     loop_T = config.loop_T;
     obs_switch = config.obs_switch;
+    alpha = config.alpha;
+    beta = config.beta;
 }
 
 
@@ -188,7 +194,8 @@ void sensor_cb(const sailboat_message::WTST_Pro_msgConstPtr &sensor_in) {
         //Point end(6, 10);
         Point end(end_map[0], end_map[1]);
 
-        astar.InitAstar(maze, wind, heading);
+//        astar.InitAstar(maze, wind, heading);
+        astar.InitAstar(maze, wind, heading, alpha, beta);
 
         //A*算法找寻路径
         list<Point *> path = astar.GetPath(start, end, false);

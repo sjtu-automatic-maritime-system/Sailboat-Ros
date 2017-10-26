@@ -25,7 +25,8 @@ struct Point {
 
 class Astar {
 public:
-    void InitAstar(std::vector<std::vector<int> > &_maze, double _windAngle, double _init_heading);
+    void InitAstar(std::vector<std::vector<int> > &_maze, double _windAngle, double _init_heading, double _alpha = 1,
+                   double _beta = 1);
 
     std::list<Point *> GetPath(Point &startPoint, Point &endPoint, bool isIgnoreCorner);
 
@@ -50,6 +51,8 @@ private:
     std::vector<std::vector<int> > maze;
     double windAngle;
     double init_heading;
+    double alpha; //风向损失系数
+    double beta; //转向损失系数
     std::list<Point *> openList;  //开启列表
     std::list<Point *> closeList; //关闭列表
 };

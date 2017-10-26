@@ -15,10 +15,13 @@ double wrapAngle(double angle) {
 }
 
 
-void Astar::InitAstar(std::vector<std::vector<int>> &_maze, double _windAngle, double _init_heading) {
+void Astar::InitAstar(std::vector<std::vector<int>> &_maze, double _windAngle, double _init_heading, double _alpha,
+                      double _beta) {
     maze = _maze;
     windAngle = _windAngle;
     init_heading = _init_heading;
+    alpha = _alpha;
+    beta = _beta;
     openList.clear();
     closeList.clear();
 }
@@ -33,11 +36,19 @@ int Astar::calcG(Point *temp_start, Point *point) {
 #endif
     double windG = exp((-cos(deltaAngle) - 0.25) * 8);
     // 转向损失
-    double deltaAngle2 = temp_start->heading - stepAngle;
+    double deltaAngle2 = stepAngle - temp_start->heading;
     double turnG = exp((-cos(deltaAngle2)) * 3);
+
+    if (1) {
+        deltaAngle2 = wrapAngle(deltaAngle2);
+        double deltaAngle3 = windAngle + M_PI - temp_start->heading;
+        deltaAngle3 = wrapAngle(deltaAngle3);
+        if (fabs(deltaAngle2) > fabs(deltaAngle3))
+            turnG *= 2;
+    }
 //    std::cout << "point: " << point->x << ", " << point->y << " deltaAngle2: " << wrapAngle(deltaAngle2) * 57.3 << std::endl;
 
-    int extraG = (int) windG + (int) turnG + 10;
+    int extraG = (int) alpha * windG + (int) beta * turnG + 10;
     int parentG = temp_start->G;
 //    int parentG = point->parent == NULL ? 0 : point->parent->G; //如果是初始节点，则其父节点是空
     return parentG + extraG;
