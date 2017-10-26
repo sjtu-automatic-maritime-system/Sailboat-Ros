@@ -54,6 +54,9 @@ include_directories(
 #add_executable(astar_test src/Astar.cpp src/main_test.cpp)
 #target_link_libraries(astar_test ${catkin_LIBRARIES} sensor_fusion_lib)
 
+add_executable(astar_ros_1020 src/Astar.cpp src/main_ros_1020.cpp)
+target_link_libraries(astar_ros_1020 ${catkin_LIBRARIES})
+
 add_executable(astar_ros src/Astar.cpp src/main_ros.cpp)
 target_link_libraries(astar_ros ${catkin_LIBRARIES})
 

@@ -62,3 +62,6 @@ target_link_libraries(mach_simulation_pub ${catkin_LIBRARIES})
 add_executable(targetangle_simulation_pub src/TargetAngle_Simulation_Pub.cpp)
 add_dependencies(targetangle_simulation_pub environment_simulation_gencfg)
 target_link_libraries(targetangle_simulation_pub ${catkin_LIBRARIES})
+
+add_executable(wind_sensor_repub_simulation src/wind_sensor_repub_simulation.cpp)
+target_link_libraries(wind_sensor_repub_simulation ${catkin_LIBRARIES})

@@ -100,8 +100,6 @@ void cfg_cb(path_planning_astar::path_planning_Config &config, uint32_t level) {
     extend = config.map_extend;
     resolution = config.map_resolution;
     loop_T = config.loop_T;
-    end_x = -config.end_x;
-    end_y = config.end_y;
 }
 
 
@@ -229,28 +227,28 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
 
     // set obs points
-    Eigen::Vector2d obj_ne_1(-30, 5);
+    Eigen::Vector2d obj_ne_1(-20, 10);
     obs_ne_vector.push_back(obj_ne_1);
-    Eigen::Vector2d obj_ne_2(-40, 10);
+    Eigen::Vector2d obj_ne_2(-40, 20);
     obs_ne_vector.push_back(obj_ne_2);
-    Eigen::Vector2d obj_ne_3(-25, -4);
+    Eigen::Vector2d obj_ne_3(-50, 0);
     obs_ne_vector.push_back(obj_ne_3);
-    Eigen::Vector2d obj_ne_4(-50, 25);
+    Eigen::Vector2d obj_ne_4(-40, -10);
     obs_ne_vector.push_back(obj_ne_4);
-    Eigen::Vector2d obj_ne_5(-35, 5);
+    Eigen::Vector2d obj_ne_5(-55, 15);
     obs_ne_vector.push_back(obj_ne_5);
-    Eigen::Vector2d obj_ne_6(-30, 0);
+    Eigen::Vector2d obj_ne_6(-30, 30);
     obs_ne_vector.push_back(obj_ne_6);
+    Eigen::Vector2d obj_ne_7(-50, 40);
+    obs_ne_vector.push_back(obj_ne_7);
 
     //set target points
-    Eigen::Vector2d tar_1(-60, 20);
+    Eigen::Vector2d tar_1(-60, 30);
     target_points_ne.push_back(tar_1);
     Eigen::Vector2d tar_2(-50, -20);
     target_points_ne.push_back(tar_2);
     Eigen::Vector2d tar_3(-20, 0);
     target_points_ne.push_back(tar_3);
-    Eigen::Vector2d tar_4(0, 0);
-    target_points_ne.push_back(tar_4);
     sailboat_message::PointArray target_points_pub;
     for (auto p_ne:target_points_ne) {
         sailboat_message::Point p;
