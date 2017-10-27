@@ -45,10 +45,8 @@ static int obs_switch = 0;
 
 Astar astar;
 
-std::vector<Eigen::Vector2d> obs_ne_vector_0;
 std::vector<Eigen::Vector2d> obs_ne_vector_1;
 std::vector<Eigen::Vector2d> obs_ne_vector_2;
-std::vector<Eigen::Vector2d> obs_ne_vector_3;
 
 std::vector<Eigen::Vector2d> target_points_ne;
 
@@ -173,13 +171,9 @@ void sensor_cb(const sailboat_message::WTST_Pro_msgConstPtr &sensor_in) {
         vector<Eigen::Vector2i> objs_map;
         vector<Eigen::Vector2d> obs_ne_vector;
         if (obs_switch == 1)
-            obs_ne_vector = obs_ne_vector_1;
-        else if (obs_switch == 2)
             obs_ne_vector = obs_ne_vector_2;
-        else if (obs_switch == 3)
-            obs_ne_vector = obs_ne_vector_3;
         else
-            obs_ne_vector = obs_ne_vector_0;
+            obs_ne_vector = obs_ne_vector_1;
         for (auto p_ne:obs_ne_vector) {
             sailboat_message::Point p;
             p.x = p_ne[0];
@@ -191,6 +185,7 @@ void sensor_cb(const sailboat_message::WTST_Pro_msgConstPtr &sensor_in) {
         obs_coords_to_pub.header = sensor_in->header;
         obs_coords_to_pub.header.frame_id = "world";
         pub_obs.publish(obs_coords_to_pub);
+
 
         vector<vector<int> > maze = mapGeneration(n_row, n_col, objs_map);
 
@@ -261,30 +256,15 @@ int main(int argc, char **argv) {
     Eigen::Vector2d obj_ne_5(-60, 20);
     Eigen::Vector2d obj_ne_6(-30, -20);
 
-    Eigen::Vector2d obj_ne_7(-20, 20);
-    Eigen::Vector2d obj_ne_8(-30, 5);
-    Eigen::Vector2d obj_ne_9(-40, 10);
-
     obs_ne_vector_1.push_back(obj_ne_1);
     obs_ne_vector_1.push_back(obj_ne_2);
     obs_ne_vector_1.push_back(obj_ne_3);
-
     obs_ne_vector_2.push_back(obj_ne_1);
     obs_ne_vector_2.push_back(obj_ne_2);
     obs_ne_vector_2.push_back(obj_ne_3);
     obs_ne_vector_2.push_back(obj_ne_4);
     obs_ne_vector_2.push_back(obj_ne_5);
     obs_ne_vector_2.push_back(obj_ne_6);
-
-    obs_ne_vector_3.push_back(obj_ne_1);
-    obs_ne_vector_3.push_back(obj_ne_2);
-    obs_ne_vector_3.push_back(obj_ne_3);
-    obs_ne_vector_3.push_back(obj_ne_4);
-    obs_ne_vector_3.push_back(obj_ne_5);
-    obs_ne_vector_3.push_back(obj_ne_6);
-    obs_ne_vector_3.push_back(obj_ne_7);
-    obs_ne_vector_3.push_back(obj_ne_8);
-    obs_ne_vector_3.push_back(obj_ne_9);
 
 
     //set target points
@@ -303,7 +283,7 @@ int main(int argc, char **argv) {
     }
 
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 30; i++) {
         wind_list.push_back(-999);
     }
 
