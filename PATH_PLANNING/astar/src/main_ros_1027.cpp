@@ -23,6 +23,8 @@
 
 
 //#define __SAVE_FILE__
+#define __SAVE_FILE_1027__
+
 
 using namespace std;
 
@@ -54,6 +56,10 @@ std::list<double> wind_list;
 
 int cnt = 0;
 int tar_cnt = 0;
+
+ofstream pathfile_1027;
+ofstream mapfile_1027;
+int cb_cnt = 0;
 
 
 Eigen::Vector2i ned2map(Eigen::Vector2d &ne, Eigen::Vector2d &origin,
@@ -201,11 +207,13 @@ void sensor_cb(const sailboat_message::WTST_Pro_msgConstPtr &sensor_in) {
         list<Point *> path = astar.GetPath(start, end, false);
         cout << "###############" << endl;
         nav_msgs::Path traj;
+        vector<Eigen::Vector2d> path_ne;
         for (auto &p:path) {
 //            cout << "(" << p->x << ',' << p->y << ')' << endl;
 
             Eigen::Vector2i pt_map(p->x, p->y);
             Eigen::Vector2d pt_ne = map2ned(pt_map, origin_ne, n_row, n_col, resolution);
+            path_ne.push_back(pt_ne);
 
             geometry_msgs::PoseStamped pose_to_path;
 //        pose_to_path.header.stamp = wtst_in->header.stamp;
@@ -238,6 +246,31 @@ void sensor_cb(const sailboat_message::WTST_Pro_msgConstPtr &sensor_in) {
         }
         mapfile.close();
 #endif
+
+
+#ifdef __SAVE_FILE_1027__
+        pathfile_1027 << "ego_pos" << "," << sensor_in->PosX << "," << sensor_in->PosY << endl;
+//        pathfile_1027 << "obs_pos" << "," << obs_gps_ne[0] << "," << obs_gps_ne[1] << endl;
+        pathfile_1027 << "heading" << "," << heading << endl;
+        pathfile_1027 << "wind" << "," << wind << endl;
+        int i = 0;
+        for (auto &p:path) {
+            Eigen::Vector2d pt_ne = path_ne[i];
+            pathfile_1027 << p->x << ',' << p->y << ',' << pt_ne[0] << ',' << pt_ne[1] << endl;
+            i++;
+        }
+        pathfile_1027 << "####" << cb_cnt << endl;
+
+
+        for (auto &row:maze) {
+            for (auto p:row)
+                mapfile_1027 << p << ' ';
+            mapfile_1027 << endl;
+        }
+        mapfile_1027 << "####" << cb_cnt << endl;
+#endif
+        cb_cnt++;
+
 
     }
 }
@@ -294,10 +327,14 @@ int main(int argc, char **argv) {
 
     ros::Subscriber sensor_sub = nh.subscribe("/wtst_pro", 2, &sensor_cb);
 
-    pub_path = nh.advertise<nav_msgs::Path>("/planned_path", 2);
-    pub_obs = nh.advertise<sailboat_message::PointArray>("/obstacle_coords", 2);
+    pub_path = nh.advertise<nav_msgs::Path>("/planned_path_1027", 2);
+    pub_obs = nh.advertise<sailboat_message::PointArray>("/obstacle_coords_1027", 2);
     ros::Publisher pub_targets;
-    pub_targets = nh.advertise<sailboat_message::PointArray>("/target_coords", 2);
+    pub_targets = nh.advertise<sailboat_message::PointArray>("/target_coords_1027", 2);
+
+
+    pathfile_1027.open("/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/path_1027.txt");
+    mapfile_1027.open("/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/map_1027.txt");
 
     ros::Rate loo_rate(10);
     while (ros::ok()) {
