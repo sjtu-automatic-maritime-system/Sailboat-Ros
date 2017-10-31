@@ -43,7 +43,7 @@ static double alpha = 1;
 static double beta = 1;
 
 
-static int obs_switch = 0;
+static int obs_switch = 3;
 
 Astar astar;
 
@@ -355,14 +355,23 @@ int main(int argc, char **argv) {
 
     ros::Subscriber sensor_sub = nh.subscribe("/wtst_pro", 2, &sensor_cb);
 
-    pub_path = nh.advertise<nav_msgs::Path>("/planned_path_1020", 2);
-    pub_obs = nh.advertise<sailboat_message::PointArray>("/obstacle_coords_1020", 2);
+    pub_path = nh.advertise<nav_msgs::Path>("/planned_path", 2);
+    pub_obs = nh.advertise<sailboat_message::PointArray>("/obstacle_coords", 2);
     ros::Publisher pub_targets;
-    pub_targets = nh.advertise<sailboat_message::PointArray>("/target_coords_1020", 2);
+    pub_targets = nh.advertise<sailboat_message::PointArray>("/target_coords", 2);
 
+    std::stringstream ss;
+    ss << obs_switch * 3;
+    std::string pathfile_name =
+            "/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/path_1028_" + ss.str() + "obs.txt";
+    pathfile_1028.open(pathfile_name);
 
-    pathfile_1028.open("/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/path_1028_0obs.txt");
-    mapfile_1028.open("/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/map_1028_0obs.txt");
+    std::string mapfile_name =
+            "/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/map_1028_" + ss.str() + "obs.txt";
+    mapfile_1028.open(mapfile_name);
+
+//    pathfile_1028.open("/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/path_1028_0obs.txt");
+//    mapfile_1028.open("/home/jianyun/catkin_ws/src/Sailboat-Ros/PATH_PLANNING/python/map_1028_0obs.txt");
 
 
     ros::Rate loo_rate(10);
