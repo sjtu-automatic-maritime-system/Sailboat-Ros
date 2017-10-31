@@ -60,6 +60,9 @@ target_link_libraries(astar_ros_1020 ${catkin_LIBRARIES})
 add_executable(astar_ros_1027 src/Astar.cpp src/main_ros_1027.cpp)
 target_link_libraries(astar_ros_1027 ${catkin_LIBRARIES})
 
+add_executable(astar_ros_1028 src/Astar.cpp src/main_ros_1028.cpp)
+target_link_libraries(astar_ros_1028 ${catkin_LIBRARIES})
+
 add_executable(astar_ros src/Astar.cpp src/main_ros.cpp)
 target_link_libraries(astar_ros ${catkin_LIBRARIES})
 
