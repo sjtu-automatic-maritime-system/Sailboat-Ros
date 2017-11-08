@@ -49,5 +49,5 @@ set(autopilot_SRC
 
 add_executable(${PROJECT_NAME} ${autopilot_SRC})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} autopilot_gencfg)
 #autolipot_gencfg

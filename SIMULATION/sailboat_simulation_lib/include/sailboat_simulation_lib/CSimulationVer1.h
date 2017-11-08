@@ -2,7 +2,7 @@
 // Created by hywel on 17-4-25.
 // reference Jianyun Xu's Simulink
 //
-// 一个找了一天的bug：定义数组指针后必须new分配内存。
+// bug：定义数组指针后必须new分配内存。
 // 所有角度都是弧度制
 #ifndef SAILBOAT_CSIMULATIONVER1_H
 #define SAILBOAT_CSIMULATIONVER1_H

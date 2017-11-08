@@ -52,7 +52,7 @@ include_directories(
 
 
 add_executable(wind_simulation_pub src/Wind_Simulation_Pub.cpp)
-add_dependencies(wind_simulation_pub ${catkin_EXPORTED_TARGETS} wind_simulation_gencfg)
+add_dependencies(wind_simulation_pub ${catkin_EXPORTED_TARGETS} environment_simulation_gencfg)
 target_link_libraries(wind_simulation_pub ${catkin_LIBRARIES})
 
 add_executable(mach_simulation_pub src/Mach_Simulation_Pub.cpp)
