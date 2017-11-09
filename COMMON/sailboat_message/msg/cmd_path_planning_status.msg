@@ -1,0 +1,8 @@
+float64 timestamp
+int8 path_planning_state
+int8 path_planning_new_state
+bool is_transition
+int8 path_quality
+int8 point_number
+int8 point_range
+bool is_avoidance_time

@@ -21,15 +21,6 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
         FILES
 
-        station_keeping_out.msg
-        fleet_race_out.msg
-        scanning_out.msg
-        avoidance_out.msg
-        station_keeping_para.msg
-        fleet_race_para.msg
-        scanning_para.msg
-        avoidance_para.msg
-
         Mach_msg.msg
         GPS_msg.msg
         Ahrs_msg.msg
@@ -42,12 +33,34 @@ add_message_files(
         Sailboat_Simulation_msg.msg
         Target_msg.msg
 
+        station_keeping_out.msg
+        fleet_race_out.msg
+        scanning_out.msg
+        avoidance_out.msg
+        station_keeping_para.msg
+        fleet_race_para.msg
+        scanning_para.msg
+        avoidance_para.msg
 
         traj_following_para.msg
         traj_following_out.msg
 
         Point.msg
         PointArray.msg
+
+        #cmd
+        cmd_battery_status.msg
+        cmd_camera_status.msg
+        cmd_commander_cfg_status.msg
+        cmd_commander_status.msg
+        cmd_communication_status.msg
+        cmd_home_position.msg
+        cmd_navigation_status.msg
+        cmd_path_planning_mode.msg
+        cmd_path_planning_status.msg
+        cmd_sensor_status.msg
+        cmd_vehicle_control_mode.msg
+        cmd_vehicle_control_status.msg
 
 )
 

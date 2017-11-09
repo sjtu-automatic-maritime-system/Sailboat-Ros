@@ -1,0 +1,7 @@
+float64 timestamp
+int8 vehicle_control_state
+int8 vehicle_control_new_state
+bool is_transition
+bool is_upwind
+bool is_tack_time
+bool is_jibing_time

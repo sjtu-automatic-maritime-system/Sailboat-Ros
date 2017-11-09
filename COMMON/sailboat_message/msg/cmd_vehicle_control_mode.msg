@@ -1,0 +1,9 @@
+float64 timestamp
+bool flag_control_manual_enable
+bool flag_control_auto_enable
+bool flag_control_position_enable
+bool flag_control_autoPilot_enable
+bool flag_control_pathFollowing_enable
+bool flag_control_direct_enable
+bool flag_control_tack_enable
+bool flag_control_jibing_enable

@@ -1,0 +1,7 @@
+float64 timestamp
+int8 vehicle_control_state
+int8 path_planning_state
+#int nav_state
+int8 sensor_state
+int8 battery_state
+int8 communication_state
