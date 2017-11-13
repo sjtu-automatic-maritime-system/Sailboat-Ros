@@ -45,4 +45,3 @@ set( commander_SRC
 #add_executable( ${PROJECT_NAME} ${commander_SRC} )
 #add_dependencies( ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS} commander_gencfg)
 #target_link_libraries( ${PROJECT_NAME} ${catkin_LIBRARIES} )
-
