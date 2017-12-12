@@ -22,6 +22,12 @@ find_package(catkin REQUIRED COMPONENTS
         ${catkin_package_DEPENDENCIES}
         )
 
+find_package(OpenCV 2.4 REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+message("-- OpenCV version: ${OpenCV_VERSION}")
+message("-- OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
+message("-- catkin include dirs: ${catkin_INCLUDE_DIRS}")
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -38,10 +44,10 @@ include_directories(
 )
 
 add_executable(object_detection src/detection_ros.cpp)
-target_link_libraries(object_detection ${catkin_LIBRARIES} object_detection_lib)
+target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS} object_detection_lib)
 
 add_executable(mytest src/test.cpp)
-target_link_libraries(mytest ${catkin_LIBRARIES} object_detection_lib)
+target_link_libraries(mytest ${catkin_LIBRARIES} ${OpenCV_LIBS} object_detection_lib)
 
 #add_executable(img_undistortion src/undistort_image_raw.cpp)
 #target_link_libraries(img_undistortion ${catkin_LIBRARIES})

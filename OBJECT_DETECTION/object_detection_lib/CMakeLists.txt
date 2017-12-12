@@ -53,11 +53,17 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
 )
 
+find_package(OpenCV 2.4 REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+message("-- OpenCV version: ${OpenCV_VERSION}")
+message("-- OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
+message("-- catkin include dirs: ${catkin_INCLUDE_DIRS}")
+
 ## Create library
 set(object_detection_lib_SRC
         src/detection.cpp
         )
 add_library(${PROJECT_NAME} ${object_detection_lib_SRC})
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBS})
 

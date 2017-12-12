@@ -28,7 +28,7 @@ catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES sailboat_tf_tree
   CATKIN_DEPENDS ${sailboat_tf_tree_DEPENDENCE}
-  DEPENDS system_lib
+  #DEPENDS system_lib
 )
 
 include_directories(

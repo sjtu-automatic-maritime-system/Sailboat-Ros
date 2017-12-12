@@ -22,7 +22,7 @@ catkin_package(
         INCLUDE_DIRS include
         LIBRARIES avoidance
         CATKIN_DEPENDS dynamic_reconfigure roscpp rospy std_msgs sailboat_message
-        DEPENDS system_lib
+        #DEPENDS system_lib
 )
 
 ###########

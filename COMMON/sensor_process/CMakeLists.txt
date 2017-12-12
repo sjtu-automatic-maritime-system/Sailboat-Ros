@@ -29,7 +29,7 @@ catkin_package(
         INCLUDE_DIRS include
         LIBRARIES sensor_process
         CATKIN_DEPENDS roscpp rospy sailboat_message std_msgs message_filters
-        DEPENDS system_lib
+        #DEPENDS system_lib
 )
 
 

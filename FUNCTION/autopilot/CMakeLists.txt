@@ -25,7 +25,7 @@ catkin_package(
         INCLUDE_DIRS include
         LIBRARIES autopilot
         CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message std_msgs math_tool_lib
-        DEPENDS system_lib
+        #DEPENDS system_lib
 )
 
 ###########

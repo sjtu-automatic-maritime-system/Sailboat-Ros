@@ -25,7 +25,7 @@ catkin_package(
         #  INCLUDE_DIRS include
         LIBRARIES mach_onboat
         CATKIN_DEPENDS roscpp rospy sailboat_message std_msgs
-        DEPENDS system_lib
+        #DEPENDS system_lib
 )
 
 include_directories(
