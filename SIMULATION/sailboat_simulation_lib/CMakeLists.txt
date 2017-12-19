@@ -19,7 +19,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES sailboat_simulation_lib
   CATKIN_DEPENDS math_tool_lib roscpp rospy sailboat_message std_msgs
-  DEPENDS system_lib
+  #DEPENDS system_lib
 )
 
 ###########

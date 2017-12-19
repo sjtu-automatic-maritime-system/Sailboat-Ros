@@ -80,13 +80,13 @@ void getInputPath(const nav_msgs::PathConstPtr &path_msg) {
     path_following_Obj.path_following_U.path_num = length;
     for (int i = 0; i < 100; i++) {
         if (i < length)
-            path_following_Obj.path_following_U.path[i] = path_msg->poses[i].pose.position.y;
+            path_following_Obj.path_following_U.path[i] = path_msg->poses[i].pose.position.x;
         else
             path_following_Obj.path_following_U.path[i] = 0;
     }
     for (int i = 0; i < 100; i++) {
         if (i < length)
-            path_following_Obj.path_following_U.path[100+i] = path_msg->poses[i].pose.position.x;
+            path_following_Obj.path_following_U.path[100+i] = path_msg->poses[i].pose.position.y;
         else
             path_following_Obj.path_following_U.path[100+i] = 0;
     }

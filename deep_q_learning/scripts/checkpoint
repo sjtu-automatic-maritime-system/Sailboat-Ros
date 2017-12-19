@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/hywel/PycharmProjects/Reinforcement-learning-with-tensorflow-master/contents/5_Deep_Q_Network/model20171219.ckpt"
+all_model_checkpoint_paths: "/home/hywel/PycharmProjects/Reinforcement-learning-with-tensorflow-master/contents/5_Deep_Q_Network/model20171219.ckpt"
