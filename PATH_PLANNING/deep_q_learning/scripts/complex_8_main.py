@@ -4,14 +4,14 @@ from sailboat_message.msg import Sensor_msg
 from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped 
 
-from maze_env import Maze
-from RL_brain import DeepQNetwork
+from complex_8_env import Maze
+from complex_8_RL_brain import DeepQNetwork
 import numpy as np
 import os
 
 getMsg = 0
-posx = 1
-posy = 1
+posx = 0
+posy = 0
 
 #ros
 def callback(sensorMsg):
@@ -23,22 +23,18 @@ def callback(sensorMsg):
     posy = float(sensorMsg.Posy)
 
 
-
 def run_maze():
     step = 0
-    RL.reload_model()
-    for episode in range(4000):
+    #RL.reload_model()
+    for episode in range(3000):
         # initial observation
 
         observation = env.reset()
 
         while True:
             # fresh env
-            env.render()
-
             # RL choose action based on observation
             action = RL.choose_action(observation, True)
-
             # RL take action and get next observation and reward
             observation_, reward, done, is_oval = env.step(action)
 
@@ -50,6 +46,11 @@ def run_maze():
             # swap observation
             observation = observation_
 
+            pathX = observation[0] * 100 + 18 * 5
+            pathY = observation[1] * 100 + 18 * 5
+
+            #print ("x~y  ", pathX,"~",pathY)
+
             # break while loop when end of this episode
             if done:
                 break
@@ -60,45 +61,28 @@ def run_maze():
 
     # end of q learn
     print('finish DQN')
-    env.destroy()
 
-def test_maze():
-
-    RL.reload_model()
-    for episode in range(10):
-        # initial observation
-        observation = env.reset(True, episode, episode)
-        while True:
-            # fresh env
-            env.render()
-            # RL choose action based on observation
-            action = RL.choose_action(observation, False)
-            # RL take action and get next observation and reward
-            observation_, reward, done, is_oval = env.step(action)
-            # swap observation
-            observation = observation_
-            print observation * 100 + 18.5 * 5
-            # break while loop when end of this episode
-            if done:
-                break
-    print('finish test')
-    env.destroy()
 
 def get_route_maze():
     rospy.init_node('dqn_path_planning', anonymous=True)
     pub = rospy.Publisher('planned_path',Path, queue_size=2)
     rospy.Subscriber("sensor", Sensor_msg, callback)
-    rate = rospy.Rate(0.02) # 0.025hz
+    rate = rospy.Rate(0.1) # 0.025hz
 
     RL.reload_model()
     while not rospy.is_shutdown():
-        inputx = int(posx/10)
-        inputy = int(posy/10)
+        inputx = int(posx/5)
+        inputy = int(posy/5)
+        #print inputx," ~ ",inputy
         is_oval = False
         is_done = False
+
         while ~is_oval:
+            routeX_old = np.array([])
+            routeY_old = np.array([])
             for step in range(5):
-                observation = env.reset(True, inputx, inputy)
+                #print posx," ~ ",posy
+                observation = env.reset(True, posx, posy)
                 if step != 0 and is_oval:
                     routeX_old = routeX
                     routeY_old = routeY
@@ -106,31 +90,31 @@ def get_route_maze():
                 routeY = np.array([])
                 while ~is_done:
                     # fresh env
-                    env.render()
                     # RL choose action based on observation
                     action = RL.choose_action(observation, False)
                     # RL take action and get next observation and reward
                     observation_, reward, is_done, is_oval = env.step(action)
                     # swap observation
                     observation = observation_
-                    pathX = observation[0] * 200 + 18.5 * 10
-                    pathY = observation[1] * 200 + 18.5 * 10
+                    pathX = observation[0] * 100 + 18 * 5
+                    pathY = observation[1] * 100 + 18 * 5
                     routeX = np.append(routeX, [pathX])
                     routeY = np.append(routeY, [pathY])
                     # break while loop when end of this episode
                     if is_done:
                         if step != 0 and is_oval:
                             routeX, routeY = modify_path(routeX, routeY)
-                            if np.size(routeX) > np.size(routeX_old):
+                            if np.size(routeX) > np.size(routeX_old) and np.size(routeX_old) != 0:
                                 routeX = routeX_old
                                 routeY = routeY_old
                             routeX_old = routeX
                             routeY_old = routeY
                         break
+
             if is_oval:
                 
-                print(routeX)
-                print(routeY)
+                # print(routeX)
+                # print(routeY)
                 PathMsg = Path()
                 PathMsg.header.stamp = rospy.Time.now()
                 PathMsg.header.frame_id = "odom"
@@ -142,11 +126,10 @@ def get_route_maze():
                     PathMsg.poses.append(poseMsg)
                 pub.publish(PathMsg)
                 break
-        rate.sleep()
+        #rate.sleep()
 
     print('get routeX and routeY')
-    env.destroy()
-    rospy.spin()
+    #rospy.spin()
 
 
 def find_same(routeX, routeY):
@@ -172,11 +155,10 @@ def modify_path(routeX, routeY):
         isFind, i1, i2 = find_same(routeX, routeY)
     return routeX, routeY
 
-
 if __name__ == "__main__":
     # maze game
     env = Maze()
-    model_path = os.path.dirname(os.path.abspath(__file__)) + "/model20171219.ckpt"
+    model_path = os.path.dirname(os.path.abspath(__file__)) + "/complex_8_model20171221.ckpt"
     RL = DeepQNetwork(env.n_actions, env.n_features, model_path,
                       learning_rate=0.01,
                       reward_decay=0.9,
@@ -185,6 +167,6 @@ if __name__ == "__main__":
                       memory_size=2000,
                       # output_graph=True
                       )
-    env.after(100, get_route_maze)
-    env.mainloop()
+    #run_maze()
+    get_route_maze()
     #RL.plot_cost()
