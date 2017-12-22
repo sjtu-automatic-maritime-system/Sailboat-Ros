@@ -1,0 +1,7 @@
+<library path="lib/libnodelet_aruco_single">
+    <class name="aruco_ros/ArucoSingle" type="aruco_ros::ArucoSingle" base_class_type="nodelet::Nodelet">
+        <description>
+            A node that aruco marker.
+        </description>
+    </class>
+</library>

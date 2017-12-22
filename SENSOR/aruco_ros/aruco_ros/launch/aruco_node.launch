@@ -1,0 +1,22 @@
+<launch>
+
+    <arg name="markerId"        default="0"/>
+    <arg name="markerSize"      default="0.05"/>    <!-- in m -->
+    <arg name="eye"             default="left"/>
+    <arg name="marker_frame"    default="marker"/>
+    <arg name="ref_frame"       default="world"/>  <!-- leave empty and the pose will be published wrt param parent_name -->
+    <arg name="corner_refinement" default="LINES" /> <!-- NONE, HARRIS, LINES, SUBPIX -->
+
+    <node pkg="aruco_ros" type="aruco_single" name="aruco_single" output="screen">
+        <param name="camera_info_path" value="/camera_info" />
+        <param name="image_path" value="/image_raw" />
+        <param name="isPubDebug" value="True"/>
+        <param name="image_is_rectified" value="True"/>
+        <param name="switch_smallest_aruco" value="True"/>
+        <param name="marker_size"        value="$(arg markerSize)"/>
+        <param name="marker_id"          value="$(arg markerId)"/>
+        <param name="corner_refinement"  value="$(arg corner_refinement)" />
+    </node>
+
+</launch>
+
