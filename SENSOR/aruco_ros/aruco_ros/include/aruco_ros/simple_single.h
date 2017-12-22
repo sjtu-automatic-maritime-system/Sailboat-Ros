@@ -23,7 +23,7 @@
 #include <dynamic_reconfigure/server.h>
 #include <aruco_ros/ArucoThresholdConfig.h>
 
-#include <mavros_msgs/LandingTarget.h>
+//#include <mavros_msgs/LandingTarget.h>
 
 #define pi 3.1415926
 
@@ -50,7 +50,7 @@ private:
 
     bool isPubDebug;
 
-    ros::ServiceClient client;
+    //ros::ServiceClient client;
 
     double marker_size;
     int marker_id;

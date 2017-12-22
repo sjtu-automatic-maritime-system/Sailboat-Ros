@@ -1,7 +1,7 @@
 
 """
 explorer.
-hells       [reward = -1].
+obstacles       [reward = -1].
 paradise    [reward = +1].
 ground      [reward = 0].
 
@@ -30,8 +30,8 @@ class Maze:
     def _build_maze(self):
         self.ground = np.tile(0,(X_LEN,Y_LEN))
         
-        #hell
-        self.hell_center = np.array([[0, 6],
+        #obstacle
+        self.obstacle_center = np.array([[0, 6],
                                     [0, 7],
                                     [0, 8],
                                     [0, 9],
@@ -125,16 +125,16 @@ class Maze:
                                     [19,10],
                                     [19,11],
                                     [19,12]])
-        #ovel
-        self.ovel_center = np.array([16,17])
+        #target
+        self.target_center = np.array([16,17])
 
-        for i in range(np.size(self.hell_center)/2):
-            x = self.hell_center[i, 0]
-            y = self.hell_center[i, 1]
+        for i in range(np.size(self.obstacle_center)/2):
+            x = self.obstacle_center[i, 0]
+            y = self.obstacle_center[i, 1]
             self.ground[x, y] = -1
         
-        x = self.ovel_center[0]
-        y = self.ovel_center[1]
+        x = self.target_center[0]
+        y = self.target_center[1]
         self.ground[x, y] = 1
     
     def reset(self, isset = False, inputPosx = 0, inputPosy = 0):
@@ -152,7 +152,7 @@ class Maze:
             if self.ground[self.rect[0],self.rect[1]] == 0:
                 break
         
-        return 1.0*(self.rect - self.ovel_center)/(max(X_LEN,Y_LEN))
+        return 1.0*(self.rect - self.target_center)/(max(X_LEN,Y_LEN))
     
     def step(self, action):
         is_oval = False
@@ -205,11 +205,11 @@ class Maze:
         elif self.ground[x, y] == -1:
             reward = -1
             done = True
-            print ('in hell')
+            print ('in obstacle')
         else:
             reward = 0
             done = False
-        s_ = 1.0*(self.rect - self.ovel_center)/(max(X_LEN,Y_LEN))
+        s_ = 1.0*(self.rect - self.target_center)/(max(X_LEN,Y_LEN))
         #print s_
         #print self.ground
         return s_, reward, done, is_oval

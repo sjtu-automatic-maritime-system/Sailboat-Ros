@@ -60,7 +60,7 @@ ArucoSimple::ArucoSimple(ros::NodeHandle _comm_nh, ros::NodeHandle _private_nh)
     // marker_pub = nh.advertise<visualization_msgs::Marker>("marker", 10);
     // pixel_pub = nh.advertise<geometry_msgs::PointStamped>("pixel", 10);
 
-    client = nh.serviceClient<mavros_msgs::LandingTarget>("/mavros/set_landing_target");
+    //client = nh.serviceClient<mavros_msgs::LandingTarget>("/mavros/set_landing_target");
 
     pnh.param<double>("marker_size", marker_size, 0.05);
     pnh.param<int>("marker_id", marker_id, 0);
@@ -239,17 +239,17 @@ void ArucoSimple::image_callback(const sensor_msgs::ImageConstPtr &msg) {
                             }
 
                             //cout << "target:" << markers[i].id << "~" << xoffset << "-" << yoffset << "-" << distance << endl;
-                            mavros_msgs::LandingTarget srv;
-                            srv.request.target_num = 2;
-                            srv.request.angle_x = xoffset;
-                            srv.request.angle_y = yoffset;
-                            srv.request.size_x = 0;
-                            srv.request.size_y = 0;
-                            if (client.call(srv)) {
-                                ROS_INFO("bool landing tartget: %d", (int)srv.response.landing_target_sent);
-                            } else {
-                                ROS_ERROR("Failed to call service landing target");
-                            }
+                            //mavros_msgs::LandingTarget srv;
+                            //srv.request.target_num = 2;
+                            //srv.request.angle_x = xoffset;
+                            //srv.request.angle_y = yoffset;
+                            //srv.request.size_x = 0;
+                            //srv.request.size_y = 0;
+                            //if (client.call(srv)) {
+                                //ROS_INFO("bool landing tartget: %d", (int)srv.response.landing_target_sent);
+                            //} else {
+                                //ROS_ERROR("Failed to call service landing target");
+                            //}
                         }
                     }
                     // Otherwise draw a red square

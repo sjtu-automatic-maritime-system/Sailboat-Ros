@@ -5,7 +5,7 @@ from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped 
 
 from complex_8_env import Maze
-from complex_8_RL_brain import DeepQNetwork
+from complex_8_dqn_brain import DeepQNetwork
 import numpy as np
 import os
 

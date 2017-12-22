@@ -86,13 +86,13 @@ class DeepQNetwork:
                 w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
                 b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
                 l1 = tf.nn.relu(tf.matmul(self.s, w1) + b1)
-
+            # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2'):
                 w2 = tf.get_variable('w2', [n_l1, n_l1/2], initializer=w_initializer, collections=c_names)
                 b2 = tf.get_variable('b2', [1, n_l1/2], initializer=b_initializer, collections=c_names)
                 l2 = tf.nn.relu(tf.matmul(l1, w2) + b2)
 
-            # second layer. collections is used later when assign to target net
+            
             with tf.variable_scope('l3'):
                 w3 = tf.get_variable('w3', [n_l1/2, self.n_actions], initializer=w_initializer, collections=c_names)
                 b3 = tf.get_variable('b3', [1, self.n_actions], initializer=b_initializer, collections=c_names)
@@ -115,13 +115,13 @@ class DeepQNetwork:
                 w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
                 b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
                 l1 = tf.nn.relu(tf.matmul(self.s_, w1) + b1)
-
+	    # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2'):
                 w2 = tf.get_variable('w2', [n_l1, n_l1/2], initializer=w_initializer, collections=c_names)
                 b2 = tf.get_variable('b2', [1, n_l1/2], initializer=b_initializer, collections=c_names)
                 l2 = tf.nn.relu(tf.matmul(l1, w2) + b2)
 
-            # second layer. collections is used later when assign to target net
+            
             with tf.variable_scope('l3'):
                 w3 = tf.get_variable('w3', [n_l1/2, self.n_actions], initializer=w_initializer, collections=c_names)
                 b3 = tf.get_variable('b3', [1, self.n_actions], initializer=b_initializer, collections=c_names)
