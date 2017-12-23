@@ -31,3 +31,5 @@ include_directories(
         ${catkin_INCLUDE_DIRS})
 
 
+add_executable(rviz_marker src/rviz_marker.cpp)
+target_link_libraries(rviz_marker ${catkin_LIBRARIES})

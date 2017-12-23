@@ -5,7 +5,9 @@ from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped 
 
 from complex_8_env import Maze
-from complex_8_dqn_brain import DeepQNetwork
+from natural_dqn_brain import DeepQNetwork
+from double_dqn_brain import DoubleDQN
+from prioritized_replay_brain import DQNPrioritizedReplay
 import numpy as np
 import os
 
@@ -23,64 +25,25 @@ def callback(sensorMsg):
     posy = float(sensorMsg.Posy)
 
 
-def run_maze():
-    step = 0
-    #RL.reload_model()
-    for episode in range(3000):
-        # initial observation
-
-        observation = env.reset()
-
-        while True:
-            # fresh env
-            # RL choose action based on observation
-            action = RL.choose_action(observation, True)
-            # RL take action and get next observation and reward
-            observation_, reward, done, is_oval = env.step(action)
-
-            RL.store_transition(observation, action, reward, observation_)
-
-            if (step > 200) and (step % 5 == 0):
-                RL.learn()
-
-            # swap observation
-            observation = observation_
-
-            pathX = observation[0] * 100 + 18 * 5
-            pathY = observation[1] * 100 + 18 * 5
-
-            #print ("x~y  ", pathX,"~",pathY)
-
-            # break while loop when end of this episode
-            if done:
-                break
-            step += 1
-
-    # save the model
-    RL.save_model()
-
-    # end of q learn
-    print('finish DQN')
-
 
 def get_route_maze():
     rospy.init_node('dqn_path_planning', anonymous=True)
     pub = rospy.Publisher('planned_path',Path, queue_size=2)
     rospy.Subscriber("sensor", Sensor_msg, callback)
-    rate = rospy.Rate(0.1) # 0.025hz
+    rate = rospy.Rate(1) # 0.025hz
 
     RL.reload_model()
     while not rospy.is_shutdown():
         inputx = int(posx/5)
         inputy = int(posy/5)
-        #print inputx," ~ ",inputy
+        print inputx," ~ ",inputy
         is_oval = False
         is_done = False
 
         while ~is_oval:
             routeX_old = np.array([])
             routeY_old = np.array([])
-            for step in range(5):
+            for step in range(1):
                 #print posx," ~ ",posy
                 observation = env.reset(True, posx, posy)
                 if step != 0 and is_oval:
@@ -88,6 +51,7 @@ def get_route_maze():
                     routeY_old = routeY
                 routeX = np.array([])
                 routeY = np.array([])
+                step_one = 0
                 while ~is_done:
                     # fresh env
                     # RL choose action based on observation
@@ -100,6 +64,9 @@ def get_route_maze():
                     pathY = observation[1] * 100 + 18 * 5
                     routeX = np.append(routeX, [pathX])
                     routeY = np.append(routeY, [pathY])
+                    print pathX,' ~ ',pathY
+                    if step_one > 100:
+                        break
                     # break while loop when end of this episode
                     if is_done:
                         if step != 0 and is_oval:
@@ -110,6 +77,7 @@ def get_route_maze():
                             routeX_old = routeX
                             routeY_old = routeY
                         break
+                    step_one += 1 
 
             if is_oval:
                 
@@ -126,10 +94,10 @@ def get_route_maze():
                     PathMsg.poses.append(poseMsg)
                 pub.publish(PathMsg)
                 break
-        #rate.sleep()
+        rate.sleep()
 
     print('get routeX and routeY')
-    #rospy.spin()
+    rospy.spin()
 
 
 def find_same(routeX, routeY):
@@ -158,15 +126,20 @@ def modify_path(routeX, routeY):
 if __name__ == "__main__":
     # maze game
     env = Maze()
-    model_path = os.path.dirname(os.path.abspath(__file__)) + "/complex_8_model20171221.ckpt"
+    model_path = os.path.dirname(os.path.abspath(__file__)) + "/../model/natural_dqn/natural_dqn_model_20171222.ckpt"
+    #model_path = os.path.dirname(os.path.abspath(__file__)) + "/../model/double_dqn/double_dqn_model_20171222.ckpt"
+    #model_path = os.path.dirname(os.path.abspath(__file__)) + "/../model/prioritized_replay/prioritized_replay_model_20171222.ckpt"
+    #DeepQNetwork
+    #DoubleDQN
+    #DQNPrioritizedReplay
     RL = DeepQNetwork(env.n_actions, env.n_features, model_path,
                       learning_rate=0.01,
                       reward_decay=0.9,
                       e_greedy=0.9,
                       replace_target_iter=200,
-                      memory_size=2000,
+                      memory_size=4000,
                       # output_graph=True
                       )
-    #run_maze()
+
     get_route_maze()
     #RL.plot_cost()

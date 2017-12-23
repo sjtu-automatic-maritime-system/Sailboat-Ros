@@ -1,14 +1,3 @@
-"""
-This part of code is the DQN brain, which is a brain of the agent.
-All decisions are made in here.
-Using Tensorflow to build the neural network.
-
-View more on my tutorial page: https://morvanzhou.github.io/tutorials/
-
-Using:
-Tensorflow: 1.0
-gym: 0.7.3
-"""
 
 import numpy as np
 import pandas as pd
@@ -78,7 +67,7 @@ class DeepQNetwork:
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 150, \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 200, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
             # first layer. collections is used later when assign to target net
@@ -146,7 +135,7 @@ class DeepQNetwork:
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
 
-        if np.random.uniform() < self.epsilon and ~islearn:
+        if np.random.uniform() < self.epsilon or ~islearn:
             # forward feed the observation and get q value for every actions
             actions_value = self.sess.run(self.q_eval, feed_dict={self.s: observation})
             action = np.argmax(actions_value)

@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/hywel/ROS_catkin_ws/src/Sailboat-Ros/PATH_PLANNING/deep_q_learning/scripts/../model/double_dqn/double_dqn_model_20171222.ckpt"
+all_model_checkpoint_paths: "/home/hywel/ROS_catkin_ws/src/Sailboat-Ros/PATH_PLANNING/deep_q_learning/scripts/../model/double_dqn/double_dqn_model_20171222.ckpt"
