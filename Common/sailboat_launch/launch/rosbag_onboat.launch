@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
     <node pkg="rosbag" type="record" name="sensor_record" args=" -o /home/sjtu-sailboat/rosbag/sensor --split --duration=20m /wtst /ahrs /mach /sensor /sensor2 /arduino"/>
 </launch>
