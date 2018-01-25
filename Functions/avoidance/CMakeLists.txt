@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
         rospy
         std_msgs
         sailboat_message
+        tld_msgs
         )
 
 generate_dynamic_reconfigure_options(
@@ -21,7 +22,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES avoidance
-        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy std_msgs sailboat_message
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy std_msgs sailboat_message tld_msgs
         #DEPENDS system_lib
 )
 

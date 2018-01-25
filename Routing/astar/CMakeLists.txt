@@ -21,6 +21,7 @@ set(catkin_package_DEPENDENCIES
         roscpp
         std_msgs
         sensor_fusion_lib
+	sailboat_message
         )
 
 ## Find catkin macros and libraries

@@ -9,6 +9,7 @@ set(catkin_package_DEPENDENCIES
         std_msgs
         sensor_fusion_msg
         sensor_fusion_lib
+	sailboat_message
         )
 
 ## Find catkin macros and libraries
@@ -36,7 +37,7 @@ include_directories(
 
 
 add_executable(gps_kf_node gps_kf/gps_kf_node.cpp)
-target_link_libraries(gps_kf_node ${catkin_LIBRARIES} sensor_fusion_lib)
+target_link_libraries(gps_kf_node ${catkin_LIBRARIES})
 add_executable(kf_test_node unittest/test_node.cpp)
-target_link_libraries(kf_test_node ${catkin_LIBRARIES} sensor_fusion_lib)
+target_link_libraries(kf_test_node ${catkin_LIBRARIES})
 

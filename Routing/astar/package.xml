@@ -49,6 +49,7 @@
     <depend>std_msgs</depend>
     <depend>dynamic_reconfigure</depend>
     <depend>sensor_fusion_lib</depend>
+    <depend>sailboat_message</depend>
 
 
     <!-- The export tag contains other, unspecified, tags -->
