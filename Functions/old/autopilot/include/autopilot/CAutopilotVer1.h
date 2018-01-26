@@ -2,13 +2,12 @@
 // Created by hywel on 17-4-23.
 //
 
+#ifndef SAILBOAT_CAUTOPILOTVER1_H
+#define SAILBOAT_CAUTOPILOTVER1_H
 
 #include "math_tool_lib/CPID.h"
 #include "autopilot/CSailCtrl.h"
 #include <sstream>
-
-#ifndef SAILBOAT_CAUTOPILOTVER1_H
-#define SAILBOAT_CAUTOPILOTVER1_H
 
 #define pi 3.1415926
 

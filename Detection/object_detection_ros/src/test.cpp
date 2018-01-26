@@ -3,10 +3,10 @@
 //
 
 #include <ros/ros.h>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
 #include <iostream>
-#include "object_detection_lib/detection.h"
+#include "object_detection_ros/detection.h"
 
 int main() {
     cv::Mat image;

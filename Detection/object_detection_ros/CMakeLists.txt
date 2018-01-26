@@ -13,7 +13,6 @@ set(catkin_package_DEPENDENCIES
         sensor_msgs
         cv_bridge
         image_transport
-        object_detection_lib
         )
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -22,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
         ${catkin_package_DEPENDENCIES}
         )
 
-find_package(OpenCV 2.4 REQUIRED)
+find_package(OpenCV 3 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 message("-- OpenCV version: ${OpenCV_VERSION}")
 message("-- OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
@@ -39,15 +38,26 @@ catkin_package(
 )
 
 include_directories(
-        include/${PROJECT_NAME}
+        include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS}
 )
+set( detection_SRC
+        src/detection_ros.cpp
+        src/detection.cpp
+        )
 
-add_executable(object_detection src/detection_ros.cpp)
-target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS} object_detection_lib)
+add_executable(object_detection ${detection_SRC})
+target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-add_executable(mytest src/test.cpp)
-target_link_libraries(mytest ${catkin_LIBRARIES} ${OpenCV_LIBS} object_detection_lib)
+set( test_SRC
+        src/test.cpp
+        src/detection.cpp
+        )
+
+#add_executable(mytest ${test_SRC})
+#add_dependencies(mytest ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(mytest ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 #add_executable(img_undistortion src/undistort_image_raw.cpp)
 #target_link_libraries(img_undistortion ${catkin_LIBRARIES})

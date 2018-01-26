@@ -51,7 +51,6 @@
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>image_transport</depend>
-  <depend>object_detection_lib</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
