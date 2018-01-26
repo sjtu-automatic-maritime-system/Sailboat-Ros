@@ -114,9 +114,9 @@ catkin_package(
 ###########
 
 #Qt4 specific for the GUI
-set(TLD_QT_HEADERS  src/base_frame.hpp 
-                    src/ui_baseFrame.h
-                    src/base_frame_graphics_view.hpp)
+set(TLD_QT_HEADERS src/base_frame.hpp
+        src/ui_baseFrame.h
+        src/base_frame_graphics_view.hpp)
 
 QT4_WRAP_CPP(TLD_QT_HEADERS_MOC ${TLD_QT_HEADERS})
 include(${QT_USE_FILE})
@@ -138,13 +138,13 @@ link_directories(${OPENTLD_OUTPUT_DIR}/lib/libopentld/)
 # )
 
 ## Declare a cpp executable
-add_executable(tld_tracker_node	src/tld_tracker_node.cpp
-                                src/main.cpp                              
+add_executable(tld_tracker_node src/tld_tracker_node.cpp
+        src/main.cpp
 )
 
-add_executable(tld_gui_node     src/tld_gui_node.cpp
-                                src/base_frame.cpp 
-                                src/base_frame_graphics_view.cpp
+add_executable(tld_gui_node src/tld_gui_node.cpp
+        src/base_frame.cpp
+        src/base_frame_graphics_view.cpp
                                 ${TLD_QT_HEADERS_MOC}
 )
 
