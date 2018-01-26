@@ -24,6 +24,6 @@ catkin build
 ```
 ####3.tutorial
 
-[class tutorial](https://github.com/hywel1994/Sailboat-Ros/blob/kinetic/Doc/start_tutorial.md)
+[class tutorial](https://github.com/hywel1994/Sailboat-Ros/blob/kinetic/Doc/tutorial_class.md)
 
 

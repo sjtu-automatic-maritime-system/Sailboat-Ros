@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sailboat_message
+        command_msgs
 )
 
 generate_dynamic_reconfigure_options(
@@ -22,7 +23,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES avoidance
-        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message command_msgs
         #DEPENDS system_lib
 )
 ###########
