@@ -1,4 +1,0 @@
-<launch>
-    <node pkg="station_keeping" type="station_keeping" name="station_keeping"/>
-    <node pkg="rosbag" type="record" name="station_keeping_record" args=" -o /home/sjtu-sailboat/rosbag/station_keeping --split --duration=20m /wtst /ahrs /mach /sensor /sensor2 /arduino /station_keeping_out /station_keeping_para"/>
-</launch>

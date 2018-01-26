@@ -1,3 +1,0 @@
-<launch>
-    <node pkg="autopilot" type="autopilot" name="autopilot"/>
-</launch>

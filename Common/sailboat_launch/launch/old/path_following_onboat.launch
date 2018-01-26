@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="autopilot" type="autopilot_ver1" name="autopilot"/>
+    <node pkg="path_following" type="path_following" name="path_following" output="screen"/>
+</launch>
