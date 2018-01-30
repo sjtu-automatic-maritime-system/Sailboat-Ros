@@ -32,7 +32,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/TwistWithCovariance.h>
 #include <geometry_msgs/PoseWithCovariance.h>
-#include <kingfisher_msgs/Drive.h>
+#include <usv_gazebo_plugins/Drive.h>
 
 #include <Eigen/Core>
 				    //#include <tf/transform_broadcaster.h>
@@ -63,7 +63,7 @@ namespace gazebo
       Callback for Kingfisher Drive commands
       \param msg Kingfisher Drive message
     */
-    void OnCmdDrive( const kingfisher_msgs::DriveConstPtr &msg);
+    void OnCmdDrive( const usv_gazebo_plugins::DriveConstPtr &msg);
 
     /*! ROS spin once */
     void spin();

@@ -46,12 +46,12 @@ UsvPlugin::~UsvPlugin()
 void UsvPlugin::FiniChild()
 {
 }
-    
+
 
 double UsvPlugin::getSdfParamDouble(sdf::ElementPtr sdfPtr, const std::string &param_name, double default_val)
 {
   double val = default_val;
-  if (sdfPtr->HasElement(param_name) && sdfPtr->GetElement(param_name)->GetValue()) 
+  if (sdfPtr->HasElement(param_name) && sdfPtr->GetElement(param_name)->GetValue())
   {
     val = sdfPtr->GetElement(param_name)->Get<double>();
     ROS_INFO_STREAM("Parameter found - setting <" << param_name << "> to <" << val << ">.");
@@ -62,7 +62,7 @@ double UsvPlugin::getSdfParamDouble(sdf::ElementPtr sdfPtr, const std::string &p
   }
   return val;
 }
-				    
+
 void UsvPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
 {
   ROS_INFO("Loading usv_gazebo_dynamics_plugin");
@@ -109,17 +109,17 @@ void UsvPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
   }
 
   // Get parameters from SDF
-  if (_sdf->HasElement("robotNamespace")) 
+  if (_sdf->HasElement("robotNamespace"))
   {
     node_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>() + "/";
   }
 
   if (!_sdf->HasElement("bodyName") || !_sdf->GetElement("bodyName")->GetValue())
-  {                       
+  {
     link_ = model_->GetLink();
     link_name_ = link_->GetName();
     ROS_INFO_STREAM("Did not find SDF parameter bodyName");
-  } 
+  }
   else {
     link_name_ = _sdf->GetElement("bodyName")->Get<std::string>();
     //link_name_ = "thrust_link";
@@ -156,22 +156,22 @@ void UsvPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
 
   param_max_cmd_ = getSdfParamDouble(_sdf,"maxCmd",param_max_cmd_);
   param_max_force_fwd_ = getSdfParamDouble(_sdf,"maxForceFwd",
-					   param_max_force_fwd_);
+                                           param_max_force_fwd_);
   param_max_force_rev_ = getSdfParamDouble(_sdf,"maxForceRev",
-					   param_max_force_rev_);
+                                           param_max_force_rev_);
   param_max_force_rev_ = -1.0*std::abs(param_max_force_rev_);  // make negative
 
   param_boat_area_ = getSdfParamDouble(_sdf,"boatArea",param_boat_area_);
   param_boat_width_ = getSdfParamDouble(_sdf,"boatWidth",param_boat_width_);
   param_boat_length_ = getSdfParamDouble(_sdf,"boatLength",param_boat_length_);
   param_thrust_z_offset_ = getSdfParamDouble(_sdf,"thrustOffsetZ",
-					 param_thrust_z_offset_);
+                                             param_thrust_z_offset_);
   param_metacentric_length_ = getSdfParamDouble(_sdf,"metacentricLength",
-						param_metacentric_length_);
+                                                param_metacentric_length_);
   param_metacentric_width_ = getSdfParamDouble(_sdf,"metacentricWidth",
-						param_metacentric_width_);
+                                               param_metacentric_width_);
 
-  
+
   // Get inertia and mass of vessel
   math::Vector3 inertia = link_->GetInertial()->GetPrincipalMoments();
   double mass = link_->GetInertial()->GetMass();
@@ -180,8 +180,8 @@ void UsvPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
   ROS_INFO("USV Dynamics Parameters: From URDF XACRO model definition");
   ROS_INFO_STREAM("Vessel Mass (rigid-body): " << mass);
   ROS_INFO_STREAM("Vessel Inertia Vector (rigid-body): X:" << inertia[0] <<
-		  " Y:"<<inertia[1] <<
-		  " Z:"<<inertia[2]);
+                                                           " Y:"<<inertia[1] <<
+                                                           " Z:"<<inertia[2]);
   ROS_INFO("USV Dynamics Parameters: Plugin Parameters");
 
   //initialize time and odometry position
@@ -190,8 +190,8 @@ void UsvPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
   // Initialize the ROS node and subscribe to cmd_drive
   int argc = 0;
   char** argv = NULL;
-  ros::init(argc, argv, "usv_gazebo", 
-	    ros::init_options::NoSigintHandler|ros::init_options::AnonymousName);
+  ros::init(argc, argv, "usv_gazebo",
+            ros::init_options::NoSigintHandler|ros::init_options::AnonymousName);
   rosnode_ = new ros::NodeHandle( node_namespace_ );
 
   cmd_drive_sub_ = rosnode_->subscribe("cmd_drive", 1, &UsvPlugin::OnCmdDrive, this );
@@ -200,16 +200,16 @@ void UsvPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
   // simulation iteration.
   this->spinner_thread_ = new boost::thread( boost::bind( &UsvPlugin::spin, this) );
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
-    boost::bind(&UsvPlugin::UpdateChild, this));
+          boost::bind(&UsvPlugin::UpdateChild, this));
 
   // Initialize Added Mass Matrix
   Ma_ = Eigen::MatrixXd(6,6);
   Ma_ << param_X_dot_u_ ,   0,   0, 0, 0, 0,
-        0,   param_Y_dot_v_,   0, 0, 0, 0,
-        0,   0,   0.1, 0, 0, 0,
-        0,   0,   0, 0.1, 0, 0, 
-        0,   0,   0, 0, 0.1, 0,  
-        0,   0,   0, 0, 0, param_N_dot_r_ ;
+          0,   param_Y_dot_v_,   0, 0, 0, 0,
+          0,   0,   0.1, 0, 0, 0,
+          0,   0,   0, 0.1, 0, 0,
+          0,   0,   0, 0, 0.1, 0,
+          0,   0,   0, 0, 0, param_N_dot_r_ ;
 }
 
 double UsvPlugin::scaleThrustCmd(double cmd, double max_cmd, double max_pos, double max_neg)
@@ -230,13 +230,13 @@ double UsvPlugin::scaleThrustCmd(double cmd, double max_cmd, double max_pos, dou
       val = -1.0*std::abs(max_neg);  // ensure it is negative
     }
   }
-  return val;  
+  return val;
 }
 void UsvPlugin::UpdateChild()
 {
   common::Time time_now = this->world_->GetSimTime();
   common::Time step_time = time_now - prev_update_time_;
-  
+
   double dt = step_time.Double();
   prev_update_time_ = time_now;
 
@@ -251,19 +251,19 @@ void UsvPlugin::UpdateChild()
   }
   // Scale commands to thrust and torque forces
   ROS_DEBUG_STREAM_THROTTLE(1.0,"Last cmd: left:" << last_cmd_drive_left_
-		   << " right: " << last_cmd_drive_right_);
+                                                  << " right: " << last_cmd_drive_right_);
   double thrust_left = scaleThrustCmd(last_cmd_drive_left_, param_max_cmd_,
-				      param_max_force_fwd_, 
-				      param_max_force_rev_);
+                                      param_max_force_fwd_,
+                                      param_max_force_rev_);
 
   double thrust_right = scaleThrustCmd(last_cmd_drive_right_, param_max_cmd_,
-				      param_max_force_fwd_, 
-				      param_max_force_rev_);
+                                       param_max_force_fwd_,
+                                       param_max_force_rev_);
   ROS_DEBUG_STREAM_THROTTLE(1.0,"Thrust: left:" << thrust_left
-		   << " right: " << thrust_right);
+                                                << " right: " << thrust_right);
   double thrust = thrust_right + thrust_left;
   double torque = (thrust_right - thrust_left)*param_boat_width_;
-      
+
   // Get Pose/Orientation from Gazebo (if no state subscriber is active)
   pose = link_->GetWorldPose();
   euler = pose.rot.GetAsEuler();
@@ -286,18 +286,18 @@ void UsvPlugin::UpdateChild()
 
   // Create state and derivative of state (accelerations)
   Eigen::VectorXd state_dot(6);
-  state_dot << accel_linear_body.x, accel_linear_body.y, accel_linear_body.z, 
-    accel_angular_body.x, accel_angular_body.y, accel_angular_body.z;
+  state_dot << accel_linear_body.x, accel_linear_body.y, accel_linear_body.z,
+          accel_angular_body.x, accel_angular_body.y, accel_angular_body.z;
 
   Eigen::VectorXd state(6);
-  state << vel_linear_body.x, vel_linear_body.y, vel_linear_body.z, 
-    vel_angular_body.x, vel_angular_body.y, vel_angular_body.z;
+  state << vel_linear_body.x, vel_linear_body.y, vel_linear_body.z,
+          vel_angular_body.x, vel_angular_body.y, vel_angular_body.z;
 
   // Added Mass
   Eigen::VectorXd amassVec = -1.0*Ma_*state_dot;
   ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
   ROS_DEBUG_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
-  
+
   // Coriolis - added mass components
   Eigen::MatrixXd Cmat = Eigen::MatrixXd::Zero(6,6);
   Cmat(0,5) = param_Y_dot_v_ * vel_linear_body.y;
@@ -337,18 +337,18 @@ void UsvPlugin::UpdateChild()
   // Sum all forces
   // note, inputVec only includes torque component
   Eigen::VectorXd forceSum = inputVec + amassVec + Dvec + buoyVec;
-  
+
   ROS_DEBUG_STREAM_THROTTLE(1.0,"forceSum :\n" << forceSum);
   math::Vector3 totalLinear(forceSum(0),forceSum(1),forceSum(2));
   math::Vector3 totalAngular(forceSum(3),forceSum(4),forceSum(5));
-  
+
   // Add dynamic forces/torques to link at CG
   link_->AddRelativeForce(totalLinear);
-  link_->AddRelativeTorque(totalAngular);  
+  link_->AddRelativeTorque(totalAngular);
 
   // Add input force with offset below vessel
-  math::Vector3 relpos(-1.0*param_boat_length_/2.0, 0.0 , 
-		       param_thrust_z_offset_);  // relative pos of thrusters
+  math::Vector3 relpos(-1.0*param_boat_length_/2.0, 0.0 ,
+                       param_thrust_z_offset_);  // relative pos of thrusters
   math::Vector3 inputforce3(thrust, 0,0);
 
   //link_->AddLinkForce(inputforce3,relpos);
@@ -357,16 +357,16 @@ void UsvPlugin::UpdateChild()
   link_->AddForceAtRelativePosition(inputforce3,relpos);
 }
 
-void UsvPlugin::OnCmdDrive( const kingfisher_msgs::DriveConstPtr &msg)
+void UsvPlugin::OnCmdDrive( const usv_gazebo_plugins::DriveConstPtr &msg)
 {
-    last_cmd_drive_time_ = this->world_->GetSimTime();
-    last_cmd_drive_left_ = msg->left;
-    last_cmd_drive_right_ = msg->right;
+  last_cmd_drive_time_ = this->world_->GetSimTime();
+  last_cmd_drive_left_ = msg->left;
+  last_cmd_drive_right_ = msg->right;
 }
 
 void UsvPlugin::spin()
 {
-    while(ros::ok()) ros::spinOnce();
+  while(ros::ok()) ros::spinOnce();
 }
 
 GZ_REGISTER_MODEL_PLUGIN(UsvPlugin);

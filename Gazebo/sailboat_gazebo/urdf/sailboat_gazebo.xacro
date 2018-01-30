@@ -7,7 +7,7 @@
     <!-- Defines the "usv_gazebo" macro which implements the plugin for USV dynamics -->
     <xacro:include filename="$(find usv_gazebo_plugins)/urdf/usv_gazebo_dynamics_plugin.xacro" />
 
-
+    <xacro:include filename="$(find sailboat_gazebo_plugins)/urdf/sailboat_gazebo_dynamics_plugin.xacro" />
 
     <!-- Defines the macro for simulated GPS -->
     <xacro:include filename="$(find sailboat_gazebo)/urdf/gps.xacro" />
@@ -25,7 +25,7 @@
     <!-- includes basic description witout plugins -->
     <xacro:sailboat_base />
     <!-- USV dynamic model -->
-    <xacro:usv_gazebo name="sailboat"/>
+    <xacro:sailboat_gazebo name="sailboat"/>
 
     <!-- Optional sensor plugins - called by macros defined above -->
     <xacro:sailboat_gps_gazebo name="sailboat"/>

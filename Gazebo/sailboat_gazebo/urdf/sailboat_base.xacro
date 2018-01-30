@@ -41,7 +41,7 @@
   <!--Actual body/chassis of the robot-->
   <link name="base_link">
     <inertial>
-      <mass value="29" />
+      <mass value="15.3" />
       <!--This is the pose of the inertial reference frame, relative to the link reference frame. The origin of the inertial reference frame needs to be at the center of gravity. The axes of the inertial reference frame do not need to be aligned with the principal axes of the inertia.-->
       <origin xyz="0 0 0" />
       <!--The 3x3 rotational inertia matrix. Because the rotational inertia matrix is symmetric, only 6 above-diagonal elements of this matrix are specified here, using the attributes ixx, ixy, ixz, iyy, iyz, izz.-->

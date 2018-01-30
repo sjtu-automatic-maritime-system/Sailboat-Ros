@@ -14,10 +14,11 @@
   <depend>roscpp</depend>
   <depend>gazebo</depend>
   <depend>gazebo_ros</depend>
-  <depend>kingfisher_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>eigen</depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

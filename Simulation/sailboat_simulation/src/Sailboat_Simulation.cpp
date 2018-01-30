@@ -43,7 +43,6 @@ void Sensor_pub(sailboat_message::Sensor_msg& msg){
     msg.AWA = SME.AWA;
     msg.AWS = SME.AWS;
 
-
     ROS_INFO("I talk Sailboat_Simulation: [%f] [%f]", msg.Posx, msg.Posy);
 }
 
