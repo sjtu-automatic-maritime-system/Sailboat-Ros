@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sailboat_launch)/rviz/sim.rviz" />
-    <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" args="--perspective-file $(find sailboat_launch)/rqt/sim.perspective"/>
-</launch>

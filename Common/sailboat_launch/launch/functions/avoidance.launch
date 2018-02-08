@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="avoidance" type="avoidance" name="avoidance"/>
+    <node pkg="rosbag" type="record" name="avoidance_record" args=" -j -o /home/sjtu-sailboat/rosbag/fleet_race --split --duration=10m /wtst /ahrs /mach /sensor /sensor2 /arduino /fleet_race_out /fleet_race_para /camera/image_raw /tld_tracked_object /tld_fps"/>
+</launch>

@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery"/>
+</launch>

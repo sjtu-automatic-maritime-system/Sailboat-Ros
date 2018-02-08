@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="sensor_process" type="sensor_process" name="Sensor_Process"/>
+    <node pkg="sensor_process" type="sensor_filters" name="Sensor_Filters"/>
+</launch>

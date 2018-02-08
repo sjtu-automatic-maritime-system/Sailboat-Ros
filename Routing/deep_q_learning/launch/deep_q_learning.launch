@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="deep_q_learning" type="complex_8_dqn_node.py" name="dqn_node"/>
+    <node pkg="deep_q_learning" type="rviz_marker" name="rviz_marker"/>
+</launch>
