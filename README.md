@@ -19,7 +19,7 @@ catkin init
 cd src
 git clone https://github.com/hywel1994/Sailboat-Ros.git
 cd ..
-rosdep install --from-paths src --ignore-src --rosdistro kinetic -y #Optional
+rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
 catkin build
 ```
 ####3.tutorial
