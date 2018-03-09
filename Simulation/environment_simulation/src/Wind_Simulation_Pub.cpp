@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     sailboat_message::Wind_Simulation_msg msg;
     msg.TWA = TWA;
     msg.TWS = TWS;
-    ROS_INFO("I talk WindAngle: [%f]", msg.TWA);
+    //ROS_INFO("I talk WindAngle: [%f]", msg.TWA);
     Wind_pub.publish(msg);
 
     ros::spinOnce();

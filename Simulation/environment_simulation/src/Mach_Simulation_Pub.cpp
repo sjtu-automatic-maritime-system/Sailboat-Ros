@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     msg.sail = sail;
     msg.PCCtrl = PCCtrl;
     
-    ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
+    //ROS_INFO("I talk Rudder_Angle: [%f]", msg.rudder);
     Mach_pub.publish(msg);
     ros::spinOnce();
     loop_rate.sleep();

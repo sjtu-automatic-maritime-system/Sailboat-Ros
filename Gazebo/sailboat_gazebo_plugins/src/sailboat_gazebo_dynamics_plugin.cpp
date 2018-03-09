@@ -56,6 +56,15 @@ void SailboatPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
     water_density_ = 997.7735;
     cmd_timeout_ = 1.0;
 
+    last_uu = 0;
+    last_vv = 0;
+    last_pp = 0;
+    last_rr = 0;
+    last_XX = 0;
+    last_YY = 0;
+    last_phi = 0;
+    last_psi = 0;
+
     g=9.81;
     m = 15.3;
     Asm = 0.59;
@@ -230,23 +239,40 @@ void SailboatPlugin::UpdateChild()
     ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
     ROS_DEBUG_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
 
-    //ROS_INFO("get pose");
 
+    SME.uu = last_uu;
+    SME.vv = last_vv;
+    SME.pp = last_pp;
+    SME.rr = last_rr;
+    SME.XX = last_XX;
+    SME.YY = last_YY;
+    SME.phi = last_phi;
+    SME.psi = last_psi;
 
     SME.nu(0) = vel_linear_body[0];
-    SME.nu(1) = vel_linear_body[1];
+    SME.nu(1) = -vel_linear_body[1];
     SME.nu(2) = vel_angular_body[0];
-    SME.nu(3) = vel_angular_body[2];
-    SME.eta(0) = pose.pos.x;
-    SME.eta(1) = pose.pos.y;
+    SME.nu(3) = -vel_angular_body[2];
+    SME.eta(0) = pose.pos.y;
+    SME.eta(1) = pose.pos.x;
     SME.eta(2) = euler[0];
-    SME.eta(3) = euler[2];
-    //ROS_INFO("pose = %f , %f",SME.eta(0),SME.eta(1));
+    SME.eta(3) = 3.1415926-euler[2];
 
+    //SME.sailAngle = -0.6*SME.AWA;
+    //float tmp = (SME.windDirection - SME.eta(3));
+
+    last_uu = SME.nu(0);
+    last_vv = SME.nu(1);
+    last_pp = SME.nu(2);
+    last_rr = SME.nu(3);
+    last_XX = SME.eta(0);
+    last_YY = SME.eta(1);
+    last_phi = SME.eta(2);
+    last_psi = SME.eta(3);
 
     SME.Sailboat_Calc(dt);
 
-    //ROS_INFO("calc");
+
 
     // Drag
     //Eigen::MatrixXd Dmat = Eigen::MatrixXd(6,6);
@@ -256,18 +282,41 @@ void SailboatPlugin::UpdateChild()
     Dmat(2,2) = 50;
     Dmat(3,3) = 10;
     Dmat(4,4) = 10;
-    Dmat(5,5) = 20 + 0*std::abs(vel_angular_body.z);
+    Dmat(5,5) = 10 + 0*std::abs(vel_angular_body.z);
+
     ROS_DEBUG_STREAM_THROTTLE(1.0,"Dmat :\n" << Dmat);
     Eigen::VectorXd Dvec = -1.0*Dmat*state;
+    Dvec(0) = 0;
+    Dvec(1) = 0;
+    Dvec(5) = 0;
     ROS_DEBUG_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
+
 
     //Input
     Eigen::VectorXd inputVec = Eigen::VectorXd::Zero(6);
     inputVec(0) = SME.F(0);
-    inputVec(1) = SME.F(1);
+    inputVec(1) = -SME.F(1);
     inputVec(3) = SME.F(2);
-    inputVec(5) = SME.F(3);
-    ROS_DEBUG_STREAM_THROTTLE(1.0,"inputVec :\n" << inputVec);
+    inputVec(5) = -SME.F(3);
+
+    //ROS_INFO("sailAngle = %f", SME.sailAngle);
+//    ROS_INFO("AWA = %f", SME.AWA);
+//    ROS_INFO("AWA_my = %f", tmp);
+//
+//    ROS_INFO("gazebo pose = %f , %f, %f , %f",pose.pos.x,pose.pos.y,euler[0],euler[2]);
+//
+//    ROS_INFO("sme pose = %f , %f, %f , %f",SME.eta(0),SME.eta(1),SME.eta(2),SME.eta(3));
+//    ROS_INFO("sme vel = %f , %f, %f , %f",SME.nu(0),SME.nu(1),SME.nu(2),SME.nu(3));
+//
+//    ROS_INFO("calc: dt = %f",dt);
+//    ROS_INFO("amassVec = %f , %f ,%f ,%f",amassVec(0),amassVec(1),amassVec(3),amassVec(5));
+//
+//    ROS_INFO("Drag = %f , %f ,%f ,%f",Dvec(0),Dvec(1),Dvec(3),Dvec(5));
+//
+//    ROS_INFO("inputVec = %f , %f ,%f ,%f",SME.F(0),SME.F(1),SME.F(2),SME.F(3));
+
+
+    //ROS_DEBUG_STREAM("inputVec :\n" << inputVec);
 
     //ROS_INFO("input");
 
@@ -303,18 +352,25 @@ void SailboatPlugin::OnMachDrive( const sailboat_message::Mach_msg::ConstPtr &ms
     last_mach_drive_sail_ = msg->sail;
     last_mach_drive_rudder_ = msg->rudder;
 
-//    SME.rudderAngle = msg->rudder;
-//    SME.sailAngle = msg->sail;
+    SME.delta_r = last_mach_drive_rudder_;
+    SME.delta_s = last_mach_drive_sail_;
+
+    SME.rudderAngle = last_mach_drive_rudder_;
+    SME.sailAngle = last_mach_drive_sail_;
 //    if(SME.sailAngle>1.5) SME.sailAngle=1.5;
 //    if(SME.sailAngle<-1.5) SME.sailAngle=-1.5;
-//    SME.delta_r = SME.rudderAngle;
-//    SME.delta_s = SME.sailAngle;
+//    SME.delta_r = last_mach_drive_rudder_;
+//    SME.delta_s = last_mach_drive_sail_;
 }
 
 void SailboatPlugin::OnWindDrive( const sailboat_message::Wind_Simulation_msg::ConstPtr &msg)
 {
     last_wind_TWA_ = msg->TWA;
     last_wind_TWS_ = msg->TWS;
+
+    SME.windDirection = last_wind_TWA_;
+    SME.windVelocity = last_wind_TWS_;
+
 //    SME.windDirection = msg->TWA;
 //    SME.windVelocity = msg->TWS;
 }

@@ -504,6 +504,8 @@ void CSimulationVer1::ControlForceRudder() {
 
     delete [] cld;
 
+    //cout<<"delta_r = "<<delta_r<<endl;
+
     //cout<<"tau_r"<<endl<<tau_r<<endl;
 }
 

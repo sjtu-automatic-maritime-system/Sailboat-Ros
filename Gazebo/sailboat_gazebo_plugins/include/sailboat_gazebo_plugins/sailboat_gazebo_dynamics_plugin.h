@@ -113,6 +113,14 @@ namespace gazebo
         double last_mach_drive_motor_;
         double last_wind_TWA_;
         double last_wind_TWS_;
+        double last_uu;
+        double last_vv;
+        double last_pp;
+        double last_rr;
+        double last_XX;
+        double last_YY;
+        double last_phi;
+        double last_psi;
 
         /* Water height [m]*/
         double water_level_;
