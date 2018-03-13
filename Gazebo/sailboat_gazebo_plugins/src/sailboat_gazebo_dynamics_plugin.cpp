@@ -236,8 +236,8 @@ void SailboatPlugin::UpdateChild()
 
     // Added Mass
     Eigen::VectorXd amassVec = -1.0*Ma_*state_dot;
-    ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
-    ROS_DEBUG_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
+    //ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
+    ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
 
 
     SME.uu = last_uu;
@@ -256,10 +256,10 @@ void SailboatPlugin::UpdateChild()
     SME.eta(0) = pose.pos.y;
     SME.eta(1) = pose.pos.x;
     SME.eta(2) = euler[0];
-    SME.eta(3) = 3.1415926-euler[2];
+    SME.eta(3) = 3.1415926/2-euler[2];
 
-    //SME.sailAngle = -0.6*SME.AWA;
-    //float tmp = (SME.windDirection - SME.eta(3));
+    SME.sailAngle = -0.5*SME.AWA;
+    float tmp = (SME.windDirection +3.14 - SME.eta(3));
 
     last_uu = SME.nu(0);
     last_vv = SME.nu(1);
@@ -284,25 +284,24 @@ void SailboatPlugin::UpdateChild()
     Dmat(4,4) = 10;
     Dmat(5,5) = 10 + 0*std::abs(vel_angular_body.z);
 
-    ROS_DEBUG_STREAM_THROTTLE(1.0,"Dmat :\n" << Dmat);
+    //ROS_INFO_STREAM_THROTTLE(1.0,"Dmat :\n" << Dmat);
+
     Eigen::VectorXd Dvec = -1.0*Dmat*state;
     Dvec(0) = 0;
     Dvec(1) = 0;
     Dvec(5) = 0;
-    ROS_DEBUG_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
-
-
+    ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
     //Input
     Eigen::VectorXd inputVec = Eigen::VectorXd::Zero(6);
     inputVec(0) = SME.F(0);
     inputVec(1) = -SME.F(1);
     inputVec(3) = SME.F(2);
     inputVec(5) = -SME.F(3);
+    ROS_INFO_STREAM_THROTTLE(1.0,"inputVec :\n" << inputVec);
 
-    //ROS_INFO("sailAngle = %f", SME.sailAngle);
+//    ROS_INFO("sailAngle = %f", SME.sailAngle);
 //    ROS_INFO("AWA = %f", SME.AWA);
 //    ROS_INFO("AWA_my = %f", tmp);
-//
 //    ROS_INFO("gazebo pose = %f , %f, %f , %f",pose.pos.x,pose.pos.y,euler[0],euler[2]);
 //
 //    ROS_INFO("sme pose = %f , %f, %f , %f",SME.eta(0),SME.eta(1),SME.eta(2),SME.eta(3));
@@ -315,18 +314,13 @@ void SailboatPlugin::UpdateChild()
 //
 //    ROS_INFO("inputVec = %f , %f ,%f ,%f",SME.F(0),SME.F(1),SME.F(2),SME.F(3));
 
-
-    //ROS_DEBUG_STREAM("inputVec :\n" << inputVec);
-
-    //ROS_INFO("input");
-
     // Restoring/Buoyancy Forces
     double buoy_force = (water_level_ - pose.pos.z)*0.48*g*water_density_;
     Eigen::VectorXd buoyVec = Eigen::VectorXd::Zero(6);
     buoyVec(2) = buoy_force;  // Z direction - shoudl really be in XYZ frame
     buoyVec(3) = -0.4*sin(euler.x)*buoy_force; // roll
     buoyVec(4) = -0.4*sin(euler.y)*buoy_force; // pitch
-    ROS_DEBUG_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
+    ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
 
     // Sum all forces
     // note, inputVec only includes torque component
@@ -334,7 +328,7 @@ void SailboatPlugin::UpdateChild()
     //ROS_INFO("sum");
 
 
-    ROS_DEBUG_STREAM("forceSum :\n" << forceSum);
+    ROS_INFO_STREAM_THROTTLE(1.0,"forceSum :\n" << forceSum);
     math::Vector3 totalLinear(forceSum(0),forceSum(1),forceSum(2));
     math::Vector3 totalAngular(forceSum(3),forceSum(4),forceSum(5));
 
@@ -353,10 +347,10 @@ void SailboatPlugin::OnMachDrive( const sailboat_message::Mach_msg::ConstPtr &ms
     last_mach_drive_rudder_ = msg->rudder;
 
     SME.delta_r = last_mach_drive_rudder_;
-    SME.delta_s = last_mach_drive_sail_;
+    //SME.delta_s = last_mach_drive_sail_;
 
     SME.rudderAngle = last_mach_drive_rudder_;
-    SME.sailAngle = last_mach_drive_sail_;
+    //SME.sailAngle = last_mach_drive_sail_;
 //    if(SME.sailAngle>1.5) SME.sailAngle=1.5;
 //    if(SME.sailAngle<-1.5) SME.sailAngle=-1.5;
 //    SME.delta_r = last_mach_drive_rudder_;

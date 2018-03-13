@@ -34,5 +34,7 @@
     <!--
     <node pkg="rqt_topic" type="rqt_topic" name="rqt_topic" />
     -->
+    <node pkg="environment_simulation" type="wind_simulation_pub" name="wind_simulation_pub"/>
+    <node pkg="sailboat_gazebo" type="sensor_simulation" name="sensor_simulation"/>
 
 </launch>

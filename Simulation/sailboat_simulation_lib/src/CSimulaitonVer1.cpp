@@ -500,7 +500,7 @@ void CSimulationVer1::ControlForceRudder() {
     tau_r(1,0) = tmp4;
     //tau_r(2,0) = 0;
     tau_r(2,0) = -tmp4*par->z_r;
-    tau_r(3,0) = tmp4*par->x_r;
+    tau_r(3,0) = tmp4*par->x_r * 2;
 
     delete [] cld;
 

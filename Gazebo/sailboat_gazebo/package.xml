@@ -22,7 +22,8 @@
   <depend>sensor_msgs</depend>
   <depend>tf</depend>
   <depend>hector_gazebo_plugins</depend>
-
+  <depend>sailboat_message</depend>
+  <depend>geometry_msgs</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

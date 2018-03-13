@@ -10,6 +10,8 @@ set(catkin_package_DEPENDENCIES
     sensor_msgs
     tf
     hector_gazebo_plugins
+        sailboat_message
+        geometry_msgs
     )
 
 find_package(catkin REQUIRED COMPONENTS
@@ -35,3 +37,10 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+set(sensor_process_SRC
+        src/sensor_simulation.cpp)
+
+
+add_executable(sensor_simulation ${sensor_process_SRC})
+target_link_libraries(sensor_simulation ${catkin_LIBRARIES})
+add_dependencies(sensor_simulation ${catkin_EXPORTED_TARGETS})
