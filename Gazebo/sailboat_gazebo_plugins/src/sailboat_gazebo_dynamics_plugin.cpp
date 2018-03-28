@@ -237,7 +237,7 @@ void SailboatPlugin::UpdateChild()
     // Added Mass
     Eigen::VectorXd amassVec = -1.0*Ma_*state_dot;
     //ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
-    ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
+    //ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
 
 
     SME.uu = last_uu;
@@ -290,14 +290,14 @@ void SailboatPlugin::UpdateChild()
     Dvec(0) = 0;
     Dvec(1) = 0;
     Dvec(5) = 0;
-    ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
+    //ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
     //Input
     Eigen::VectorXd inputVec = Eigen::VectorXd::Zero(6);
     inputVec(0) = SME.F(0);
     inputVec(1) = -SME.F(1);
     inputVec(3) = SME.F(2);
     inputVec(5) = -SME.F(3);
-    ROS_INFO_STREAM_THROTTLE(1.0,"inputVec :\n" << inputVec);
+    //ROS_INFO_STREAM_THROTTLE(1.0,"inputVec :\n" << inputVec);
 
 //    ROS_INFO("sailAngle = %f", SME.sailAngle);
 //    ROS_INFO("AWA = %f", SME.AWA);
@@ -320,7 +320,7 @@ void SailboatPlugin::UpdateChild()
     buoyVec(2) = buoy_force;  // Z direction - shoudl really be in XYZ frame
     buoyVec(3) = -0.4*sin(euler.x)*buoy_force; // roll
     buoyVec(4) = -0.4*sin(euler.y)*buoy_force; // pitch
-    ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
+    //ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
 
     // Sum all forces
     // note, inputVec only includes torque component

@@ -47,8 +47,8 @@ struct gps_fix{
 
 static double SensorMsg[10];
 
-static double lat_orgin = -30.0602750;
-static double lon_orgin = -51.1737670;
+static double lat_orgin = -30.0602750*3.1415926/180;
+static double lon_orgin = -51.1737670*3.1415926/180;
 
 
 euler QuaternionToEuler(double w, double x,double y,double z) // Z-Y-X Euler angles
@@ -133,22 +133,52 @@ void gpsCallback(const sensor_msgs::NavSatFix::ConstPtr& msg){
     gps_fix Gps_Fix;
     Gps_Fix.latitude = msg->latitude;
     Gps_Fix.longitude = msg->longitude;
-    double d_lat = (Gps_Fix.latitude - lat_orgin)*3.1415926/180;
-    double d_lon = (Gps_Fix.longitude - lon_orgin)*3.1415926/180;
 
-    double a = 6378137.0;
+    double latitude = Gps_Fix.latitude*3.1415926/180;
+    double longitude = Gps_Fix.longitude*3.1415926/180;
+
+    double d_lat = latitude - lat_orgin;
+    double d_lon = longitude - lon_orgin;
+
+    double MACRO_AXIS = 6378137.0; // 赤道圆的平均半径
+    double MINOR_AXIS = 6356752.0; // 半短轴的长度，地球两极距离的一半
+
+    double a1 = 6378137.0;
     double e_2 = 6.69437999014e-3;
-
-    double r1 = a * (1 - e_2) / pow((1 - e_2 * pow((sin(lat_orgin)), 2)) , 1.5);
-    double r2 = a / sqrt(1 - e_2 * pow((sin(lat_orgin)) , 2));
+    double r1 = a1 * (1 - e_2) / pow((1 - e_2 * pow((sin(lat_orgin)), 2)) , 1.5);
+    double r2 = a1 / sqrt(1 - e_2 * pow((sin(lat_orgin)) , 2));
 
     double north = r1*d_lat;
     double east = r2*cos(lat_orgin)*d_lon;
+
+    double a = pow(MACRO_AXIS, 2.0);
+    double b = pow(MINOR_AXIS, 2.0);
+    double c = pow(tan(lat_orgin), 2.0);
+    double d = pow(1/tan(lat_orgin),2.0);
+    double x = a/sqrt(a + b*c);
+    double y = b/sqrt(b + a*d);
+
+    double e = pow(tan(latitude), 2.0);
+    double f = pow(1/tan(latitude), 2.0);
+
+    double m = a/sqrt(a + b*e);
+    double n = b/sqrt(b + a*f);
+
+    double turnY = sqrt(pow(x-m,2.0)+pow(y-n,2.0));
+
+    double turnX = a/sqrt(a + b*c)* (longitude - lon_orgin);
+
+    std::cout<<"turnX: "<< turnX << std::endl;
+    std::cout<<"turnY: "<< turnY << std::endl;
 
     SensorMsg[4] = north;
     SensorMsg[5] = east;
 
 }
+
+
+
+
 
 void windCallback(const sailboat_message::Wind_Simulation_msg::ConstPtr& msg){
     double TWA = msg->TWA;
