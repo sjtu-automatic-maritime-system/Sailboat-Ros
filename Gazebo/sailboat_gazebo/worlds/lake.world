@@ -72,7 +72,7 @@
       </link>
     </model>
     
-    <!-- The models below should be included in kingfisher_gazebo package -->
+    <!-- The models below should be included in usv_gazebo package -->
     <include>
       <!-- Note - the pose tag doesn't seem to work for heightmaps, so you need
       to go into the model file to change the altitutde/height fo the lake!-->

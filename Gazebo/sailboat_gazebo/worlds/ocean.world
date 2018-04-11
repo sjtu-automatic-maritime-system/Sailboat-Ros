@@ -77,7 +77,6 @@
     <include>
       <pose> 0 0 5 0 0 0 </pose>
       <uri>model://models/ocean</uri>
-      <scale>5 5 5</scale>
     </include>
 
   </world>

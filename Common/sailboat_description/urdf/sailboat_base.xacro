@@ -117,8 +117,8 @@
     <origin xyz="-0.75 0 -0.1"/>
   </joint>
 
-  <gazebo>
-    <plugin name="kingfisher_dynamic" filename="libkingfisher_gazebo_plugins.so">
+  <!-- <gazebo>
+    <plugin name="kingfisher_dynamic" filename="libusv_gazebo_plugins.so">
       <maxForce>62.0</maxForce>
       <bodyName>base_link</bodyName>
       <waterDensity>997.7735</waterDensity>
@@ -127,6 +127,6 @@
       <yawDampingFactor>20.0</yawDampingFactor>
       <rolPitDampingFactor>5.0</rolPitDampingFactor>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
 </robot>

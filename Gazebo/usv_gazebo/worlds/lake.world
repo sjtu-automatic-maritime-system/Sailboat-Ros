@@ -1,6 +1,15 @@
 <?xml version="1.0" ?>
 <sdf version="1.4">
   <world name="pond">
+
+    <scene>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+    </scene>
+
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
@@ -68,14 +77,14 @@
       <!-- Note - the pose tag doesn't seem to work for heightmaps, so you need
       to go into the model file to change the altitutde/height fo the lake!-->
       <pose> 0 0 5 0 0 0 </pose>
-      <uri>model://models/delmonte</uri>
+      <uri>model://models/lake</uri>
     </include>
 
     <!-- Should be at the same height as the water level in USV and buoyancy 
     plugin configurations -->
     <include>
       <pose> 0 0 5 0 0 0 </pose>
-      <uri>model://models/water_plane</uri>
+      <uri>model://models/ocean</uri>
     </include>
 
   </world>

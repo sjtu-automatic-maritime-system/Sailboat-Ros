@@ -3,7 +3,7 @@
 import rospy
 from std_msgs.msg import String
 #include "sailboat_message/Mach_msg.h"
-from   sailboat_message.msg import Ahrs_msg
+from sailboat_message.msg import Ahrs_msg
 import serial
 import struct
 import logging
