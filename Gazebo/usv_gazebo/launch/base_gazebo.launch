@@ -7,7 +7,7 @@
 
   <!-- Command line arguments -->
   <arg name="gui" default="true" />
-  <arg name="name" default="kingfisher" />
+  <arg name="name" default="usv" />
   <arg name="imu" default="true" />
   <arg name="gps" default="true" />
   <arg name="p3d" default="true" />
@@ -26,7 +26,7 @@
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
   
   <!-- Spawn robot in gazebo -->
-  <node name="spawn_kingfisher_model" pkg="gazebo_ros" type="spawn_model"
+  <node name="spawn_usv_model" pkg="gazebo_ros" type="spawn_model"
 	args="-x 0.0 -y 0.0 -z 1.0 -R 0.0 -P 0.0 -Y 0.0 -unpause -urdf -param robot_description -model mobile_base"/>
   
   <!--

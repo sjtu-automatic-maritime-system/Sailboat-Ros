@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro"
-       name="kingfisher">
+       name="usv">
 
-  <!-- Defines the "kingfisher_base" macro -->
-  <xacro:include filename="$(find usv_gazebo)/urdf/kingfisher_urdf.xacro" />
-  <!--<xacro:include filename="$(find usv_gazebo)/urdf/kingfisher_urdf_camera.xacro" />-->
+  <!-- Defines the "usv_base" macro -->
+  <xacro:include filename="$(find usv_gazebo)/urdf/usv_urdf.xacro" />
+  <!--<xacro:include filename="$(find usv_gazebo)/urdf/usv_urdf_camera.xacro" />-->
   <!-- Defines the "usv_gazebo" macro which implements the plugin for USV dynamics -->
   <xacro:include filename="$(find usv_gazebo_plugins)/urdf/usv_gazebo_dynamics_plugin.xacro" />
   <!-- Testing old plugin -->
-  <!--<xacro:include filename="$(find kingfisher_plugins)/urdf/kingfisher_plugin.xacro" />-->
+  <!--<xacro:include filename="$(find usv_plugins)/urdf/usv_plugin.xacro" />-->
   
   <!-- Defines the macro for including simulated camera -->
-  <xacro:include filename="$(find usv_gazebo)/urdf/kingfisher_camera.xacro" />
+  <xacro:include filename="$(find usv_gazebo)/urdf/usv_camera.xacro" />
 
   <!-- Defines the macro for simulated GPS -->
   <xacro:include filename="$(find usv_gazebo)/urdf/gps_gazebo.xacro" />
@@ -24,22 +24,22 @@
 
   <!-- Call the macros defined above -->
   <!-- includes basic description witout plugins -->
-  <xacro:kingfisher_base />
+  <xacro:usv_base />
   <!-- USV dynamic model -->
-  <xacro:usv_gazebo name="kingfisher"/>
+  <xacro:usv_gazebo name="usv"/>
 
   <!-- Optional sensor plugins - called by macros defined above -->
   <xacro:if value="$(arg gps)">
-    <xacro:kingfisher_gps_gazebo name="kingfisher"/>
+    <xacro:usv_gps_gazebo name="usv"/>
   </xacro:if>
   <xacro:if value="$(arg imu)">
-    <xacro:kingfisher_imu_gazebo name="kingfisher"/>
+    <xacro:usv_imu_gazebo name="usv"/>
   </xacro:if>
   <xacro:if value="$(arg p3d)">
-    <xacro:kingfisher_p3d_gazebo name="kingfisher"/>
+    <xacro:usv_p3d_gazebo name="usv"/>
   </xacro:if>
 
-  <xacro:usv_gazebo_camera name="kingfisher"/>
+  <xacro:usv_gazebo_camera name="usv"/>
 
 
 

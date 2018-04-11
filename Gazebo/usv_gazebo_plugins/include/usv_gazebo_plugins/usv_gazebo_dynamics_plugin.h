@@ -60,8 +60,8 @@ namespace gazebo
       but not implemented! */
     void OnContact(const std::string &name, const physics::Contact &contact);
     /*!
-      Callback for Kingfisher Drive commands
-      \param msg Kingfisher Drive message
+      Callback for usv Drive commands
+      \param msg usv Drive message
     */
     void OnCmdDrive( const usv_gazebo_plugins::DriveConstPtr &msg);
 
@@ -73,7 +73,7 @@ namespace gazebo
      */
     double getSdfParamDouble(sdf::ElementPtr sdfPtr,const std::string &param_name,double default_val);
 
-    /*! Takes ROS Kingfisher Drive commands and scales them by max thrust 
+    /*! Takes ROS usv Drive commands and scales them by max thrust 
       
       \param cmd ROS drive command
       \param max_cmd  Maximum value expected for commands - scaling factor

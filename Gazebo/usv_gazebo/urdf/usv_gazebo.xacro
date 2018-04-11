@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="usv_gazebo" params="name">
-    <!--Gazebo Plugin for simulating Kingfisher dynamics-->
+    <!--Gazebo Plugin for simulating usv dynamics-->
     <gazebo>
       <!--<plugin name="heron_dynamic" filename="libheron_gazebo_plugins.so">-->
       <plugin name="usv_dynamics_${name}" filename="libusv_gazebo_dynamics_plugin.so">

@@ -2,7 +2,7 @@
 
 ## Installation and Tutorials
 
-[Gazebo Simulation of Kingfisher/Heron USV](https://wiki.nps.edu/pages/viewpage.action?pageId=818282511)
+[Gazebo Simulation of usv/Heron USV](https://wiki.nps.edu/pages/viewpage.action?pageId=818282511)
 
 ## Branches
 Currently we maintain separate development branches for ROS releases.  The major differences between the Indigo and Kinetic branches are...

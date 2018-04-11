@@ -9,7 +9,7 @@
   <arg name="R" default="0" />
   <arg name="Y" default="0" />
 
-  <!-- Starts gazebo with world, spawns Kingfisher, etc -->
+  <!-- Starts gazebo with world, spawns usv, etc -->
   <arg name="world" default="lake.world" />
   <include file="$(find usv_gazebo)/launch/usv_gazebo_worlds.launch">
     <arg name="world" value="$(arg world)"/>
