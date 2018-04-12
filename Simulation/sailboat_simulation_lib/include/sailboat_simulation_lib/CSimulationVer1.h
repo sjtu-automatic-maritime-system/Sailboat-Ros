@@ -161,6 +161,7 @@ public:
     double psi;
 
     MatrixXd F;
+    MatrixXd F_input;
 
     //MatrixXd v_in;
     MatrixXd nu;

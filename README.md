@@ -13,7 +13,7 @@ $ sudo apt-get install python-wstool python-rosinstall-generator python-catkin-t
 ```
 
 ```$xslt
-mkdir ~/sailboat_ws/src
+mkdir -p ~/sailboat_ws/src
 cd ~/sailboat_ws
 catkin init
 cd src

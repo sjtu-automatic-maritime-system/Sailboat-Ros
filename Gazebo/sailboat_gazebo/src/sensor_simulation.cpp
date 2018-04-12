@@ -168,8 +168,8 @@ void gpsCallback(const sensor_msgs::NavSatFix::ConstPtr& msg){
 
     double turnX = a/sqrt(a + b*c)* (longitude - lon_orgin);
 
-    std::cout<<"turnX: "<< turnX << std::endl;
-    std::cout<<"turnY: "<< turnY << std::endl;
+    std::cout<<"turnX: "<< turnX << " " << north << std::endl;
+    std::cout<<"turnY: "<< turnY << " " << east << std::endl;
 
     SensorMsg[4] = north;
     SensorMsg[5] = east;

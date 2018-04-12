@@ -138,7 +138,6 @@ void SailboatPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf )
     ROS_INFO("ros init");
 
     //init
-    //显示仿真数据
     //SME.ShowData();
     //set
     //SME.SettingAttitudeInit(0,0,0,0,0,0,0,pi);
@@ -236,6 +235,10 @@ void SailboatPlugin::UpdateChild()
 
     // Added Mass
     Eigen::VectorXd amassVec = -1.0*Ma_*state_dot;
+    
+    //amassVec(0) = 0;
+    //amassVec(1) = 0;
+    //amassVec(5) = 0;
     //ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
     //ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
 
@@ -287,17 +290,16 @@ void SailboatPlugin::UpdateChild()
     //ROS_INFO_STREAM_THROTTLE(1.0,"Dmat :\n" << Dmat);
 
     Eigen::VectorXd Dvec = -1.0*Dmat*state;
-    Dvec(0) = 0;
-    Dvec(1) = 0;
-    Dvec(5) = 0;
+    //Dvec(0) = 0;
+    //Dvec(1) = 0;
+    //Dvec(5) = 0;
     //ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
     //Input
     Eigen::VectorXd inputVec = Eigen::VectorXd::Zero(6);
-    inputVec(0) = SME.F(0);
-    inputVec(1) = -SME.F(1);
-    inputVec(3) = SME.F(2);
-    inputVec(5) = -SME.F(3);
-    //ROS_INFO_STREAM_THROTTLE(1.0,"inputVec :\n" << inputVec);
+    inputVec(0) = SME.F_input(0);
+    inputVec(1) = -SME.F_input(1);
+    inputVec(3) = SME.F_input(2);
+    inputVec(5) = -SME.F_input(3);
 
 //    ROS_INFO("sailAngle = %f", SME.sailAngle);
 //    ROS_INFO("AWA = %f", SME.AWA);
@@ -320,15 +322,32 @@ void SailboatPlugin::UpdateChild()
     buoyVec(2) = buoy_force;  // Z direction - shoudl really be in XYZ frame
     buoyVec(3) = -0.4*sin(euler.x)*buoy_force; // roll
     buoyVec(4) = -0.4*sin(euler.y)*buoy_force; // pitch
+
     //ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
 
     // Sum all forces
     // note, inputVec only includes torque component
     Eigen::VectorXd forceSum = inputVec + amassVec + buoyVec + Dvec;
+    // if (forceSum(0) > -0.3){
+    //     forceSum(0) = -0.3;
+    // }
+    // if (forceSum(1) > 5){
+    //     forceSum(1) = 5;
+    // }
+    // if (forceSum(1) < -5){
+    //     forceSum(1) = -5;
+    // }
+
     //ROS_INFO("sum");
+    
+    if( true ){
+        ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
+        ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
+        ROS_INFO_STREAM_THROTTLE(1.0,"inputVec :\n" << inputVec);
+        ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
+        ROS_INFO_STREAM_THROTTLE(1.0,"forceSum :\n" << forceSum);
+    }
 
-
-    ROS_INFO_STREAM_THROTTLE(1.0,"forceSum :\n" << forceSum);
     math::Vector3 totalLinear(forceSum(0),forceSum(1),forceSum(2));
     math::Vector3 totalAngular(forceSum(3),forceSum(4),forceSum(5));
 

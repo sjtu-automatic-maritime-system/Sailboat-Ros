@@ -4,8 +4,6 @@
 
   <xacro:macro name="usv_base">
 
-
-
   <!-- Included URDF/XACRO Files -->
   <xacro:include filename="$(find usv_gazebo)/urdf/materials.urdf.xacro" />
   <!-- Replace original usv file with new one with minimial inertia-->

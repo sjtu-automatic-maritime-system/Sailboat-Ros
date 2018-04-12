@@ -36,7 +36,7 @@ include_directories(
 
 set( sailboat_simulation_lib_SRC
         #lib/CCubicSplineInterpolation.cpp
-        src/CSimulaitonVer1.cpp
+        src/CSimulationVer1.cpp
         src/CSimulationVer2.cpp
         #src/Sailboat_Simulation.cpp
         )

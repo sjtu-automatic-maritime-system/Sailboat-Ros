@@ -500,7 +500,7 @@ void CSimulationVer1::ControlForceRudder() {
     tau_r(1,0) = tmp4;
     //tau_r(2,0) = 0;
     tau_r(2,0) = -tmp4*par->z_r;
-    tau_r(3,0) = tmp4*par->x_r * 2;
+    tau_r(3,0) = tmp4*par->x_r;
 
     delete [] cld;
 
@@ -638,6 +638,8 @@ void CSimulationVer1::Equation() {
     //cout<<"M="<<endl<<M<<endl;
     //cout<<"C="<<endl<<C<<endl;
     //cout<<"J="<<endl<<J<<endl;
+
+    F_input = tau_r + tau_s;
 
     F = -g_eta - D_nu + tau_r + tau_s;
     nu_dot = M.inverse()*(-C*nu*0 + F);
