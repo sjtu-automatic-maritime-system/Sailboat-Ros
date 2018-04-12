@@ -236,11 +236,40 @@ void SailboatPlugin::UpdateChild()
     // Added Mass
     Eigen::VectorXd amassVec = -1.0*Ma_*state_dot;
     
-    //amassVec(0) = 0;
-    //amassVec(1) = 0;
-    //amassVec(5) = 0;
+    amassVec(0) = 0;
+    amassVec(1) = 0;
+    amassVec(5) = 0;
     //ROS_DEBUG_STREAM_THROTTLE(1.0,"state_dot: \n" << state_dot);
-    //ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
+    //ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec)
+
+
+    // Drag
+    //Eigen::MatrixXd Dmat = Eigen::MatrixXd(6,6);
+    Eigen::MatrixXd Dmat = Eigen::MatrixXd::Zero(6,6);
+    Dmat(0,0) = 20 + 0*std::abs(vel_linear_body.x);
+    Dmat(1,1) = 20 + 0*std::abs(vel_linear_body.y);
+    Dmat(2,2) = 50;
+    Dmat(3,3) = 10;
+    Dmat(4,4) = 10;
+    Dmat(5,5) = 10 + 0*std::abs(vel_angular_body.z);
+
+    //ROS_INFO_STREAM_THROTTLE(1.0,"Dmat :\n" << Dmat);
+
+    Eigen::VectorXd Dvec = -1.0*Dmat*state;
+    Dvec(0) = 0;
+    Dvec(1) = 0;
+    Dvec(3) = 0;
+    Dvec(5) = 0;
+    //ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
+
+    // Restoring/Buoyancy Forces
+    double buoy_force = (water_level_ - pose.pos.z)*0.48*g*water_density_;
+    Eigen::VectorXd buoyVec = Eigen::VectorXd::Zero(6);
+    buoyVec(2) = buoy_force;  // Z direction - shoudl really be in XYZ frame
+    //buoyVec(3) = -0.4*sin(euler.x)*buoy_force; // roll
+    buoyVec(4) = -0.4*sin(euler.y)*buoy_force; // pitch
+
+    //ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
 
 
     SME.uu = last_uu;
@@ -275,31 +304,12 @@ void SailboatPlugin::UpdateChild()
 
     SME.Sailboat_Calc(dt);
 
-
-
-    // Drag
-    //Eigen::MatrixXd Dmat = Eigen::MatrixXd(6,6);
-    Eigen::MatrixXd Dmat = Eigen::MatrixXd::Zero(6,6);
-    Dmat(0,0) = 20 + 0*std::abs(vel_linear_body.x);
-    Dmat(1,1) = 20 + 0*std::abs(vel_linear_body.y);
-    Dmat(2,2) = 50;
-    Dmat(3,3) = 10;
-    Dmat(4,4) = 10;
-    Dmat(5,5) = 10 + 0*std::abs(vel_angular_body.z);
-
-    //ROS_INFO_STREAM_THROTTLE(1.0,"Dmat :\n" << Dmat);
-
-    Eigen::VectorXd Dvec = -1.0*Dmat*state;
-    //Dvec(0) = 0;
-    //Dvec(1) = 0;
-    //Dvec(5) = 0;
-    //ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);
     //Input
     Eigen::VectorXd inputVec = Eigen::VectorXd::Zero(6);
-    inputVec(0) = SME.F_input(0);
-    inputVec(1) = -SME.F_input(1);
-    inputVec(3) = SME.F_input(2);
-    inputVec(5) = -SME.F_input(3);
+    inputVec(0) = SME.F(0);
+    inputVec(1) = -SME.F(1);
+    inputVec(3) = SME.F(2);
+    inputVec(5) = -SME.F(3);
 
 //    ROS_INFO("sailAngle = %f", SME.sailAngle);
 //    ROS_INFO("AWA = %f", SME.AWA);
@@ -315,19 +325,10 @@ void SailboatPlugin::UpdateChild()
 //    ROS_INFO("Drag = %f , %f ,%f ,%f",Dvec(0),Dvec(1),Dvec(3),Dvec(5));
 //
 //    ROS_INFO("inputVec = %f , %f ,%f ,%f",SME.F(0),SME.F(1),SME.F(2),SME.F(3));
-
-    // Restoring/Buoyancy Forces
-    double buoy_force = (water_level_ - pose.pos.z)*0.48*g*water_density_;
-    Eigen::VectorXd buoyVec = Eigen::VectorXd::Zero(6);
-    buoyVec(2) = buoy_force;  // Z direction - shoudl really be in XYZ frame
-    buoyVec(3) = -0.4*sin(euler.x)*buoy_force; // roll
-    buoyVec(4) = -0.4*sin(euler.y)*buoy_force; // pitch
-
-    //ROS_INFO_STREAM_THROTTLE(1.0,"buoyVec :\n" << buoyVec);
-
     // Sum all forces
     // note, inputVec only includes torque component
     Eigen::VectorXd forceSum = inputVec + amassVec + buoyVec + Dvec;
+    //Eigen::VectorXd forceSum = inputVec + buoyVec;
     // if (forceSum(0) > -0.3){
     //     forceSum(0) = -0.3;
     // }
@@ -338,8 +339,6 @@ void SailboatPlugin::UpdateChild()
     //     forceSum(1) = -5;
     // }
 
-    //ROS_INFO("sum");
-    
     if( true ){
         ROS_INFO_STREAM_THROTTLE(1.0,"amassVec :\n" << amassVec);
         ROS_INFO_STREAM_THROTTLE(1.0,"Dvec :\n" << Dvec);

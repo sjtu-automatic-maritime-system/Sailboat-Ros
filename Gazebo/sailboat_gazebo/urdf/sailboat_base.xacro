@@ -45,7 +45,8 @@
       <!--This is the pose of the inertial reference frame, relative to the link reference frame. The origin of the inertial reference frame needs to be at the center of gravity. The axes of the inertial reference frame do not need to be aligned with the principal axes of the inertia.-->
       <origin xyz="0 0 0" />
       <!--The 3x3 rotational inertia matrix. Because the rotational inertia matrix is symmetric, only 6 above-diagonal elements of this matrix are specified here, using the attributes ixx, ixy, ixz, iyy, iyz, izz.-->
-      <inertia ixx="10" ixy="0" ixz="0" iyy="10" iyz="0" izz="10" />
+      <inertia ixx="5" ixy="0" ixz="0" iyy="10" iyz="0" izz="5" />
+      <!-- <inertia ixx="2.002" ixy="0" ixz="-0.226" iyy="10" iyz="0" izz="1.535" /> -->
     </inertial>
 
     <visual>
@@ -103,6 +104,29 @@
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
 
+  <link name="GPS">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="AHRS">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="WTST">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </visual>
+  </link>
 
   <joint name="boat_to_sail" type="fixed">
     <parent link="base_link"/>
@@ -117,6 +141,25 @@
     <axis xyz="0 0 1"/>
     <origin xyz="-0.75 0 -0.1"/>
   </joint>
+
+  <joint name="boat_to_GPS" type="fixed">
+    <parent link="base_link"/>
+    <child link="GPS"/>
+    <origin xyz="-0.75 0 0.2"/>
+  </joint>
+
+  <joint name="boat_to_AHRS" type="fixed">
+    <parent link="base_link"/>
+    <child link="AHRS"/>
+    <origin xyz="0 0 0.2"/>
+  </joint>
+
+    <joint name="boat_to_WTST" type="fixed">
+    <parent link="base_link"/>
+    <child link="WTST"/>
+    <origin xyz="0.75 0 0.2"/>
+  </joint>
+
 
   <!-- Define a location for the camera to sit -->
   <xacro:property name="camera_size" value="0.05" /> <!-- Size of square 'camera' box -->

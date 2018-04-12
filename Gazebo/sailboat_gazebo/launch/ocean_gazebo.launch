@@ -24,7 +24,7 @@
     <arg name="urdf" default="$(find sailboat_gazebo)/urdf/sailboat_gazebo.xacro"/>
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg urdf)"/>
-
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
     <!-- Spawn robot in gazebo -->
@@ -33,5 +33,6 @@
 
     <node pkg="environment_simulation" type="wind_simulation_pub" name="wind_simulation_pub"/>
     <node pkg="sailboat_gazebo" type="sensor_simulation" name="sensor_simulation"  output="screen"/>
+    <node name="state_publisher" pkg="sailboat_tf_tree" type="state_publisher" output="screen" />
 
 </launch>
