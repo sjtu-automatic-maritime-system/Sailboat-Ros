@@ -32,7 +32,7 @@
           args="-x 0.0 -y 0.0 -z 1.0 -R 0.0 -P 0.0 -Y 0.0 -unpause -urdf -param robot_description -model mobile_base"/>
 
     <node pkg="environment_simulation" type="wind_simulation_pub" name="wind_simulation_pub"/>
-    <node pkg="sailboat_gazebo" type="sensor_simulation" name="sensor_simulation"  output="screen"/>
-    <node name="state_publisher" pkg="sailboat_tf_tree" type="state_publisher" output="screen" />
+    <node pkg="sailboat_gazebo" type="sensor_simulation" name="sensor_simulation"/>
+    <node name="state_publisher" pkg="sailboat_tf_tree" type="state_publisher"/>
 
 </launch>
