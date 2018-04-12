@@ -43,11 +43,9 @@ eval $rossource
 sudo apt-get install python-rosinstall -y
 
 sudo apt-get install ros-kinetic-multimaster-fkie ros-kinetic-camera-umd ros-kinetic-pointgrey-camera-driver -y
-
+sudo apt-get install ros-kinetic-velodyne-simulator -y
 ## Create catkin workspace
 # careful no space here
-catkin_ws=sailboat_ws
-mkdir -p ~/$catkin_ws/src
 
 ## Install dependencies
 sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential -y
@@ -56,6 +54,8 @@ sudo apt-get install python-catkin-tools -y
 sudo apt install ros-kinetic-control-toolbox -y
 
 
+catkin_ws=sailboat_ws
+mkdir -p ~/$catkin_ws/src
 ## Initialise wstool
 wstool init ~/$catkin_ws/src
 

@@ -12,11 +12,11 @@
     <arg name="gps" default="true" />
     <arg name="laser" default="false" />
     <arg name="camera" default="true" />
-
+    
     <param name="use_sim_time" value="true" />
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find sailboat_gazebo)/worlds/ocean.world"/>
+        <arg name="world_name" value="$(find sailboat_gazebo)/worlds/lake.world"/>
         <arg name="gui" value="$(arg gui)"/>
         <arg name="verbose" value="true"/>
     </include>
@@ -24,16 +24,14 @@
     <arg name="urdf" default="$(find sailboat_gazebo)/urdf/sailboat_gazebo_base.xacro"/>
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg urdf)"/>
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-       <param name="publish_frequency" type="double" value="10.0" />
-    </node>
+    
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
     <!-- Spawn robot in gazebo -->
     <node name="spawn_sailboat_model" pkg="gazebo_ros" type="spawn_model"
           args="-x 0.0 -y 0.0 -z 1.0 -R 0.0 -P 0.0 -Y 0.0 -unpause -urdf -param robot_description -model mobile_base"/>
 
     <node pkg="environment_simulation" type="wind_simulation_pub" name="wind_simulation_pub"/>
     <node pkg="sailboat_gazebo" type="sensor_simulation" name="sensor_simulation"/>
-    <node name="state_publisher" pkg="sailboat_tf_tree" type="state_publisher"/>
 
 </launch>
