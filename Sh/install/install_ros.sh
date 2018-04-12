@@ -10,6 +10,7 @@
 # Common dependencies
 echo "Installing common dependencies"
 sudo apt-get update -y
+sudo apt-get upgrade -y
 sudo apt-get install git vim -y 
 #sudo apt-get zip qtcreator -y
 # Required python packages
@@ -38,8 +39,10 @@ if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
 ## Get rosinstall
+
 sudo apt-get install python-rosinstall -y
 
+sudo apt-get install ros-kinetic-multimaster-fkie ros-kinetic-camera-umd ros-kinetic-pointgrey-camera-driver -y
 
 ## Create catkin workspace
 # careful no space here
