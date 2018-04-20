@@ -3,24 +3,25 @@
   <xacro:macro name="usv_gps_gazebo" params="name">
     <gazebo>
       <plugin name="gps_plugin_${name}" filename="libhector_gazebo_ros_gps.so">
-	<updateRate>1.0</updateRate>
-	<alwaysOn>true</alwaysOn>
-	<bodyName>base_link</bodyName>
-	<frameId>base_link</frameId>
-	<topicName>gps/fix</topicName>
-	<velocityTopicName>fix_velocity</velocityTopicName>
+          <updateRate>1.0</updateRate>
+		      <alwaysOn>true</alwaysOn>
+          <bodyName>base_link</bodyName>
+          <frameId>base_link</frameId>
+          <topicName>/gps/fix</topicName>
+          <velocityTopicName>/gps/fix_velocity</velocityTopicName>
 
-	<referenceLatitude>36.6</referenceLatitude>
-	<referenceLongitude>-121.9</referenceLongitude>
-	<referenceAltitude>10.0</referenceAltitude>
+          <referenceLatitude>-30.06022459407145675</referenceLatitude>
+          <referenceLongitude>-51.173913575780311191</referenceLongitude>
+          <referenceHeading>90</referenceHeading>
+          <referenceAltitude>10</referenceAltitude>
 
-	<offset>0.0 0.0 0.0</offset>
-	<drift>0.0 0.0 0.0</drift>
-	<gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+          <offset>0 0 0</offset>
+          <drift>0.001 0.001 0.001</drift>
+          <gaussianNoise>0.05 0.05 0.05</gaussianNoise>
 
-	<velocityOffset>0.0 0.0 0.0</velocityOffset>
-	<velocityDrift>0.0 0.0 0.0</velocityDrift>
-	<velocityGaussianNoise>0.0 0.0 0.0</velocityGaussianNoise>
+		      <velocityOffset>0.0 0.0 0.0</velocityOffset>
+          <velocityDrift>0 0 0</velocityDrift>
+          <velocityGaussianNoise>0.05 0.05 0.05</velocityGaussianNoise>
 
       </plugin>
     </gazebo>  

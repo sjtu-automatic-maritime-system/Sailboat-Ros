@@ -15,12 +15,12 @@
   
   <param name="use_sim_time" value="true" />
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find usv_gazebo)/worlds/lake.world"/>
+    <arg name="world_name" value="$(find usv_gazebo)/worlds/ocean.world"/>
     <arg name="gui" value="$(arg gui)"/>
     <arg name="verbose" value="true"/>
   </include>
   
-  <arg name="urdf" default="$(find usv_gazebo)/urdf/base_gazebo.xacro"/>
+  <arg name="urdf" default="$(find usv_gazebo)/urdf/usv_gazebo_laser.xacro"/>
   <param name="robot_description" command="$(find xacro)/xacro $(arg urdf) imu:=$(arg imu) gps:=$(arg gps) microstrain:=$(arg microstrain) p3d:=$(arg p3d)"/>
   
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
@@ -29,4 +29,6 @@
   <node name="spawn_usv_model" pkg="gazebo_ros" type="spawn_model"
 	args="-x 0.0 -y 0.0 -z 1.0 -R 0.0 -P 0.0 -Y 0.0 -unpause -urdf -param robot_description -model mobile_base"/>
   
+
+
 </launch>
