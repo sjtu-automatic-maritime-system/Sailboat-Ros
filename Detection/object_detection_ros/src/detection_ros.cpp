@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
 
 //    ros::Subscriber sub_image =  nh.subscribe("camera/image_rect_color", 2, &detection_cb);
-    ros::Subscriber sub_image =  nh.subscribe("camera/image_raw", 2, &detection_cb);
+    ros::Subscriber sub_image =  nh.subscribe("/usv/camera1/image_raw", 2, &detection_cb);
 //    ros::Subscriber sub_image =  nh.subscribe("camera/image_raw/compressed", 2, &detection_cb);
 
     image_transport::ImageTransport it(nh);

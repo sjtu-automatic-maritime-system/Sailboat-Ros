@@ -9,8 +9,8 @@
       <camera name="head">
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
-          <width>1360</width>
-          <height>720</height>
+          <width>1296</width>
+          <height>964</height>
           <format>R8G8B8</format>
         </image>
         <clip>
