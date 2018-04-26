@@ -43,7 +43,7 @@ eval $rossource
 sudo apt-get install python-rosinstall -y
 
 sudo apt-get install ros-kinetic-multimaster-fkie ros-kinetic-camera-umd ros-kinetic-pointgrey-camera-driver -y
-sudo apt-get install ros-kinetic-velodyne-simulator -y
+sudo apt-get install ros-kinetic-velodyne-simulator ros-kinetic-hector-gazebo-plugins-y
 ## Create catkin workspace
 # careful no space here
 

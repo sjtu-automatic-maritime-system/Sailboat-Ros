@@ -13,6 +13,7 @@ set(catkin_package_DEPENDENCIES
         sensor_msgs
         cv_bridge
         image_transport
+        sailboat_message
         )
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)

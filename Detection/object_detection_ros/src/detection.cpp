@@ -46,7 +46,7 @@ std::vector<cv::Vec3f> circleDectection(cv::Mat &src_img, cv::Mat edge) {
     //cv::Mat gray;
 
     std::vector<cv::Vec3f> circles;
-    cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 200, 100, 0, 100);
+    cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 100, 50, 0, 0);
 
     for (size_t i = 0; i < circles.size(); i++) {
         cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
@@ -54,7 +54,7 @@ std::vector<cv::Vec3f> circleDectection(cv::Mat &src_img, cv::Mat edge) {
         cv::circle(src_img, center, 3, cv::Scalar(0, 255, 0), -1, 8, 0);
         cv::circle(src_img, center, radius, cv::Scalar(155, 50, 255), 3, 8, 0);
     }
-    //cv::imshow("hough circle", src_img);
+    //cv::imshow("hough circle", edge);
     //cv::waitKey(0);
     return circles;
 }

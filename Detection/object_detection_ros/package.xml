@@ -51,6 +51,8 @@
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>image_transport</depend>
+  <depend>sailboat_message</depend>
+  
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
