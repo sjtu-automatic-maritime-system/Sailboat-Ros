@@ -13,8 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   roscpp
-        sailboat_message
-        sailboat_simulation_lib
+  sailboat_message
+  sailboat_simulation_lib
 )
 
 

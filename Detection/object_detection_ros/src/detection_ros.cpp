@@ -14,14 +14,50 @@
 #define IMG_WIDTH 1296
 #define IMG_HEIGHT 964
 
+//#include <eigen3/Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/Dense>
+
+//ball x 10 y 20
+//     x 25.5 y -4.1
+
+
+using namespace Eigen;
+using namespace Eigen::internal;
+using namespace Eigen::Architecture;
+// using Eigen::MatrixXd;
 using namespace std;
-//using namespace cv;
 
 image_transport::Publisher  pub_img_edge;
 image_transport::Publisher  pub_img_dst;
 
 double posX = 0;
 double posY = 0;
+double pitch = 0;
+double roll = 0;
+double yaw = 0;
+double f = IMG_WIDTH/(2*std::tan(40/57.3));
+
+//roll pitch yaw
+void roll_pitch_yaw_to_R(Vector3d E,Matrix3d &R){
+    double sx = sin(E(0));
+    double cx = cos(E(0));
+    double sy = sin(E(1));
+    double cy = cos(E(1));
+    double sz = sin(E(2));
+    double cz = cos(E(2));
+    R(0,0) = cy*cz;
+    R(0,1) = cz*sx*sy-cx*sz;
+    R(0,2) = sx*sz+cx*cz*sy;
+    R(1,0) = cy*sz;
+    R(1,1) = cx*cz+sx*sy*sz;
+    R(1,2) = cx*sy*sz-cz*sz;
+    R(2,0) = -sy;
+    R(2,1) = cy*sx;
+    R(2,2) = cx*cy;
+    cout<<"R=\n"<<R<<endl;
+}
+
 
 void detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 {
@@ -40,24 +76,47 @@ void detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     //for (size_t i = 0; i < circles.size(); i++) {
     //    std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
     if (circles.size()>0){
-        double h_angle = (circles[0][0]-IMG_WIDTH/2)/IMG_WIDTH*80;
-        double v_angle = (circles[0][1]-IMG_HEIGHT/2)/IMG_WIDTH*80;
-        std::cout << "h_angle = " << h_angle << std::endl;
-        std::cout << "v_angle = " << v_angle << std::endl;
-        double distance = std::sqrt(std::pow((posX-(10-25.343829+5.5)),2.0)+std::pow((posY-20-11.2),2.0));
-        double distance_rate = circles[0][2]/0.5*distance;
-        std::cout << "distance_rate = " << distance_rate << std::endl;
-    }
-    //}
-    //ball x 10 y 20
-    //     
+        
+        double h_angle = std::atan((circles[0][0]-IMG_WIDTH/2)/f);
+        double v_angle = std::atan((circles[0][1]-IMG_HEIGHT/2)/f);
+        //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
+        //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
+        //double distance = std::sqrt(std::pow((posX-25.5),2.0)+std::pow((posY+4.1),2.0));
+        double distance_cal = 0.5/circles[0][2]*std::sqrt(std::pow(circles[0][0]-IMG_WIDTH/2,2)+std::pow(circles[0][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
+        //std::cout << "distance = " << distance << std::endl;
+        std::cout << "distance_cal = " << distance_cal << std::endl;
 
-    // gazebo x 25.343829
-    //        y 0
-    // sensor x 5.5
-    //        y 11.2
-//    cv::imshow("src", src_ROI);
-//    cv::waitKey(5);
+        Matrix3d R_tmp;
+        //Matrix3d R_in_tmp;
+        Vector3d E_tmp;
+        R_tmp = Matrix3d::Zero(3,3);
+        E_tmp(0) = roll;
+        E_tmp(1) = pitch;
+        E_tmp(2) = 0;
+        roll_pitch_yaw_to_R(E_tmp,R_tmp);
+        R_tmp = R_tmp.inverse().eval();
+
+        MatrixXd L_ship(3,1);
+        MatrixXd L_world(3,1);
+        L_ship(0,0) = f;
+        L_ship(1,0) = circles[0][0]-IMG_WIDTH/2;
+        L_ship(2,0) = circles[0][1]-IMG_HEIGHT/2;
+        L_world = R_tmp*L_ship;
+        //std::cout << "L_ship : " << L_ship << std::endl;
+        //std::cout << "L_world : " << L_world << std::endl;
+        
+        double h_angle_final = std::atan((L_world(1,0))/f);
+        double v_angle_final = std::atan((L_world(2,0))/f);
+        //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
+        //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
+
+        double object_yaw = yaw + h_angle_final;
+
+        double object_x = posX + distance_cal*cos(object_yaw);
+        double object_y = posY + distance_cal*sin(object_yaw);
+
+        ROS_INFO("object pos : ( %f , %f )",object_x, object_y);
+    }
 
     sensor_msgs::ImagePtr edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();
     pub_img_edge.publish(edge_msg);
@@ -68,9 +127,14 @@ void detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 }
 
 void sensor_cb(const sailboat_message::Sensor_msg::ConstPtr msg){
+    //ROS_INFO("get sensor");
     posX = msg->Posx;
-    posY = msg->Posx;
-
+    posY = msg->Posy;
+    roll = msg->Roll;
+    pitch = msg->Pitch;
+    yaw = msg->Yaw;
+    double distance = std::sqrt(std::pow((posX-25.5),2.0)+std::pow((posY+4.1),2.0));
+    //std::cout << "sensor distance = " << distance << "; posX = "<<posX<<"; posY = "<<posY<< std::endl;
 }
 
 int main(int argc, char **argv)

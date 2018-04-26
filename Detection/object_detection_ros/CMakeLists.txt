@@ -7,6 +7,7 @@ project(object_detection_ros)
 ## Catkin packages required for both building and running (<depend> entries in package.xml)
 set(catkin_package_DEPENDENCIES
         ## set dependencies here
+        cmake_modules
         roscpp
         rospy
         std_msgs
@@ -18,6 +19,7 @@ set(catkin_package_DEPENDENCIES
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+
 find_package(catkin REQUIRED COMPONENTS
         ${catkin_package_DEPENDENCIES}
         )
@@ -27,6 +29,9 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 message("-- OpenCV version: ${OpenCV_VERSION}")
 message("-- OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
 message("-- catkin include dirs: ${catkin_INCLUDE_DIRS}")
+
+
+find_package(Eigen REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -42,6 +47,7 @@ include_directories(
         include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
         ${catkin_INCLUDE_DIRS}
+        ${Eigen_INCLUDE_DIRS}
 )
 set( detection_SRC
         src/detection_ros.cpp
@@ -49,7 +55,7 @@ set( detection_SRC
         )
 
 add_executable(object_detection ${detection_SRC})
-target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Eigen_LIBRARIES})
 
 set( test_SRC
         src/test.cpp

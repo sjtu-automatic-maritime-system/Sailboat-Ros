@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES math_tool_lib
@@ -28,7 +29,8 @@ catkin_package(
 include_directories(
         include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
-        ${catkin_INCLUDE_DIRS})
+        ${catkin_INCLUDE_DIRS}
+)
 
 set( math_tool_lib_SRC
         src/CCubicSplineInterpolation.cpp
