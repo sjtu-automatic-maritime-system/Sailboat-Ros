@@ -73,49 +73,74 @@ void detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     cv::Mat edge = detection::edgeDetection(src_ROI, 150, 200);
     std::vector<cv::Vec3f> circles = detection::circleDectection(src_ROI, edge);
     std::cout << "detected circles: " << circles.size() << std::endl;
-    //for (size_t i = 0; i < circles.size(); i++) {
-    //    std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
-    if (circles.size()>0){
+    for (size_t i = 0; i < circles.size(); i++) {
+        std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
+    //if (circles.size()>0){
         
-        double h_angle = std::atan((circles[0][0]-IMG_WIDTH/2)/f);
-        double v_angle = std::atan((circles[0][1]-IMG_HEIGHT/2)/f);
+        double h_angle = std::atan((circles[i][0]-IMG_WIDTH/2)/f);
+        double v_angle = std::atan((circles[i][1]-IMG_HEIGHT/2)/f);
         //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
         //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
         //double distance = std::sqrt(std::pow((posX-25.5),2.0)+std::pow((posY+4.1),2.0));
-        double distance_cal = 0.5/circles[0][2]*std::sqrt(std::pow(circles[0][0]-IMG_WIDTH/2,2)+std::pow(circles[0][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
-        //std::cout << "distance = " << distance << std::endl;
-        std::cout << "distance_cal = " << distance_cal << std::endl;
 
+        // cal angle
         Matrix3d R_tmp;
-        //Matrix3d R_in_tmp;
+        Matrix3d R_in_tmp;
         Vector3d E_tmp;
         R_tmp = Matrix3d::Zero(3,3);
+        R_in_tmp = Matrix3d::Zero(3,3);
         E_tmp(0) = roll;
         E_tmp(1) = pitch;
         E_tmp(2) = 0;
         roll_pitch_yaw_to_R(E_tmp,R_tmp);
-        R_tmp = R_tmp.inverse().eval();
-
+        R_in_tmp = R_tmp.inverse().eval();
+        
         MatrixXd L_ship(3,1);
         MatrixXd L_world(3,1);
         L_ship(0,0) = f;
-        L_ship(1,0) = circles[0][0]-IMG_WIDTH/2;
-        L_ship(2,0) = circles[0][1]-IMG_HEIGHT/2;
+        L_ship(1,0) = circles[i][0]-IMG_WIDTH/2;
+        L_ship(2,0) = circles[i][1]-IMG_HEIGHT/2;
         L_world = R_tmp*L_ship;
-        //std::cout << "L_ship : " << L_ship << std::endl;
-        //std::cout << "L_world : " << L_world << std::endl;
+        std::cout << "L_ship : " << L_ship << std::endl;
+        std::cout << "L_world : " << L_world << std::endl;
         
-        double h_angle_final = std::atan((L_world(1,0))/f);
-        double v_angle_final = std::atan((L_world(2,0))/f);
+        double h_angle_final = std::atan((L_world(1,0))/L_world(0,0));
+        double v_angle_final = std::atan((L_world(2,0))/L_world(0,0));
         //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
         //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
 
+        // cal distance funcation 1
+        double distance_cal = 0.5/circles[i][2]*std::sqrt(std::pow(circles[i][0]-IMG_WIDTH/2,2)+std::pow(circles[i][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
+        //std::cout << "distance = " << distance << std::endl;
+        std::cout << "distance_cal = " << distance_cal << std::endl;
+        
         double object_yaw = yaw + h_angle_final;
 
         double object_x = posX + distance_cal*cos(object_yaw);
         double object_y = posY + distance_cal*sin(object_yaw);
 
         ROS_INFO("object pos : ( %f , %f )",object_x, object_y);
+
+        //cal distance funcation 2
+        MatrixXd L_tmp(3,1);
+        L_tmp = L_world/f;
+        double Z = 0.2;
+        double X_cam = (Z)/L_tmp(2,0);
+        double X = X_cam*L_tmp(0,0);
+        double Y = X_cam*L_tmp(1,0);
+         
+        double Z_cal = distance_cal*L_tmp(2,0);
+        Z_cal = Z_cal / std::sqrt(std::pow(L_tmp(0,0),2)+std::pow(L_tmp(1,0),2));
+        std::cout << "Z_cal = " << Z_cal <<std::endl;
+        //double distance_2 = std::sqrt(std::pow(X,2)+std::pow(Y,2));
+        //std::cout << "distance_2 = " << distance_2 <<std::endl;
+        Vector3d E_tmp_2;
+        Matrix3d R_tmp_2;
+        E_tmp_2(0) = 0;
+        E_tmp_2(1) = 0;
+        E_tmp_2(2) = yaw;
+        roll_pitch_yaw_to_R(E_tmp_2,R_tmp_2);
+
     }
 
     sensor_msgs::ImagePtr edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();
