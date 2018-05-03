@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="visual">
+    <link name="buoyl">
+      <pose>0 0 0 0 0 0</pose>
+      <static>true</static>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>10</mass>
+        <inertia>
+          <ixx>10</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>10</iyy>
+          <iyz>0</iyz>
+          <izz>10</izz>
+        </inertia>
+      </inertial>
+      <collision name="buoyc">
+        <geometry>
+          <box size="1 1 1"/>
+        </geometry>
+      </collision>
+      <visual name="buoyv">
+      <plugin name="gazebo_visual_plugin" filename="libgazebo_visual_plugin.so"/>
+        <geometry>
+          <box size="1 1 1"/>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/White</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
