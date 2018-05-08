@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(object_detection_ros)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
+add_definitions(-std=c++11)
 
 ## Catkin packages required for both building and running (<depend> entries in package.xml)
 set(catkin_package_DEPENDENCIES
@@ -25,13 +25,13 @@ find_package(catkin REQUIRED COMPONENTS
         )
 
 find_package(OpenCV 3 REQUIRED)
+find_package(Eigen REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 message("-- OpenCV version: ${OpenCV_VERSION}")
 message("-- OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
 message("-- catkin include dirs: ${catkin_INCLUDE_DIRS}")
+message("-- Eigen include dirs: ${Eigen_INCLUDE_DIRS}")
 
-
-find_package(Eigen REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -50,8 +50,10 @@ include_directories(
         ${Eigen_INCLUDE_DIRS}
 )
 set( detection_SRC
+        src/detection_main.cpp
         src/detection_ros.cpp
         src/detection.cpp
+        src/particle_filter.cpp
         )
 
 add_executable(object_detection ${detection_SRC})
