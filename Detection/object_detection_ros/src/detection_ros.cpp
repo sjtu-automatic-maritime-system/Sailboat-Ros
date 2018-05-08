@@ -14,6 +14,7 @@ DetectionRos::DetectionRos()
     sub_image = nh.subscribe("/usv/camera1/image_raw", 2, &DetectionRos::detection_cb, this);
     gps = nh.subscribe("/sensor", 2, &DetectionRos::sensor_cb, this);
 //    ros::Subscriber sub_image =  nh.subscribe("camera/image_raw/compressed", 2, &detection_cb);
+    obj_pub = nh.advertise<geometry_msgs::PoseArray>("/object/pose", 2); 
 
     pub_img_edge = it.advertise("edges", 2);
     pub_img_dst = it.advertise("dst_circles", 2);
@@ -25,10 +26,11 @@ DetectionRos::DetectionRos()
     yaw = 0;
 
     f = IMG_WIDTH/(2*std::tan(40/57.3));
-    ball_r = 0.5;
+    ball_r = 1;
     Num_ball = 1;
 
     particleFilter = new ParticleFilter();
+    average = new Average();
 }
 
 DetectionRos::~DetectionRos(){
@@ -69,19 +71,17 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     src_ROI = src_img(cv::Rect(0,src_ROI_p1_y,IMG_WIDTH,IMG_HEIGHT-src_ROI_p1_y));
     cv::Mat edge = detection::edgeDetection(src_ROI, 150, 200);
     std::vector<cv::Vec3f> circles = detection::circleDectection(src_ROI, edge);
-    std::cout << "detected circles: " << circles.size() << std::endl;
+    ROS_INFO("detected circles = %d",circles.size());
     if (Num_ball < circles.size()){
         Num_ball = circles.size();
     }
     
     for (size_t i = 0; i < circles.size(); i++) {
-        std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
-
+        //std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
         double h_angle = std::atan((circles[i][0]-IMG_WIDTH/2)/f);
         double v_angle = std::atan((circles[i][1]-IMG_HEIGHT/2)/f);
         //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
         //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
-        //double distance = std::sqrt(std::pow((posX-25.5),2.0)+std::pow((posY+4.1),2.0));
 
         // cal angle
         Matrix3d R_tmp;
@@ -111,18 +111,28 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 
         // cal distance funcation 1
         double distance_cal = ball_r/circles[i][2]*std::sqrt(std::pow(circles[i][0]-IMG_WIDTH/2,2)+std::pow(circles[i][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
-        //std::cout << "distance = " << distance << std::endl;
-        std::cout << "distance_cal = " << distance_cal << std::endl;
+        ROS_INFO("distance_cal = %f",distance_cal);
         
         double object_yaw = yaw + h_angle_final;
-
         double object_x = posX + distance_cal*cos(object_yaw);
         double object_y = posY + distance_cal*sin(object_yaw);
 
-        ROS_INFO("object pos : ( %f , %f )",object_x, object_y);
+        ROS_INFO("object pos : ( %f , %f ) object_yaw : %f",object_x, object_y,object_yaw);
 
         double final_x,final_y;
-        particleFilter->run(object_x,object_y,final_x,final_y);
+        //particleFilter->run(object_x, object_y, object_yaw, final_x, final_y);
+        average->run(object_x, object_y, object_yaw, final_x, final_y);
+        double distance = std::sqrt(std::pow((posX-final_x),2.0)+std::pow((posY-final_y),2.0));
+        ROS_INFO("distance_final = %f",distance);
+        
+        double ball_r_new = ball_r/distance_cal * distance;
+        ROS_INFO("ball_r_new = %f",ball_r_new);
+        //if (ball_r_new > 0.3 and ball_r_new < 0.75){
+        //ball_r += 0.1*(ball_r_new - ball_r);
+        //ball_r = ball_r_new;
+        //}
+        
+        ROS_INFO("ball_r_update = %f",ball_r);
 
         //cal distance funcation 2
         /*
@@ -145,11 +155,26 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
         E_tmp_2(2) = yaw;
         roll_pitch_yaw_to_R(E_tmp_2,R_tmp_2); 
         */
-
     }
 
-    particleFilter->publish();
+    average->publish();
 
+    // objectPoseArray object_pose_array;
+    // particleFilter->publish(object_pose_array);
+    // geometry_msgs::PoseArray pose_array;
+    // pose_array.header.stamp = ros::Time::now();
+    // pose_array.header.frame_id = "object";
+    // for (int i = 0; i < object_pose_array.poseArray.size(); i++)
+    // {  
+    //     double x = object_pose_array.poseArray[i].x;  
+    //     double y = object_pose_array.poseArray[i].y;  
+    //     geometry_msgs::Pose p;     
+    //     p.position.x = x;  
+    //     p.position.y = y;  
+    //     p.position.z = 0;  
+    //     pose_array.poses.push_back(p);  
+    // }
+    // obj_pub.publish(pose_array);
 
     sensor_msgs::ImagePtr edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();
     pub_img_edge.publish(edge_msg);

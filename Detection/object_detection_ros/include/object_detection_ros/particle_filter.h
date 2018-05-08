@@ -18,6 +18,11 @@ struct pointArray{
     double bestY;
     
 };
+
+struct objectPoseArray{
+    std::vector< pointData > poseArray;
+};
+
 class ParticleFilter{
 public:
     ParticleFilter();
@@ -27,15 +32,15 @@ public:
     int inputDetectBall(double x, double y);
     bool isDetectBallInArray(double x, double y, int &index);
     
-    void updateWeight(double x, double y, int index);
+    void updateWeight(double x, double y,double yaw, int index);
     void estimate(int index);
     double neff(int index);
-    double resampleFromIndex(int index);
+    double resampleFromIndex(double x, double y,double yaw, int index);
 
     static bool SortByM1( const pointData &v1, const pointData &v2);
 
-    void run(double x, double y, double &bestX, double &bestY);
-    void publish();
+    void run(double x, double y,double yaw, double &bestX, double &bestY);
+    void publish(objectPoseArray &object_pose_array);
 private:
     
     std::vector< pointArray > ball_point_set;
@@ -43,6 +48,8 @@ private:
     int ball_num;
     double ball_r;
     double sigma;
+
+    int setReFrom;
 
 };
 

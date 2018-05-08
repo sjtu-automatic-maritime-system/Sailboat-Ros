@@ -4,10 +4,12 @@
 #include "ros/ros.h"
 
 #include "particle_filter.h"
+#include "average.h"
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
+#include <geometry_msgs/PoseArray.h>
 #include "sailboat_message/Sensor_msg.h"
 //#include <opencv2/contrib/contrib.hpp>
 #include <opencv2/core.hpp>
@@ -35,9 +37,13 @@ public:
     ros::NodeHandle nh;
     ros::Subscriber sub_image;
     ros::Subscriber gps;
+
+    ros::Publisher obj_pub;
+
     image_transport::ImageTransport it;
     image_transport::Publisher pub_img_edge;
     image_transport::Publisher pub_img_dst;
+    
 
     //DetectionRos(ros::NodeHandle _comm_nh);
     DetectionRos();
@@ -55,6 +61,7 @@ private:
     double yaw;
 
     ParticleFilter *particleFilter;
+    Average *average;
     
     double f;
 

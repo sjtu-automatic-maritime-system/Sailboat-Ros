@@ -15,6 +15,7 @@ set(catkin_package_DEPENDENCIES
         cv_bridge
         image_transport
         sailboat_message
+        geometry_msgs
         )
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -54,6 +55,7 @@ set( detection_SRC
         src/detection_ros.cpp
         src/detection.cpp
         src/particle_filter.cpp
+        src/average.cpp
         )
 
 add_executable(object_detection ${detection_SRC})
