@@ -1,6 +1,5 @@
 *~
 *.out
-test/
 *.pyc
 *.[oa]
 cmake-build-debug/*

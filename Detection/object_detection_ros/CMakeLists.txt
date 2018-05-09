@@ -55,16 +55,16 @@ set( detection_SRC
         src/detection_ros.cpp
         src/detection.cpp
         src/particle_filter.cpp
-        src/average.cpp
+        #src/average.cpp
         )
 
 add_executable(object_detection ${detection_SRC})
 target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Eigen_LIBRARIES})
 
-set( test_SRC
-        src/test.cpp
-        src/detection.cpp
-        )
+# set( test_SRC
+#         test/test.cpp
+#         src/detection.cpp
+#         )
 
 #add_executable(mytest ${test_SRC})
 #add_dependencies(mytest ${catkin_EXPORTED_TARGETS})

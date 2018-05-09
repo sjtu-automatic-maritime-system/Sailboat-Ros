@@ -4,7 +4,7 @@
 #include "ros/ros.h"
 
 #include "particle_filter.h"
-#include "average.h"
+//#include "average.h"
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -46,7 +46,7 @@ public:
     
 
     //DetectionRos(ros::NodeHandle _comm_nh);
-    DetectionRos();
+    DetectionRos(double ballR, double fov);
     ~DetectionRos();
     void roll_pitch_yaw_to_R(Vector3d E,Matrix3d &R);
     void detection_cb(const sensor_msgs::ImageConstPtr& img_in);
@@ -61,7 +61,7 @@ private:
     double yaw;
 
     ParticleFilter *particleFilter;
-    Average *average;
+    //Average *average;
     
     double f;
 

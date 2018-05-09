@@ -6,7 +6,7 @@
 //     x 25.5 y -4.1
 
 
-DetectionRos::DetectionRos()
+DetectionRos::DetectionRos(double ballR, double fov)
     // : nh(_comm_nh),
     : it(nh)
 {
@@ -25,12 +25,13 @@ DetectionRos::DetectionRos()
     roll = 0;
     yaw = 0;
 
-    f = IMG_WIDTH/(2*std::tan(40/57.3));
-    ball_r = 1;
+    f = IMG_WIDTH/(2*std::tan(fov/(2*57.3)));
+    
+    ball_r = ballR;
     Num_ball = 1;
 
     particleFilter = new ParticleFilter();
-    average = new Average();
+    //average = new Average();
 }
 
 DetectionRos::~DetectionRos(){
@@ -71,7 +72,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     src_ROI = src_img(cv::Rect(0,src_ROI_p1_y,IMG_WIDTH,IMG_HEIGHT-src_ROI_p1_y));
     cv::Mat edge = detection::edgeDetection(src_ROI, 150, 200);
     std::vector<cv::Vec3f> circles = detection::circleDectection(src_ROI, edge);
-    ROS_INFO("detected circles = %d",circles.size());
+    ROS_INFO("detected circles = %ld",circles.size());
     if (Num_ball < circles.size()){
         Num_ball = circles.size();
     }
@@ -119,20 +120,14 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 
         ROS_INFO("object pos : ( %f , %f ) object_yaw : %f",object_x, object_y,object_yaw);
 
-        double final_x,final_y;
-        //particleFilter->run(object_x, object_y, object_yaw, final_x, final_y);
-        average->run(object_x, object_y, object_yaw, final_x, final_y);
+        double final_x,final_y,last_yaw;
+        particleFilter->run(object_x, object_y, object_yaw, final_x, final_y, last_yaw);
+        //average->run(object_x, object_y, object_yaw, final_x, final_y);
         double distance = std::sqrt(std::pow((posX-final_x),2.0)+std::pow((posY-final_y),2.0));
         ROS_INFO("distance_final = %f",distance);
         
         double ball_r_new = ball_r/distance_cal * distance;
         ROS_INFO("ball_r_new = %f",ball_r_new);
-        //if (ball_r_new > 0.3 and ball_r_new < 0.75){
-        //ball_r += 0.1*(ball_r_new - ball_r);
-        //ball_r = ball_r_new;
-        //}
-        
-        ROS_INFO("ball_r_update = %f",ball_r);
 
         //cal distance funcation 2
         /*
@@ -157,24 +152,25 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
         */
     }
 
-    average->publish();
+    //average->publish();
 
-    // objectPoseArray object_pose_array;
-    // particleFilter->publish(object_pose_array);
-    // geometry_msgs::PoseArray pose_array;
-    // pose_array.header.stamp = ros::Time::now();
-    // pose_array.header.frame_id = "object";
-    // for (int i = 0; i < object_pose_array.poseArray.size(); i++)
-    // {  
-    //     double x = object_pose_array.poseArray[i].x;  
-    //     double y = object_pose_array.poseArray[i].y;  
-    //     geometry_msgs::Pose p;     
-    //     p.position.x = x;  
-    //     p.position.y = y;  
-    //     p.position.z = 0;  
-    //     pose_array.poses.push_back(p);  
-    // }
-    // obj_pub.publish(pose_array);
+    objectPoseArray object_pose_array;
+    particleFilter->publish(object_pose_array);
+
+    geometry_msgs::PoseArray pose_array;
+    pose_array.header.stamp = ros::Time::now();
+    pose_array.header.frame_id = "object";
+    for (int i = 0; i < object_pose_array.poseArray.size(); i++)
+    {  
+        double x = object_pose_array.poseArray[i].x;  
+        double y = object_pose_array.poseArray[i].y;  
+        geometry_msgs::Pose p;     
+        p.position.x = x;  
+        p.position.y = y;  
+        p.position.z = 0;  
+        pose_array.poses.push_back(p);  
+    }
+    obj_pub.publish(pose_array);
 
     sensor_msgs::ImagePtr edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();
     pub_img_edge.publish(edge_msg);

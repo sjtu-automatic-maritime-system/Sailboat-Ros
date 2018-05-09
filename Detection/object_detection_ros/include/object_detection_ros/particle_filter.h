@@ -16,6 +16,9 @@ struct pointArray{
 
     double bestX;
     double bestY;
+    double last_yaw;
+
+    int detectNum;
     
 };
 
@@ -39,15 +42,19 @@ public:
 
     static bool SortByM1( const pointData &v1, const pointData &v2);
 
-    void run(double x, double y,double yaw, double &bestX, double &bestY);
+    void run(double x, double y,double yaw, double &bestX, double &bestY,double &last_yaw);
     void publish(objectPoseArray &object_pose_array);
+
+    void deleteObjet();
+    double calDistance(double x1,double y1,double x2,double y2);
 private:
     
     std::vector< pointArray > ball_point_set;
-
+    //std::vector< pointData > object_pose_array;
     int ball_num;
     double ball_r;
-    double sigma;
+    double sigma1;
+    double sigma2;
 
     int setReFrom;
 
