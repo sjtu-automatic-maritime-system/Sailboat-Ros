@@ -111,38 +111,32 @@ class SensorListener:
         self.r = rospy.Rate(10)
         self.arduino = Arduino()
         self.arduinomsg = Arduino_msg()
-        self.listener()
-
-
-    def listener(self):
-
-        #rospy.Subscriber("Ahrs", Ahrs_msg, callback)
         rospy.Subscriber(self.TopicName, Mach_msg, callback)
+        self.talker()
 
-        # spin() simply keeps python from exiting until this node is stopped
-        while 1:
-        #while not rospy.is_shutdown():
-            self.arduino.update()
-            self.arduinomsg.header.stamp = rospy.Time.now()
-            self.arduinomsg.header.frame_id = 'arduino'
-            #self.arduinomsg.timestamp = rospy.get_time()
-            self.arduinomsg.readMark = self.arduino.EarduinoDatas[0]
-            self.arduinomsg.autoFlag = self.arduino.EarduinoDatas[1]
-            self.arduinomsg.motor = self.arduino.EarduinoDatas[2]
-            self.arduinomsg.rudder = self.arduino.EarduinoDatas[3]
-            self.arduinomsg.sail = self.arduino.EarduinoDatas[4]
-            self.arduinomsg.voltage1 = self.arduino.EarduinoDatas[5]
-            self.arduinomsg.voltage2 = self.arduino.EarduinoDatas[6]
-            self.pub.publish(self.arduinomsg)
-            #self.r.sleep()
-            # float64 timestamp
-            # float64 readMark
-            # float64 autoFlag
-            # float64 motor
-            # float64 rudder
-            # float64 sail
-            # float64 voltage1
-            # float64 voltage2
+
+    def talker(self):
+        try:
+            # spin() simply keeps python from exiting until this node is stopped
+            while not rospy.is_shutdown():
+                self.arduino.update()
+                self.arduinomsg.header.stamp = rospy.Time.now()
+                self.arduinomsg.header.frame_id = 'arduino'
+                #self.arduinomsg.timestamp = rospy.get_time()
+                self.arduinomsg.readMark = self.arduino.EarduinoDatas[0]
+                self.arduinomsg.autoFlag = self.arduino.EarduinoDatas[1]
+                self.arduinomsg.motor = self.arduino.EarduinoDatas[2]
+                self.arduinomsg.rudder = self.arduino.EarduinoDatas[3]
+                self.arduinomsg.sail = self.arduino.EarduinoDatas[4]
+                self.arduinomsg.voltage1 = self.arduino.EarduinoDatas[5]
+                self.arduinomsg.voltage2 = self.arduino.EarduinoDatas[6]
+                self.pub.publish(self.arduinomsg)
+                self.r.sleep()
+        except rospy.ROSInterruptException as e:
+            print(e)
+        finally:
+            print('arduino closed!')
+            self.arduino.close()
 
 
 
