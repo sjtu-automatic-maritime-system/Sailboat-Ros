@@ -50,6 +50,8 @@ add_message_files(
 
         Point.msg
         PointArray.msg
+
+        Out_Time_msg.msg
 )
 
 add_service_files(
@@ -57,6 +59,7 @@ add_service_files(
   Mach_srv.srv
   Control_srv.srv
   Self_Checking_srv.srv
+  Out_Time_srv.srv
 #   Service1.srv
 #   Service2.srv
 )

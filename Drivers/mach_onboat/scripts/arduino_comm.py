@@ -2,6 +2,9 @@
 import rospy
 from sailboat_message.msg import Mach_msg
 from sailboat_message.msg import Arduino_msg
+from sailboat_message.msg import Out_Time_msg
+from sailboat_message.srv import Self_Checking_srv
+
 import struct
 import binascii
 import serial
@@ -14,6 +17,40 @@ motor = 50
 rudder = 90
 sail = 90
 pcCtrl = 0
+
+AHRS_outTime = 0
+WTST_outTime = 0
+Arduino_outTime = 0
+Mach_outTime = 0
+
+waiting_for_checking = 0
+
+all_result = 0
+
+# pcctrl   0 rc ctrl 1 comouter ctrl
+# readMark 0 rc ctrl 1 comouter ctrl
+###
+# if (rc connect = 1 and rc Mark == 0){
+#     readMark == 0
+# }
+# if (readMark == 0){
+#     rc contrl
+# }
+# else
+#    if pcctrl == 0{
+#        rc contrl
+#    }
+#    else {
+#        pc contrl
+#    }
+
+# }
+###
+# send 
+# pcCtrl, waiting, all_result,AHRS_outTime,WTST_outTime,Arduino_outTime,Mach_outTime
+
+# get 
+# readMark autoSail motor rudder sail voltage1 voltage2
 
 def crc16(x):
     poly = 0x8408
@@ -70,24 +107,18 @@ class Arduino():
         if len(self.buf) < 18:
             print ('ReadError: not enough data')
             return
-
         #testBety = self.buf[0:9]
-
         datas = self.recvDataFst.unpack(self.buf)
         #print datas
         crc16Num = crc16(self.buf[2:-2])
-
-
         if datas[-1] != crc16Num:
             self.buf = self.buf[2:]
             print ('ReadError: ckcum error, discard first 2 bytes')
             return
-
         self.EarduinoDatas = datas[1:-1]
         print 'arduino read data:',self.EarduinoDatas
-
         self.buf = ''
-
+        
     def send_data(self):
         header = '\xff\x01'
         tmp = self.fst.pack(motor,rudder,sail,pcCtrl)
@@ -103,17 +134,18 @@ class Arduino():
 
 
 class SensorListener:
-    def __init__(self,nodeName,topicName):
+    def __init__(self,nodeName):
         self.NodeName = nodeName
-        self.TopicName = topicName
+        #self.TopicName = topicName
         rospy.init_node(self.NodeName, anonymous=True)
         self.pub = rospy.Publisher('arduino', Arduino_msg, queue_size=5)
         self.r = rospy.Rate(10)
         self.arduino = Arduino()
         self.arduinomsg = Arduino_msg()
-        rospy.Subscriber(self.TopicName, Mach_msg, callback)
+        rospy.Subscriber('mach', Mach_msg, machCallback)
+        rospy.Subscriber('out_time', Mach_msg, outTimeCallback)
+        rospy.Subscriber('self_checking_arduino_srv',Self_Checking_srv,handleSelfChecking)
         self.talker()
-
 
     def talker(self):
         try:
@@ -138,10 +170,7 @@ class SensorListener:
             print('arduino closed!')
             self.arduino.close()
 
-
-
-
-def callback(data):
+def machCallback(data):
     global motor, rudder, sail, pcCtrl
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
@@ -150,14 +179,12 @@ def callback(data):
     rudder = int(data.rudder*57.3)+90
     #max~min 90-0 77~50
     sail = int(abs(data.sail)*57.3/3.3)+50
-
     pcCtrl = int(data.PCCtrl)
 
     if motor > 100:
         motor = 100
     if motor < 0:
         motor = 0
-
     if rudder > 130:
         rudder = 130
     if rudder < 50:
@@ -166,24 +193,40 @@ def callback(data):
         sail = 130
     if sail < 50:
         sail = 50
-   # rospy.loginfo("subscriber successfully")
-
-    #print "ros send"
     #print data.motor,data.rudder,data.sail,data.pcCtrl
     print 'get mach msg:',motor,rudder,sail,pcCtrl
 
+def outTimeCallback(data):
+    global AHRS_outTime, WTST_outTime, Arduino_outTime, Mach_outTime
+    AHRS_outTime = data.AHRS_outTime
+    WTST_outTime = data.WTST_outTime
+    Arduino_outTime = data.Arduino_outTime
+    Mach_outTime = data.Mach_outTime
+
+def handleSelfChecking(data):
+    global all_result, waiting_for_checking
+    waiting_for_checking = 1
+    all_result = data.all_result
+    checkAHRS_param = data.checkAHRS_param
+    checkWTST_param = data.checkWTST_param
+    checkArduino_param = data.checkArduino_param
+    checkCamera_param = data.checkCamera_param
+    checkRadar_param = data.checkRadar_param
+    checkDynamixel_param = data.checkDynamixel_param
+    checkDisk_param = data.checkDisk_param
+    checkAHRS_result = data.checkAHRS_result
+    checkWTST_result = data.checkWTST_result
+    checkArduino_result = data.checkArduino_result
+    checkCamera_result = data.checkCamera_result
+    checkRadar_result = data.checkRadar_result
+    checkDynamixel_result = data.checkDynamixel_result
+    checkDisk_result = data.checkDisk_result
+
 
 def talker():#ros message publish
-
-    SensorListener('arduinoTest','mach')
-
+    SensorListener('arduino')
     rospy.spin()
 
-
-
 if __name__ == '__main__':
-
-
-
     talker()
 

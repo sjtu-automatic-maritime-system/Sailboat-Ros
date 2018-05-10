@@ -4,7 +4,9 @@
 
 //ball x 10   y 20
 //     x 25.5 y -4.1
-
+// 772.2589954342994 0 648.5 -54.05812968040097
+// 0 772.2589954342994 482.5 0 
+// 0 0 1 0
 
 DetectionRos::DetectionRos(double ballR, double fov)
     // : nh(_comm_nh),

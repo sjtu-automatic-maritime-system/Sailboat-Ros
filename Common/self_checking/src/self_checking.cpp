@@ -15,20 +15,28 @@ void SailboatSelfChecking::onInit(){
 
     DynamixelSubscriber = nh.subscribe("/motor_states/pan_tilt_port", 10,&SailboatSelfChecking::RadarSubscribeCB, this);
 
+    MachSubscriber = nh.subscribe("/mach", 10,&SailboatSelfChecking::MachSubscribeCB, this);
+
     //DynamixelCtlClient = nh.serviceClient<wa_ros_msgs::SetGimbalCtl>("/drone/gimbal_control_srv");
     
-    CheckResultClient = nh.serviceClient<sailboat_message::Self_Checking_srv>("/self_checking_srv");
+    CheckResultClient = nh.serviceClient<sailboat_message::Self_Checking_srv>("/self_checking_arduino_srv");
+
+    //OutTimeClient = nh.serviceClient<sailboat_message::Out_Time_srv>("/out_time_srv");
+
+    OutTimePub = nh.advertise<sailboat_message::Out_Time_msg>("out_time",10);
 
     if (!init_checking){
         printf("new inits\n");
         checkAHRS_result = 2;
         checkWTST_result = 2;
-        checArduino_result = 2;
+        checkArduino_result = 2;
         checkCamera_result = 2;
         checkRadar_result = 2;
         checkDynamixel_result = 2;
         checkDisk_result = 2;
+        timeout = 5;
         onSelfCheckingInit();
+        onOutTimeInit();
         init_checking = true;
     }
 }
@@ -57,7 +65,7 @@ void SailboatSelfChecking::AHRSSubscriberCB(const sailboat_message::Ahrs_msg::Co
 }
 
 
-void SailboatSelfChecking::WTSTSubscriberCB(const sailboat_message::Arduino_msg::ConstPtr &msg){
+void SailboatSelfChecking::WTSTSubscriberCB(const sailboat_message::WTST_msg::ConstPtr &msg){
     wtst_timestamp = msg->header.stamp;
     if (wtstMsgNum == 0){
         wtst_timestamp_last = wtst_timestamp;
@@ -143,6 +151,12 @@ void SailboatSelfChecking::RadarSubscribeCB(const geometry_msgs::PoseArray::Cons
     }
     radar_timestamp_last = radar_timestamp;
     radarMsgNum += 1;
+}
+
+
+void SailboatSelfChecking::MachSubscribeCB(const sailboat_message::Mach_msg::ConstPtr &msg){
+    mach_timestamp = msg->header.stamp;
+    mach_timestamp_last = mach_timestamp;
 }
 
 
@@ -238,15 +252,15 @@ void SailboatSelfChecking::checkArduino(){
         ROS_INFO("FINAL arduino_hz = %f",arduino_hz);
         checkArduino_param = arduino_hz;
         if (std::fabs(arduino_hz -10) < 2){
-            checArduino_result = 1;
+            checkArduino_result = 1;
         }
         else{
-            checArduino_result = 0;
+            checkArduino_result = 0;
         }
     }
     else{
         checkArduino_param = 0;
-        checArduino_result = 0;
+        checkArduino_result = 0;
     }
 }
 
@@ -371,7 +385,7 @@ void SailboatSelfChecking::checkDisk(){
 void SailboatSelfChecking::sendresult(){
     
     ROS_INFO("checking param : ahrs = %f, wtst = %f, arduino = %f, camera = %f, radar = %f, dynamixel = %f, disk = %f",checkAHRS_param, checkWTST_param, checkArduino_param, checkCamera_param, checkRadar_param, checkDynamixel_param,checkDisk_param);
-    ROS_INFO("checking result : ahrs = %d, wtst = %d, arduino = %d, camera = %d, radar = %d, dynamixel = %d, disk = %d",checkAHRS_result, checkWTST_result, checArduino_result, checkCamera_result, checkRadar_result, checkDynamixel_result, checkDisk_result);
+    ROS_INFO("checking result : ahrs = %d, wtst = %d, arduino = %d, camera = %d, radar = %d, dynamixel = %d, disk = %d",checkAHRS_result, checkWTST_result, checkArduino_result, checkCamera_result, checkRadar_result, checkDynamixel_result, checkDisk_result);
 
     while (!finish_checking){
         sailboat_message::Self_Checking_srv srv;
@@ -385,7 +399,7 @@ void SailboatSelfChecking::sendresult(){
         srv.request.checkDisk_param = checkDisk_param;
         srv.request.checkAHRS_result = checkAHRS_result;
         srv.request.checkWTST_result = checkWTST_result;
-        srv.request.checArduino_result = checArduino_result;
+        srv.request.checkArduino_result = checkArduino_result;
         srv.request.checkCamera_result = checkCamera_result;
         srv.request.checkRadar_result = checkRadar_result;
         srv.request.checkDynamixel_result = checkDynamixel_result;
@@ -402,8 +416,82 @@ void SailboatSelfChecking::sendresult(){
         }
         usleep(1000000);
     }
-    
 
+    CameraSubscriber.shutdown();
+    RadarSubscriber.shutdown();
+    DynamixelSubscriber.shutdown();
+}
+
+void SailboatSelfChecking::stateUpdate(){
+
+    ros::Rate loop_rate(1);
+    while (ros::ok()){
+        ros::Time time_now = ros::Time::now();
+        // Enforce command timeout
+        ros::Duration ahrs_time = time_now - ahrs_timestamp_last;
+        double ahrs_dtime = ahrs_time.toSec();
+        if ( ahrs_dtime > timeout ){
+            AHRS_outTime = false;
+            ROS_ERROR("ahrs Command timeout!");
+        }
+        else{
+            AHRS_outTime = true;
+        }
+        ros::Duration wtst_time = time_now - wtst_timestamp_last;
+        double wtst_dtime = wtst_time.toSec();
+        if ( wtst_dtime > timeout ){
+            WTST_outTime = false;
+            ROS_ERROR("wtst Command timeout!");
+        }
+        else{
+            WTST_outTime = true;
+        }
+        ros::Duration arduino_time = time_now - arduino_timestamp_last;
+        double arduino_dtime = arduino_time.toSec();
+        if ( arduino_dtime > timeout ){
+            Arduino_outTime = false;
+            ROS_ERROR("arduino Command timeout!");
+        }
+        else{
+            Arduino_outTime = true;
+        }
+        ros::Duration mach_time = time_now - mach_timestamp_last;
+        double mach_dtime = mach_time.toSec();
+        if ( mach_dtime > timeout ){
+            Mach_outTime = false;
+            ROS_ERROR("mach Command timeout!");
+        }
+        else{
+            Mach_outTime = true;
+        }
+
+        // if (!AHRS_outTime || !WTST_outTime || !Arduino_outTime || !Mach_outTime){
+        //     sailboat_message::Out_Time_srv srv;
+        //     srv.request.AHRS_outTime = AHRS_outTime;
+        //     srv.request.WTST_outTime = WTST_outTime;
+        //     srv.request.Arduino_outTime = Arduino_outTime;
+        //     srv.request.Mach_outTime = Mach_outTime;
+
+        //     if (OutTimeClient.call(srv))
+        //     {
+        //         ROS_INFO("checkResultClient result: %d", (int)srv.response.ack);
+        //     }
+        //     else
+        //     {
+        //         ROS_ERROR("Failed to call service checkResultClient");
+        //     }
+        // }
+        sailboat_message::Out_Time_msg msg;
+        msg.header.stamp = ros::Time::now();
+        msg.header.frame_id = "out_time";
+        msg.AHRS_outTime = AHRS_outTime;
+        msg.WTST_outTime = WTST_outTime;
+        msg.Arduino_outTime = Arduino_outTime;
+        msg.Mach_outTime = Mach_outTime;
+        OutTimePub.publish(msg);
+
+        loop_rate.sleep();
+    }
 }
 
 
@@ -432,10 +520,23 @@ void* SailboatSelfChecking::threadSelfChecking(void* args){
     SailboatSelfChecking::getInstance().checkDisk();
     usleep(500000);
     SailboatSelfChecking::getInstance().sendresult();
-    
     ROS_INFO("SelfChecking finished !!!");
     usleep(1000000);
-    ros::shutdown();
+    //ros::shutdown();
+}
+
+
+void SailboatSelfChecking::onOutTimeInit() {
+    pthread_t thread_check;
+    if (0 != pthread_create(&thread_check,NULL, SailboatSelfChecking::threadOutTime, this)){
+        ROS_INFO("thread create failed");
+    }
+    else
+        ROS_INFO("thread established");
+}
+
+void* SailboatSelfChecking::threadOutTime(void* args){
+    SailboatSelfChecking::getInstance().stateUpdate();
 }
 
 
