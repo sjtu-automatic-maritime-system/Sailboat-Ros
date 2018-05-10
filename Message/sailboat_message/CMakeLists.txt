@@ -21,6 +21,9 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
         FILES
 
+        #driver
+        Rudder_msg.msg
+        Sail_msg.msg
         Mach_msg.msg
         GPS_msg.msg
         Ahrs_msg.msg
@@ -47,22 +50,17 @@ add_message_files(
 
         Point.msg
         PointArray.msg
-
-        #cmd
-        cmd_battery_status.msg
-        cmd_camera_status.msg
-        cmd_commander_cfg_status.msg
-        cmd_commander_status.msg
-        cmd_communication_status.msg
-        cmd_home_position.msg
-        cmd_navigation_status.msg
-        cmd_path_planning_mode.msg
-        cmd_path_planning_status.msg
-        cmd_sensor_status.msg
-        cmd_vehicle_control_mode.msg
-        cmd_vehicle_control_status.msg
-
 )
+
+add_service_files(
+  FILES
+  Mach_srv.srv
+  Control_srv.srv
+  Self_Checking_srv.srv
+#   Service1.srv
+#   Service2.srv
+)
+
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(

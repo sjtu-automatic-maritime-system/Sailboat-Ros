@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"
+       name="usv">
+
+  <!-- Defines the "usv_base" macro -->
+  <xacro:include filename="$(find usv_gazebo)/urdf/usv_urdf.xacro" />
+  <!--<xacro:include filename="$(find usv_gazebo)/urdf/usv_urdf_camera.xacro" />-->
+  <!-- Defines the "usv_gazebo" macro which implements the plugin for USV dynamics -->
+  <xacro:include filename="$(find usv_gazebo_plugins)/urdf/usv_gazebo_dynamics_plugin.xacro" />
+  <!-- Testing old plugin -->
+  <!--<xacro:include filename="$(find usv_plugins)/urdf/usv_plugin.xacro" />-->
+  
+  <!-- Defines the macro for including simulated camera -->
+  <xacro:include filename="$(find usv_gazebo)/urdf/camera_gazebo.xacro" />
+
+  <!-- Defines the macro for simulated GPS -->
+  <xacro:include filename="$(find usv_gazebo)/urdf/gps_gazebo.xacro" />
+  
+  <!-- Defines the macro for simulated IMU -->
+  <xacro:include filename="$(find usv_gazebo)/urdf/imu_gazebo.xacro" />
+
+
+  <!-- Macro for P3D ground truth -->
+  <!-- <xacro:include filename="$(find usv_gazebo)/urdf/p3d_gazebo.xacro" /> -->
+
+  <!-- Call the macros defined above -->
+  <!-- includes basic description witout plugins -->
+  <xacro:usv_base />
+  <!-- USV dynamic model -->
+  <xacro:usv_gazebo name="usv"/>
+
+  <!-- Optional sensor plugins - called by macros defined above -->
+  <xacro:if value="$(arg gps)">
+    <xacro:usv_gps_gazebo name="usv"/>
+  </xacro:if>
+  <xacro:if value="$(arg imu)">
+    <xacro:usv_imu_gazebo name="usv"/>
+  </xacro:if>
+  <!-- <xacro:if value="$(arg p3d)">
+    <xacro:usv_p3d_gazebo name="usv"/>
+  </xacro:if> -->
+
+  <xacro:usv_gazebo_camera name="usv"/>
+
+
+  <xacro:include filename="$(find velodyne_description)/urdf/HDL-32E.urdf.xacro"/>
+  <HDL-32E parent="base_link" name="velodyne" topic="/velodyne_points2" hz="10" samples="220">
+        <origin xyz="0 0 0.6" rpy="0 0 0" />
+  </HDL-32E>
+
+  
+</robot>

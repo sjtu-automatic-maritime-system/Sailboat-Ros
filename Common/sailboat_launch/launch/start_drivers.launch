@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino"/>
-    <node pkg="sensor_onboat" type="Ahrs_Talker.py" name="Ahrs_Talker"/>
-    <node pkg="sensor_onboat" type="WeatherStation_Talker.py" name="WTST_Talker"/>
+    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino" respawn=”true” output="screen"/>
+    <node pkg="sensor_onboat" type="Ahrs_Talker.py" name="Ahrs_Talker" respawn=”true” output="screen"/>
+    <node pkg="sensor_onboat" type="WeatherStation_Talker.py" name="WTST_Talker" respawn=”true” output="screen"/>
 </launch>

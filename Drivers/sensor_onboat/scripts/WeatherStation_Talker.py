@@ -349,7 +349,7 @@ class dataWrapper:
     def pubData(self,msg,wtst):
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = 'WTST'
-        msg.timestamp = rospy.get_time()
+        #msg.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.UTCtime):
@@ -381,7 +381,7 @@ class dataWrapper:
     def pubProData(self,msgPro,wtst):
         msgPro.header.stamp = rospy.Time.now()
         msgPro.header.frame_id = 'WTST'
-        msgPro.timestamp = rospy.get_time()
+        #msgPro.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msgPro.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.UTCtime):

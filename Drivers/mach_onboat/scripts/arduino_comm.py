@@ -123,7 +123,9 @@ class SensorListener:
         while 1:
         #while not rospy.is_shutdown():
             self.arduino.update()
-            self.arduinomsg.timestamp = rospy.get_time()
+            self.arduinomsg.header.stamp = rospy.Time.now()
+            self.arduinomsg.header.frame_id = 'arduino'
+            #self.arduinomsg.timestamp = rospy.get_time()
             self.arduinomsg.readMark = self.arduino.EarduinoDatas[0]
             self.arduinomsg.autoFlag = self.arduino.EarduinoDatas[1]
             self.arduinomsg.motor = self.arduino.EarduinoDatas[2]

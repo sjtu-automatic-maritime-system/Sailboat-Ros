@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- Base -->
+<launch>
+
+  <node pkg="environment_simulation" type="wind_simulation_pub" name="wind_simulation_pub"/>
+  <node pkg="environment_simulation" type="mach_simulation_pub" name="mach_simulation_pub"/>
+  <node pkg="sailboat_gazebo" type="sensor_simulation" name="sensor_simulation" output = "screen"/>
+  <node name="state_publisher" pkg="sailboat_tf_tree" type="state_publisher"/>
+  <node pkg="usv_gazebo" type="usv_drive_simulation" name="usv_drive_simulation" output = "screen"/>
+
+
+</launch>

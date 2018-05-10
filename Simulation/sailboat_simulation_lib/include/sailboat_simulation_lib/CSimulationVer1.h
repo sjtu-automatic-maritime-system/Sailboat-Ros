@@ -160,6 +160,12 @@ public:
     double phi;
     double psi;
 
+    MatrixXd F;
+    MatrixXd F_input;
+
+    //MatrixXd v_in;
+    MatrixXd nu;
+    MatrixXd eta;
 
 private:
 
@@ -173,7 +179,7 @@ private:
     MatrixXd D_nu;
     MatrixXd tau_r;
     MatrixXd tau_s;
-    MatrixXd F;
+
 
     MatrixXd M_RB;
     MatrixXd C_RB;
@@ -184,9 +190,7 @@ private:
     MatrixXd nu_dot;
     MatrixXd eta_dot;
 
-    //MatrixXd v_in;
-    MatrixXd nu;
-    MatrixXd eta;
+
 
     //MatrixXd v_out;
 

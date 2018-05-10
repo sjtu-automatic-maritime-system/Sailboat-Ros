@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(commander)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sailboat_message
+        command_msgs
 )
 
 generate_dynamic_reconfigure_options(
@@ -22,7 +23,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES avoidance
-        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message
+        CATKIN_DEPENDS dynamic_reconfigure roscpp rospy sailboat_message command_msgs
         #DEPENDS system_lib
 )
 ###########

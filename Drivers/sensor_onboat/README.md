@@ -90,7 +90,7 @@
 #### float64 gy
 #### float64 gz
 ###### Fully calibrated and Kalman unbiased gyroscopes values. G x , G y and G z are three real32 numbers(12 bytes), expressed in rad . s -1 .
-#### float64 wx
-#### float64 wy
-#### float64 wz
+#### float64 ax
+#### float64 ay
+#### float64 az
 ###### Fully calibrated and Kalman unbiased accelerometers values. A x , A y and A z are three real32 numbers (12 bytes), expressed in m . s -2 .

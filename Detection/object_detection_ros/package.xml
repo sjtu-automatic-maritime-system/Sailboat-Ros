@@ -45,12 +45,17 @@
 <!--  <exec_depend>message_runtime</exec_depend>-->
 
   <!--<depend>message_generation</depend>-->
+  
+  <depend>cmake_modules</depend>
   <depend>roscpp</depend>
   <depend>rospy</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>image_transport</depend>
+  <depend>sailboat_message</depend>
+  <depend>eigen</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
