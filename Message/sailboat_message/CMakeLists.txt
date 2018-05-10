@@ -52,6 +52,15 @@ add_message_files(
         PointArray.msg
 )
 
+add_service_files(
+  FILES
+  Mach_srv.srv
+  Control_srv.srv
+  Self_Checking_srv.srv
+#   Service1.srv
+#   Service2.srv
+)
+
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(

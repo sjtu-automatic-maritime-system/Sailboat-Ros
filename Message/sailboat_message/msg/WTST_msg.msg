@@ -1,5 +1,5 @@
 Header header
-float64 timestamp
+#float64 timestamp
 int16 GPSIndicator
 float64 UTCtime
 float64 Latitude
