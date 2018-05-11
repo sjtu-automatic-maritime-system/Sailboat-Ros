@@ -8,15 +8,22 @@
 // 0 772.2589954342994 482.5 0 
 // 0 0 1 0
 
-DetectionRos::DetectionRos(double ballR, double fov)
+DetectionRos::DetectionRos(double ballR, double fov,bool gmapping)
     // : nh(_comm_nh),
     : it(nh)
 {
     ROS_INFO("node init");
-    sub_image = nh.subscribe("/usv/camera1/image_raw", 2, &DetectionRos::detection_cb, this);
+    if (gmapping){
+        sub_image = nh.subscribe("/usv/camera1/image_raw", 2, &DetectionRos::detection_gmapping_cb, this);
+    }
+    else{
+        sub_image = nh.subscribe("/usv/camera1/image_raw", 2, &DetectionRos::detection_cb, this);
+    }
+    
     gps = nh.subscribe("/sensor", 2, &DetectionRos::sensor_cb, this);
 //    ros::Subscriber sub_image =  nh.subscribe("camera/image_raw/compressed", 2, &detection_cb);
     obj_pub = nh.advertise<geometry_msgs::PoseArray>("/object/pose", 2); 
+    laser_pub = nh.advertise<sensor_msgs::LaserScan>("/base_scan",2);
 
     pub_img_edge = it.advertise("edges", 2);
     pub_img_dst = it.advertise("dst_circles", 2);
@@ -179,6 +186,105 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 
     sensor_msgs::ImagePtr dst_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", src_ROI).toImageMsg();
     pub_img_dst.publish(dst_msg);
+
+}
+
+
+void DetectionRos::detection_gmapping_cb(const sensor_msgs::ImageConstPtr& img_in){
+    cv::Mat src_img;
+    cv_bridge::toCvShare(img_in,"bgr8")->image.copyTo(src_img);
+//    src_img = cv::imdecode(cv::Mat(img_in->data),3);//convert compressed image data to cv::Mat
+//    cv::imshow("src", src_img);
+//    cv::waitKey(5);
+    cv::Mat src_ROI;
+    //int src_ROI_p1_y = IMG_HEIGHT/3;
+    int src_ROI_p1_y = 0;
+    src_ROI = src_img(cv::Rect(0,src_ROI_p1_y,IMG_WIDTH,IMG_HEIGHT-src_ROI_p1_y));
+    cv::Mat edge = detection::edgeDetection(src_ROI, 150, 200);
+    std::vector<cv::Vec3f> circles = detection::circleDectection(src_ROI, edge);
+    ROS_INFO("detected circles = %ld",circles.size());
+
+    float ranges_size = 81;
+    float angle_increment = (80/57.3)/(ranges_size-1);
+
+    sensor_msgs::LaserScan laser_msg;
+    laser_msg.header = img_in->header;
+    laser_msg.angle_min = -40/57.3;
+    laser_msg.angle_max = 40/57.3;
+    laser_msg.angle_increment = angle_increment;
+    laser_msg.time_increment = 0;
+    laser_msg.scan_time = 1/10;
+    laser_msg.range_min = 2;
+    laser_msg.range_max = 40.0;
+
+    laser_msg.ranges.assign(ranges_size, std::numeric_limits<float>::quiet_NaN());
+
+    for (size_t i = 0; i < circles.size(); i++) {
+        float h_angle = std::atan((circles[i][0]-IMG_WIDTH/2)/f);
+        float v_angle = std::atan((circles[i][1]-IMG_HEIGHT/2)/f);
+        //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
+        //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
+        // cal angle
+        Matrix3d R_tmp;
+        Matrix3d R_in_tmp;
+        Vector3d E_tmp;
+        R_tmp = Matrix3d::Zero(3,3);
+        R_in_tmp = Matrix3d::Zero(3,3);
+        E_tmp(0) = roll;
+        E_tmp(1) = pitch;
+        E_tmp(2) = 0;
+        roll_pitch_yaw_to_R(E_tmp,R_tmp);
+        R_in_tmp = R_tmp.inverse().eval();
+        
+        MatrixXd L_ship(3,1);
+        MatrixXd L_world(3,1);
+        L_ship(0,0) = f;
+        L_ship(1,0) = circles[i][0]-IMG_WIDTH/2;
+        L_ship(2,0) = circles[i][1]-IMG_HEIGHT/2;
+        L_world = R_tmp*L_ship;
+        // std::cout << "L_ship : " << L_ship << std::endl;
+        // std::cout << "L_world : " << L_world << std::endl;
+        float h_angle_final = std::atan((L_world(1,0))/L_world(0,0));
+        float v_angle_final = std::atan((L_world(2,0))/L_world(0,0));
+        std::cout << "h_angle = " << h_angle*57.3 << std::endl;
+        //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
+
+        // cal distance funcation 1
+        float distance_cal = ball_r/circles[i][2]*std::sqrt(std::pow(circles[i][0]-IMG_WIDTH/2,2)+std::pow(circles[i][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
+        ROS_INFO("distance_cal = %f",distance_cal);
+
+        double object_yaw = yaw + h_angle_final;
+        double object_x = posX + distance_cal*cos(object_yaw);
+        double object_y = posY + distance_cal*sin(object_yaw);
+
+        ROS_INFO("object pos : ( %f , %f ) object_yaw : %f",object_x, object_y,object_yaw);
+
+        float range = ball_r/distance_cal;
+        float range_max = 40/57.3 + h_angle_final + range;
+        float range_min = 40/57.3 + h_angle_final - range;
+
+        int index_max = range_max/angle_increment;
+        int index_min = range_min/angle_increment;
+        ROS_INFO("index_max = %d",index_max);
+        ROS_INFO("index_min = %d",index_min);
+
+        if (index_min<0){
+            index_min = 0;
+        }
+        if (index_max>80){
+            index_max = 80;
+        }
+
+        if (distance_cal > laser_msg.range_min and distance_cal < laser_msg.range_max){
+            
+            for (int i = index_min; i < index_max+1; i++){
+                //ROS_INFO("index = %d",i);
+                laser_msg.ranges[i] = distance_cal;
+            }
+        }
+    }
+
+    laser_pub.publish(laser_msg);
 
 }
 
