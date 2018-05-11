@@ -1,24 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(mach_onboat)
 
+add_definitions(-std=c++11)
+
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         rospy
         sailboat_message
-        #        message_generation
         std_msgs
         )
-
-#add_message_files(
-#        FILES
-#        Mach_msg.msg
-#)
-#
-#generate_messages(
-#        DEPENDENCIES
-#        std_msgs
-#
-#)
 
 
 catkin_package(

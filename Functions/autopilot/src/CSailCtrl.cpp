@@ -14,9 +14,9 @@ CSailCtrl::CSailCtrl() {
     double sailTmp2[19] = {0, 0, 5,10,15,20,22,30,36,40, 50, 55, 60,63,72,73,76,81,82};
 
     for (int i = 0; i < 19 ; ++i) {
-        awaData[i] = awaTmp[i]/180*pi;
-        sailAngleData1[i] = sailTmp1[i]/180*pi;
-        sailAngleData2[i] = sailTmp2[i]/180*pi;
+        awaData[i] = awaTmp[i]/180*PI;
+        sailAngleData1[i] = sailTmp1[i]/180*PI;
+        sailAngleData2[i] = sailTmp2[i]/180*PI;
     }
 
     SIP1 = new CCubicSplineInterpolation(awaData,sailAngleData1,19);

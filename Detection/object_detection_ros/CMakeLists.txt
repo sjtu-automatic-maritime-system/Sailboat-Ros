@@ -4,7 +4,6 @@ project(object_detection_ros)
 ## Add support for C++11, supported in ROS Kinetic and newer
 add_definitions(-std=c++11)
 
-## Catkin packages required for both building and running (<depend> entries in package.xml)
 set(catkin_package_DEPENDENCIES
         ## set dependencies here
         cmake_modules
@@ -17,9 +16,6 @@ set(catkin_package_DEPENDENCIES
         sailboat_message
         geometry_msgs
         )
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 
 find_package(catkin REQUIRED COMPONENTS
         ${catkin_package_DEPENDENCIES}
@@ -33,9 +29,6 @@ message("-- OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
 message("-- catkin include dirs: ${catkin_INCLUDE_DIRS}")
 message("-- Eigen include dirs: ${Eigen_INCLUDE_DIRS}")
 
-
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
 
 catkin_package(
         #        INCLUDE_DIRS

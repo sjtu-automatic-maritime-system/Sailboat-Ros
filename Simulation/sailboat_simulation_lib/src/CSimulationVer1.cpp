@@ -167,7 +167,7 @@ void CSimulationVer1::KeelCoefInit() {
                          0.4734, 0.5071, 0.5454, 0.5881, 0.635, 0.6861, 0.7413, 0.8004, 0.8633,
                          0.9298, 1.0, 1.077, 1.165, 1.263, 1.369, 1.483, 1.604, 1.731, 1.863, 2.0};
     for (int i = 0; i < 37 ; i++) {
-        xdata[i]=i*2.5/180*pi;
+        xdata[i]=i*2.5/180*PI;
     }
 
     CsipKeelYl = new CCubicSplineInterpolation(xdata,yldata,37);
@@ -187,7 +187,7 @@ void CSimulationVer1::HullCoefInit() {
                          0.4935, 0.5206, 0.5583, 0.6006, 0.6478, 0.6999, 0.757, 0.8192, 0.8866,
                          0.9593, 1.037, 1.121, 1.21, 1.305, 1.406, 1.513, 1.625, 1.744, 1.869, 2.0};
     for (int i = 0; i < 37 ; i++) {
-        xdata[i]=i*2.5/180*pi;
+        xdata[i]=i*2.5/180*PI;
     }
 
     CsipHullYl = new CCubicSplineInterpolation(xdata,yldata,37);
@@ -206,7 +206,7 @@ void CSimulationVer1::RudderCoefInit() {
                          0.4466, 0.5092, 0.576, 0.5956, 0.6071, 0.6147, 0.6325, 0.663, 0.7062,
                          0.7621, 0.8305, 0.9114, 1.005, 1.11, 1.229, 1.359, 1.501, 1.655, 1.822, 2.0};
     for (int i = 0; i < 37 ; i++) {
-        xdata[i]=i*2.5/180*pi;
+        xdata[i]=i*2.5/180*PI;
     }
 
     CsipRudderYl = new CCubicSplineInterpolation(xdata,yldata,37);
@@ -225,7 +225,7 @@ void CSimulationVer1::SailCoefInit() {
                          0.4466, 0.5092, 0.576, 0.5956, 0.6071, 0.6147, 0.6325, 0.663, 0.7062,
                          0.7621, 0.8305, 0.9114, 1.005, 1.11, 1.229, 1.359, 1.501, 1.655, 1.822, 2.0};
     for (int i = 0; i < 37 ; i++) {
-        xdata[i]=i*2.5/180*pi;
+        xdata[i]=i*2.5/180*PI;
     }
 
     CsipSailYl = new CCubicSplineInterpolation(xdata,yldata,37);
@@ -239,24 +239,24 @@ double* CSimulationVer1::KeelCoef(double alpha) {
     double Clk;
     double Cdk;
 
-    if (alpha>=0 && alpha<=pi/2)
+    if (alpha>=0 && alpha<=PI/2)
     {
         xp = alpha;
         Clk = CsipKeelYl->GetYByX(xp);
         Cdk = CsipKeelYd->GetYByX(xp);
-    } else if (alpha >= pi/2 && alpha <=pi)
+    } else if (alpha >= PI/2 && alpha <=PI)
     {
-        xp = pi -alpha;
+        xp = PI -alpha;
         Clk = -1*CsipKeelYl->GetYByX(xp);
         Cdk = CsipKeelYd->GetYByX(xp);
-    } else if (alpha >= -pi/2 && alpha < 0)
+    } else if (alpha >= -PI/2 && alpha < 0)
     {
         xp = -alpha;
         Clk = -1*CsipKeelYl->GetYByX(xp);
         Cdk = CsipKeelYd->GetYByX(xp);
     } else
     {
-        xp = alpha + pi;
+        xp = alpha + PI;
         Clk = CsipKeelYl->GetYByX(xp);
         Cdk = CsipKeelYd->GetYByX(xp);
     }
@@ -275,24 +275,24 @@ double* CSimulationVer1::HullCoef(double alpha) {
     double Clk;
     double Cdk;
 
-    if (alpha>=0 && alpha<=pi/2)
+    if (alpha>=0 && alpha<=PI/2)
     {
         xp = alpha;
         Clk = CsipHullYl->GetYByX(xp);
         Cdk = CsipHullYd->GetYByX(xp);
-    } else if (alpha >= pi/2 && alpha <=pi)
+    } else if (alpha >= PI/2 && alpha <=PI)
     {
-        xp = pi -alpha;
+        xp = PI -alpha;
         Clk = -1*CsipHullYl->GetYByX(xp);
         Cdk = CsipHullYd->GetYByX(xp);
-    } else if (alpha >= -pi/2 && alpha < 0)
+    } else if (alpha >= -PI/2 && alpha < 0)
     {
         xp = -alpha;
         Clk = -1*CsipHullYl->GetYByX(xp);
         Cdk = CsipHullYd->GetYByX(xp);
     } else
     {
-        xp = alpha + pi;
+        xp = alpha + PI;
         Clk = CsipHullYl->GetYByX(xp);
         Cdk = CsipHullYd->GetYByX(xp);
     }
@@ -311,26 +311,26 @@ double* CSimulationVer1::RudderCoef(double alpha) {
     double Clk;
     double Cdk;
 
-    if (alpha>=0 && alpha<=pi/2)
+    if (alpha>=0 && alpha<=PI/2)
     {
 
         xp = alpha;
 
         Clk = CsipRudderYl->GetYByX(xp);
         Cdk = CsipRudderYd->GetYByX(xp);
-    } else if (alpha >= pi/2 && alpha <=pi)
+    } else if (alpha >= PI/2 && alpha <=PI)
     {
-        xp = pi -alpha;
+        xp = PI -alpha;
         Clk = -CsipRudderYl->GetYByX(xp);
         Cdk = CsipRudderYd->GetYByX(xp);
-    } else if (alpha >= -pi/2 && alpha < 0)
+    } else if (alpha >= -PI/2 && alpha < 0)
     {
         xp = -alpha;
         Clk = -CsipRudderYl->GetYByX(xp);
         Cdk = CsipRudderYd->GetYByX(xp);
     } else
     {
-        xp = alpha + pi;
+        xp = alpha + PI;
         Clk = CsipRudderYl->GetYByX(xp);
         Cdk = CsipRudderYd->GetYByX(xp);
     }
@@ -349,26 +349,26 @@ double* CSimulationVer1::SailCoef(double alpha) {
     double Clk;
     double Cdk;
 
-    if (alpha>=0 && alpha<=pi/2)
+    if (alpha>=0 && alpha<=PI/2)
     {
 
         xp = alpha;
 
         Clk = CsipSailYl->GetYByX(xp);
         Cdk = CsipSailYd->GetYByX(xp);
-    } else if (alpha >= pi/2 && alpha <=pi)
+    } else if (alpha >= PI/2 && alpha <=PI)
     {
-        xp = pi -alpha;
+        xp = PI -alpha;
         Clk = -CsipSailYl->GetYByX(xp);
         Cdk = CsipSailYd->GetYByX(xp);
-    } else if (alpha >= -pi/2 && alpha < 0)
+    } else if (alpha >= -PI/2 && alpha < 0)
     {
         xp = -alpha;
         Clk = -CsipSailYl->GetYByX(xp);
         Cdk = CsipSailYd->GetYByX(xp);
     } else
     {
-        xp = alpha + pi;
+        xp = alpha + PI;
         Clk = CsipSailYl->GetYByX(xp);
         Cdk = CsipSailYd->GetYByX(xp);
     }
@@ -676,14 +676,14 @@ void CSimulationVer1::Sailboat_Calc(double d_t) {
     nu(3,0) = limitsPi(nu(3,0));
     eta(3,0) = limitsPi(eta(3,0));
 
-    if(nu(2,0) > pi/6)
-        nu(2,0) = pi/6;
-    else if (nu(2,0) < -pi/6)
-        nu(2,0) = -pi/6;
-    if(eta(2,0) > pi/6)
-        eta(2,0) = pi/6;
-    else if (eta(2,0) < -pi/6)
-        eta(2,0) = -pi/6;
+    if(nu(2,0) > PI/6)
+        nu(2,0) = PI/6;
+    else if (nu(2,0) < -PI/6)
+        nu(2,0) = -PI/6;
+    if(eta(2,0) > PI/6)
+        eta(2,0) = PI/6;
+    else if (eta(2,0) < -PI/6)
+        eta(2,0) = -PI/6;
 
 
     if (dataShow == true)
@@ -717,21 +717,21 @@ void CSimulationVer1::HideData()
 }
 
 double CSimulationVer1::d2r(double d) {
-    return d*pi/180;
+    return d*PI/180;
 }
 
 double CSimulationVer1::r2d(double r) {
-    return r*180/pi;
+    return r*180/PI;
 }
 
 double CSimulationVer1::limitsPi(double tmp)
 {
-    while (fabs(tmp)>pi)
+    while (fabs(tmp)>PI)
     {
         if(tmp>0)
-            tmp = tmp-2*pi;
+            tmp = tmp-2*PI;
         else
-            tmp = tmp+2*pi;
+            tmp = tmp+2*PI;
     }
     return tmp;
 }

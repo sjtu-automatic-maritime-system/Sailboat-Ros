@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(environment_simulation)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
+add_definitions(-std=c++11)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
         sailboat_message
   dynamic_reconfigure
@@ -15,10 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-
-
 generate_dynamic_reconfigure_options(
         cfg/Sailboat_Mach_Simulation.cfg
         cfg/Sailboat_targetAngle_Simulation.cfg
@@ -26,8 +19,6 @@ generate_dynamic_reconfigure_options(
         #   cfg/DynReconf1.cfg
         #   cfg/DynReconf2.cfg
 )
-
-
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -39,11 +30,6 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-# include_directories(include)
-
 include_directories(
         include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}

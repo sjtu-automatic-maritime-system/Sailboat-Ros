@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(sailboat_gazebo_plugins)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   gazebo_ros
@@ -49,15 +46,13 @@ link_directories(
 catkin_package(
         INCLUDE_DIRS include
         CATKIN_DEPENDS roscpp geometry_msgs nav_msgs sailboat_message sailboat_simulation_lib
-        DEPENDS gazebo
+        DEPENDS #gazebo
         LIBRARIES
 )
 
 ###########
 ## Build ##
 ###########
-
-## Declare a C++ library
 add_library(sailboat_gazebo_dynamics_plugin
         src/sailboat_gazebo_dynamics_plugin.cpp
         )

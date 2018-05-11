@@ -8,7 +8,7 @@
 #include "environment_simulation/wind_simulation_Config.h"
 #include <sstream>
 
-#define pi 3.1415926
+#define PI 3.1415926
 
 static float TWA = 0;
 static float TWS = 3;

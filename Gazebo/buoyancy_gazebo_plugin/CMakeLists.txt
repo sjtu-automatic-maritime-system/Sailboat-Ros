@@ -57,7 +57,7 @@ link_directories(
 catkin_package(
    INCLUDE_DIRS include
    CATKIN_DEPENDS roscpp
-   DEPENDS gazebo
+   DEPENDS #gazebo
    LIBRARIES
 )
 

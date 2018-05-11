@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(avoidance)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
+add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -25,7 +25,6 @@ catkin_package(
         CATKIN_DEPENDS dynamic_reconfigure roscpp rospy std_msgs sailboat_message tld_msgs
         #DEPENDS system_lib
 )
-
 ###########
 ## Build ##
 ###########
