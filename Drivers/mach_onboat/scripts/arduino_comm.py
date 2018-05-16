@@ -18,6 +18,10 @@ rudder = 90
 sail = 90
 pcCtrl = 0
 
+green_led = 0
+yellow_led = 0
+red_led = 0
+
 AHRS_outTime = 0
 WTST_outTime = 0
 Arduino_outTime = 0
@@ -142,7 +146,7 @@ class SensorListener:
         self.r = rospy.Rate(10)
         self.arduino = Arduino()
         self.arduinomsg = Arduino_msg()
-        rospy.Subscriber('mach', Mach_msg, machCallback)
+        rospy.Subscriber('/base/mach', Mach_msg, machCallback)
         rospy.Subscriber('out_time', Mach_msg, outTimeCallback)
         rospy.Subscriber('self_checking_arduino_srv',Self_Checking_srv,handleSelfChecking)
         self.talker()
@@ -163,6 +167,24 @@ class SensorListener:
                 self.arduinomsg.voltage1 = self.arduino.EarduinoDatas[5]
                 self.arduinomsg.voltage2 = self.arduino.EarduinoDatas[6]
                 self.pub.publish(self.arduinomsg)
+
+                if waiting_for_checking == 0:
+                    green_led = 1
+                    yellow_led = 0
+                    red_led = 0
+                elif all_result == True :
+                    if pcCtrl == 1 :
+                        green_led = 2
+                        yellow_led = 0
+                        red_led = 0
+                    else:
+                        green_led = 0
+                        yellow_led = 1
+                        red_led = 0
+                else:
+                    green_led = 0
+                    yellow_led = 0
+                    red_led = 1
                 self.r.sleep()
         except rospy.ROSInterruptException as e:
             print(e)
@@ -202,6 +224,7 @@ def outTimeCallback(data):
     WTST_outTime = data.WTST_outTime
     Arduino_outTime = data.Arduino_outTime
     Mach_outTime = data.Mach_outTime
+    #if AHRS_outTime
 
 def handleSelfChecking(data):
     global all_result, waiting_for_checking
@@ -221,7 +244,7 @@ def handleSelfChecking(data):
     checkRadar_result = data.checkRadar_result
     checkDynamixel_result = data.checkDynamixel_result
     checkDisk_result = data.checkDisk_result
-
+    return Self_Checking_srvResponse(True)
 
 def talker():#ros message publish
     SensorListener('arduino')
