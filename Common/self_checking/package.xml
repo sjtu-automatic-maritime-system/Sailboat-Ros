@@ -21,6 +21,7 @@
   <depend>std_msgs</depend>
   <depend>dynamic_reconfigure</depend>
   <depend>sailboat_message</depend>
+  <depend>dynamixel_workbench_msgs</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -16,7 +16,8 @@
 //todo Steering gear service;
 #include "sensor_msgs/Image.h"
 #include "geometry_msgs/PoseArray.h"
-#include "dynamixel_msgs/MotorStateList.h"
+//#include "dynamixel_msgs/MotorStateList.h"
+#include "dynamixel_workbench_msgs/JointCommand.h"
 
 #include <iostream>
 #include <pthread.h>
@@ -43,7 +44,7 @@ public:
 
     void ArduinoSubscriberCB(const sailboat_message::Arduino_msg::ConstPtr &msg);
 
-    void DynamixelSubscriberCB(const dynamixel_msgs::MotorStateList::ConstPtr &msg);
+    //void DynamixelSubscriberCB(const dynamixel_msgs::MotorStateList::ConstPtr &msg);
 
     void CameraSubscribeCB(const sensor_msgs::Image::ConstPtr &msg);
 
@@ -85,7 +86,7 @@ private:
     ros::Subscriber ArduinoSubscriber;
     ros::Subscriber CameraSubscriber;
     ros::Subscriber RadarSubscriber;
-    ros::Subscriber DynamixelSubscriber;
+    //ros::Subscriber DynamixelSubscriber;
     ros::Subscriber MachSubscriber;
 
     ros::ServiceClient DynamixelCtlClient;

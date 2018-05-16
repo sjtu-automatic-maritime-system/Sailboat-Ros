@@ -9,16 +9,16 @@ void SailboatSelfChecking::onInit(){
 
     ArduinoSubscriber = nh.subscribe("/arduino", 10,&SailboatSelfChecking::ArduinoSubscriberCB, this);
 
-    CameraSubscriber = nh.subscribe("/camera", 10, &SailboatSelfChecking::DynamixelSubscriberCB, this);
+    CameraSubscriber = nh.subscribe("/camera", 10, &SailboatSelfChecking::CameraSubscribeCB, this);
 
-    RadarSubscriber = nh.subscribe("/radar", 10, &SailboatSelfChecking::CameraSubscribeCB, this);
+    RadarSubscriber = nh.subscribe("/radar", 10, &SailboatSelfChecking::RadarSubscribeCB, this);
 
-    DynamixelSubscriber = nh.subscribe("/motor_states/pan_tilt_port", 10,&SailboatSelfChecking::RadarSubscribeCB, this);
+    //DynamixelSubscriber = nh.subscribe("/motor_states/pan_tilt_port", 10,&SailboatSelfChecking::RadarSubscribeCB, this);
 
     MachSubscriber = nh.subscribe("/mach", 10,&SailboatSelfChecking::MachSubscribeCB, this);
 
-    //DynamixelCtlClient = nh.serviceClient<wa_ros_msgs::SetGimbalCtl>("/drone/gimbal_control_srv");
-    
+    DynamixelCtlClient = nh.serviceClient<dynamixel_workbench_msgs::JointCommand>("/joint_command");
+
     CheckResultClient = nh.serviceClient<sailboat_message::Self_Checking_srv>("/self_checking_arduino_srv");
 
     //OutTimeClient = nh.serviceClient<sailboat_message::Out_Time_srv>("/out_time_srv");
@@ -107,10 +107,10 @@ void SailboatSelfChecking::ArduinoSubscriberCB(const sailboat_message::Arduino_m
     arduinoMsgNum += 1;
 }
 
-void SailboatSelfChecking::DynamixelSubscriberCB(const dynamixel_msgs::MotorStateList::ConstPtr &msg){
-    dynamixel_sail = 1;
-    dynamixel_rudder = 1;
-}
+// void SailboatSelfChecking::DynamixelSubscriberCB(const dynamixel_msgs::MotorStateList::ConstPtr &msg){
+//     dynamixel_sail = 1;
+//     dynamixel_rudder = 1;
+// }
 
 void SailboatSelfChecking::CameraSubscribeCB(const sensor_msgs::Image::ConstPtr &msg){
     camera_timestamp = msg->header.stamp;
@@ -265,8 +265,47 @@ void SailboatSelfChecking::checkArduino(){
 }
 
 void SailboatSelfChecking::checkDynamixel(){
-    checkDynamixel_param = 0;
-    checkDynamixel_result = 0;
+
+    float sail[4] = {-3.14, 0, 3.14, -3.14};
+    float rudder[4] = {-0.6, 0, 0.6, 0};
+    int success = 0;
+    for (int i = 0; i < 4; i++){
+        dynamixel_workbench_msgs::JointCommand srvSail;
+        srvSail.request.unit = "rad";
+        srvSail.request.id = 1;
+        srvSail.request.goal_position = sail[i];
+        if (DynamixelCtlClient.call(srvSail))
+        {
+            ROS_INFO("sail contrl result = %d", srvSail.response.result);
+            success += 1;
+        }
+        else
+        {
+            ROS_ERROR("Failed to call service joint_command");
+        }
+        usleep(1000000);
+        dynamixel_workbench_msgs::JointCommand srvRudder;
+        srvRudder.request.unit = "rad";
+        srvRudder.request.id = 2;
+        srvRudder.request.goal_position = rudder[i];
+        if (DynamixelCtlClient.call(srvRudder))
+        {
+            ROS_INFO("rudder contrl result = %d", srvRudder.response.result);
+            success += 1;
+        }
+        else
+        {
+            ROS_ERROR("Failed to call service joint_command");
+        }
+        usleep(1000000);
+    }
+    checkDynamixel_param = float(success)/8;
+    if (success == 8){
+        checkDynamixel_result = 1;
+    }
+    else{
+        checkDynamixel_result = 0;
+    }
 }
 
 void SailboatSelfChecking::checkCamera(){
@@ -419,7 +458,7 @@ void SailboatSelfChecking::sendresult(){
 
     CameraSubscriber.shutdown();
     RadarSubscriber.shutdown();
-    DynamixelSubscriber.shutdown();
+    //DynamixelSubscriber.shutdown();
 }
 
 void SailboatSelfChecking::stateUpdate(){

@@ -12,13 +12,14 @@ find_package(catkin REQUIRED
         std_msgs
         dynamic_reconfigure
         sailboat_message
+        dynamixel_workbench_msgs
         )
 
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES self_checking
-  CATKIN_DEPENDS roscpp rospy geometry_msgs sensor_msgs std_msgs dynamic_reconfigure
+  CATKIN_DEPENDS roscpp rospy geometry_msgs sensor_msgs std_msgs dynamic_reconfigure dynamixel_workbench_msgs
 #  DEPENDS system_lib
 )
 
