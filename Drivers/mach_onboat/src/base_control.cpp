@@ -12,6 +12,7 @@ double baseSailAngleLast;
 double baseRudderAngleLast;
 
 int readMark;
+int rcCtrl;
 double arduinoSailAngle;
 double arduinoRudderAngle;
 
@@ -27,6 +28,7 @@ double rosRudderAngle;
 void arduinoMachCallback(const sailboat_message::Arduino_msg::ConstPtr& msg)
 {  
     readMark = int(msg->readMark);
+    rcCtrl = 1 - int(msg->autoFlag);
     arduinoSailAngle = msg->sail * 3.14 / 180;
     arduinoRudderAngle = msg->rudder * 3.14 / 180;
 }
@@ -56,7 +58,10 @@ int main(int argc, char **argv)
 
     while (ros::ok())
     {
-        if (readMark == 1){
+        if (readMark == 0){
+            ROS_WARN("error in arduino common");
+        }
+        if (rcCtrl == 1){
             //remote control
             baseSailAngle = fabs(arduinoSailAngle);
             baseRudderAngle = arduinoRudderAngle;
@@ -70,7 +75,7 @@ int main(int argc, char **argv)
                 autoFlag = 1;
             }
             else{
-                //pcCtrl
+                //rcCtrl
                 baseSailAngle = fabs(arduinoSailAngle);
                 baseRudderAngle = arduinoRudderAngle;
                 autoFlag = 0;

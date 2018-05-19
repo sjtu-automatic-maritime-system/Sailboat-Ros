@@ -18,7 +18,7 @@ rudder = 90
 sail = 90
 pcCtrl = 0
 
-green_led = 0
+green_led = 1
 yellow_led = 0
 red_led = 0
 
@@ -32,23 +32,10 @@ waiting_for_checking = 0
 all_result = 0
 
 # pcctrl   0 rc ctrl 1 comouter ctrl
-# readMark 0 rc ctrl 1 comouter ctrl
+# autoflag 0 rc ctrl 1 comouter ctrl
 ###
-# if (rc connect = 1 and rc Mark == 0){
-#     readMark == 0
-# }
-# if (readMark == 0){
-#     rc contrl
-# }
-# else
-#    if pcctrl == 0{
-#        rc contrl
-#    }
-#    else {
-#        pc contrl
-#    }
-
-# }
+#readMark = 0 error
+#
 ###
 # send 
 # pcCtrl, waiting, all_result,AHRS_outTime,WTST_outTime,Arduino_outTime,Mach_outTime
@@ -125,11 +112,12 @@ class Arduino():
         
     def send_data(self):
         header = '\xff\x01'
-        tmp = self.fst.pack(motor,rudder,sail,pcCtrl)
+        tmp = self.fst.pack(motor,green_led,yellow_led,red_led)
         crc_code = struct.pack('!H', crc16(tmp))
         print 'send data:',binascii.hexlify(tmp), type(tmp)
         tmp = header + tmp
         tmp = tmp + crc_code
+        #print 'greed_led', green_led, 'yellow_led', yellow_led, 'red_led', red_led
         #print binascii.hexlify(tmp)
         return tmp
 
@@ -171,6 +159,7 @@ class SensorListener:
         self.talker()
 
     def talker(self):
+        global green_led, yellow_led, red_led
         try:
             # spin() simply keeps python from exiting until this node is stopped
             while not rospy.is_shutdown():
@@ -217,9 +206,9 @@ def machCallback(data):
     #rospy.loginfo("I heard %f", data.roll)
     motor = 50
     #max~min 40~-40 130~50
-    rudder = int(data.rudder*57.3)+90
+    rudder = int(data.rudder*57.3)
     #max~min 90-0 77~50
-    sail = int(abs(data.sail)*57.3/3.3)+50
+    sail = int(abs(data.sail)*57.3)
     pcCtrl = int(data.PCCtrl)
 
     if motor > 100:
@@ -244,8 +233,6 @@ def outTimeCallback(data):
     Arduino_outTime = data.Arduino_outTime
     Mach_outTime = data.Mach_outTime
     #if AHRS_outTime
-
-
 
 def talker():#ros message publish
     SensorListener('arduino')
