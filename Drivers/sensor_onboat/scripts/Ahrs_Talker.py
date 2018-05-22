@@ -11,8 +11,8 @@ import logging
 
 Data_Show = False
 
-ahrs_port = '/dev/ttyUSB0'
-# ahrs_port = '/dev/ahrs'
+#ahrs_port = '/dev/ttyUSB0'
+ahrs_port = '/dev/ahrs'
 # ahrs_port='/dev/serial/by-id/usb-Silicon_Labs_SBG_Systems_-_UsbToUart_001000929-if00-port0'
 
 def hexShow(argv):

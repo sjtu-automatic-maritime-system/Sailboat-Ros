@@ -13,6 +13,7 @@ import time
 
 arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_75533353038351615291-if00'
 #arduino_port = '/dev/ttyACM0'
+#arduino_port = 'arduino'
 motor = 50
 rudder = 90
 sail = 90

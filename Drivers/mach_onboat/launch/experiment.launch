@@ -1,0 +1,3 @@
+ <launch>
+    <node name="experiment.py" pkg="mach_onboat" type="experiment" output="screen"/>
+</launch>

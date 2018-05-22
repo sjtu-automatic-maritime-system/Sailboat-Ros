@@ -2,40 +2,29 @@
 import signal, sys
 import rospy
 from sailboat_message.msg import Ahrs_msg
-from std_msgs.msg import Float64
+from sailboat_message.msg import Mach_msg
+import time
+# from std_msgs.msg import Float64
 class listener:
     def __init__(self):
-        self.yaw_start=0
         self.isinit=True
-        pass
     def callback(self,data):
-        if self.isinit==True:
-            self.yaw_start=data.yaw
-            self.yaw=data.yaw
-            self.isinit=False
+        # if self.isinit==True:
+        #     self.yaw_start=data.yaw
+        #     self.yaw=data.yaw
+        #     self.isinit=False
         self.yaw=data.yaw
 
-        # if self.isinit==True:
-        #     self.yaw_start=data.data
-        #     self.yaw=data.data
-        #     self.isinit=False
-        # self.yaw=data.data
-     
-
     
-
     def listen(self):
         rospy.Subscriber('ahrs', Ahrs_msg, self.callback)
-        # rospy.Subscriber('chatter', Float64, self.callback)
 
-    
-    
-    # spin() simply keeps python from exiting until this node is stopped
-        # rospy.spin()
 class Experiment:
     def __init__(self):
         self.state=-1
     def zig_zag(self,yaw,yaw_start,rudder):
+        # if yaw-yaw_start>5.0:
+        #     yaw=yaw-
         if yaw-yaw_start>rudder:
             self.state=1
         elif yaw-yaw_start<-rudder:
@@ -48,38 +37,83 @@ class Experiment:
     def turning(self,rudder):
         return rudder
 
-        
-def talker(mode,ruuder):
+class dataWrapper:
+    """docstring for dataWrapper"""
+    def __init__(self):
+        self.motor='motor'
+        self.rudder='rudder'
+
+
+    def pubData(self,msg,rudder,motor):
+        msg.header.stamp = rospy.Time.now()
+        msg.header.frame_id = 'Mach'
+
+        # if ahrs.isset(self.Roll):
+        #     msg.roll = ahrs.Roll
+        # if ahrs.isset(self.Pitch):
+        #     msg.pitch = ahrs.Pitch
+        # if ahrs.isset(self.Yaw):
+        #     msg.yaw = ahrs.Yaw
+        # if ahrs.isset(self.gx):
+        #     msg.gx = ahrs.gx
+        # if ahrs.isset(self.gy):
+        #     msg.gy = ahrs.gy
+        # if ahrs.isset(self.gz):
+        #     msg.gz = ahrs.gz
+        # if ahrs.isset(self.ax):
+        #     msg.ax = ahrs.ax
+        # if ahrs.isset(self.ay):
+        #     msg.ay = ahrs.ay
+        # if ahrs.isset(self.az):
+        #     msg.az = ahrs.az
+
+        msg.rudder=rudder
+        msg.motor=motor
+        msg.PCCtrl=1
+        msg.sail=1
+        return msg
+
+
+
+def talker(mode,rudder,motor):
     signal.signal(signal.SIGINT,quit)
     signal.signal(signal.SIGTERM,quit)
-    # mode=input("select mode turning or zig_zag:")
-	# rudder=float(input("select rudder angle:"))
 
 
-    pub = rospy.Publisher('rudder', Float64, queue_size=10)  
+    pub = rospy.Publisher('rudder', Mach_msg, queue_size=10)  
     rospy.init_node('rudder_talker', anonymous=True)  
     rate = rospy.Rate(10) # 10hz 
+    msg = Mach_msg()
+    datawrapper = dataWrapper()
 
-    # mode='zig_zag'
-    # rudder=0.52
     ahrs_listener=listener()
     experiment=Experiment()
-    try:
-        ahrs_listener.listen()
-        while not rospy.is_shutdown():  
-            while ahrs_listener.yaw_start!=0:
-                print(ahrs_listener.yaw,ahrs_listener.yaw_start)
-                if mode=='zig_zag':
-                    set_rudder=experiment.zig_zag(ahrs_listener.yaw,ahrs_listener.yaw_start,rudder)
-                elif mode=='turning':
-                    set_rudder=experiment.turning(rudder)
-                print(ahrs_listener.yaw,ahrs_listener.yaw_start,set_rudder)
-                pub.publish(set_rudder)  
-                rate.sleep()
-    except rospy.ROSInterruptException:
-        pass
-    finally:
-        raise
+    start_time=time.time()
+    # try:
+    ahrs_listener.listen()
+    time.sleep(3)
+    while not rospy.is_shutdown():  
+        if time.time()-start_time<6:
+            mach_msg=datawrapper.pubData(msg,0,motor)
+            try:
+                yaw_start=ahrs_listener.yaw
+                print(yaw_start)
+            except:
+                pass
+        else:
+            if mode=='zig_zag':
+                set_rudder=experiment.zig_zag(ahrs_listener.yaw,yaw_start,rudder)
+                print(ahrs_listener.yaw,yaw_start,set_rudder)
+            elif mode=='turning':
+                set_rudder=experiment.turning(rudder)
+            mach_msg=datawrapper.pubData(msg,set_rudder,motor)
+            
+        pub.publish(mach_msg)  
+        rate.sleep()
+    # except rospy.ROSInterruptException:
+    #     pass
+    # finally:
+    #     raise
 
 def quit(signum,frame):
     print('byebye')
@@ -87,7 +121,7 @@ def quit(signum,frame):
 
 if __name__ == '__main__':
     mode='zig_zag'
-    rudder=0.52
-    talker(mode,rudder)
+    # rudder=10
+    talker(mode,0.52,80)
        
 
