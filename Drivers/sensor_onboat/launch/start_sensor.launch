@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino" respawn=”true” output="screen"/>
-    <node pkg="sensor_onboat" type="Ahrs_Talker.py" name="Ahrs_Talker" respawn=”true” output="screen"/>
+    <node pkg="mach_onboat" type="arduino_comm.py" name="arduino_ver" output="screen"/>
+    <node pkg="sensor_onboat" type="Ahrs_Talker.py" name="Ahrs_Talker" output="screen"/>
 </launch>

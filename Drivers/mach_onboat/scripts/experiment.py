@@ -23,8 +23,10 @@ class Experiment:
     def __init__(self):
         self.state=-1
     def zig_zag(self,yaw,yaw_start,rudder):
-        # if yaw-yaw_start>5.0:
-        #     yaw=yaw-
+	if yaw-yaw_start>5.0:
+            yaw=yaw-3.14159*2
+        elif yaw-yaw_start<-5.0:
+            yaw=yaw+3.14159*2
         if yaw-yaw_start>rudder:
             self.state=1
         elif yaw-yaw_start<-rudder:
@@ -48,24 +50,6 @@ class dataWrapper:
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = 'Mach'
 
-        # if ahrs.isset(self.Roll):
-        #     msg.roll = ahrs.Roll
-        # if ahrs.isset(self.Pitch):
-        #     msg.pitch = ahrs.Pitch
-        # if ahrs.isset(self.Yaw):
-        #     msg.yaw = ahrs.Yaw
-        # if ahrs.isset(self.gx):
-        #     msg.gx = ahrs.gx
-        # if ahrs.isset(self.gy):
-        #     msg.gy = ahrs.gy
-        # if ahrs.isset(self.gz):
-        #     msg.gz = ahrs.gz
-        # if ahrs.isset(self.ax):
-        #     msg.ax = ahrs.ax
-        # if ahrs.isset(self.ay):
-        #     msg.ay = ahrs.ay
-        # if ahrs.isset(self.az):
-        #     msg.az = ahrs.az
 
         msg.rudder=rudder
         msg.motor=motor
@@ -80,7 +64,7 @@ def talker(mode,rudder,motor):
     signal.signal(signal.SIGTERM,quit)
 
 
-    pub = rospy.Publisher('rudder', Mach_msg, queue_size=10)  
+    pub = rospy.Publisher('mach', Mach_msg, queue_size=10)  
     rospy.init_node('rudder_talker', anonymous=True)  
     rate = rospy.Rate(10) # 10hz 
     msg = Mach_msg()
@@ -103,11 +87,10 @@ def talker(mode,rudder,motor):
         else:
             if mode=='zig_zag':
                 set_rudder=experiment.zig_zag(ahrs_listener.yaw,yaw_start,rudder)
-                print(ahrs_listener.yaw,yaw_start,set_rudder)
             elif mode=='turning':
                 set_rudder=experiment.turning(rudder)
             mach_msg=datawrapper.pubData(msg,set_rudder,motor)
-            
+            print(ahrs_listener.yaw,yaw_start,set_rudder)
         pub.publish(mach_msg)  
         rate.sleep()
     # except rospy.ROSInterruptException:
@@ -121,7 +104,7 @@ def quit(signum,frame):
 
 if __name__ == '__main__':
     mode='zig_zag'
-    # rudder=10
-    talker(mode,0.52,80)
+    #mode='turning'
+    talker(mode,20*0.01745,70)
        
 
