@@ -14,16 +14,18 @@ DetectionRos::DetectionRos(double ballR, double fov,bool gmapping)
 {
     ROS_INFO("node init");
     if (gmapping){
-        sub_image = nh.subscribe("/usv/camera1/image_raw", 2, &DetectionRos::detection_gmapping_cb, this);
+        sub_image = nh.subscribe("camera/image_raw", 2, &DetectionRos::detection_gmapping_cb, this);
     }
     else{
-        sub_image = nh.subscribe("/usv/camera1/image_raw", 2, &DetectionRos::detection_cb, this);
+        sub_image = nh.subscribe("/camera/image_raw", 2, &DetectionRos::detection_cb, this);
     }
     
     gps = nh.subscribe("/sensor", 2, &DetectionRos::sensor_cb, this);
 //    ros::Subscriber sub_image =  nh.subscribe("camera/image_raw/compressed", 2, &detection_cb);
     obj_pub = nh.advertise<geometry_msgs::PoseArray>("/object/pose", 2); 
     laser_pub = nh.advertise<sensor_msgs::LaserScan>("/base_scan",2);
+    
+    tld_pub = nh.advertise<tld_msgs::BoundingBox>("/tld_tracked_object",2);
 
     pub_img_edge = it.advertise("edges", 2);
     pub_img_dst = it.advertise("dst_circles", 2);
@@ -186,6 +188,16 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 
     sensor_msgs::ImagePtr dst_msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", src_ROI).toImageMsg();
     pub_img_dst.publish(dst_msg);
+
+    tld_msgs::BoundingBox tldMsg;
+    if (object_pose_array.poseArray.size()>0){
+        
+        tldMsg.confidence = 1;
+    }
+    else{
+        tldMsg.confidence = 0;
+    }
+    tld_pub.publish(tldMsg);
 
 }
 

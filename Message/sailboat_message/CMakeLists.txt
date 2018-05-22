@@ -48,6 +48,9 @@ add_message_files(
         Point.msg
         PointArray.msg
 
+	obs_msg.msg
+        obs_out.msg
+
         Out_Time_msg.msg
 )
 

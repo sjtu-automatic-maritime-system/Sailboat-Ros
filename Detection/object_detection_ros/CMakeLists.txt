@@ -15,6 +15,7 @@ set(catkin_package_DEPENDENCIES
         image_transport
         sailboat_message
         geometry_msgs
+        tld_msgs
         )
 
 find_package(catkin REQUIRED COMPONENTS

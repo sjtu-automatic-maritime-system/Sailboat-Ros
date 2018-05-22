@@ -56,6 +56,7 @@
   <depend>image_transport</depend>
   <depend>sailboat_message</depend>
   <depend>eigen</depend>
+  <depend>tld_msgs</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -107,7 +107,7 @@
   <link name="GPS">
     <visual>
       <geometry>
-        <cylinder length="0.1" radius="0.05"/>
+        <cylinder length="0.01" radius="0.01"/>
       </geometry>
     </visual>
   </link>
@@ -115,7 +115,7 @@
   <link name="AHRS">
     <visual>
       <geometry>
-        <cylinder length="0.1" radius="0.05"/>
+        <cylinder length="0.01" radius="0.01"/>
       </geometry>
     </visual>
   </link>
@@ -123,7 +123,7 @@
   <link name="WTST">
     <visual>
       <geometry>
-        <cylinder length="0.1" radius="0.05"/>
+        <cylinder length="0.01" radius="0.01"/>
       </geometry>
     </visual>
   </link>
@@ -145,7 +145,7 @@
   <joint name="boat_to_GPS" type="fixed">
     <parent link="base_link"/>
     <child link="GPS"/>
-    <origin xyz="-0.75 0 0.2"/>
+    <origin xyz="0.5 0 0.2"/>
   </joint>
 
   <joint name="boat_to_AHRS" type="fixed">
@@ -157,7 +157,7 @@
     <joint name="boat_to_WTST" type="fixed">
     <parent link="base_link"/>
     <child link="WTST"/>
-    <origin xyz="0.75 0 0.2"/>
+    <origin xyz="-0.75 0 0.2"/>
   </joint>
 
 
@@ -166,7 +166,7 @@
 
   <joint name="camera_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz="0.32 0 0.2" rpy="0 0 0"/>
+    <origin xyz="0.75 0 0.2" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="camera_link"/>
   </joint>

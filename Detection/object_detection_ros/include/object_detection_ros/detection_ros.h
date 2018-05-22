@@ -12,6 +12,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/PoseArray.h>
 #include "sailboat_message/Sensor_msg.h"
+#include "tld_msgs/BoundingBox.h"
 //#include <opencv2/contrib/contrib.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -23,8 +24,8 @@
 #include <Eigen/Dense>
 
 
-#define IMG_WIDTH 1296
-#define IMG_HEIGHT 964
+#define IMG_WIDTH 1360
+#define IMG_HEIGHT 720
 
 
 using namespace Eigen;
@@ -41,6 +42,7 @@ public:
 
     ros::Publisher obj_pub;
     ros::Publisher laser_pub;
+    ros::Publisher tld_pub;
 
     image_transport::ImageTransport it;
     image_transport::Publisher pub_img_edge;
