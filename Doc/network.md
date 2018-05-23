@@ -13,3 +13,14 @@ export ROS_MASTER_URI=http://sjtu-sailboat.local:11311
 sudo ntpdate -b sjty-sailboat.local
 
 
+
+now
+On the robot
+sudo vim /ect/hosts
+192.168.1.151 sailboat-desktop
+
+On the desktop
+sudo vim /ect/hosts
+192.168.1.150 sailboat-robot
+
+
