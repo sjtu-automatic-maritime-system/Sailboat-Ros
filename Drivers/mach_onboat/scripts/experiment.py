@@ -89,6 +89,8 @@ def talker(mode,rudder,motor):
                 set_rudder=experiment.zig_zag(ahrs_listener.yaw,yaw_start,rudder)
             elif mode=='turning':
                 set_rudder=experiment.turning(rudder)
+            if time.time()-start_time>50:
+                motor=0
             mach_msg=datawrapper.pubData(msg,set_rudder,motor)
             print(ahrs_listener.yaw,yaw_start,set_rudder)
         pub.publish(mach_msg)  
@@ -103,8 +105,8 @@ def quit(signum,frame):
     sys.exit()
 
 if __name__ == '__main__':
-    mode='zig_zag'
-    #mode='turning'
-    talker(mode,20*0.01745,70)
+    #mode='zig_zag'
+    mode='turning'
+    talker(mode,35*0.01745,20)
        
 

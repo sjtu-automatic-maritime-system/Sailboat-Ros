@@ -14,7 +14,7 @@ import time
 arduino_port = '/dev/serial/by-id/usb-Arduino_Srl_Arduino_Mega_75533353038351615291-if00'
 #arduino_port = '/dev/ttyACM0'
 #arduino_port = 'arduino'
-motor = 50
+motor = 70
 rudder = 90
 sail = 90
 pcCtrl = 0
@@ -205,7 +205,7 @@ def machCallback(data):
     global motor, rudder, sail, pcCtrl
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
-    motor = 50
+    motor = int(data.motor)
     #max~min 40~-40 130~50
     rudder = int(data.rudder*57.3)
     #max~min 90-0 77~50
