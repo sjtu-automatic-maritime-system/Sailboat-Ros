@@ -1,4 +1,0 @@
- <launch>
-    <node name="experiment" pkg="mach_onboat" type="zig_zag20.py" output="screen"/>
-    <node pkg="rosbag" type="record" name="experiment_record" args=" -o /home/sjtu/rosbag/zigzag20 -a"/>
-</launch>
