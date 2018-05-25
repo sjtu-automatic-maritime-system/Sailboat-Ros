@@ -17,7 +17,7 @@ double obs_pos_x;
 double obs_pos_y;
 double obs_radius = 5.0;
 
-static double tar_pos_x = 100.0;
+static double tar_pos_x = 60.0;
 static double tar_pos_y = 0.0;
 
 static double obj_pos_x;
@@ -32,6 +32,8 @@ void detectionCallback(const geometry_msgs::PoseArray::ConstPtr& msg){
 
     if (msg->poses.size() == 0 ){
         ROS_INFO("[Message] No detection information!");
+        obs_pos_x = INFINITY_DOUBLE;
+        obs_pos_y = INFINITY_DOUBLE;
         return;
     }
 
@@ -131,7 +133,7 @@ int main(int argc, char **argv)
 
     msg.target_angle = targetAngle;
 
-    ROS_INFO("[Publisher from detection_mock] Obstacle information: %f %f %f %f %f %f %f %f", msg.data[0], msg.data[1], msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7]);
+    //ROS_INFO("[Publisher from detection_mock] Obstacle information: %f %f %f %f %f %f %f %f", msg.data[0], msg.data[1], msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7]);
     detection_pub.publish(msg);
 
 

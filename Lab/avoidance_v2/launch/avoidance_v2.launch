@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <!-- <node pkg="avoidance_v2" type="avoidance_v2" name="avoidance_v2"/> -->
+    <node pkg="avoidance_v2" type="avoidance_v2" name="avoidance_v2"/>
     <!--node pkg="avoidance_v2" type="obs_msg" name="obs_msg"/-->
     <node pkg="avoidance_v2" type="detection_mock" name="detection_pub_pose"/>
     <node pkg="autopilot" type="autopilot" name="autopilot"/>

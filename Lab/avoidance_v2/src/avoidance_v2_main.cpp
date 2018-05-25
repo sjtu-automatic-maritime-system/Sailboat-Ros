@@ -31,7 +31,13 @@ void sensorCallback(const sailboat_message::Sensor_msg::ConstPtr msg) {
 
 
 void obstacleCallback(const sailboat_message::obs_msg::ConstPtr& msg){
-    ROS_INFO("[Message] Obstacle_msg sub: [%f %f %f %f %f %f %f %f] ", msg->data[0], msg->data[1], msg->data[2], msg->data[3], msg->data[4], msg->data[5], msg->data[6], msg->data[7]);
+    //ROS_INFO("[Message] Obstacle_msg sub: [%f %f %f %f %f %f %f %f] ", msg->data[0], msg->data[1], msg->data[2], msg->data[3], msg->data[4], msg->data[5], msg->data[6], msg->data[7]);
+
+    if (msg->data.size() == 0 ){
+        ROS_INFO("[Message] No detection_mock information!");
+        return;
+    }
+
     collision_avoidance_Obj.obstacle_information.data.clear();
     collision_avoidance_Obj.obstacle_information.data.assign(msg->data.begin(),msg->data.end());
 

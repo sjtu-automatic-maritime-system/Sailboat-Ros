@@ -17,7 +17,7 @@ class Experiment:
     def __init__(self):
         self.state=-1
     def zig_zag(self,yaw,yaw_start,rudder):
-	if yaw-yaw_start>5.0:
+        if yaw-yaw_start>5.0:
             yaw=yaw-3.14159*2
         elif yaw-yaw_start<-5.0:
             yaw=yaw+3.14159*2
@@ -71,7 +71,7 @@ def talker(rudder,motor):
     ahrs_listener.listen()
     time.sleep(3)
     while not rospy.is_shutdown():  
-        if time.time()-start_time<6:
+        if time.time()-start_time<10:
             mach_msg=datawrapper.pubData(msg,0,motor)
             try:
                 yaw_start=ahrs_listener.yaw
