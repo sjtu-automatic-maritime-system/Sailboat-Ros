@@ -55,6 +55,7 @@ sudo apt-get install python-catkin-tools -y
 sudo apt install ros-kinetic-control-toolbox -y
 
 
+
 catkin_ws=sailboat_ws
 mkdir -p ~/$catkin_ws/src
 ## Initialise wstool

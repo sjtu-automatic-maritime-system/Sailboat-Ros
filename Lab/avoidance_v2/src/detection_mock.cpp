@@ -17,7 +17,7 @@ double obs_pos_x;
 double obs_pos_y;
 double obs_radius = 5.0;
 
-static double tar_pos_x = 60.0;
+static double tar_pos_x = 100.0;
 static double tar_pos_y = 0.0;
 
 static double obj_pos_x;

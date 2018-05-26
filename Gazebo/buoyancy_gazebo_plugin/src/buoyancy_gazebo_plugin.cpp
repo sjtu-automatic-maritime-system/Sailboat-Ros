@@ -108,19 +108,19 @@ void BuoyancyPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
                << "second property block" << std::endl;
       }
 
-      if (linkElem->HasElement("center_of_volume"))
-      {
-	math::Vector3 cov = linkElem->GetElement("center_of_volume")
-            ->Get<math::Vector3>();
-        this->volPropsMap[id].cov = cov;
-      }
-      else
-      {
-        gzwarn << "Required element center_of_volume missing from link ["
-               << name
-               << "] in BuoyancyPlugin SDF" << std::endl;
-        continue;
-      }
+  //     if (linkElem->HasElement("center_of_volume"))
+  //     {
+	// math::Vector3 cov = linkElem->GetElement("center_of_volume")
+  //           ->Get<math::Vector3>();
+  //       this->volPropsMap[id].cov = cov;
+  //     }
+  //     else
+  //     {
+  //       gzwarn << "Required element center_of_volume missing from link ["
+  //              << name
+  //              << "] in BuoyancyPlugin SDF" << std::endl;
+  //       continue;
+  //     }
       /*
       if (linkElem->HasElement("volume"))
       {

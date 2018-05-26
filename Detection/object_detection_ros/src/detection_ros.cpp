@@ -14,7 +14,7 @@ DetectionRos::DetectionRos(double ballR, double fov,bool gmapping)
 {
     ROS_INFO("node init");
     if (gmapping){
-        sub_image = nh.subscribe("camera/image_raw", 2, &DetectionRos::detection_gmapping_cb, this);
+        sub_image = nh.subscribe("/camera/image_raw", 2, &DetectionRos::detection_gmapping_cb, this);
     }
     else{
         sub_image = nh.subscribe("/camera/image_raw", 2, &DetectionRos::detection_cb, this);
