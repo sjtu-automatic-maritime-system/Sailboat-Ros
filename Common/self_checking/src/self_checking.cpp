@@ -355,7 +355,6 @@ void SailboatSelfChecking::checkRader(){
         ROS_INFO("radar not init");
     }
     
-    
     if (radar_init_suc){
         ROS_INFO("radar start and cal radar hz");
         radarMsgNum = 0;
