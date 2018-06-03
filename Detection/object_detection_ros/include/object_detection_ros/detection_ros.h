@@ -24,8 +24,8 @@
 #include <Eigen/Dense>
 
 
-#define IMG_WIDTH 1360
-#define IMG_HEIGHT 720
+#define IMG_WIDTH 1296
+#define IMG_HEIGHT 964
 
 
 using namespace Eigen;
@@ -75,6 +75,8 @@ private:
     double ball_r;
 
     int Num_ball;
+
+    bool get_sensor;
 
     
 };

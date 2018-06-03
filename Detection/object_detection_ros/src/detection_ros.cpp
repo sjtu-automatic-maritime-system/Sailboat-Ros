@@ -8,6 +8,8 @@
 // 0 772.2589954342994 482.5 0 
 // 0 0 1 0
 
+//1296x964
+
 DetectionRos::DetectionRos(double ballR, double fov,bool gmapping)
     // : nh(_comm_nh),
     : it(nh)
@@ -81,6 +83,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     //int src_ROI_p1_y = IMG_HEIGHT/3;
     int src_ROI_p1_y = 0;
     src_ROI = src_img(cv::Rect(0,src_ROI_p1_y,IMG_WIDTH,IMG_HEIGHT-src_ROI_p1_y));
+    flip(src_ROI, src_ROI, -1);
     cv::Mat edge = detection::edgeDetection(src_ROI, 150, 200);
     std::vector<cv::Vec3f> circles = detection::circleDectection(src_ROI, edge);
     ROS_INFO("detected circles = %ld",circles.size());
@@ -89,56 +92,58 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     }
     
     for (size_t i = 0; i < circles.size(); i++) {
-        //std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
+        std::cout << "circle " << i+1 << " = " <<circles[i] << std::endl;
         double h_angle = std::atan((circles[i][0]-IMG_WIDTH/2)/f);
         double v_angle = std::atan((circles[i][1]-IMG_HEIGHT/2)/f);
         //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
         //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
+        if (get_sensor){
+            Matrix3d R_tmp;
+            Matrix3d R_in_tmp;
+            Vector3d E_tmp;
+            R_tmp = Matrix3d::Zero(3,3);
+            R_in_tmp = Matrix3d::Zero(3,3);
+            E_tmp(0) = roll;
+            E_tmp(1) = pitch;
+            E_tmp(2) = 0;
+            roll_pitch_yaw_to_R(E_tmp,R_tmp);
+            R_in_tmp = R_tmp.inverse().eval();
+            
+            MatrixXd L_ship(3,1);
+            MatrixXd L_world(3,1);
+            L_ship(0,0) = f;
+            L_ship(1,0) = circles[i][0]-IMG_WIDTH/2;
+            L_ship(2,0) = circles[i][1]-IMG_HEIGHT/2;
+            L_world = R_tmp*L_ship;
+            // std::cout << "L_ship : " << L_ship << std::endl;
+            // std::cout << "L_world : " << L_world << std::endl;
+            
+            double h_angle_final = std::atan((L_world(1,0))/L_world(0,0));
+            double v_angle_final = std::atan((L_world(2,0))/L_world(0,0));
+            //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
+            //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
 
+            // cal distance funcation 1
+            double distance_cal = ball_r/circles[i][2]*std::sqrt(std::pow(circles[i][0]-IMG_WIDTH/2,2)+std::pow(circles[i][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
+            ROS_INFO("distance_cal = %f",distance_cal);
+            
+            double object_yaw = yaw + h_angle_final;
+            double object_x = posX + distance_cal*cos(object_yaw);
+            double object_y = posY + distance_cal*sin(object_yaw);
+
+            ROS_INFO("object pos : ( %f , %f ) object_yaw : %f",object_x, object_y,object_yaw);
+
+            double final_x,final_y,last_yaw;
+            particleFilter->run(object_x, object_y, object_yaw, final_x, final_y, last_yaw);
+            //average->run(object_x, object_y, object_yaw, final_x, final_y);
+            double distance = std::sqrt(std::pow((posX-final_x),2.0)+std::pow((posY-final_y),2.0));
+            ROS_INFO("distance_final = %f",distance);
+            
+            double ball_r_new = ball_r/distance_cal * distance;
+            ROS_INFO("ball_r_new = %f",ball_r_new);
+        }
         // cal angle
-        Matrix3d R_tmp;
-        Matrix3d R_in_tmp;
-        Vector3d E_tmp;
-        R_tmp = Matrix3d::Zero(3,3);
-        R_in_tmp = Matrix3d::Zero(3,3);
-        E_tmp(0) = roll;
-        E_tmp(1) = pitch;
-        E_tmp(2) = 0;
-        roll_pitch_yaw_to_R(E_tmp,R_tmp);
-        R_in_tmp = R_tmp.inverse().eval();
         
-        MatrixXd L_ship(3,1);
-        MatrixXd L_world(3,1);
-        L_ship(0,0) = f;
-        L_ship(1,0) = circles[i][0]-IMG_WIDTH/2;
-        L_ship(2,0) = circles[i][1]-IMG_HEIGHT/2;
-        L_world = R_tmp*L_ship;
-        // std::cout << "L_ship : " << L_ship << std::endl;
-        // std::cout << "L_world : " << L_world << std::endl;
-        
-        double h_angle_final = std::atan((L_world(1,0))/L_world(0,0));
-        double v_angle_final = std::atan((L_world(2,0))/L_world(0,0));
-        //std::cout << "h_angle = " << h_angle*57.3 << std::endl;
-        //std::cout << "v_angle = " << v_angle*57.3 << std::endl;
-
-        // cal distance funcation 1
-        double distance_cal = ball_r/circles[i][2]*std::sqrt(std::pow(circles[i][0]-IMG_WIDTH/2,2)+std::pow(circles[i][1]-IMG_HEIGHT/2,2)+std::pow(f,2));
-        ROS_INFO("distance_cal = %f",distance_cal);
-        
-        double object_yaw = yaw + h_angle_final;
-        double object_x = posX + distance_cal*cos(object_yaw);
-        double object_y = posY + distance_cal*sin(object_yaw);
-
-        ROS_INFO("object pos : ( %f , %f ) object_yaw : %f",object_x, object_y,object_yaw);
-
-        double final_x,final_y,last_yaw;
-        particleFilter->run(object_x, object_y, object_yaw, final_x, final_y, last_yaw);
-        //average->run(object_x, object_y, object_yaw, final_x, final_y);
-        double distance = std::sqrt(std::pow((posX-final_x),2.0)+std::pow((posY-final_y),2.0));
-        ROS_INFO("distance_final = %f",distance);
-        
-        double ball_r_new = ball_r/distance_cal * distance;
-        ROS_INFO("ball_r_new = %f",ball_r_new);
 
         //cal distance funcation 2
         /*
@@ -164,24 +169,25 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     }
 
     //average->publish();
+    if (get_sensor){
+        objectPoseArray object_pose_array;
+        particleFilter->publish(object_pose_array);
 
-    objectPoseArray object_pose_array;
-    particleFilter->publish(object_pose_array);
-
-    geometry_msgs::PoseArray pose_array;
-    pose_array.header.stamp = ros::Time::now();
-    pose_array.header.frame_id = "object";
-    for (int i = 0; i < object_pose_array.poseArray.size(); i++)
-    {  
-        double x = object_pose_array.poseArray[i].x;  
-        double y = object_pose_array.poseArray[i].y;  
-        geometry_msgs::Pose p;     
-        p.position.x = x;  
-        p.position.y = y;  
-        p.position.z = 0;  
-        pose_array.poses.push_back(p);  
+        geometry_msgs::PoseArray pose_array;
+        pose_array.header.stamp = ros::Time::now();
+        pose_array.header.frame_id = "object";
+        for (int i = 0; i < object_pose_array.poseArray.size(); i++)
+        {  
+            double x = object_pose_array.poseArray[i].x;  
+            double y = object_pose_array.poseArray[i].y;  
+            geometry_msgs::Pose p;     
+            p.position.x = x;  
+            p.position.y = y;  
+            p.position.z = 0;  
+            pose_array.poses.push_back(p);  
+        }
+        obj_pub.publish(pose_array);
     }
-    obj_pub.publish(pose_array);
 
     sensor_msgs::ImagePtr edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();
     pub_img_edge.publish(edge_msg);
@@ -190,7 +196,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     pub_img_dst.publish(dst_msg);
 
     tld_msgs::BoundingBox tldMsg;
-    if (object_pose_array.poseArray.size()>0){
+    if (circles.size()>0){
         
         tldMsg.confidence = 1;
     }
@@ -199,6 +205,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     }
     tld_pub.publish(tldMsg);
 
+    get_sensor = false;
 }
 
 
@@ -301,6 +308,7 @@ void DetectionRos::detection_gmapping_cb(const sensor_msgs::ImageConstPtr& img_i
 }
 
 void DetectionRos::sensor_cb(const sailboat_message::Sensor_msg::ConstPtr& msg){
+    get_sensor = true;
     //ROS_INFO("get sensor");
     posX = msg->Posx;
     posY = msg->Posy;
