@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
     ros::Rate loop_rate(50);
 
     //设置帆船初始状态
-    SME.SettingAttitudeInit(0,0,0,0,0,0,0,pi);
+    SME.SettingAttitudeInit(0,0,0,0,0,0,0,PI);
 
     while (ros::ok())
     {

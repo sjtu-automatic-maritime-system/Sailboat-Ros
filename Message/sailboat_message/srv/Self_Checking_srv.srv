@@ -8,7 +8,7 @@ float32 checkDynamixel_param
 float32 checkDisk_param
 int16 checkAHRS_result
 int16 checkWTST_result
-int16 checArduino_result
+int16 checkArduino_result
 int16 checkCamera_result
 int16 checkRadar_result
 int16 checkDynamixel_result

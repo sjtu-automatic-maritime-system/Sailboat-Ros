@@ -5,11 +5,12 @@
 #ifndef SAILBOAT_CSAILCTRL_H
 #define SAILBOAT_CSAILCTRL_H
 
-#endif //SAILBOAT_CSAILCTRL_H
-#define pi 3.1415926
-
 #include "math_tool_lib/CCubicSplineInterpolation.h"
 #include <cmath>
+
+#ifndef PI
+#define PI 3.1415926
+#endif
 
 class CSailCtrl{
 public:
@@ -32,3 +33,5 @@ private:
     CCubicSplineInterpolation *SIP1;
     CCubicSplineInterpolation *SIP2;
 };
+
+#endif //SAILBOAT_CSAILCTRL_H

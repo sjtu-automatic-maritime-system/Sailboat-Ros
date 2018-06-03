@@ -8,9 +8,12 @@ import serial
 import struct
 import logging
 
+
 Data_Show = False
 
+#ahrs_port = '/dev/ttyUSB0'
 ahrs_port = '/dev/ahrs'
+# ahrs_port='/dev/serial/by-id/usb-Silicon_Labs_SBG_Systems_-_UsbToUart_001000929-if00-port0'
 
 def hexShow(argv):
     result = ''
@@ -62,7 +65,7 @@ class AHRS():
         self.ser_open_flag = self.ser_open()
         self.DataShow_count = 0
         self.header = chr(0xff)+chr(0x02)
-        self.fst = struct.Struct("<9fH")
+        self.fst = struct.Struct("<9fL")
         self.buf = ''
         self.attrs = ['Roll', 'Pitch', 'Yaw', 'gx', 'gy', 'gz',
                       'ax', 'ay', 'az', 'devicestatus']
@@ -84,8 +87,8 @@ class AHRS():
         self.DataInfoShow()
 
     def read_data(self):
-        self.buf += self.ahrs_ser.read(44-len(self.buf))
-        #print(self.buf)
+        self.buf = self.ahrs_ser.read(48)
+        # print(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
             self.buf = ''
@@ -101,22 +104,10 @@ class AHRS():
 
         #testBety = self.buf[0:9]
 
-        datas = self.fst.unpack(self.buf[5:43])
-        testCRC = crc16(self.buf[2:41])
-        testHexCRC = hex(testCRC)
-        HexCRC = hex(datas[9])
-        if len(testHexCRC) != 6 :
-            testHexCRC = testHexCRC[0:2]+'0'*(6-len(testHexCRC))+testHexCRC[2:len(testHexCRC)]
-        if len(HexCRC) != 6 :
-            HexCRC = HexCRC[0:2]+'0'*(6-len(HexCRC))+HexCRC[2:len(HexCRC)]
-        jugCRC = testHexCRC[0:2]+testHexCRC[4:6]+testHexCRC[2:4]
-        
-        #print ("jugCRC = ", testHexCRC)
-        #print (type(testHexCRC))
-        #print ("HexCRC = ", HexCRC)
-        if jugCRC  != HexCRC :
-            self.buf = self.buf[2:]
-            self.logger.info('ReadError: ckcum error, discard first 2 bytes')
+        datas = self.fst.unpack(self.buf[5:45])
+        fff=struct.Struct(">H")
+        crcnum=fff.unpack(self.buf[45:47])
+        if crc16(self.buf[2:45])!=crcnum[0]:
             return
         
         self.Roll = datas[0]

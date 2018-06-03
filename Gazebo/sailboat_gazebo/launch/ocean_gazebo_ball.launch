@@ -21,7 +21,7 @@
         <arg name="verbose" value="true"/>
     </include>
 
-    <arg name="urdf" default="$(find sailboat_gazebo)/urdf/sailboat_gazebo_laser.xacro"/>
+    <arg name="urdf" default="$(find sailboat_gazebo)/urdf/sailboat_gazebo_base.xacro"/>
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg urdf)"/>
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />

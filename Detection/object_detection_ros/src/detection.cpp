@@ -24,7 +24,7 @@ cv::Mat edgeDetection(cv::Mat img_src, u_int8_t low_threshold=100, u_int8_t high
     //imshow("lightness", l_img);
     //cv::waitKey(0);
     cv::Mat s_img = hls_channels[2];
-    imshow("saturation", s_img);
+    //imshow("saturation", s_img);
     cv::waitKey(5);
 
     cv::GaussianBlur(s_img, edge, cv::Size(9, 9), 2, 2);
@@ -46,7 +46,7 @@ std::vector<cv::Vec3f> circleDectection(cv::Mat &src_img, cv::Mat edge) {
     //cv::Mat gray;
 
     std::vector<cv::Vec3f> circles;
-    cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 100, 50, 0, 0);
+    cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 200, 100, 0, 100);
 
     for (size_t i = 0; i < circles.size(); i++) {
         cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));

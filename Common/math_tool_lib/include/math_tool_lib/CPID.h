@@ -7,7 +7,9 @@
 
 #include <cmath>
 
-#define pi 3.1415926
+#ifndef PI
+#define PI 3.1415926
+#endif
 
 //增量式PID
 //http://www.cnblogs.com/cjq0301/p/5184808.html

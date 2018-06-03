@@ -132,7 +132,7 @@ void AvoidanceCfgcallback(avoidance::avoidance_Config &config, uint32_t level) {
 
 void getOutMachPut(sailboat_message::Mach_msg &msg) {
 
-    msg.timestamp = ros::Time::now().toSec();
+    //msg.timestamp = ros::Time::now().toSec();
     msg.motor = 0;
     msg.rudder = collision_avoidance_Obj.collision_avoidance_Y.rudder;
     msg.sail   = collision_avoidance_Obj.collision_avoidance_Y.sail;

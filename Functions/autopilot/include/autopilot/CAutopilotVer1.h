@@ -9,7 +9,9 @@
 #include "autopilot/CSailCtrl.h"
 #include <sstream>
 
-#define pi 3.1415926
+#ifndef PI
+#define PI 3.1415926
+#endif
 
 class CAutopilotVer1 {
 public:

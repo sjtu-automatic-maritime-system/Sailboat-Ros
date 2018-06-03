@@ -44,6 +44,7 @@ sudo apt-get install python-rosinstall -y
 
 sudo apt-get install ros-kinetic-multimaster-fkie ros-kinetic-camera-umd ros-kinetic-pointgrey-camera-driver -y
 sudo apt-get install ros-kinetic-velodyne-simulator ros-kinetic-hector-gazebo-plugins-y
+sudo apt-get install ros-kinetic-dynamixel-workbench -y
 ## Create catkin workspace
 # careful no space here
 
@@ -52,6 +53,7 @@ sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool
 sudo apt-get install python-catkin-tools -y
 #sudo apt install ros-kinetic-mavros ros-kinetic-mavros-extras -y
 sudo apt install ros-kinetic-control-toolbox -y
+
 
 
 catkin_ws=sailboat_ws

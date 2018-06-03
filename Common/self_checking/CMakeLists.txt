@@ -4,9 +4,6 @@ project(self_checking)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED
 		roscpp
         rospy
@@ -15,22 +12,20 @@ find_package(catkin REQUIRED
         std_msgs
         dynamic_reconfigure
         sailboat_message
+        dynamixel_workbench_msgs
         )
 
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES self_checking
-  CATKIN_DEPENDS roscpp rospy geometry_msgs sensor_msgs std_msgs dynamic_reconfigure
+  CATKIN_DEPENDS roscpp rospy geometry_msgs sensor_msgs std_msgs dynamic_reconfigure dynamixel_workbench_msgs
 #  DEPENDS system_lib
 )
 
 ###########
 ## Build ##
 ###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
 include_directories(
  include
  ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}

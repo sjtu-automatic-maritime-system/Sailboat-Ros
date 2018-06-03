@@ -233,12 +233,12 @@ double CSimulationVer2::coefRTH(double fi, double beta , double Fn) {
     beta = fabs(beta);
     double attackHull = beta*cos(fi);
     double coef_LaTH = -0.07092*pow(fi,2) + 1.649*(1 - 0.2321*pow(fi,2))*attackHull;
-    double ARe = 8*pi*(1.649*(1-0.2321*pow(fi,2)))/(4*pi*pi - pow(1.649*(1-0.2321*pow(fi,2)),2));
+    double ARe = 8*PI*(1.649*(1-0.2321*pow(fi,2)))/(4*PI*PI - pow(1.649*(1-0.2321*pow(fi,2)),2));
     double coef;
     if (attackHull > 0.15)
-        coef = 0.002319*fabs(fi) + 0.3501*pow(fi,2)*pow(Fn,4) + (0.8141 + 5.47*pow(Fn,2))*(pow(coef_LaTH,2)/(pi*ARe)) + 74.9*pow((attackHull - 0.15),3);
+        coef = 0.002319*fabs(fi) + 0.3501*pow(fi,2)*pow(Fn,4) + (0.8141 + 5.47*pow(Fn,2))*(pow(coef_LaTH,2)/(PI*ARe)) + 74.9*pow((attackHull - 0.15),3);
     else
-        coef = 0.002319*fabs(fi) + 0.3501*pow(fi,2)*pow(Fn,4) + (0.8141 + 5.47*pow(Fn,2))*(pow(coef_LaTH,2)/(pi*ARe));
+        coef = 0.002319*fabs(fi) + 0.3501*pow(fi,2)*pow(Fn,4) + (0.8141 + 5.47*pow(Fn,2))*(pow(coef_LaTH,2)/(PI*ARe));
     return coef;
 }
 
@@ -275,7 +275,7 @@ void CSimulationVer2::RudderCoefInit() {
                          0.7412,  0.661,	0.5817,	0.5076,	0.4629,	0.4185,	0.3895,	0.3661,	0.3378,
                          0.293,	  0.2487,	0.2035,	0.1582,	0.1156,	0.0794,	0.0543,	0.0353,	0.0216, 0.008};
     for (int i = 0; i < 91 ; i++) {
-        xdata[i]=i*2/180*pi;
+        xdata[i]=i*2/180*PI;
     }
 
     CsipRudderYl = new CCubicSplineInterpolation(xdata,yldata,91);
@@ -306,7 +306,7 @@ void CSimulationVer2::SailCoefInit() {
                          0.71,	    0.6394,	0.5761,	0.5151,	0.4546,	0.4144,	0.3743,	0.3362,	0.3006,
                          0.2651,	0.2323,	0.1995,	0.163,	0.1263,	0.0896,	0.0734,	0.0573,	0.0411,	0.025};
     for (int i = 0; i < 91 ; i++) {
-        xdata[i]=i*2/180*pi;
+        xdata[i]=i*2/180*PI;
     }
 
     CsipSailYl = new CCubicSplineInterpolation(xdata,yldata,91);
@@ -420,12 +420,12 @@ double* CSimulationVer2::transformation() {
 }
 
 double CSimulationVer2::limitsPi(double tmp) {
-    while (fabs(tmp)>pi)
+    while (fabs(tmp)>PI)
     {
         if(tmp>0)
-            tmp = tmp-2*pi;
+            tmp = tmp-2*PI;
         else
-            tmp = tmp+2*pi;
+            tmp = tmp+2*PI;
     }
     return tmp;
 }

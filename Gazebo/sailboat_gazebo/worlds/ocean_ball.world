@@ -82,10 +82,10 @@
         <!-- Buoys -->
     <include>
       <uri>model://models/ball_orange</uri>
-      <pose> -10 20 00 0 0 0</pose>
+      <pose> 13 45 0 0 0 0</pose>
     </include>
 
-    <include>
+    <!-- <include>
       <uri>model://models/ball_orange</uri>
       <pose> 0 20 00 0 0 0</pose>
     </include>
@@ -93,7 +93,7 @@
     <include>
       <uri>model://models/ball_orange</uri>
       <pose> 10 20 00 0 0 0</pose>
-    </include>
+    </include> -->
 
 
   </world>

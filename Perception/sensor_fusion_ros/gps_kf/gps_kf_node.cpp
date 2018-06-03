@@ -77,7 +77,7 @@ void GPS_KF::GPScallback(const sailboat_message::WTST_msg::ConstPtr &msg) {
     ROS_INFO("I head posx: %f, posy: %f", msg->PosX, msg->PosY);
     MeasurementPackage meas_pkg;
     meas_pkg.sensor_type_ = MeasurementPackage::LASER;
-    meas_pkg.timestamp_ = msg->timestamp;
+    meas_pkg.timestamp_ = msg->header.stamp.toSec();
     ROS_INFO("timestamp: %f", meas_pkg.timestamp_);
     meas_pkg.raw_measurements_ = VectorXd(2);
     meas_pkg.raw_measurements_ << msg->PosX, msg->PosY;

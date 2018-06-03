@@ -92,25 +92,25 @@ void CAutopilotVer1::AP_Calc() {
     //rudder = pidp->PID_Calc();
 
     double data = yawRef-yawFdb;
-    while (data > pi or data <-pi){
-        if(data>pi)
-            data = data - 2*pi;
-        if(data<-pi)
-            data = data + 2*pi;
+    while (data > PI or data <-PI){
+        if(data>PI)
+            data = data - 2*PI;
+        if(data<-PI)
+            data = data + 2*PI;
     }
 
     rudder = data*Kp;
 
-    if (rudder> pi/6)
-        rudder = pi/6;
-    else if (rudder < -pi/6)
-        rudder = -pi/6;
+    if (rudder> PI/6)
+        rudder = PI/6;
+    else if (rudder < -PI/6)
+        rudder = -PI/6;
 
     sail = sailCtrl.GetBestSailAngle2(AWA);
-    if (sail> pi/2)
-        sail = pi/2;
-    else if (sail < -pi/2)
-        sail = -pi/2;
+    if (sail> PI/2)
+        sail = PI/2;
+    else if (sail < -PI/2)
+        sail = -PI/2;
 
     //ROS_INFO("sail: [%f]",sail);
 

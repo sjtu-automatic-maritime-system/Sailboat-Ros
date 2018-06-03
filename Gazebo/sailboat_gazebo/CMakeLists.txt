@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(sailboat_gazebo)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
+
 set(catkin_package_DEPENDENCIES
     gazebo_plugins
     gazebo_ros
@@ -29,9 +30,6 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
