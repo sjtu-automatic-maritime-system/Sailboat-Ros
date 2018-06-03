@@ -50,17 +50,21 @@ public:
     
 
     //DetectionRos(ros::NodeHandle _comm_nh);
-    DetectionRos(double ballR, double fov,bool gmapping);
+    DetectionRos(double ballR, double fov,bool gmapping, bool simulation);
     ~DetectionRos();
+    void get_camera_info();
+
     void roll_pitch_yaw_to_R(Vector3d E,Matrix3d &R);
     void detection_cb(const sensor_msgs::ImageConstPtr& img_in);
     void sensor_cb(const sailboat_message::Sensor_msg::ConstPtr& msg);
 
     void detection_gmapping_cb(const sensor_msgs::ImageConstPtr& img_in);
     
+    
 private:
     
-    
+    bool isSimulation;
+
     double posX;
     double posY;
     double pitch;
@@ -77,7 +81,6 @@ private:
     int Num_ball;
 
     bool get_sensor;
-
     
 };
 

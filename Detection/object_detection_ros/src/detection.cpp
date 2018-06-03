@@ -24,7 +24,7 @@ cv::Mat edgeDetection(cv::Mat img_src, u_int8_t low_threshold=100, u_int8_t high
     //imshow("lightness", l_img);
     //cv::waitKey(0);
     cv::Mat s_img = hls_channels[2];
-    imshow("saturation", s_img);
+    //imshow("saturation", s_img);
     cv::waitKey(5);
 
     cv::GaussianBlur(s_img, edge, cv::Size(9, 9), 2, 2);
