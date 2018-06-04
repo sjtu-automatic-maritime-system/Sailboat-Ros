@@ -149,13 +149,11 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(obs_msg src/obs_msg.cpp)
-target_link_libraries(obs_msg ${catkin_LIBRARIES})
-#add_dependencies(obs_msg avoidance_v2_generate_messages_cpp)
+add_executable(obstacle_publisher src/obstacle_publisher.cpp)
+target_link_libraries(obstacle_publisher ${catkin_LIBRARIES})
 
 add_executable(detection_mock src/detection_mock.cpp)
 target_link_libraries(detection_mock ${catkin_LIBRARIES})
-#add_dependencies(detection_mock avoidance_v2_generate_messages_cpp)
 
 set( avoidance_SRC
 src/avoidance_v2_main.cpp

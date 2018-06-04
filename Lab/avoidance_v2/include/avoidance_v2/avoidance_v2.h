@@ -1,22 +1,33 @@
+//by Boxian Deng, Jun 03, 2018
+//header for obstacle avoidance
+#ifndef SAILBOAT_OBSTACLE_AVOIDANCE_H
+#define SAILBOAT_OBSTACLE_AVOIDANCE_H
+//ros header
+#include "ros/ros.h"
+//data structure
+#include "rtwtypes.h"
+//basic libraries
 #include <cmath>
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stddef.h>
-#include "rtwtypes.h"
 #include <vector>
+#include <iostream>
+#include <fstream>  
+#include <sstream>  
+#include <stdio.h>
+#endif
 
 //definations for useful constants
 #define INFINITY_DOUBLE 1000000000.0
 #define PI 3.1415926
 
 //definations of parameters for avoidance algorithm
-#define MAX_DISTANCE 35
-#define MIN_DISTANCE 15
-#define ANGLE_DENSITY 30
-#define SPAN_OF_NOGO_ZONE (30.0 * PI / 180)
-
-
-
+#define MAX_DISTANCE 30 //beyond this distance to ignore obstacles
+#define MIN_DISTANCE 10 //within this distance to absolutely avoid
+#define NO_TACKING_DISTANCE 5 //distance for no-tacking strategy near obstacles
+#define ANGLE_DENSITY 72  //discretized 360 degrees into how many angles
 
 typedef struct {
   real_T roll_rate;                    // '<Root>/roll_rate'
@@ -30,21 +41,10 @@ typedef struct {
   real_T yaw_rate;                     // '<Root>/yaw_rate'
 } ExtU_collision_avoidance_T;
 
-typedef struct {
-  real_T sail_ground_d;                // '<Root>/sail_ground_d'
-  real_T max_drive_force;              // '<Root>/max_drive_force'
-  real_T rudder;                       // '<Root>/rudder'
-  real_T sail;                         // '<Root>/sail'
-  real_T ship_speed;                   // '<Root>/ship_speed'
-  real_T speed_angle_d;                // '<Root>/speed_angle_d'
-  real_T wind_angle_ground;            // '<Root>/wind_angle_ground'
-  real_T wind_speed;                   // '<Root>/wind_speed'
-  real_T leg;                          // '<Root>/leg'
-  real_T obstacle_judge;               // '<Root>/obstacle_judge'
-} ExtY_collision_avoidance_T;
 
 typedef struct {
   std::vector<double> data;             //In message "obs_msg.msg", float64[] is a data structure of vector<double>
+  double obstacle_dist;
 } Obstacle_information_T;
 
 typedef struct{
@@ -60,10 +60,7 @@ typedef struct{
   double angle;
 } Obstacle_output_T;
 
-typedef struct{
-  double x;
-  double y;
-} Obstacle_pose_T;
+
 
 class scanningModelClass {
   // public data and function members
@@ -72,44 +69,40 @@ class scanningModelClass {
   // External inputs
   ExtU_collision_avoidance_T collision_avoidance_U;
 
-  // External outputs
-  ExtY_collision_avoidance_T collision_avoidance_Y;
-
+  //obstacle information of minimum distance from obstacle to the sailboat of all directions
   Obstacle_information_T obstacle_information;
 
-  Static_wind_information_T static_wind_information;
+  //Static_wind_information_T static_wind_information;//not used
 
   Target_information_T target_information;
 
+  //output angle of the algorithm
   Obstacle_output_T output;
 
-  Obstacle_pose_T obstacle_pose;
+  //VPP results of the sailboat
+  double **vpps;
 
-  // Constructor
+  //Constructor
   scanningModelClass(){};
 
-  // Destructor
-  ~scanningModelClass(){};
+  //Destructor
+  ~scanningModelClass(){
+    //Destruct VPP
+    for (int i = 0; i < 121; i++){
+      delete [] vpps[i];
+    }
+    delete vpps;  
+  };
 
   //initialization
   void initialize();
+  //read vpp data file
+  void initialize_vpp();
 
   void avoidance_algo();
 
-  /*
-  //get rudder angle and sail angle
-  double Get_Rudder();
-  double Get_Sail();
-  int Get_PCCtrl();
-  //calculate rudder angle with PID
-  void set_Pid();
-  void AP_Calc();
-  */
-
- private:
-
   // private data and function members
-
+  private:
 
 };
 
