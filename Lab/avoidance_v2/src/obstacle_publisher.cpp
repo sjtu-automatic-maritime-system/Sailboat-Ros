@@ -34,7 +34,7 @@ int_T main(int_T argc, char **argv)
 	    pub_msg.poses.push_back(p_obs_2);
 	    
 	    geometry_msgs::Pose p_obs_3;
-	    p_obs_3.position.x = 60.0;
+	    p_obs_3.position.x = 65.0;
 	    p_obs_3.position.y = 0.0;
 	    pub_msg.poses.push_back(p_obs_3);
 
