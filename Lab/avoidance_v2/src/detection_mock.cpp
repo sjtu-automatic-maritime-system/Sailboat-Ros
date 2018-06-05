@@ -14,7 +14,7 @@ std::vector<double> obs_pos_x;
 std::vector<double> obs_pos_y;
 double obs_radius = 5.0;
 
-static double tar_pos_x = 80.0;
+static double tar_pos_x = 150.0;
 static double tar_pos_y = 0.0;
 
 static double obj_pos_x;

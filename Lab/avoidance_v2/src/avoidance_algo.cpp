@@ -69,6 +69,7 @@ double interp_vpp(double v_wind, double input_angle, double **vpps)
 
     //extrapolate
     else if (vel > 10){
+    	/*
     	if (cel_angle == flo_angle){
     		result =  vpps[flo_angle][9] + (vpps[flo_angle][8] - vpps[flo_angle][9]) * (vel - 10);
     	}
@@ -76,6 +77,14 @@ double interp_vpp(double v_wind, double input_angle, double **vpps)
     		result_tmp_flo = vpps[flo_angle][9] + (vpps[flo_angle][9] - vpps[flo_angle][8]) * (vel - 10);
 	    	result_tmp_cel = vpps[cel_angle][9] + (vpps[cel_angle][9] - vpps[cel_angle][8]) * (vel - 10);
 	    	result = result_tmp_flo + (result_tmp_cel - result_tmp_flo) * ((angle/3) - flo_angle)/(cel_angle - flo_angle);
+    	}
+    	*/
+    	if (cel_angle == flo_angle)
+    		result = vpps[flo_angle][10];
+    	else{
+    		result_tmp_flo = vpps[flo_angle][10];
+    		result_tmp_cel = vpps[cel_angle][10];
+    		result = result_tmp_flo + (result_tmp_cel - result_tmp_flo) * ((angle/3) - flo_angle)/(cel_angle - flo_angle);
     	}
     }
 
@@ -146,6 +155,7 @@ void scanningModelClass::avoidance_algo(){
 		double v_b;		//velocity of sailboat
 		//VPP
 		v_b = interp_vpp(3.0, rad2deg(i_angle)-0, vpps);
+		v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-45, vpps);
 
 		cout << "v_b is " << v_b << endl;
 		double v_t;		//velocity of sailboat towards target

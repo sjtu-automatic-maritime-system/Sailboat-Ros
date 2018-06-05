@@ -22,7 +22,7 @@ int_T main(int_T argc, char **argv)
     while (ros::ok()) {
 
         geometry_msgs::PoseArray pub_msg;
-
+        /*
 	    geometry_msgs::Pose p_obs_1;
 	    p_obs_1.position.x = 30.0;
 	    p_obs_1.position.y = 0.0;
@@ -37,6 +37,7 @@ int_T main(int_T argc, char **argv)
 	    p_obs_3.position.x = 65.0;
 	    p_obs_3.position.y = 0.0;
 	    pub_msg.poses.push_back(p_obs_3);
+	    */
 
 	    //ROS_INFO("[Publish] I published: the obstacles position is (%f, %f)", p_obs.position.x, p_obs.position.y);
 
