@@ -1,10 +1,9 @@
-// %Tag(FULLTEXT)%
-// %Tag(ROS_HEADER)%
+//by Boxian Deng, Jun 03, 2018
+//used to publish static messages
+//abandoned now
 #include "ros/ros.h"
-// %EndTag(ROS_HEADER)%
-// %Tag(MSG_HEADER)%
 #include "std_msgs/String.h"
-// %EndTag(MSG_HEADER)%
+
 #include "sailboat_message/Sensor_msg.h"
 #include "sailboat_message/obs_msg.h"
 
@@ -12,8 +11,6 @@
 
 #include <sstream>
 #include <iostream>
-
-
 
 int main(int argc, char **argv)
 {
