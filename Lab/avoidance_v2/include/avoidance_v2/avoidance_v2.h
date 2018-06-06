@@ -26,7 +26,7 @@
 //definations of parameters for avoidance algorithm
 #define MAX_DISTANCE 30 //beyond this distance to ignore obstacles
 #define MIN_DISTANCE 10 //within this distance to absolutely avoid
-#define NO_TACKING_DISTANCE 5 //distance for no-tacking strategy near obstacles
+#define NO_TACKING_DISTANCE 6 //distance for no-tacking strategy near obstacles
 #define ANGLE_DENSITY 72  //discretized 360 degrees into how many angles
 
 typedef struct {
@@ -41,6 +41,8 @@ typedef struct {
   real_T yaw_rate;                     // '<Root>/yaw_rate'
   real_T ux;
   real_T vy;
+  real_T TWS;
+  real_T TWA;
 } ExtU_collision_avoidance_T;
 
 

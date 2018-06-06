@@ -48,8 +48,8 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   ros::Subscriber detection_sub_boat = n.subscribe("sensor", 2, sensorCallback);
-  //ros::Subscriber detection_sub_detection = n.subscribe("obstaclePosition", 2, detectionCallback);
-  ros::Subscriber detection_sub_detection = n.subscribe("/object/pose", 2, detectionCallback);
+  ros::Subscriber detection_sub_detection = n.subscribe("obstaclePosition", 2, detectionCallback);
+  //ros::Subscriber detection_sub_detection = n.subscribe("/object/pose", 2, detectionCallback);
 
   ros::Publisher detection_pub = n.advertise<sailboat_message::obs_msg>("detection_msg", 10);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 10); 

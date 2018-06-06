@@ -21,6 +21,8 @@ void sensorCallback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     collision_avoidance_Obj.collision_avoidance_U.yaw_rate = msg->gz;
     collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle = msg->AWA;
     collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed = msg->AWS;
+    collision_avoidance_Obj.collision_avoidance_U.TWS = msg->TWS;
+    collision_avoidance_Obj.collision_avoidance_U.TWA = msg->TWA;
 }
 
 void obstacleCallback(const sailboat_message::obs_msg::ConstPtr& msg){

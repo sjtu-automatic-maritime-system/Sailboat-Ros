@@ -131,16 +131,16 @@ void scanningModelClass::avoidance_algo(){
 	double distance_obs = collision_avoidance_Obj.obstacle_information.obstacle_dist;
 
 
-	/*
+	
 	double VS = sqrt(collision_avoidance_Obj.collision_avoidance_U.ux*collision_avoidance_Obj.collision_avoidance_U.ux + collision_avoidance_Obj.collision_avoidance_U.vy*collision_avoidance_Obj.collision_avoidance_U.vy);
 	double TWS = sqrt(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed + VS*VS - 2 *collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*VS*cos(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle));
-	double TWA = acos((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS);
-	cout << "VS is " << VS << endl;
+	//double TWA = acos((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS);
+	//cout << "VS is " << VS << endl;
 	cout << "TWS is  " << TWS << endl;
-	cout << "cos is " << ((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS) << endl;
+	//cout << "cos is " << ((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS) << endl;
 	
-	cout << "TWA is " << TWA << endl;
-	*/
+	//cout << "TWA is " << TWA << endl;
+	
 
 	std::vector<double> v_vec;
 	v_vec.clear();
@@ -156,6 +156,7 @@ void scanningModelClass::avoidance_algo(){
 		else 
 			q = (origin_dist - MIN_DISTANCE)/(MAX_DISTANCE - MIN_DISTANCE);
 
+		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, formaliz
 		//dealing with frequent tacking
 		//if (formalize_rad(fabs(i_angle-collision_avoidance_Obj.output.angle)) > 1.0)
 		//	q_t = 0.8;
@@ -166,7 +167,7 @@ void scanningModelClass::avoidance_algo(){
 
 		double v_b;		//velocity of sailboat
 		//VPP
-		v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-0, vpps);
+		v_b = interp_vpp(TWS, rad2deg(i_angle)-TWA, vpps);
 		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, formalize_angle(rad2deg(i_angle)-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle-collision_avoidance_Obj.collision_avoidance_U.Airmar_yaw), vpps);
 		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-rad2deg(TWA), vpps);
 
