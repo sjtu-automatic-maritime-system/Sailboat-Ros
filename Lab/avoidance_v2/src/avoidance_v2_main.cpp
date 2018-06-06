@@ -11,6 +11,8 @@ scanningModelClass collision_avoidance_Obj;
 
 void sensorCallback(const sailboat_message::Sensor_msg::ConstPtr msg) {
     ROS_INFO("[Message] Sensor_msg sub: [AWA is %f and AWS is %f]", msg->AWA, msg->AWS);
+    collision_avoidance_Obj.collision_avoidance_U.ux = msg->ux;
+    collision_avoidance_Obj.collision_avoidance_U.vy = msg->vy;
     collision_avoidance_Obj.collision_avoidance_U.north = msg->Posx;
     collision_avoidance_Obj.collision_avoidance_U.east = msg->Posy;
     collision_avoidance_Obj.collision_avoidance_U.roll = msg->Roll;

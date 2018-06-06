@@ -130,6 +130,18 @@ void scanningModelClass::avoidance_algo(){
     //get the distance of the nearest obstacle to judge no-tacking strategy
 	double distance_obs = collision_avoidance_Obj.obstacle_information.obstacle_dist;
 
+
+	/*
+	double VS = sqrt(collision_avoidance_Obj.collision_avoidance_U.ux*collision_avoidance_Obj.collision_avoidance_U.ux + collision_avoidance_Obj.collision_avoidance_U.vy*collision_avoidance_Obj.collision_avoidance_U.vy);
+	double TWS = sqrt(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed + VS*VS - 2 *collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*VS*cos(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle));
+	double TWA = acos((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS);
+	cout << "VS is " << VS << endl;
+	cout << "TWS is  " << TWS << endl;
+	cout << "cos is " << ((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS) << endl;
+	
+	cout << "TWA is " << TWA << endl;
+	*/
+
 	std::vector<double> v_vec;
 	v_vec.clear();
 	for (int i=0; i<data_size; ++i){
@@ -154,8 +166,9 @@ void scanningModelClass::avoidance_algo(){
 
 		double v_b;		//velocity of sailboat
 		//VPP
-		v_b = interp_vpp(3.0, rad2deg(i_angle)-0, vpps);
-		v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-45, vpps);
+		v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-0, vpps);
+		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, formalize_angle(rad2deg(i_angle)-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle-collision_avoidance_Obj.collision_avoidance_U.Airmar_yaw), vpps);
+		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-rad2deg(TWA), vpps);
 
 		cout << "v_b is " << v_b << endl;
 		double v_t;		//velocity of sailboat towards target

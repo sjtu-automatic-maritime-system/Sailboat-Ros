@@ -39,6 +39,8 @@ typedef struct {
   real_T Airmar_wind_speed;            // '<Root>/Airmar_wind_speed'
   real_T Airmar_wind_angle;            // '<Root>/Airmar_wind_angle'
   real_T yaw_rate;                     // '<Root>/yaw_rate'
+  real_T ux;
+  real_T vy;
 } ExtU_collision_avoidance_T;
 
 

@@ -14,7 +14,7 @@ std::vector<double> obs_pos_x;
 std::vector<double> obs_pos_y;
 double obs_radius = 5.0;
 
-static double tar_pos_x = 150.0;
+static double tar_pos_x = 100.0;
 static double tar_pos_y = 0.0;
 
 static double obj_pos_x;
@@ -48,7 +48,8 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   ros::Subscriber detection_sub_boat = n.subscribe("sensor", 2, sensorCallback);
-  ros::Subscriber detection_sub_detection = n.subscribe("obstaclePosition", 2, detectionCallback);
+  //ros::Subscriber detection_sub_detection = n.subscribe("obstaclePosition", 2, detectionCallback);
+  ros::Subscriber detection_sub_detection = n.subscribe("/object/pose", 2, detectionCallback);
 
   ros::Publisher detection_pub = n.advertise<sailboat_message::obs_msg>("detection_msg", 10);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 10); 
