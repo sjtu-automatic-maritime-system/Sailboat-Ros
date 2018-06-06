@@ -28,6 +28,7 @@ add_message_files(
         WTST_Pro_msg.msg
         Sensor_msg.msg
         Arduino_msg.msg
+        Radar_msg.msg
 
         Wind_Simulation_msg.msg
         Sailboat_Simulation_msg.msg
