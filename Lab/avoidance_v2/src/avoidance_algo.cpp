@@ -131,15 +131,17 @@ void scanningModelClass::avoidance_algo(){
 	double distance_obs = collision_avoidance_Obj.obstacle_information.obstacle_dist;
 
 
-	
+	double TWS = collision_avoidance_Obj.collision_avoidance_U.TWS;
+	double TWA = collision_avoidance_Obj.collision_avoidance_U.TWA;
 	double VS = sqrt(collision_avoidance_Obj.collision_avoidance_U.ux*collision_avoidance_Obj.collision_avoidance_U.ux + collision_avoidance_Obj.collision_avoidance_U.vy*collision_avoidance_Obj.collision_avoidance_U.vy);
-	double TWS = sqrt(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed + VS*VS - 2 *collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*VS*cos(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle));
+	//double TWS = sqrt(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed + VS*VS - 2 *collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*VS*cos(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle));
 	//double TWA = acos((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS);
 	//cout << "VS is " << VS << endl;
 	cout << "TWS is  " << TWS << endl;
+	cout << "TWA is " << TWA << endl;
 	//cout << "cos is " << ((VS*VS+TWS*TWS-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed*collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed)/2/VS/TWS) << endl;
 	
-	//cout << "TWA is " << TWA << endl;
+	//
 	
 
 	std::vector<double> v_vec;
@@ -167,7 +169,7 @@ void scanningModelClass::avoidance_algo(){
 
 		double v_b;		//velocity of sailboat
 		//VPP
-		v_b = interp_vpp(TWS, rad2deg(i_angle)-TWA, vpps);
+		v_b = interp_vpp(TWS, rad2deg(i_angle)-rad2deg(TWA), vpps);
 		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, formalize_angle(rad2deg(i_angle)-collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_angle-collision_avoidance_Obj.collision_avoidance_U.Airmar_yaw), vpps);
 		//v_b = interp_vpp(collision_avoidance_Obj.collision_avoidance_U.Airmar_wind_speed, rad2deg(i_angle)-rad2deg(TWA), vpps);
 
@@ -217,6 +219,10 @@ void scanningModelClass::initialize(){
 	collision_avoidance_U.Airmar_wind_speed=0;          // '<Root>/Airmar_wind_speed'
 	collision_avoidance_U.Airmar_wind_angle=0;          // '<Root>/Airmar_wind_angle'
 	collision_avoidance_U.yaw_rate=0; 					 // '<Root>/yaw_rate'
+	collision_avoidance_U.ux = 0;
+	collision_avoidance_U.uy = 0;
+	collision_avoidance_U.TWS = 0;
+	collision_avoidance_U.TWA = 0;
 
 	//initialize obstacle information
 	obstacle_information.data.clear();
