@@ -30,3 +30,6 @@ diff：git diff --stat   显示摘要而非整个
 
 查看当前配置有哪些远程仓库：
 git remote
+
+clone:
+git clone hywel@192.168.1.151:/home/hywel/sailboat-ws/src/Sailboat-Ros/.git
