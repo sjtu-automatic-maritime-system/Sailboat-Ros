@@ -119,7 +119,7 @@ class Arduino():
         crc_code = struct.pack('!H', crc16(tmp))
         tmp = header + tmp
         tmp = tmp + crc_code
-        #print 'greed_led', green_led, 'yellow_led', yellow_led, 'red_led', red_led
+        print 'motor', motor, 'greed_led', green_led, 'yellow_led', yellow_led, 'red_led', red_led
         print 'send data:',binascii.hexlify(tmp), type(tmp)
         #print binascii.hexlify(tmp)
         return tmp
@@ -153,7 +153,7 @@ class SensorListener:
         #self.TopicName = topicName
         rospy.init_node(self.NodeName, anonymous=True)
         self.pub = rospy.Publisher('arduino', Arduino_msg, queue_size=5)
-        self.r = rospy.Rate(10)
+        self.r = rospy.Rate(5)
         self.arduino = Arduino()
         self.arduinomsg = Arduino_msg()
         rospy.Subscriber('/base/mach', Mach_msg, machCallback)
@@ -221,14 +221,14 @@ def machCallback(data):
         motor = 100
     if motor < 0:
         motor = 0
-    if rudder > 130:
-        rudder = 130
-    if rudder < 50:
-        rudder = 50
-    if sail > 130:
-        sail = 130
-    if sail < 50:
-        sail = 50
+    # if rudder > 130:
+    #     rudder = 130
+    # if rudder < 50:
+    #     rudder = 50
+    # if sail > 130:
+    #     sail = 130
+    # if sail < 50:
+    #     sail = 50
     #print data.motor,data.rudder,data.sail,data.pcCtrl
     print 'get mach msg:',motor,rudder,sail,pcCtrl
 

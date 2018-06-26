@@ -21,13 +21,13 @@ Servo motor, rudder, sail;
 const int datanum = 4;
 int motor_speed = 90;
 int motor_speed_old = 90;
-int rudder_pos = 90;
-int rudder_pos_old = 90; //initial motor speed pwm must be 90
-int sail_pos = 50;
-int sail_pos_old = 50; // valid input of sailservo is from 50 to 130 baseed on test
+int rudder_pos = 0;
+int rudder_pos_old = 0; //initial motor speed pwm must be 90
+int sail_pos = 45;
+int sail_pos_old = 45; // valid input of sailservo is from 50 to 130 baseed on test
 
-int REMOTE_MAX = 2490;
-int REMOTE_MIN = 1450;
+int REMOTE_MAX = 1900;
+int REMOTE_MIN = 1000;
 
 int MIN_MOTOR = 70;
 int MAX_MOTOR = 110;
@@ -88,12 +88,12 @@ struct //total 2+14+2=18 bytes
     0};
 
 void structDataSend() {
-    //int tmp_motor = map(motor_speed, 70, 110, 0, 100);
+    int tmp_motor = map(motor_speed, 70, 110, 0, 100);
     arduinoData.readMark = mark;
     arduinoData.autoFlag = autoFlag;
-    arduinoData.motorSpeed = motor_speed;
-    arduinoData.rudderAng = rudder_pos - 54;
-    arduinoData.sailAng = (sail_pos - 41) * 4.5;
+    arduinoData.motorSpeed = tmp_motor;
+    arduinoData.rudderAng = rudder_pos;
+    arduinoData.sailAng = sail_pos;
     arduinoData.voltage1ten = int(voltage1*10);
     arduinoData.voltage2ten = int(voltage2*10);
 
@@ -345,9 +345,9 @@ void signalSelection() {
         motor_speed = map(durElev, REMOTE_MIN, REMOTE_MAX, MIN_MOTOR, MAX_MOTOR);
     }
     durRudd = pulseIn(ruddPin, HIGH);
-    rudder_pos = map(durRudd, REMOTE_MIN, REMOTE_MAX, 50, 130);
+    rudder_pos = map(durRudd, REMOTE_MIN, REMOTE_MAX, -40, 40);
     durThro = pulseIn(throPin, HIGH);
-    sail_pos = map(durThro, REMOTE_MIN, REMOTE_MAX, 50, 77);
+    sail_pos = map(durThro, REMOTE_MIN, REMOTE_MAX, 0, 90);
 }
 
 
@@ -357,8 +357,8 @@ void veloLimit() {
     //     motor_speed = 90;
     // }
     rudder_pos = constrain(rudder_pos, rudder_pos_old - rudderVelLimit,
-                           rudder_pos_old + rudderVelLimit); //limit up to 50 deg/s
-    //sail_pos = constrain(sail_pos, sail_pos_old - sailVelLimit, sail_pos_old + sailVelLimit);
+                          rudder_pos_old + rudderVelLimit); //limit up to 50 deg/s
+    sail_pos = constrain(sail_pos, sail_pos_old - sailVelLimit, sail_pos_old + sailVelLimit);
 }
 
 void WriteData() {
@@ -367,14 +367,14 @@ void WriteData() {
         motor.write(motor_speed);
         motor_speed_old = motor_speed;
     }
-    // if (rudder_poses >= 0 && rudder_pos <= 180 && abs(rudder_pos - rudder_pos_old) > 3) {
-    //     rudder.write(rudder_pos);
-    //     rudder_pos_old = rudder_pos;
-    // }
-    // if (sail_pos >= 45 && sail_pos <= 145) {
-    //     sail.write(sail_pos);
-    //     sail_pos_old = sail_pos;
-    // }
+    if (rudder_pos >= -40 && rudder_pos <= 40 && abs(rudder_pos - rudder_pos_old) > 3) {
+        //rudder.write(rudder_pos);
+        rudder_pos_old = rudder_pos;
+    }
+    if (sail_pos >= 0 && sail_pos <= 90) {
+        //sail.write(sail_pos);
+        sail_pos_old = sail_pos;
+    }
     if (green_led != 0){
         analogWrite(greenPin, 0);
     }else{
@@ -390,9 +390,6 @@ void WriteData() {
     }else{
         analogWrite(redPin, 255);
     }
-    
-
-
 }
 
 void voltageCurrentMeter() {
@@ -424,7 +421,7 @@ void flash() {
         count = 0;
     }
 
-    if (durGear > 1300 && durGear < 1900) {
+    if (durGear > 1500 && durGear < 2500) {
         autoFlag = 1;
     } else {
         autoFlag = 0;
@@ -432,21 +429,6 @@ void flash() {
 
 
     voltageCurrentMeter();
-//    int result = serial_read();
-//    if (!result){
-//        serial_out_count++;
-//        if (serial_out_count > 50) {  //timeout=10*0.1=1s
-//            motor_speed = 90;
-//            // rudder_pos = 90;
-//            // sail_pos = 50;
-//            green_led = 0;
-//            yellow_led = 0;
-//            red_led = 2;
-//            
-//            //foresail_pos = 50;
-//            mark = 0;
-//        }
-//    }
     serial_read_3();
     signalSelection();
     veloLimit();
