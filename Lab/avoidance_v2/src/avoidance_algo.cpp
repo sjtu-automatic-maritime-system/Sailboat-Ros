@@ -219,8 +219,8 @@ void scanningModelClass::initialize(){
 	collision_avoidance_U.Airmar_wind_speed=0;          // '<Root>/Airmar_wind_speed'
 	collision_avoidance_U.Airmar_wind_angle=0;          // '<Root>/Airmar_wind_angle'
 	collision_avoidance_U.yaw_rate=0; 					 // '<Root>/yaw_rate'
-	collision_avoidance_U.ux = 0;
-	collision_avoidance_U.uy = 0;
+	//collision_avoidance_U.ux = 0;
+	//collision_avoidance_U.uy = 0;
 	collision_avoidance_U.TWS = 0;
 	collision_avoidance_U.TWA = 0;
 
