@@ -8,3 +8,5 @@ float64 gz
 float64 ax
 float64 ay
 float64 az
+float64 heave
+float64 accuracy

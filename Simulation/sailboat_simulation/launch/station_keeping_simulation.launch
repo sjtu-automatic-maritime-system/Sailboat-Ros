@@ -1,5 +1,0 @@
-<launch>
-    <node pkg="environment_simulation" type="wind_simulation_pub" name="sind_simulation_pub"/>
-    <node pkg="station_keeping" type="station_keeping" name="station_keeping"/>
-    <node pkg="sailboat_simulation" type="sailboat_simulation_ver1" name="sailboat_simulation"/>
-</launch>

@@ -1,13 +1,17 @@
 Header header
 float64 ux
 float64 vy
+float64 wz
 float64 gx
 float64 gy
 float64 gz
 float64 Posx
 float64 Posy
+float64 PosZ
 float64 Roll
 float64 Pitch
 float64 Yaw
 float64 AWA
 float64 AWS
+float64 TWA
+float64 TWS
