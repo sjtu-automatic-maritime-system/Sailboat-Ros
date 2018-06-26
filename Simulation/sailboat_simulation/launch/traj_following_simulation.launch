@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="environment_simulation" type="wind_simulation_pub" name="sind_simulation_pub"/>
-    <node pkg="path_planning_astar" type="astar_simulation_ros" name="astar_simulation_ros"/>
-    <node pkg="traj_following" type="traj_following_ros" name="traj_following_ros"/>
-    <node pkg="sailboat_simulation" type="sailboat_simulation_ver1" name="sailboat_simulation"/>
-</launch>

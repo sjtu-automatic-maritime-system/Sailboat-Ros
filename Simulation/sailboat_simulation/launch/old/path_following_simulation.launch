@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="environment_simulation" type="wind_simulation_pub" name="sind_simulation_pub"/>
-    <node pkg="autopilot" type="autopilot" name="autopilot"/>
-    <node pkg="path_following" type="path_following" name="path_following" output="screen"/>
-    <node pkg="sailboat_simulation" type="sailboat_simulation_ver1" name="sailboat_simulation"/>
-</launch>
