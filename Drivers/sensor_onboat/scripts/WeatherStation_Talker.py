@@ -446,12 +446,15 @@ class dataWrapper:
 
 
 
-def talker():  # ros message publish
+def talker(send_pro):  # ros message publish
+
+    rospy.init_node('wtst_talker', anonymous=True)
 
     pub = rospy.Publisher('wtst', WTST_msg, queue_size=1)
-    pub_pro = rospy.Publisher('wtst_pro', WTST_Pro_msg, queue_size=1)
-    rospy.init_node('wtst_talker', anonymous=True)
-    rate = rospy.Rate(20)  # 20hz
+    if send_pro:
+        pub_pro = rospy.Publisher('wtst_pro', WTST_Pro_msg, queue_size=1)
+    
+    rate = rospy.Rate(10)  # 20hz
 
     wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT, INIT_COMMANDS)
     wtst.set_origin(ORIGIN_LAT, ORIGIN_LON)
@@ -473,7 +476,8 @@ def talker():  # ros message publish
             wtst.update()
 
             wtst_msg = datawrapper.pubData(msg,wtst)
-            wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
+            if send_pro:
+                wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
 
             pub.publish(wtst_msg)
             pub_pro.publish(wtst_pro_msg)
@@ -486,5 +490,6 @@ def talker():  # ros message publish
 
 
 if __name__ == '__main__':
-    talker()
+    send_pro = False
+    talker(send_pro)
 
