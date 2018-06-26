@@ -1,13 +1,16 @@
 import serial
 import time
 import rospy
+import logging
 from sailboat_message.msg import Radar_msg
 from std_msgs.msg import String
-radar_port = '/dev/radar'
+#radar_port = '/dev/radar'
+radar_port = '/dev/ttyUSB2'
 #ser = serial.Serial('/dev/ttyUSB0',115200,timeout=0.5)
 # text = []
 # num = []
 # points = []
+
 class PointtoString:
     def getDescription(self):
         return ",".join("{}={}".format(key, getattr(self, key)) for key in self.__dict__.keys())
@@ -58,8 +61,8 @@ class RADAR(PointtoString):
     def update(self):
         if self.ser_open_flag is True:
             self.read_data()
-        if not Data_Show:
-            return
+        #if not Data_Showi:
+        #    return
         self.DataInfoShow()
 
     def read_data(self):
@@ -79,11 +82,11 @@ class RADAR(PointtoString):
             return
 
         if self.buf.find(self.header2) >= 0:
-            self.Id = int(self.buf[2])
-            self.Rcs = int(self.buf[3])*0.5 - 50
-            self.Verl = (self.buf[7] * 256 + self.buf[8]) * 0.05 - 35
-            self.Azimuth = self.buf[6] * 2 - 50
-            self.Range = (self.buf[4] * 0x100 + self.buf[5]) * 0.01
+            self.Id = ord(self.buf[4])
+            self.Rcs = ord(self.buf[5])*0.5 - 50
+            self.Verl = (ord(self.buf[9]) * 256 + ord(self.buf[10])) * 0.05 - 35
+            self.Azimuth = ord(self.buf[8]) * 2 - 50
+            self.Range = (ord(self.buf[6]) * 0x100 + ord(self.buf[7])) * 0.01
             self.buf = ''
 
         if self.buf.find(self.header1) >= 0:
@@ -112,7 +115,7 @@ class RADAR(PointtoString):
         else:
             return 1
 
-class dataWrapper(self):
+class dataWrapper:
     def __init__(self):
         self.Id = 'id'
         self.Verl = 'verl'

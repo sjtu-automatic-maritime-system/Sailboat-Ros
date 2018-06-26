@@ -7,6 +7,7 @@ from sailboat_message.msg import Ahrs_msg
 import serial
 import struct
 import logging
+import time
 
 Data_Show = False
 
@@ -71,6 +72,7 @@ class AHRS():
         try:
             self.ahrs_ser = serial.Serial(ahrs_port, 115200, timeout=1)
             self.logger.info(self.ahrs_ser.portstr+' open successfully')
+            time.sleep(2)
             return True
         except(serial.serialutil.SerialException):
             self.logger.info('could not open port: '+ahrs_port)
@@ -94,7 +96,7 @@ class AHRS():
         elif idx > 0:
             self.buf = self.buf[idx:]
             self.logger.info('ReadError: header not at start, discard bytes before header')
-            return
+            #return
         if len(self.buf) < 44:
             self.logger.info('ReadError: not enough data')
             return

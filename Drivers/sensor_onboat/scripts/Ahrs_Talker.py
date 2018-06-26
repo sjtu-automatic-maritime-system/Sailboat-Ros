@@ -7,7 +7,7 @@ from sailboat_message.msg import Ahrs_msg
 import serial
 import struct
 import logging
-
+import time
 
 Data_Show = False
 
@@ -74,6 +74,7 @@ class AHRS():
         try:
             self.ahrs_ser = serial.Serial(ahrs_port, 115200, timeout=1)
             self.logger.info(self.ahrs_ser.portstr+' open successfully')
+            time.sleep(1)
             return True
         except(serial.serialutil.SerialException):
             self.logger.info('could not open port: '+ahrs_port)
@@ -87,7 +88,13 @@ class AHRS():
         self.DataInfoShow()
 
     def read_data(self):
-        self.buf = self.ahrs_ser.read(120)
+        #120*2-1 = 239
+        #2+3+112+2+1
+        n = self.ahrs_ser.inWaiting()
+        self.buf += self.ahrs_ser.read(n)
+        self.buf = self.buf[-239:]
+
+        # self.buf = self.ahrs_ser.read(120)
         # print(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
@@ -98,7 +105,7 @@ class AHRS():
             self.buf = self.buf[idx:]
             self.logger.info('ReadError: header not at start, discard bytes before header')
             return
-        if len(self.buf) < 44:
+        if len(self.buf) < 119:
             self.logger.info('ReadError: not enough data')
             return
 
@@ -108,6 +115,8 @@ class AHRS():
         fff=struct.Struct(">H")
         crcnum=fff.unpack(self.buf[117:119])
         if crc16(self.buf[2:117])!=crcnum[0]:
+            self.buf = self.buf[2:]
+            self.logger.info('ReadError: ckcum error, discard first 2 bytes')
             return
         
         self.Roll = datas[4]
@@ -122,8 +131,7 @@ class AHRS():
         self.heave=datas[27]
         self.accuracy=datas[23]
         
-
-        self.buf = ''
+        self.buf = self.buf[120:]
         # print(len(datas))
         print(self.Roll,self.Pitch,self.Yaw,self.gx,self.gy,self.gz,self.ax,self.ay,self.az,self.heave,self.accuracy)
 

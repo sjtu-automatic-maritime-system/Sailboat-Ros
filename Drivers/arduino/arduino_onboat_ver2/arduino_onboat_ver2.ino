@@ -57,7 +57,16 @@ int rudderLimit = 35;
 int sailVelLimit = 10;
 int sailLimit = 40;
 
-struct //total 2+10+2=14 bytes
+byte header1 = 0xff;
+byte header2 = 0x01;
+
+int read_num = 4;
+int len_buf_total = 2+2*read_num+2;
+int len_buf_now = 0;
+//2*len_buf_total-1
+byte read_buf[23];
+
+struct //total 2+14+2=18 bytes
 {
     //header (total 2 bytes)
     byte header1;  // 1 bytes
@@ -75,9 +84,8 @@ struct //total 2+10+2=14 bytes
     //crc (total 2 bytes)
     unsigned int crcnum;  //2
 
-}
-        arduinoData = {
-        0};
+} arduinoData = {
+    0};
 
 void structDataSend() {
     //int tmp_motor = map(motor_speed, 70, 110, 0, 100);
@@ -113,7 +121,7 @@ void setup() {
     arduinoData.header1 = 0x4f;
     arduinoData.header2 = 0x5e;
 
-    while (!Serial);
+    //while (!Serial);
     FlexiTimer2::set(100, flash);
     FlexiTimer2::start();
 }
@@ -155,20 +163,117 @@ unsigned int calcCRC(int data[8]) {
     return crc;
 }
 
+
+int serial_read(){
+    int servodata[read_num] = {-1};
+    int n = Serial.available();
+    while(Serial.available()) {
+        Serial.read();
+    }
+    
+    if (n + len_buf_now <= sizeof read_buf){
+        for (int i = 0; i<n; i++){
+            read_buf[i+len_buf_now] = Serial.read();
+        }
+        len_buf_now = len_buf_now + n;
+    }
+    else{
+        if (n >= sizeof(read_buf)){
+            for (int i= 0; i < n-sizeof(read_buf); i++){
+                Serial.read();
+            }
+            len_buf_now = 0;
+            n = sizeof(read_buf);
+        }
+        else{
+            for (int i=0; i < sizeof(read_buf) - n; i++){
+                read_buf[i] = read_buf[i + len_buf_now + n - sizeof(read_buf)];
+            }
+            len_buf_now = sizeof(read_buf) - n;
+        }
+        for (int i = len_buf_now; i < sizeof(read_buf); i++)
+        {
+            read_buf[i] = Serial.read();
+        }
+        len_buf_now = sizeof(read_buf);
+    }
+
+    //header is in idx
+    int idx = -1;
+    for (int i = 0; i < len_buf_now-1; i++){
+        if ((int) read_buf[i] == 255 && (int) read_buf[i+1] == 1) {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx < 0){
+        len_buf_now = 0;
+        return 0;
+    }
+    if (len_buf_now - idx < len_buf_total){
+        for (int i = 0; i < len_buf_now - idx; i++){
+            read_buf[i] = read_buf[i+idx];
+        }
+        len_buf_now = len_buf_now - idx;
+        return 0;
+    }
+    int Data[2*read_num];
+    for (int i = 0; i < 2*read_num; i++) {
+        Data[i] = (int)read_buf[i+idx];
+    }
+
+    unsigned int crcnum = read_buf[idx + 2*read_num] * 256 + read_buf[idx + 2*read_num + 1];
+    unsigned int crchecknum = calcCRC(Data);
+    
+    mark = 2;
+    if (crcnum != crchecknum){
+        for (int i = 0; i < len_buf_now - idx - 2; i++){
+            read_buf[i] = read_buf[i+idx+2];
+        }
+        len_buf_now = len_buf_now - idx - 2;
+        return 0;
+    }
+    else{
+        for (int i = 0; i < read_num; i++) {
+            servodata[i] = Data[2 * i] * 256 + Data[2 * i + 1];
+        }
+        mark = 1;
+        motor_speed = map(servodata[0], 0, 100, MIN_MOTOR, MAX_MOTOR);
+        green_led = servodata[1];
+        yellow_led = servodata[2];
+        red_led = servodata[3];
+
+        serial_out_count = 0;
+        //      Serial.print(servodata[0]);
+        //      Serial.print(",");
+        //      Serial.print(servodata[1]);
+        //      Serial.print(",");
+        //      Serial.print(servodata[2]);
+        //      Serial.print(",");
+        //      Serial.println(servodata[3]);
+        for (int i = 0; i < len_buf_now - idx; i++){
+            read_buf[i] = read_buf[i+idx];
+        }
+        len_buf_now = len_buf_now - idx;
+        return 1;
+    }
+}
+
+
 void serial_read_3() {
     int num = 4;
     int serialdata[2*num+2];
     boolean header_find_flag = false;
-    int servodata[num] = {
-            -1};
+    int servodata[num] = {-1};
     int num_temp = 0;
-    while (Serial.available()) {
+    while (Serial.available() >= 2) {
         if ((int) Serial.read() == 255 && (int) Serial.read() == 1) {
             header_find_flag = true;
             break;
         }
         num_temp += 1;
-        if (num_temp > 2*num+6){
+        if (num_temp > 2*num+2+4){
             break;
         }
     }
@@ -262,14 +367,14 @@ void WriteData() {
         motor.write(motor_speed);
         motor_speed_old = motor_speed;
     }
-    if (rudder_pos >= 0 && rudder_pos <= 180 && abs(rudder_pos - rudder_pos_old) > 3) {
-        rudder.write(rudder_pos);
-        rudder_pos_old = rudder_pos;
-    }
-    if (sail_pos >= 45 && sail_pos <= 145) {
-        sail.write(sail_pos);
-        sail_pos_old = sail_pos;
-    }
+    // if (rudder_poses >= 0 && rudder_pos <= 180 && abs(rudder_pos - rudder_pos_old) > 3) {
+    //     rudder.write(rudder_pos);
+    //     rudder_pos_old = rudder_pos;
+    // }
+    // if (sail_pos >= 45 && sail_pos <= 145) {
+    //     sail.write(sail_pos);
+    //     sail_pos_old = sail_pos;
+    // }
     if (green_led != 0){
         analogWrite(greenPin, 0);
     }else{
@@ -327,6 +432,21 @@ void flash() {
 
 
     voltageCurrentMeter();
+//    int result = serial_read();
+//    if (!result){
+//        serial_out_count++;
+//        if (serial_out_count > 50) {  //timeout=10*0.1=1s
+//            motor_speed = 90;
+//            // rudder_pos = 90;
+//            // sail_pos = 50;
+//            green_led = 0;
+//            yellow_led = 0;
+//            red_led = 2;
+//            
+//            //foresail_pos = 50;
+//            mark = 0;
+//        }
+//    }
     serial_read_3();
     signalSelection();
     veloLimit();
@@ -334,7 +454,8 @@ void flash() {
     structDataSend();
 }
 
-void loop() {
 
+void loop() {
+    
 }
 

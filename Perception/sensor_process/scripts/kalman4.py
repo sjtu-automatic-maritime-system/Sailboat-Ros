@@ -262,13 +262,12 @@ if __name__ == "__main__":
     #plt.grid(True)  # 添加网格
     #plt.ion()  # interactive mode on
     #print('开始仿真')
-    rospy.init_node('ahrs_talker', anonymous=True)
+    rospy.init_node('sensor_kalman', anonymous=True)
     pub = rospy.Publisher('sensor_kalman_msg', Sensor_msg, queue_size=5)
     rospy.Subscriber('wtst', WTST_msg, wtst_callback)
     rospy.Subscriber('ahrs', Ahrs_msg, ahrs_callback)
 
-    rate = rospy.Rate(20)
-
+    rate = rospy.Rate(10)
 
     while not rospy.is_shutdown():
         # WTSTinput [posx,posy,speedangle,speed,roll,pitch,yaw,windangle,windspeed]

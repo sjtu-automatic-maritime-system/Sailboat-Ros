@@ -73,6 +73,7 @@ class Arduino():
     def ser_open(self):
         try:
             self.arduino_ser = serial.Serial(arduino_port, 115200, timeout=1)
+            time.sleep(2)
             #self.logger.info(self.ahrs_ser.portstr+' open successfully')
             return True
         except(serial.serialutil.SerialException):
@@ -85,7 +86,9 @@ class Arduino():
             self.arduino_ser.write(self.send_data())
 
     def read_data(self):
-        self.buf += self.arduino_ser.read(18-len(self.buf))
+        n = self.arduino_ser.inWaiting()
+        self.buf += self.arduino_ser.read(n)
+        self.buf = self.buf[-35:]
         print 'arduino read:',binascii.hexlify(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
@@ -95,30 +98,29 @@ class Arduino():
         elif idx > 0:
             self.buf = self.buf[idx:]
             print ('ReadError: header not at start, discard bytes before header')
-            return
         if len(self.buf) < 18:
             print ('ReadError: not enough data')
             return
         #testBety = self.buf[0:9]
-        datas = self.recvDataFst.unpack(self.buf)
+        datas = self.recvDataFst.unpack(self.buf[0:18])
         #print datas
-        crc16Num = crc16(self.buf[2:-2])
+        crc16Num = crc16(self.buf[2:16])
         if datas[-1] != crc16Num:
             self.buf = self.buf[2:]
             print ('ReadError: ckcum error, discard first 2 bytes')
             return
         self.EarduinoDatas = datas[1:-1]
         print 'arduino read data:',self.EarduinoDatas
-        self.buf = ''
+        self.buf = self.buf[18:]
         
     def send_data(self):
         header = '\xff\x01'
         tmp = self.fst.pack(motor,green_led,yellow_led,red_led)
         crc_code = struct.pack('!H', crc16(tmp))
-        print 'send data:',binascii.hexlify(tmp), type(tmp)
         tmp = header + tmp
         tmp = tmp + crc_code
         #print 'greed_led', green_led, 'yellow_led', yellow_led, 'red_led', red_led
+        print 'send data:',binascii.hexlify(tmp), type(tmp)
         #print binascii.hexlify(tmp)
         return tmp
 
@@ -155,7 +157,7 @@ class SensorListener:
         self.arduino = Arduino()
         self.arduinomsg = Arduino_msg()
         rospy.Subscriber('/base/mach', Mach_msg, machCallback)
-        rospy.Subscriber('out_time', Mach_msg, outTimeCallback)
+        rospy.Subscriber('/out_time', Mach_msg, outTimeCallback)
         rospy.Service('self_checking_arduino_srv',Self_Checking_srv,handleSelfChecking)
         self.talker()
 
@@ -194,6 +196,9 @@ class SensorListener:
                     green_led = 0
                     yellow_led = 0
                     red_led = 1
+                green_led = 1
+                yellow_led = 0
+                red_led = 0
                 self.r.sleep()
         except rospy.ROSInterruptException as e:
             print(e)
