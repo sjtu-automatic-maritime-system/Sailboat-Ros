@@ -65,6 +65,7 @@ private:
     
     bool isSimulation;
     bool isShow;
+    int count;
 
     double posX;
     double posY;

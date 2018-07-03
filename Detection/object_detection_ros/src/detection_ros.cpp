@@ -54,6 +54,8 @@ DetectionRos::DetectionRos(double ballR, double fov,bool gmapping, bool simulati
     particleFilter = new ParticleFilter();
     //average = new Average();
 
+    count = 0;
+
     get_camera_info();
 }
 
@@ -107,6 +109,13 @@ void DetectionRos::roll_pitch_yaw_to_R(Vector3d E,Matrix3d &R){
 
 void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 {
+    if (count > 7){
+        count = 0;
+    }else{
+        count++;
+        return;
+    }
+    
     cv::Mat src_img;
     cv_bridge::toCvShare(img_in,"bgr8")->image.copyTo(src_img);
 
