@@ -122,7 +122,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
         cv::Mat img_undistorted;
         cv::undistort(src_ROI, img_undistorted, cameraMatrix, distCoeffs);
         //cv::imshow("src", img_undistorted);
-        edge = detection::edgeDetection(img_undistorted, 150, 200);
+        edge = detection::edgeDetection(img_undistorted, 100, 200);
         circles = detection::circleDectection(img_undistorted, edge);
 
         edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();

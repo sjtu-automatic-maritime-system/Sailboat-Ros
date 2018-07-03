@@ -2,7 +2,9 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
 #include <opencv2/objdetect.hpp>
+
 //#include <object_detection_ros/detection.h>
 //using namespace detection;
 namespace detection {
@@ -29,7 +31,16 @@ cv::Mat edgeDetection(cv::Mat img_src, u_int8_t low_threshold=100, u_int8_t high
 
     cv::GaussianBlur(s_img, edge, cv::Size(9, 9), 2, 2);
 
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
+
+    cv::morphologyEx(edge,edge, cv::MORPH_OPEN, kernel);
+
+    cv::threshold(edge,edge, 0, 255, cv::THRESH_BINARY + cv::THRESH_OTSU);
+
     cv::Canny(edge, edge, low_threshold, high_threshold, 3);
+    
+    // cv::morphologyEx(edge, edge, CV_MOP_CLOSE, kernel);
+    // cv::morphologyEx(edge, edge, cv::MORPH_OPEN, kernel);
 
     dst = cv::Scalar::all(0);
 
@@ -46,7 +57,7 @@ std::vector<cv::Vec3f> circleDectection(cv::Mat &src_img, cv::Mat edge) {
     //cv::Mat gray;
 
     std::vector<cv::Vec3f> circles;
-    cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 50, 200, 100, 0, 100);
+    cv::HoughCircles(edge, circles, CV_HOUGH_GRADIENT, 2, 100, 200, 100, 20, 300);
 
     for (size_t i = 0; i < circles.size(); i++) {
         cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
