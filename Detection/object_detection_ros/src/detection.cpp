@@ -10,11 +10,11 @@
 namespace detection {
 cv::Mat edgeDetection(cv::Mat img_src, u_int8_t low_threshold=100, u_int8_t high_threshold=200) {
 //    cv::Mat img_clone = img_src.clone();
-    cv::Mat dst, edge, gray, hls;
+    cv::Mat dst, edge, hls;
 
     dst.create(img_src.size(), img_src.type());
 
-    cvtColor(img_src, gray, CV_BGR2GRAY);
+    cvtColor(img_src, edge, CV_BGR2GRAY);
 
     cvtColor(img_src, hls, CV_BGR2HLS);
     std::vector<cv::Mat> hls_channels;
@@ -38,7 +38,7 @@ cv::Mat edgeDetection(cv::Mat img_src, u_int8_t low_threshold=100, u_int8_t high
     cv::threshold(edge,edge, 0, 255, cv::THRESH_BINARY + cv::THRESH_OTSU);
 
     cv::Canny(edge, edge, low_threshold, high_threshold, 3);
-    
+
     // cv::morphologyEx(edge, edge, CV_MOP_CLOSE, kernel);
     // cv::morphologyEx(edge, edge, cv::MORPH_OPEN, kernel);
 
