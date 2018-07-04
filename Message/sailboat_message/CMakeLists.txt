@@ -61,6 +61,8 @@ add_service_files(
   Control_srv.srv
   Self_Checking_srv.srv
   Out_Time_srv.srv
+  Dxl_Control_srv.srv
+  Dxl_State_srv.srv
 #   Service1.srv
 #   Service2.srv
 )

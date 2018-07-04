@@ -4,6 +4,7 @@ from sailboat_message.msg import Mach_msg
 from sailboat_message.msg import Arduino_msg
 from sailboat_message.msg import Out_Time_msg
 from sailboat_message.srv import Self_Checking_srv
+from sailboat_message.srv import Self_Checking_srvResponse
 
 import struct
 import binascii
