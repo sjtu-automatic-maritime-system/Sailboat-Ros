@@ -34,7 +34,7 @@ def DXL_HIBYTE(w):
     return (w >> 8) & 0xFF
 
 def rad2raw(rad):
-    raw = round((rad*4095)/(2*pi))
+    raw = round(((rad+pi)*4095)/(2*pi))
     if raw <= 0:
         return 0
     elif raw >= 4095:
@@ -43,7 +43,7 @@ def rad2raw(rad):
         return int(raw)
 
 def raw2rad(raw):
-    rad = (raw*2*pi)/4095
+    rad = (raw*2*pi)/4095 - pi
     return rad
 
 def console_logger(name):
