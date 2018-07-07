@@ -55,14 +55,14 @@ set( detection_SRC
 add_executable(object_detection ${detection_SRC})
 target_link_libraries(object_detection ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Eigen_LIBRARIES})
 
-# set( test_SRC
-#         test/test.cpp
-#         src/detection.cpp
-#         )
+set( test_SRC
+        test/test.cpp
+        src/detection.cpp
+        )
 
-#add_executable(mytest ${test_SRC})
-#add_dependencies(mytest ${catkin_EXPORTED_TARGETS})
-#target_link_libraries(mytest ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_executable(mytest ${test_SRC})
+add_dependencies(mytest ${catkin_EXPORTED_TARGETS})
+target_link_libraries(mytest ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Eigen_LIBRARIES})
 
 #add_executable(img_undistortion src/undistort_image_raw.cpp)
 #target_link_libraries(img_undistortion ${catkin_LIBRARIES})
