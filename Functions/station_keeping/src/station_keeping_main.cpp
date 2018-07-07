@@ -123,7 +123,7 @@ void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
 void getOutMachPut(sailboat_message::Mach_msg& msg){
 
     msg.timestamp = ros::Time::now().toSec();
-    msg.motor = 0;
+    msg.motor = 50;
     msg.rudder = station_keeping_Obj.keeping_Y.rudder;
     msg.sail = station_keeping_Obj.keeping_Y.sail;
 

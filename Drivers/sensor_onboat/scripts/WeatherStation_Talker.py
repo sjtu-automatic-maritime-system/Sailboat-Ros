@@ -476,11 +476,12 @@ def talker(send_pro):  # ros message publish
             wtst.update()
 
             wtst_msg = datawrapper.pubData(msg,wtst)
+            pub.publish(wtst_msg)
+            
             if send_pro:
                 wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
+                pub_pro.publish(wtst_pro_msg)
 
-            pub.publish(wtst_msg)
-            pub_pro.publish(wtst_pro_msg)
             rate.sleep()
     except rospy.ROSInterruptException as e:
         print(e)

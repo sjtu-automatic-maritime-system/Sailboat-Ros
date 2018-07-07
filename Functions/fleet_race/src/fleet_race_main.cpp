@@ -122,7 +122,7 @@ void FleetraceCfgcallback(fleet_race::fleet_race_Config &config, uint32_t level)
 void getOutMachPut(sailboat_message::Mach_msg &msg) {
 
     msg.timestamp = ros::Time::now().toSec();
-    msg.motor = 0;
+    msg.motor = 50;
     msg.rudder = race_course_Obj.race_course_Y.rudder;
     msg.sail = race_course_Obj.race_course_Y.sail;
 

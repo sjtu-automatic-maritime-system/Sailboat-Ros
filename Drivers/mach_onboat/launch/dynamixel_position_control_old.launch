@@ -1,4 +1,0 @@
- <launch>
-    <node name="dxl_driver.py" pkg="mach_onboat" type="dxl_driver" output="screen"/>
-    <node name="base_control" pkg="mach_onboat" type="base_control" output="screen"/>
-</launch>

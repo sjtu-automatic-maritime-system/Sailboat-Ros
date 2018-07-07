@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
 <launch>
     <node pkg="scanning" type="scanning" name="scanning"/>
-    <node pkg="rosbag" type="record" name="scanning_record" args=" -o /home/sjtu-sailboat/rosbag/scanning --split --duration=20m /wtst /ahrs /mach /sensor /sensor2 /arduino /scanning_out /scanning_para"/>
 </launch>
