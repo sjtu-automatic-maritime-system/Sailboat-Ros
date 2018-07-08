@@ -95,7 +95,7 @@ int main(int argc, char **argv)
             }
         }
 
-        double sailAngle = baseSailAngle*4 - 3.14;
+        double sailAngle = - baseSailAngle*4 + 3.14;
 
         if (sailAngle > 3.14){
             sailAngle = 3.14;
