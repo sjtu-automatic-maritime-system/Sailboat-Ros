@@ -4,7 +4,8 @@ import numpy as np
 from numpy import sin, cos, tan
 import matplotlib.pyplot as plt
 #import read_sensor
-
+import copy
+import time
 import rospy
 from sailboat_message.msg import Ahrs_msg
 from sailboat_message.msg import WTST_msg
@@ -13,7 +14,9 @@ from sailboat_message.msg import Sensor_msg
 
 AHRSinput = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 WTSTinput = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-
+wtst_timestamp=[]
+wtstnum=0
+ahrsnum=0
 detalt = 0.1
 isinit=False
 
@@ -27,9 +30,9 @@ class SensorFusion(object):
         self.R1w = 5 * 10 ** (-4) * np.matrix(np.eye(3))
         self.U1 = U1
         self.H1 = np.matrix(np.eye(3))
-        self.i = 0
-        self.iw = 0
-        self.ia = 0
+        # self.i = 0
+        # self.iw = 0
+        # self.ia = 0
 
         # self.X1all = self.X1
         # self.P1yaw = [self.P1[2, 2]]
@@ -60,7 +63,7 @@ class SensorFusion(object):
         self.X3 = y3
         self.P3 = 10 ** 5 * np.matrix(np.eye(2))
         self.Q3 = 3 * 10 ** (-5) * np.matrix(np.eye(2))
-        self.R3 = 3 * 10 ** (-2) * np.matrix(np.eye(2))
+        self.R3 = 3 * 10 ** (-5) * np.matrix(np.eye(2))
 
         self.X3all = self.X3
 
@@ -81,27 +84,45 @@ class SensorFusion(object):
     def yawFusion(self, wtstyaw, ahrsyaw, heading):
         R1w = self.R1w.copy()
         R1a = self.R1a.copy()
-        if self.i == 500:
-            if self.iw > self.ia:
-                R1w[2, 2] = 100 * self.R1w[2, 2]
-                print('drop wtst')
-            else:
-                R1a[2, 2] = 100 * self.R1a[2, 2]
-                print('drop ahrs')
-            return R1w, R1a
+        if ahrsnum-wtstnum>40:
+            R1w=1000*self.R1w
+            print('WTST delay')
+            return R1w,R1a
+        elif wtstnum-ahrsnum>40:
+            R1a=1000*self.R1a
+            print('AHRS delay')
+            return R1w,R1a
+
+        # if self.i == 500:
+        #     if self.iw > self.ia:
+        #         R1w[2, 2] = 100 * self.R1w[2, 2]
+        #         print('drop wtst')
+        #     else:
+        #         R1a[2, 2] = 100 * self.R1a[2, 2]
+        #         print('drop ahrs')
+        #     return R1w, R1a
+        # if abs(ahrsyaw - self.diff(ahrsyaw, wtstyaw)) > 1.0:
+        #     print('ahrs and wtst are much different')
+        #     if np.sqrt(self.X2[3, 0] ** 2 + self.X2[4, 0] ** 2) > 0.2 and self.X2[4, 0] < 0.4:
+        #         self.i = self.i + 1
+        #         if abs(ahrsyaw - self.diff(ahrsyaw, heading)) < abs(wtstyaw - self.diff(wtstyaw, heading)):
+        #             R1w[2, 2] = 1000 * self.R1w[2, 2]
+        #             R1a[2, 2] = 100 * self.R1a[2, 2]
+        #             self.iw = self.iw + 1
+        #         else:
+        #             R1w[2, 2] = 100 * self.R1w[2, 2]
+        #             R1a[2, 2] = 1000 * self.R1a[2, 2]
+        #             self.ia = self.ia + 1
+        #         print(self.i, 'speed angle close to ahrs',self.iw,'to wtst', self.ia)
         if abs(ahrsyaw - self.diff(ahrsyaw, wtstyaw)) > 1.0:
             print('ahrs and wtst are much different')
             if np.sqrt(self.X2[3, 0] ** 2 + self.X2[4, 0] ** 2) > 0.2 and self.X2[4, 0] < 0.4:
-                self.i = self.i + 1
                 if abs(ahrsyaw - self.diff(ahrsyaw, heading)) < abs(wtstyaw - self.diff(wtstyaw, heading)):
                     R1w[2, 2] = 1000 * self.R1w[2, 2]
                     R1a[2, 2] = 100 * self.R1a[2, 2]
-                    self.iw = self.iw + 1
                 else:
                     R1w[2, 2] = 100 * self.R1w[2, 2]
                     R1a[2, 2] = 1000 * self.R1a[2, 2]
-                    self.ia = self.ia + 1
-                print(self.i, 'speed angle close to ahrs',self.iw,'to wtst', self.ia)
         return R1w, R1a
 
     def ObserveFusion(self, y1, y2, heading):
@@ -129,8 +150,8 @@ class SensorFusion(object):
                               [(q * cos(roll) / cos(pitch) - r * sin(roll) / cos(pitch)) * detalt,
                                (q * sin(pitch) * sin(roll) + r * sin(pitch) * cos(roll)) / cos(pitch) ** 2 * detalt,
                                1]])
-        yf, R = self.ObserveFusion(y1, y2, heading)
-        self.X1, self.P1 = self.EKF(self.X1, yf, A, T * detalt, self.U1, jacobian, self.H1, self.P1, self.Q1, R)
+        self.yf, R = self.ObserveFusion(y1, y2, heading)
+        self.X1, self.P1 = self.EKF(self.X1, self.yf, A, T * detalt, self.U1, jacobian, self.H1, self.P1, self.Q1, R)
         self.U1 = U1
         # self.X1all = np.append(self.X1all, self.X1, axis=1)
 
@@ -202,21 +223,26 @@ class SensorFusion(object):
 
 
 
-def pretreat(wtst):
+def pretreat(wtstinput):
+    wtst=copy.deepcopy(wtstinput)
     wtst[4] = wtst[4] * np.pi / 180
     wtst[5] = (wtst[5]+5.04 )* np.pi / 180
     wtst[6] = wtst[6] * np.pi / 180
     wtst[2] = wtst[2] * np.pi / 180
+    wtst[3]=wtst[3]*0.5144
+    wtst[7] = wtst[7] * np.pi / 180
     if wtst[6]>np.pi:
         wtst[6]=wtst[6]-2*np.pi
     if wtst[2]>np.pi:
         wtst[2]=wtst[2]-2*np.pi
+    if wtst[7]>np.pi:
+        wtst[7]=wtst[7]-2*np.pi
     return wtst
 
 
 
 def wtst_callback(data):
-    global WTSTinput
+    global WTSTinput,wtst_time,wtstnum
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
     WTSTinput[0] = data.PosX
@@ -228,10 +254,15 @@ def wtst_callback(data):
     WTSTinput[6] = data.Yaw
     WTSTinput[7] = data.WindAngle
     WTSTinput[8] = data.WindSpeed
-    rospy.loginfo("I heard WTST %f", data.WindAngle)
+    wtst_time=data.header.stamp
+    wtstnum+=1
+    # WTSTinput=copy.deepcopy([data.PosX,data.PosY,data.DegreeTrue,data.SpeedKnots,data.Roll,data.Pitch,data.Yaw,data.WindAngle,data.WindSpeed])
+    # yyaw=data.Yaw
+    # rospy.loginfo("I heard WTST %f", data.Yaw)
+    # print('callback',WTSTinput[6])
 
 def ahrs_callback(data):
-    global AHRSinput
+    global AHRSinput,ahrsnum
     AHRSinput[0] = data.roll
     AHRSinput[1] = data.pitch
     AHRSinput[2] = data.yaw
@@ -241,7 +272,8 @@ def ahrs_callback(data):
     AHRSinput[6] = data.ax
     AHRSinput[7] = data.ay
     AHRSinput[8] = data.az
-    rospy.loginfo("I heard ahrs %f", data.roll)
+    ahrsnum+=1
+    # rospy.loginfo("I heard ahrs %f", data.yaw)
 
 
 
@@ -255,53 +287,49 @@ if __name__ == "__main__":
     # WTSTdata = np.delete(WTSTdata, range(9000), 0)
 
 
-    #plt.close()  # clf() # 清图  cla() # 清坐标轴 close() # 关窗口
-    #fig = plt.figure()
-    #ax1 = fig.add_subplot(1, 1, 1)
-    # ax2= fig.add_subplot(1, 2, 2)
-    #plt.grid(True)  # 添加网格
-    #plt.ion()  # interactive mode on
-    #print('开始仿真')
     rospy.init_node('sensor_kalman', anonymous=True)
     pub = rospy.Publisher('sensor_kalman_msg', Sensor_msg, queue_size=5)
     rospy.Subscriber('wtst', WTST_msg, wtst_callback)
     rospy.Subscriber('ahrs', Ahrs_msg, ahrs_callback)
-
+    time.sleep(1)
     rate = rospy.Rate(10)
-
+    i=1
     while not rospy.is_shutdown():
         # WTSTinput [posx,posy,speedangle,speed,roll,pitch,yaw,windangle,windspeed]
         # AHRSinput [roll,pitch,yaw,gx,gy,gz,ax,ay,az]
         # WTSTinput=WTSTdata[i,1:10]
         # AHRSinput=AHRSdata[i,1:10]
-        WTSTinput=pretreat(WTSTinput)
+        WTSTinput_=pretreat(WTSTinput)
 
-        pos=np.matrix([WTSTinput[0],WTSTinput[1],0,WTSTinput[3]*cos(WTSTinput[2]),WTSTinput[3]*sin(WTSTinput[2])]).T
+
+        pos=np.matrix([WTSTinput_[0],WTSTinput_[1],0,WTSTinput_[3]*cos(WTSTinput_[2]),WTSTinput_[3]*sin(WTSTinput_[2])]).T
         U2=np.matrix([0,0,0,AHRSinput[6],AHRSinput[7],AHRSinput[8]]).T
-        yw=np.matrix([WTSTinput[4],WTSTinput[5],WTSTinput[6]]).T
+        yw=np.matrix([WTSTinput_[4],WTSTinput_[5],WTSTinput_[6]]).T
         ya=np.matrix([AHRSinput[0],AHRSinput[1],AHRSinput[2]]).T
         U1A=np.matrix([AHRSinput[3],AHRSinput[4],AHRSinput[5]]).T
-        wind=np.matrix([WTSTinput[8]*cos(WTSTinput[7]),WTSTinput[8]*sin(WTSTinput[7])]).T
-
+        wind=np.matrix([WTSTinput_[8]*cos(WTSTinput_[7]),WTSTinput_[8]*sin(WTSTinput_[7])]).T
+        # print('yw',round(yw[2,0],3))
         if isinit ==False:
-            SF=SensorFusion(yw, U1A, pos, U2,wind)
+            SF=SensorFusion(copy.deepcopy(yw), U1A, pos, U2,wind)
             isinit=True
-
         SF.Windupdate(wind)
         SF.PositionUpdate(pos,U2)
-        SF.AttitudeUpdate(yw, ya, U1A, WTSTinput[2])
+        SF.AttitudeUpdate(copy.deepcopy(yw), ya, U1A, copy.deepcopy(WTSTinput_[2]))
 
-        # ax1.scatter(i,WTSTinput[2], c='b', marker='.',label='DegreeTrue')
-        # ax1.scatter(i, WTSTinput[6], c='g', marker='.', label='WTSTyaw')
+        # ax1.scatter(i,SF.yf[2,0], c='b', marker='.',label='yf')
+        # ax1.scatter(i, WTSTinput_[6], c='g', marker='.', label='WTSTyaw')
         # ax1.scatter(i, AHRSinput[2], c='r', marker='.', label='AHRSyaw')
         # ax1.scatter(i, SF.X1[2,0], c='m', marker='.', label='yaw')
-
+        # i+=1
+        # print(wtstnum,ahrsnum,'yaw',round(SF.X1[2,0],3),'yf',round(SF.yf[2,0],3),'yw',round(yw[2,0],3),'ya',round(ya[2,0],3))
         # ax1.scatter(i,np.sqrt(SF.X3[0,0]**2+SF.X3all[1,0]**2),c='b', marker='.',label='windspeed')
         # ax1.scatter(i,np.arctan2(SF.X3[1,0],SF.X3[0,0]),c='r', marker='.',label='windangle')
 
         # plt.pause(0.001)
         # output [roll,pitch,yaw,N,E,u,v,w,TWA,TWS]
         output=[SF.X1[0,0],SF.X1[1,0],SF.X1[2,0],SF.X2[0,0],SF.X2[1,0],SF.X2[3,0],SF.X2[4,0],SF.X2[5,0]]
+        TWA=np.arctan2(SF.X3[1,0],SF.X3[0,0])
+        TWS=np.sqrt(SF.X3[1,0]**2+SF.X3[0,0]**2)
         msg = Sensor_msg()
         msg.ux = output[5]
         msg.vy = output[6]
@@ -315,11 +343,12 @@ if __name__ == "__main__":
         msg.Roll = output[0]
         msg.Pitch = output[1]
         msg.Yaw = output[2]
-        msg.AWA = WTSTinput[7]
-        msg.AWS = WTSTinput[8]
-        msg.TWA = 0 #output[8]
-        msg.TWS = 0 #output[9]
-
+        msg.AWA = WTSTinput_[7]
+        msg.AWS = WTSTinput_[8]
+        msg.TWA = TWA
+        msg.TWS = TWS #output[9]
+        # print(WTSTinput_[7],TWA)
+        # print(WTSTinput_[7]-TWA,WTSTinput_[8]-TWS,WTSTinput_[7],TWA)
         pub.publish(msg)
         rate.sleep()
     # Xspeed = np.hstack((np.zeros(10), WTSTdata[10:length, 1] - WTSTdata[0:length - 10, 1])) / 1
