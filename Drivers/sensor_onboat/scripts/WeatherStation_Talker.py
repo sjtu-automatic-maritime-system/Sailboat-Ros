@@ -103,18 +103,22 @@ class WTST:
 
 
     def update(self):
-        l = self.ser.readline()
-        #print l
-        if l == '':
-            rospy.logwarn('WTST timeout, reconnect')
-            self.close()
-            time.sleep(0.5)
-            self.open()
-        self.line = self.line + l
-        if self.line.endswith('\n'):
-            # a new line received
-            self.parse_line()
-            self.line = ''
+        n = 0
+        while self.ser.isWaiting()>0 :
+            n = n+1
+            l = self.ser.readline()
+            #print l
+            if l == '':
+                rospy.logwarn('WTST timeout, reconnect')
+                self.close()
+                time.sleep(0.5)
+                self.open()
+            self.line = self.line + l
+            if self.line.endswith('\n'):
+                # a new line received
+                self.parse_line()
+                self.line = ''
+        print ("n = ", n)
 
     def parse_line(self):
         if not self.line.startswith('$'):
@@ -464,15 +468,9 @@ def talker(send_pro):  # ros message publish
     datawrapper = dataWrapper()
 
     try:
-        for ii in range(28):
+        for ii in range(4):
             wtst.update()
         while not rospy.is_shutdown():
-            wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
             wtst.update()
 
             wtst_msg = datawrapper.pubData(msg,wtst)
