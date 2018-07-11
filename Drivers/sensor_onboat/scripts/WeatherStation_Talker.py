@@ -104,7 +104,7 @@ class WTST:
 
     def update(self):
         n = 0
-        while self.ser.isWaiting()>0 :
+        while self.ser.inWaiting()>0 :
             n = n+1
             l = self.ser.readline()
             #print l
