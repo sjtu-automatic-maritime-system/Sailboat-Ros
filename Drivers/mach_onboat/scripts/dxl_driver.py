@@ -167,7 +167,7 @@ class dxl_driver_ros:
             sys.exitfunc=self.exitfunc
             rospy.init_node('dxl_driver')
             self.dxl_contrl_srv = rospy.Service('dxl_control_srv',Dxl_Control_srv,self.handle_dxl_control)
-            self.dxl_state_srv = rospy.Service('dxl_state_srv',Dxl_State_srv,self.handle_dxl_state)
+            # self.dxl_state_srv = rospy.Service('dxl_state_srv',Dxl_State_srv,self.handle_dxl_state)
             self.dxl = dxl_driver(num=2)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
@@ -187,16 +187,16 @@ class dxl_driver_ros:
             result = False
         return Dxl_Control_srvResponse(result)
 
-    def handle_dxl_state(self, req):
-        dxl_id = req.dxl_id
-        print ('read')
-        if self.dxl.ser_open_flag:
-        	present_temperature = self.dxl.read_present_temperature(dxl_id)
-            present_position = self.dxl.read_present_position(dxl_id)
-        else:
-        	present_temperature = 9999
-            present_position = 9999
-        return Dxl_State_srvResponse(present_temperature, present_position)
+    # def handle_dxl_state(self, req):
+    #     dxl_id = req.dxl_id
+    #     print ('read')
+    #     if self.dxl.ser_open_flag:
+    #     	present_temperature = self.dxl.read_present_temperature(dxl_id)
+    #         present_position = self.dxl.read_present_position(dxl_id)
+    #     else:
+    #     	present_temperature = 9999
+    #         present_position = 9999
+    #     return Dxl_State_srvResponse(present_temperature, present_position)
 
 def run():
     dxl_driver_ros()
