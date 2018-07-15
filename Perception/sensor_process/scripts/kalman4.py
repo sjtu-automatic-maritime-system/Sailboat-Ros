@@ -14,9 +14,9 @@ from sailboat_message.msg import Sensor_msg
 
 AHRSinput = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 WTSTinput = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-wtst_timestamp=[]
-wtstnum=0
-ahrsnum=0
+# wtst_timestamp=[]
+# wtstnum=0
+# ahrsnum=0
 detalt = 0.1
 isinit=False
 
@@ -30,9 +30,9 @@ class SensorFusion(object):
         self.R1w = 5 * 10 ** (-4) * np.matrix(np.eye(3))
         self.U1 = U1
         self.H1 = np.matrix(np.eye(3))
-        # self.i = 0
-        # self.iw = 0
-        # self.ia = 0
+        self.i = 0
+        self.iw = 0
+        self.ia = 0
 
         # self.X1all = self.X1
         # self.P1yaw = [self.P1[2, 2]]
@@ -84,45 +84,35 @@ class SensorFusion(object):
     def yawFusion(self, wtstyaw, ahrsyaw, heading):
         R1w = self.R1w.copy()
         R1a = self.R1a.copy()
-        if ahrsnum-wtstnum>40:
-            R1w=1000*self.R1w
-            print('WTST delay')
-            return R1w,R1a
-        elif wtstnum-ahrsnum>40:
-            R1a=1000*self.R1a
-            print('AHRS delay')
-            return R1w,R1a
-
-        # if self.i == 500:
-        #     if self.iw > self.ia:
-        #         R1w[2, 2] = 100 * self.R1w[2, 2]
-        #         print('drop wtst')
-        #     else:
-        #         R1a[2, 2] = 100 * self.R1a[2, 2]
-        #         print('drop ahrs')
-        #     return R1w, R1a
-        # if abs(ahrsyaw - self.diff(ahrsyaw, wtstyaw)) > 1.0:
-        #     print('ahrs and wtst are much different')
-        #     if np.sqrt(self.X2[3, 0] ** 2 + self.X2[4, 0] ** 2) > 0.2 and self.X2[4, 0] < 0.4:
-        #         self.i = self.i + 1
-        #         if abs(ahrsyaw - self.diff(ahrsyaw, heading)) < abs(wtstyaw - self.diff(wtstyaw, heading)):
-        #             R1w[2, 2] = 1000 * self.R1w[2, 2]
-        #             R1a[2, 2] = 100 * self.R1a[2, 2]
-        #             self.iw = self.iw + 1
-        #         else:
-        #             R1w[2, 2] = 100 * self.R1w[2, 2]
-        #             R1a[2, 2] = 1000 * self.R1a[2, 2]
-        #             self.ia = self.ia + 1
-        #         print(self.i, 'speed angle close to ahrs',self.iw,'to wtst', self.ia)
+        # if ahrsnum-wtstnum>40:
+        #     R1w=1000*self.R1w
+        #     print('WTST delay')
+        #     return R1w,R1a
+        # elif wtstnum-ahrsnum>40:
+        #     R1a=1000*self.R1a
+        #     print('AHRS delay')
+        #     return R1w,R1a
+        if self.i == 500:
+            if self.iw > self.ia:
+                R1w[2, 2] = 100 * self.R1w[2, 2]
+                print('drop wtst')
+            else:
+                R1a[2, 2] = 100 * self.R1a[2, 2]
+                print('drop ahrs')
+            return R1w, R1a
         if abs(ahrsyaw - self.diff(ahrsyaw, wtstyaw)) > 1.0:
             print('ahrs and wtst are much different')
             if np.sqrt(self.X2[3, 0] ** 2 + self.X2[4, 0] ** 2) > 0.2 and self.X2[4, 0] < 0.4:
+                self.i = self.i + 1
                 if abs(ahrsyaw - self.diff(ahrsyaw, heading)) < abs(wtstyaw - self.diff(wtstyaw, heading)):
                     R1w[2, 2] = 1000 * self.R1w[2, 2]
                     R1a[2, 2] = 100 * self.R1a[2, 2]
+                    self.iw = self.iw + 1
                 else:
                     R1w[2, 2] = 100 * self.R1w[2, 2]
                     R1a[2, 2] = 1000 * self.R1a[2, 2]
+                    self.ia = self.ia + 1
+                print(self.i, 'speed angle close to ahrs',self.iw,'to wtst', self.ia)
         return R1w, R1a
 
     def ObserveFusion(self, y1, y2, heading):
@@ -255,7 +245,6 @@ def wtst_callback(data):
     WTSTinput[7] = data.WindAngle
     WTSTinput[8] = data.WindSpeed
     wtst_time=data.header.stamp
-    wtstnum+=1
     # WTSTinput=copy.deepcopy([data.PosX,data.PosY,data.DegreeTrue,data.SpeedKnots,data.Roll,data.Pitch,data.Yaw,data.WindAngle,data.WindSpeed])
     # yyaw=data.Yaw
     # rospy.loginfo("I heard WTST %f", data.Yaw)
@@ -272,7 +261,6 @@ def ahrs_callback(data):
     AHRSinput[6] = data.ax
     AHRSinput[7] = data.ay
     AHRSinput[8] = data.az
-    ahrsnum+=1
     # rospy.loginfo("I heard ahrs %f", data.yaw)
 
 
@@ -321,7 +309,7 @@ if __name__ == "__main__":
         # ax1.scatter(i, AHRSinput[2], c='r', marker='.', label='AHRSyaw')
         # ax1.scatter(i, SF.X1[2,0], c='m', marker='.', label='yaw')
         # i+=1
-        # print(wtstnum,ahrsnum,'yaw',round(SF.X1[2,0],3),'yf',round(SF.yf[2,0],3),'yw',round(yw[2,0],3),'ya',round(ya[2,0],3))
+        print('yaw',round(SF.X1[2,0],3),'yf',round(SF.yf[2,0],3),'yw',round(yw[2,0],3),'ya',round(ya[2,0],3))
         # ax1.scatter(i,np.sqrt(SF.X3[0,0]**2+SF.X3all[1,0]**2),c='b', marker='.',label='windspeed')
         # ax1.scatter(i,np.arctan2(SF.X3[1,0],SF.X3[0,0]),c='r', marker='.',label='windangle')
 
