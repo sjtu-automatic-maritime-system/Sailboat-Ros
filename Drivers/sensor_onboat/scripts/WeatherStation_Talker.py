@@ -6,7 +6,6 @@ import serial
 # import struct
 # import logging
 import time
-
 import rospy
 # from std_msgs.msg import String
 from sailboat_message.msg import WTST_msg
@@ -98,35 +97,42 @@ class WTST:
         time.sleep(2)
         #self.ser.write(self.cmds)
         rospy.loginfo('WTST send cmds')
-        self.ser.baudrate = 38400
+        self.ser.baudrate = BAUDRATE_change
         rospy.loginfo('WTST set 38400 baudrate')
 
 
     def update(self):
         n = 0
         while self.ser.inWaiting()>0 :
-            n = n+1
+            time1 = time.clock()
             l = self.ser.readline()
             #print l
             if l == '':
+                n += 1
                 rospy.logwarn('WTST timeout, reconnect')
-                self.close()
-                time.sleep(0.5)
-                self.open()
+                if (n > 20):
+                    self.close()
+                    time.sleep(0.5)
+                    self.open()
+                    n = 0
             self.line = self.line + l
+            time2 = time.clock()
+            print ("read line time :",time2 - time1) 
             if self.line.endswith('\n'):
                 # a new line received
+                n = 0
                 self.parse_line()
                 self.line = ''
-        print ("n = ", n)
+                time3 = time.clock()
+                print ("parse line time :",time3 - time2) 
 
     def parse_line(self):
         if not self.line.startswith('$'):
             self.ser.flush()
             rospy.logwarn("header not started with '$'")
-            self.ser.close()
-            time.sleep(1)
-            self.ser.open()
+            # self.ser.close()
+            # time.sleep(1)
+            # self.ser.open()
             return
         self.line = self.line.rstrip('\r\n')
         # XOR checksum  
@@ -140,9 +146,9 @@ class WTST:
                 return
         except:
             rospy.logwarn('invalid novatel cksum error')
-            self.ser.close()
-            time.sleep(1)
-            self.ser.open()
+            # self.ser.close()
+            # time.sleep(1)
+            # self.ser.open()
         #print (self.line_list)
         #parse
         self.parse_content()
@@ -472,7 +478,7 @@ def talker(send_pro):  # ros message publish
             wtst.update()
         while not rospy.is_shutdown():
             wtst.update()
-
+            
             wtst_msg = datawrapper.pubData(msg,wtst)
             pub.publish(wtst_msg)
             
