@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'collision_avoidance'.
 //
-// Model version                  : 1.307
+// Model version                  : 1.343
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Sep 07 12:12:58 2017
+// C/C++ source code generated on : Thu Jul 19 12:27:59 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic

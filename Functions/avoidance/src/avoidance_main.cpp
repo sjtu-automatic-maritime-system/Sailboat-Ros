@@ -24,10 +24,12 @@
 #include "sailboat_message/avoidance_out.h"
 #include "sailboat_message/avoidance_para.h"
 #include "tld_msgs/BoundingBox.h"
+#include <geometry_msgs/PoseArray.h>
 
 #include <dynamic_reconfigure/server.h>
 #include <avoidance/collision_avoidance.h>
 #include "avoidance/avoidance_Config.h"
+
 
 static scanningModelClass collision_avoidance_Obj;
 // Instance of model class
@@ -87,7 +89,17 @@ void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
 }
 
 void cameraCallback(const tld_msgs::BoundingBox::ConstPtr msg) {
-    collision_avoidance_Obj.collision_avoidance_U.camera_confidence = msg->confidence;
+//    collision_avoidance_Obj.collision_avoidance_U.camera_confidence = msg->confidence;
+}
+
+void poseCallback(const geometry_msgs::PoseArray::ConstPtr msg) {
+    int num = msg->poses.size();
+    for (int i=0; i<num; i++){
+        collision_avoidance_Obj.collision_avoidance_U.camera_confidence[i] = msg->poses[i].position.x;
+        collision_avoidance_Obj.collision_avoidance_U.camera_confidence[100+i] = msg->poses[i].position.y;
+        collision_avoidance_Obj.collision_avoidance_U.camera_confidence[200+i] = msg->poses[i].position.z;
+    }
+    
 }
 
 void AvoidanceCfgcallback(avoidance::avoidance_Config &config, uint32_t level) {
@@ -101,11 +113,12 @@ void AvoidanceCfgcallback(avoidance::avoidance_Config &config, uint32_t level) {
     collision_avoidance_Obj.collision_avoidance_P.Ki                                  = config.Ki                                 ;
     collision_avoidance_Obj.collision_avoidance_P.Kp                                  = config.Kp                                 ;
     collision_avoidance_Obj.collision_avoidance_P.R                                   = config.R                                  ;
-    collision_avoidance_Obj.collision_avoidance_P.jibing_time                         = config.jibing_time                        ;
-    collision_avoidance_Obj.collision_avoidance_P.judge_step                          = config.judge_step                         ;
+    collision_avoidance_Obj.collision_avoidance_P.inzone_num_gate                     = config.inzone_num_gate                    ;
+    collision_avoidance_Obj.collision_avoidance_P.jibing_time                         = config.jibing_time                        ;                        ;
     collision_avoidance_Obj.collision_avoidance_P.max_loose_time                      = config.max_loose_time                     ;
     collision_avoidance_Obj.collision_avoidance_P.max_roll_allowed                    = config.max_roll_allowed                   ;
-    collision_avoidance_Obj.collision_avoidance_P.obstacle_proba_threshold            = config.obstacle_proba_threshold           ;
+    collision_avoidance_Obj.collision_avoidance_P.obs_dis_gate                        = config.obs_dis_gate                       ;
+    collision_avoidance_Obj.collision_avoidance_P.obstacle_R                          = config.obstacle_R                         ;
     collision_avoidance_Obj.collision_avoidance_P.pos_history_len                     = config.pos_history_len                    ;
     collision_avoidance_Obj.collision_avoidance_P.run_period                          = config.run_period                         ;
     collision_avoidance_Obj.collision_avoidance_P.ship_speed_history_len              = config.ship_speed_history_len             ;
@@ -164,11 +177,12 @@ void getOutParaPut(sailboat_message::avoidance_para &msg)
     msg.Ki                                  = collision_avoidance_Obj.collision_avoidance_P.Ki                                 ;
     msg.Kp                                  = collision_avoidance_Obj.collision_avoidance_P.Kp                                 ;
     msg.R                                   = collision_avoidance_Obj.collision_avoidance_P.R                                  ;
-    msg.jibing_time                         = collision_avoidance_Obj.collision_avoidance_P.jibing_time                        ;
-    msg.judge_step                          = collision_avoidance_Obj.collision_avoidance_P.judge_step                         ;
+    msg.inzone_num_gate                     = collision_avoidance_Obj.collision_avoidance_P.inzone_num_gate                    ;
+    msg.jibing_time                         = collision_avoidance_Obj.collision_avoidance_P.jibing_time                        ;                        ;
     msg.max_loose_time                      = collision_avoidance_Obj.collision_avoidance_P.max_loose_time                     ;
     msg.max_roll_allowed                    = collision_avoidance_Obj.collision_avoidance_P.max_roll_allowed                   ;
-    msg.obstacle_proba_threshold            = collision_avoidance_Obj.collision_avoidance_P.obstacle_proba_threshold           ;
+    msg.obs_dis_gate                        = collision_avoidance_Obj.collision_avoidance_P.obs_dis_gate                       ;
+    msg.obstacle_R                          = collision_avoidance_Obj.collision_avoidance_P.obstacle_R                         ;
     msg.pos_history_len                     = collision_avoidance_Obj.collision_avoidance_P.pos_history_len                    ;
     msg.run_period                          = collision_avoidance_Obj.collision_avoidance_P.run_period                         ;
     msg.ship_speed_history_len              = collision_avoidance_Obj.collision_avoidance_P.ship_speed_history_len             ;
@@ -217,6 +231,7 @@ int_T main(int_T argc, char **argv)
     ros::NodeHandle nh;
     ros::Subscriber sub;
     ros::Subscriber subCamera;
+    ros::Subscriber subPose;
     ros::Publisher avoidance_pub;
     ros::Publisher avoidance_para_pub;
 
@@ -234,6 +249,7 @@ int_T main(int_T argc, char **argv)
 
     sub = nh.subscribe("sensor", 100, callback);
     subCamera = nh.subscribe("tld_tracked_object", 100, cameraCallback);
+    subPose = nh.subscribe("/object/pose", 100, poseCallback);
 
     ros::Rate loop_rate(10);
     while (ros::ok()) {

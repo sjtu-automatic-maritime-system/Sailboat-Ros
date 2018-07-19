@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'collision_avoidance'.
 //
-// Model version                  : 1.307
+// Model version                  : 1.343
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Sep 07 12:12:58 2017
+// C/C++ source code generated on : Thu Jul 19 12:27:59 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1355,37 +1355,82 @@ void scanningModelClass::collision_a_getSailForce_ground(real_T WindAngle_ground
 }
 
 // Function for MATLAB Function: '<Root>/MATLAB Function1'
-real_T scanningModelClass::collision_avoid_HeadingDeadZone(real_T heading_check,
-  real_T WindAngle_ground, real_T SailAngle_ground, real_T tacking, real_T
-  heading_d_last)
+real_T scanningModelClass::collision_a_HeadingDeadZone_obs(real_T heading_check,
+  real_T WindAngle_ground, const real_T obstacle[15], real_T b_obstacle_R,
+  real_T SailAngle_ground, real_T tacking, real_T heading_d_last, const real_T
+  pos_ship[2])
 {
   real_T check;
-  real_T dead_heading[9];
+  real_T dead_heading[24];
   int32_T dead_num;
+  real_T line_angle;
   real_T heading;
   int32_T i;
+  real_T y;
+  int32_T i_0;
+  real_T tmp;
 
   // tacking=2代表可以有代价tacking
+  // obstacle[5,3]
   // degree ;heading_d_last为角度
-  memset(&dead_heading[0], 0, 9U * sizeof(real_T));
-  dead_num = 2;
+  memset(&dead_heading[0], 0, 24U * sizeof(real_T));
+  dead_num = 7;
   dead_heading[0] = (WindAngle_ground - 0.78539816339744828) +
     12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 0.78539816339744828) +
+  dead_heading[8] = (WindAngle_ground + 0.78539816339744828) +
     12.566370614359172;
-  dead_heading[6] = 1.5707963267948966;
-  dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
-  dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
-  dead_heading[7] = 3.1415926535897931;
+  dead_heading[16] = 1.5707963267948966;
+  dead_heading[6] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
+  dead_heading[14] = (SailAngle_ground + 4.5378560551852569) +
+    12.566370614359172;
+  dead_heading[22] = 3.1415926535897931;
+  for (i = 0; i < 5; i++) {
+    heading = obstacle[i] - pos_ship[0];
+    y = obstacle[5 + i] - pos_ship[1];
+    if ((heading == 0.0) && (y > 0.0)) {
+      line_angle = 1.5707963267948966;
+    } else if ((heading == 0.0) && (y < 0.0)) {
+      line_angle = 4.71238898038469;
+    } else if ((y == 0.0) && (heading > 0.0)) {
+      line_angle = 0.0;
+    } else if ((y == 0.0) && (heading < 0.0)) {
+      line_angle = 3.1415926535897931;
+    } else if ((heading > 0.0) && (y > 0.0)) {
+      line_angle = std::atan(y / heading);
+    } else if ((heading > 0.0) && (y < 0.0)) {
+      line_angle = std::atan(y / heading) + 6.2831853071795862;
+    } else if ((heading < 0.0) && (y > 0.0)) {
+      line_angle = std::atan(y / heading) + 3.1415926535897931;
+    } else if ((heading < 0.0) && (y < 0.0)) {
+      line_angle = std::atan(y / heading) + 3.1415926535897931;
+    } else {
+      line_angle = 0.0;
+    }
+
+    heading = pos_ship[0] - obstacle[i];
+    y = pos_ship[1] - obstacle[5 + i];
+    if (std::abs(obstacle[10 + i]) < 0.5) {
+      tmp = 0.0;
+    } else {
+      tmp = b_obstacle_R;
+    }
+
+    heading = rt_atan2d_snf(tmp, std::sqrt(heading * heading + y * y));
+    i_0 = i + 1;
+    dead_heading[i_0] = (line_angle - heading) + 12.566370614359172;
+    dead_heading[8 + i_0] = (line_angle + heading) + 12.566370614359172;
+    dead_heading[16 + i_0] = heading * 2.0;
+  }
+
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
+    dead_heading[7] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
+    dead_heading[15] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 3.246312408709453;
+    dead_heading[23] = 3.246312408709453;
 
     // %%%%%dead_zone*2???
-    dead_num = 3;
+    dead_num = 8;
   }
 
   check = 0.0;
@@ -1394,17 +1439,17 @@ real_T scanningModelClass::collision_avoid_HeadingDeadZone(real_T heading_check,
          6.2831853071795862) {
     }
 
-    if (heading < dead_heading[3 + i]) {
+    if (heading < dead_heading[8 + i]) {
       check = 1.0;
     }
   }
 
-  if ((check < 0.5) && (dead_num > 2.5)) {
-    for (heading = heading_check; heading < dead_heading[2]; heading +=
+  if ((check < 0.5) && (dead_num > 7.5)) {
+    for (heading = heading_check; heading < dead_heading[7]; heading +=
          6.2831853071795862) {
     }
 
-    if (heading < dead_heading[5]) {
+    if (heading < dead_heading[15]) {
       if (tacking < 2.5) {
         check = 2.0;
       } else {
@@ -1419,21 +1464,25 @@ real_T scanningModelClass::collision_avoid_HeadingDeadZone(real_T heading_check,
 // Model step function
 void scanningModelClass::step()
 {
+  real_T GPS_data[2];
+  real_T long_side;
+  real_T short_side;
+  real_T dis;
+  int8_T num[5];
   real_T leg;
-  real_T wall_angle;
+  real_T a;
+  real_T b_a;
   real_T Horizontal_speed_angle;
   real_T y_speed;
   real_T WindSpeed_mean;
-  real_T real_wind_speed_x;
   real_T real_wind_speed_y;
   int32_T wind_valid;
   real_T accumulate_wind_speed;
-  real_T count_wind;
   real_T c;
-  real_T b_R;
   real_T tn;
   int32_T begin;
   real_T i;
+  real_T d_a;
   int32_T itmp;
   int32_T ixstart;
   int32_T ix;
@@ -1441,30 +1490,30 @@ void scanningModelClass::step()
   boolean_T exitg1;
   real_T loose_time;
   real_T heading;
-  real_T length_sailangle;
-  real_T n;
+  real_T Airmar_wind_angle;
+  real_T b_obstacle_R;
   real_T drive_force[380];
   real_T rtb_Horizontal_speed;
   real_T rtb_WindAngle_mean;
   real_T rtb_UnitDelay16;
   real_T rtb_CenterPosY;
   real_T rtb_CenterPosX;
-  real_T rtb_obstacle_his[500];
   real_T rtb_tacking;
   int32_T rtb_sail_safe;
+  real_T rtb_obs_pos[15];
   real_T rtb_path[222];
   real_T rtb_pos_history[300];
   int32_T i_0;
+  real_T tmp[100];
   real_T dead_sail_data[4];
   int32_T dead_sail_sizes[2];
-  real_T rtb_obstacle_idx_0;
   real_T rtb_start_point_idx_0;
   real_T rtb_start_point_idx_1;
-  real_T GPS_data_idx_0;
-  real_T GPS_data_idx_1;
+  int32_T rtb_obs_judgement_idx_0;
+  real_T end1_idx_0;
+  real_T end1_idx_1;
   real_T end2_idx_0;
   real_T end2_idx_1;
-  real_T rtb_obstacle_idx_1;
 
   // MATLAB Function: '<Root>/MATLAB Function8' incorporates:
   //   Constant: '<Root>/Airmar_X'
@@ -1474,17 +1523,17 @@ void scanningModelClass::step()
   //   Inport: '<Root>/north'
   //   Inport: '<Root>/roll'
 
-  // MATLAB Function 'MATLAB Function8': '<S10>:1'
+  // MATLAB Function 'MATLAB Function8': '<S9>:1'
   // X前正后负 船尾看roll右正左负 NED大地坐标
-  // '<S10>:1:3'
-  // '<S10>:1:4'
+  // '<S9>:1:3'
+  // '<S9>:1:4'
   rtb_CenterPosX = (collision_avoidance_U.north -
                     collision_avoidance_P.Airmar_X_Value * std::cos
                     (collision_avoidance_U.Airmar_yaw)) -
     collision_avoidance_P.Airmar_Z_Value * std::sin(collision_avoidance_U.roll) *
     std::cos(collision_avoidance_U.Airmar_yaw + 1.5707963267948966);
 
-  // '<S10>:1:5'
+  // '<S9>:1:5'
   rtb_CenterPosY = (collision_avoidance_U.east -
                     collision_avoidance_P.Airmar_X_Value * std::sin
                     (collision_avoidance_U.Airmar_yaw)) -
@@ -1494,269 +1543,430 @@ void scanningModelClass::step()
   // UnitDelay: '<Root>/Unit Delay16'
   rtb_UnitDelay16 = collision_avoidance_DW.UnitDelay16_DSTATE;
 
-  // MATLAB Function: '<Root>/MATLAB Function10' incorporates:
+  // MATLAB Function: '<Root>/MATLAB Function9' incorporates:
   //   Inport: '<Root>/camera_confidence'
   //   UnitDelay: '<Root>/Unit Delay12'
   //   UnitDelay: '<Root>/Unit Delay16'
-  //   UnitDelay: '<Root>/Unit Delay17'
-  //   UnitDelay: '<Root>/Unit Delay18'
-  //   UnitDelay: '<Root>/Unit Delay20'
 
-  // MATLAB Function 'MATLAB Function10': '<S3>:1'
-  // '<S3>:1:2'
-  rtb_obstacle_idx_0 = collision_avoidance_DW.UnitDelay12_DSTATE[0];
-  rtb_obstacle_idx_1 = collision_avoidance_DW.UnitDelay12_DSTATE[1];
-  if (collision_avoidance_DW.UnitDelay12_DSTATE[0] > 0.5) {
-    // '<S3>:1:3'
-    // '<S3>:1:4'
-    rtb_obstacle_idx_0 = 1.0;
-  }
-
-  if ((std::abs(collision_avoidance_U.camera_confidence -
-                collision_avoidance_DW.UnitDelay20_DSTATE) < 0.001) &&
-      (rtb_obstacle_idx_0 < 0.5)) {
-    // '<S3>:1:7'
-    // '<S3>:1:8'
-    memset(&rtb_obstacle_his[0], 0, 500U * sizeof(real_T));
-
-    // '<S3>:1:9'
-    rtb_obstacle_his[0] = collision_avoidance_U.camera_confidence;
-
-    // '<S3>:1:10'
-    for (wind_valid = 0; wind_valid < (int32_T)(collision_avoidance_P.judge_step
-          + -1.0); wind_valid++) {
-      // '<S3>:1:10'
-      // '<S3>:1:11'
-      rtb_obstacle_his[wind_valid + 1] =
-        collision_avoidance_DW.UnitDelay18_DSTATE[(int32_T)((2.0 + (real_T)
-        wind_valid) - 1.0) - 1];
-
-      // '<S3>:1:10'
-    }
-  } else {
-    // '<S3>:1:14'
-    memcpy(&rtb_obstacle_his[0], &collision_avoidance_DW.UnitDelay18_DSTATE[0],
-           500U * sizeof(real_T));
-  }
-
+  // MATLAB Function 'MATLAB Function9': '<S10>:1'
+  // detect_input[100,3]
+  // detect_input_his[100,22]
+  // obstacle[yes or no,pos距13百分比，为0.5]
+  // inzone_num[num,dis]
+  // '<S10>:1:6'
+  // '<S10>:1:7'
   if (std::abs(collision_avoidance_DW.UnitDelay16_DSTATE -
-               collision_avoidance_DW.UnitDelay17_DSTATE) > 0.1) {
-    // '<S3>:1:17'
-    // '<S3>:1:18'
-    rtb_obstacle_idx_0 = 0.0;
-
-    // '<S3>:1:19'
-    memset(&rtb_obstacle_his[0], 0, 500U * sizeof(real_T));
+               collision_avoidance_DW.UnitDelay12_DSTATE) > 0.1) {
+    // '<S10>:1:13'
+    // '<S10>:1:14'
+    memset(&collision_avoidance_DW.inzone_num[0], 0, 300U * sizeof(real_T));
   }
 
-  if (1.0 > collision_avoidance_P.judge_step) {
-    i_0 = 0;
-  } else {
-    i_0 = (int32_T)collision_avoidance_P.judge_step;
+  // '<S10>:1:17'
+  memcpy(&tmp[0], &collision_avoidance_DW.detect_input_his[200], 100U * sizeof
+         (real_T));
+  memcpy(&collision_avoidance_DW.detect_input_his[300], &tmp[0], 100U * sizeof
+         (real_T));
+
+  // '<S10>:1:19'
+  memcpy(&collision_avoidance_DW.detect_input_his[200],
+         &collision_avoidance_U.camera_confidence[200], 100U * sizeof(real_T));
+
+  // '<S10>:1:20'
+  memcpy(&collision_avoidance_DW.detect_input_his[0],
+         &collision_avoidance_U.camera_confidence[0], 100U * sizeof(real_T));
+
+  // '<S10>:1:21'
+  memcpy(&collision_avoidance_DW.detect_input_his[100],
+         &collision_avoidance_U.camera_confidence[100], 100U * sizeof(real_T));
+
+  // '<S10>:1:22'
+  dis = collision_avoidance_P.points[1] - collision_avoidance_P.points[0];
+  y_speed = collision_avoidance_P.points[5] - collision_avoidance_P.points[4];
+  long_side = std::sqrt(dis * dis + y_speed * y_speed);
+
+  // '<S10>:1:23'
+  accumulate_wind_speed = collision_avoidance_P.points[2] -
+    collision_avoidance_P.points[0];
+  dis = collision_avoidance_P.points[6] - collision_avoidance_P.points[4];
+  short_side = std::sqrt(accumulate_wind_speed * accumulate_wind_speed + dis *
+    dis);
+
+  // '<S10>:1:24'
+  for (ixstart = 0; ixstart < 100; ixstart++) {
+    // '<S10>:1:24'
+    // '<S10>:1:25'
+    // '<S10>:1:26'
+    if (collision_avoidance_U.camera_confidence[200 + ixstart] >
+        collision_avoidance_DW.detect_input_his[300 + ixstart] + 0.5) {
+      // '<S10>:1:28'
+      // '<S10>:1:30'
+      // '<S10>:1:31'
+      // '<S10>:1:32'
+      // '<S10>:1:33'
+      // '<S10>:1:34'
+      a = collision_avoidance_P.points[4] - collision_avoidance_P.points[5];
+      b_a = collision_avoidance_P.points[1] - collision_avoidance_P.points[0];
+
+      // '<S10>:1:35'
+      // '<S10>:1:36'
+      // '<S10>:1:37'
+      // '<S10>:1:38'
+      // '<S10>:1:39'
+      real_wind_speed_y = collision_avoidance_P.points[6] -
+        collision_avoidance_P.points[7];
+      d_a = collision_avoidance_P.points[3] - collision_avoidance_P.points[2];
+
+      // '<S10>:1:40'
+      // '<S10>:1:41'
+      // '<S10>:1:42'
+      // '<S10>:1:43'
+      // '<S10>:1:44'
+      dis = collision_avoidance_P.points[4] - collision_avoidance_P.points[6];
+      accumulate_wind_speed = collision_avoidance_P.points[2] -
+        collision_avoidance_P.points[0];
+      y_speed = std::abs((((collision_avoidance_P.points[4] -
+                            collision_avoidance_P.points[6]) *
+                           collision_avoidance_U.camera_confidence[ixstart] +
+                           (collision_avoidance_P.points[2] -
+                            collision_avoidance_P.points[0]) *
+                           collision_avoidance_U.camera_confidence[100 + ixstart])
+                          - collision_avoidance_P.points[4] *
+                          collision_avoidance_P.points[2]) +
+                         collision_avoidance_P.points[0] *
+                         collision_avoidance_P.points[6]) / std::sqrt(dis * dis
+        + accumulate_wind_speed * accumulate_wind_speed);
+
+      // '<S10>:1:45'
+      // '<S10>:1:46'
+      // '<S10>:1:47'
+      // '<S10>:1:48'
+      // '<S10>:1:49'
+      dis = collision_avoidance_P.points[5] - collision_avoidance_P.points[7];
+      accumulate_wind_speed = collision_avoidance_P.points[3] -
+        collision_avoidance_P.points[1];
+      dis = std::abs((((collision_avoidance_P.points[5] -
+                        collision_avoidance_P.points[7]) *
+                       collision_avoidance_U.camera_confidence[ixstart] +
+                       (collision_avoidance_P.points[3] -
+                        collision_avoidance_P.points[1]) *
+                       collision_avoidance_U.camera_confidence[100 + ixstart]) -
+                      collision_avoidance_P.points[5] *
+                      collision_avoidance_P.points[3]) +
+                     collision_avoidance_P.points[1] *
+                     collision_avoidance_P.points[7]) / std::sqrt(dis * dis +
+        accumulate_wind_speed * accumulate_wind_speed);
+      if ((std::abs((((collision_avoidance_P.points[4] -
+                       collision_avoidance_P.points[5]) *
+                      collision_avoidance_U.camera_confidence[ixstart] +
+                      (collision_avoidance_P.points[1] -
+                       collision_avoidance_P.points[0]) *
+                      collision_avoidance_U.camera_confidence[100 + ixstart]) -
+                     collision_avoidance_P.points[4] *
+                     collision_avoidance_P.points[1]) +
+                    collision_avoidance_P.points[0] *
+                    collision_avoidance_P.points[5]) / std::sqrt(a * a + b_a *
+            b_a) + std::abs((((collision_avoidance_P.points[6] -
+               collision_avoidance_P.points[7]) *
+                              collision_avoidance_U.camera_confidence[ixstart] +
+              (collision_avoidance_P.points[3] - collision_avoidance_P.points[2])
+              * collision_avoidance_U.camera_confidence[100 + ixstart]) -
+                             collision_avoidance_P.points[6] *
+                             collision_avoidance_P.points[3]) +
+                            collision_avoidance_P.points[2] *
+                            collision_avoidance_P.points[7]) / std::sqrt
+           (real_wind_speed_y * real_wind_speed_y + d_a * d_a) < short_side +
+           10.0) && (y_speed < long_side * 2.0 / 3.0 + 5.0) && (y_speed >
+           long_side / 3.0 - 5.0) && (dis < long_side * 2.0 / 3.0 + 5.0) && (dis
+           > long_side / 3.0 - 5.0)) {
+        // '<S10>:1:50'
+        // '<S10>:1:51'
+        collision_avoidance_DW.inzone_num[ixstart]++;
+
+        // '<S10>:1:52'
+        collision_avoidance_DW.inzone_num[100 + ixstart]++;
+      } else {
+        // '<S10>:1:54'
+        collision_avoidance_DW.inzone_num[100 + ixstart]++;
+      }
+    }
+
+    if ((std::abs(collision_avoidance_U.camera_confidence[100 + ixstart]) + std::
+         abs(collision_avoidance_U.camera_confidence[ixstart]) > 0.01) &&
+        (collision_avoidance_DW.inzone_num[100 + ixstart] > 0.5)) {
+      // '<S10>:1:57'
+      // '<S10>:1:58'
+      y_speed = rtb_CenterPosX - collision_avoidance_U.camera_confidence[ixstart];
+      accumulate_wind_speed = rtb_CenterPosY -
+        collision_avoidance_U.camera_confidence[100 + ixstart];
+      collision_avoidance_DW.inzone_num[200 + ixstart] = std::sqrt(y_speed *
+        y_speed + accumulate_wind_speed * accumulate_wind_speed);
+    } else {
+      // '<S10>:1:60'
+      collision_avoidance_DW.inzone_num[200 + ixstart] = 10000.0;
+    }
+
+    // '<S10>:1:24'
   }
 
-  // '<S3>:1:22'
-  if (i_0 == 0) {
-    wall_angle = 0.0;
+  dis = collision_avoidance_DW.inzone_num[0];
+  for (wind_valid = 0; wind_valid < 99; wind_valid++) {
+    dis += collision_avoidance_DW.inzone_num[wind_valid + 1];
+  }
+
+  if (dis > collision_avoidance_P.inzone_num_gate - 0.5) {
+    // '<S10>:1:64'
+    // '<S10>:1:65'
+    rtb_obs_judgement_idx_0 = 1;
   } else {
-    wall_angle = rtb_obstacle_his[0];
-    for (wind_valid = 2; wind_valid <= i_0; wind_valid++) {
-      wall_angle += rtb_obstacle_his[wind_valid - 1];
+    // '<S10>:1:67'
+    rtb_obs_judgement_idx_0 = 0;
+  }
+
+  // '<S10>:1:69'
+  memset(&rtb_obs_pos[0], 0, 15U * sizeof(real_T));
+
+  // '<S10>:1:70'
+  wind_valid = 0;
+
+  // '<S10>:1:71'
+  dis = -1.0;
+
+  // '<S10>:1:72'
+  for (i_0 = 0; i_0 < 5; i_0++) {
+    num[i_0] = 0;
+  }
+
+  while ((wind_valid + 1 < 5.5) && (dis < collision_avoidance_P.obs_dis_gate)) {
+    // '<S10>:1:73'
+    ixstart = 1;
+    dis = collision_avoidance_DW.inzone_num[200];
+    itmp = 0;
+    if (rtIsNaN(collision_avoidance_DW.inzone_num[200])) {
+      ix = 2;
+      exitg1 = false;
+      while ((!exitg1) && (ix < 101)) {
+        ixstart = ix;
+        if (!rtIsNaN(collision_avoidance_DW.inzone_num[ix + 199])) {
+          dis = collision_avoidance_DW.inzone_num[ix + 199];
+          itmp = ix - 1;
+          exitg1 = true;
+        } else {
+          ix++;
+        }
+      }
+    }
+
+    if (ixstart < 100) {
+      while (ixstart + 1 < 101) {
+        if (collision_avoidance_DW.inzone_num[200 + ixstart] < dis) {
+          dis = collision_avoidance_DW.inzone_num[200 + ixstart];
+          itmp = ixstart;
+        }
+
+        ixstart++;
+      }
+    }
+
+    // '<S10>:1:74'
+    // '<S10>:1:75'
+    collision_avoidance_DW.inzone_num[200 + itmp] = 10000.0;
+    if (dis < collision_avoidance_P.obs_dis_gate) {
+      // '<S10>:1:76'
+      // '<S10>:1:77'
+      num[wind_valid] = (int8_T)(itmp + 1);
+
+      // '<S10>:1:78'
+      rtb_obs_pos[wind_valid] =
+        collision_avoidance_U.camera_confidence[num[wind_valid] - 1];
+      rtb_obs_pos[5 + wind_valid] =
+        collision_avoidance_U.camera_confidence[num[wind_valid] + 99];
+      rtb_obs_pos[10 + wind_valid] =
+        collision_avoidance_DW.inzone_num[num[wind_valid] + 99];
+
+      // '<S10>:1:79'
+      wind_valid++;
     }
   }
-
-  if (wall_angle / (real_T)i_0 > collision_avoidance_P.obstacle_proba_threshold)
-  {
-    // '<S3>:1:23'
-    // '<S3>:1:24'
-    rtb_obstacle_idx_0 = 1.0;
-  }
-
-  // Update for UnitDelay: '<Root>/Unit Delay17' incorporates:
-  //   MATLAB Function: '<Root>/MATLAB Function10'
-  //   UnitDelay: '<Root>/Unit Delay16'
-
-  // '<S3>:1:26'
-  collision_avoidance_DW.UnitDelay17_DSTATE =
-    collision_avoidance_DW.UnitDelay16_DSTATE;
 
   // MATLAB Function: '<Root>/MATLAB Function' incorporates:
+  //   MATLAB Function: '<Root>/MATLAB Function9'
   //   UnitDelay: '<Root>/Unit Delay16'
 
-  length_sailangle = rtb_obstacle_idx_0;
+  GPS_data[0] = rtb_obs_judgement_idx_0;
   leg = collision_avoidance_DW.UnitDelay16_DSTATE;
   y_speed = collision_avoidance_P.start_counting;
 
   // MATLAB Function 'MATLAB Function': '<S1>:1'
   // obstacle[yes or no,pos距13百分比，为0.5]
   // wind_side 12 or 34
-  // '<S1>:1:4'
   // '<S1>:1:5'
   // '<S1>:1:6'
-  count_wind = (collision_avoidance_P.points[0] + collision_avoidance_P.points[2])
-    / 2.0 - rtb_CenterPosX;
-  accumulate_wind_speed = (collision_avoidance_P.points[4] +
-    collision_avoidance_P.points[6]) / 2.0 - rtb_CenterPosY;
+  // '<S1>:1:7'
+  a = (collision_avoidance_P.points[0] + collision_avoidance_P.points[2]) / 2.0
+    - rtb_CenterPosX;
+  b_a = (collision_avoidance_P.points[4] + collision_avoidance_P.points[6]) /
+    2.0 - rtb_CenterPosY;
   if (collision_avoidance_DW.UnitDelay16_DSTATE < 0.5) {
-    // '<S1>:1:7'
     // '<S1>:1:8'
+    // '<S1>:1:9'
     y_speed = 0.0;
   }
 
-  if ((collision_avoidance_DW.UnitDelay16_DSTATE < 0.5) && (std::sqrt(count_wind
-        * count_wind + accumulate_wind_speed * accumulate_wind_speed) < 10.0)) {
-    // '<S1>:1:10'
+  if ((collision_avoidance_DW.UnitDelay16_DSTATE < 0.5) && (std::sqrt(a * a +
+        b_a * b_a) < 10.0)) {
     // '<S1>:1:11'
+    // '<S1>:1:12'
     leg = 1.0;
   }
 
   if (leg < 2.5) {
-    // '<S1>:1:13'
     // '<S1>:1:14'
-    length_sailangle = 0.0;
+    // '<S1>:1:15'
+    GPS_data[0] = 0.0;
   }
 
-  // '<S1>:1:16'
   // '<S1>:1:17'
   // '<S1>:1:18'
+  // '<S1>:1:19'
   rtb_sail_safe = 0;
 
-  // '<S1>:1:20'
-  GPS_data_idx_0 = (collision_avoidance_P.points[0] +
-                    collision_avoidance_P.points[2]) / 2.0;
-  GPS_data_idx_1 = (collision_avoidance_P.points[4] +
-                    collision_avoidance_P.points[6]) / 2.0;
-
   // '<S1>:1:21'
+  end1_idx_0 = (collision_avoidance_P.points[0] + collision_avoidance_P.points[2])
+    / 2.0;
+  end1_idx_1 = (collision_avoidance_P.points[4] + collision_avoidance_P.points[6])
+    / 2.0;
+
+  // '<S1>:1:22'
   end2_idx_0 = (collision_avoidance_P.points[1] + collision_avoidance_P.points[3])
     / 2.0;
   end2_idx_1 = (collision_avoidance_P.points[5] + collision_avoidance_P.points[7])
     / 2.0;
 
-  // '<S1>:1:22'
-  wall_angle = collision_avoidance_GetAngle(collision_avoidance_P.points[0] -
+  // '<S1>:1:23'
+  dis = collision_avoidance_GetAngle(collision_avoidance_P.points[0] -
     collision_avoidance_P.points[2], collision_avoidance_P.points[4] -
     collision_avoidance_P.points[6]);
 
-  // '<S1>:1:23'
   // '<S1>:1:24'
+  // '<S1>:1:25'
   if ((rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) > 0.5) &&
-      (collision_avoidance_AngleDiff(wall_angle, collision_avoidance_GetAngle
+      (collision_avoidance_AngleDiff(dis, collision_avoidance_GetAngle
         (rtb_CenterPosX - collision_avoidance_P.points[3], rtb_CenterPosY -
          collision_avoidance_P.points[7])) > 0.0) && (y_speed > 0.5)) {
-    // '<S1>:1:25'
     // '<S1>:1:26'
+    // '<S1>:1:27'
     leg++;
 
-    // '<S1>:1:27'
+    // '<S1>:1:28'
     rtb_sail_safe = 1;
   } else {
     if ((rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) < 0.5) &&
-        (collision_avoidance_AngleDiff(wall_angle, collision_avoidance_GetAngle
+        (collision_avoidance_AngleDiff(dis, collision_avoidance_GetAngle
           (rtb_CenterPosX - collision_avoidance_P.points[2], rtb_CenterPosY -
            collision_avoidance_P.points[6])) < 0.0) && (y_speed > 0.5)) {
-      // '<S1>:1:28'
       // '<S1>:1:29'
+      // '<S1>:1:30'
       leg++;
 
-      // '<S1>:1:30'
+      // '<S1>:1:31'
       rtb_sail_safe = 1;
     }
   }
 
   if (rt_roundd_snf(leg - std::floor(leg / 2.0) * 2.0) > 0.5) {
-    // '<S1>:1:33'
     // '<S1>:1:34'
-    rtb_start_point_idx_0 = GPS_data_idx_0;
-    rtb_start_point_idx_1 = GPS_data_idx_1;
-
     // '<S1>:1:35'
-    GPS_data_idx_0 = end2_idx_0;
-    GPS_data_idx_1 = end2_idx_1;
+    rtb_start_point_idx_0 = end1_idx_0;
+    rtb_start_point_idx_1 = end1_idx_1;
+
+    // '<S1>:1:36'
+    end1_idx_0 = end2_idx_0;
+    end1_idx_1 = end2_idx_1;
   } else {
-    // '<S1>:1:37'
+    // '<S1>:1:38'
     rtb_start_point_idx_0 = end2_idx_0;
     rtb_start_point_idx_1 = end2_idx_1;
 
-    // '<S1>:1:38'
+    // '<S1>:1:39'
   }
 
-  // '<S1>:1:41'
+  // '<S1>:1:42'
   memset(&rtb_path[0], 0, 222U * sizeof(real_T));
   if (collision_avoidance_P.wind_side < 20.0) {
-    // '<S1>:1:42'
-    // '<S1>:1:44'
+    // '<S1>:1:43'
+    // '<S1>:1:45'
     end2_idx_0 = collision_avoidance_P.points[2] - collision_avoidance_P.points
       [0];
     end2_idx_1 = collision_avoidance_P.points[6] - collision_avoidance_P.points
       [4];
   } else {
-    // '<S1>:1:46'
+    // '<S1>:1:47'
     end2_idx_0 = -collision_avoidance_P.points[2] +
       collision_avoidance_P.points[0];
     end2_idx_1 = -collision_avoidance_P.points[6] +
       collision_avoidance_P.points[4];
   }
 
-  if (length_sailangle < 0.5) {
-    // '<S1>:1:48'
+  if (GPS_data[0] < 0.5) {
     // '<S1>:1:49'
+    // '<S1>:1:50'
     for (wind_valid = 0; wind_valid < 101; wind_valid++) {
-      // '<S1>:1:49'
       // '<S1>:1:50'
-      rtb_path[wind_valid] = ((101.0 - (1.0 + (real_T)wind_valid)) *
-        rtb_start_point_idx_0 + ((1.0 + (real_T)wind_valid) - 1.0) *
-        GPS_data_idx_0) / 100.0;
-
       // '<S1>:1:51'
-      rtb_path[111 + wind_valid] = ((101.0 - (1.0 + (real_T)wind_valid)) *
-        rtb_start_point_idx_1 + ((1.0 + (real_T)wind_valid) - 1.0) *
-        GPS_data_idx_1) / 100.0;
-
-      // '<S1>:1:49'
-    }
-  } else {
-    // '<S1>:1:54'
-    for (ixstart = 0; ixstart < 101; ixstart++) {
-      // '<S1>:1:54'
-      // '<S1>:1:55'
-      rtb_path[ixstart] = ((101.0 - (1.0 + (real_T)ixstart)) *
-                           rtb_start_point_idx_0 + ((1.0 + (real_T)ixstart) -
-        1.0) * GPS_data_idx_0) / 100.0;
-
-      // '<S1>:1:56'
-      rtb_path[111 + ixstart] = ((101.0 - (1.0 + (real_T)ixstart)) *
-        rtb_start_point_idx_1 + ((1.0 + (real_T)ixstart) - 1.0) * GPS_data_idx_1)
+      rtb_path[wind_valid] = ((101.0 - (1.0 + (real_T)wind_valid)) *
+        rtb_start_point_idx_0 + ((1.0 + (real_T)wind_valid) - 1.0) * end1_idx_0)
         / 100.0;
 
-      // '<S1>:1:54'
+      // '<S1>:1:52'
+      rtb_path[111 + wind_valid] = ((101.0 - (1.0 + (real_T)wind_valid)) *
+        rtb_start_point_idx_1 + ((1.0 + (real_T)wind_valid) - 1.0) * end1_idx_1)
+        / 100.0;
+
+      // '<S1>:1:50'
+    }
+  } else {
+    // '<S1>:1:55'
+    for (ixstart = 0; ixstart < 101; ixstart++) {
+      // '<S1>:1:55'
+      // '<S1>:1:56'
+      rtb_path[ixstart] = ((101.0 - (1.0 + (real_T)ixstart)) *
+                           rtb_start_point_idx_0 + ((1.0 + (real_T)ixstart) -
+        1.0) * end1_idx_0) / 100.0;
+
+      // '<S1>:1:57'
+      rtb_path[111 + ixstart] = ((101.0 - (1.0 + (real_T)ixstart)) *
+        rtb_start_point_idx_1 + ((1.0 + (real_T)ixstart) - 1.0) * end1_idx_1) /
+        100.0;
+
+      // '<S1>:1:55'
     }
 
-    // '<S1>:1:58'
+    // '<S1>:1:59'
     for (wind_valid = 31; wind_valid - 31 < 37; wind_valid++) {
-      // '<S1>:1:58'
       // '<S1>:1:59'
+      // '<S1>:1:60'
       rtb_path[wind_valid] += end2_idx_0;
 
-      // '<S1>:1:60'
+      // '<S1>:1:61'
       rtb_path[111 + wind_valid] += end2_idx_1;
 
-      // '<S1>:1:58'
+      // '<S1>:1:59'
     }
   }
 
-  // '<S1>:1:63'
+  // '<S1>:1:64'
   for (wind_valid = 0; wind_valid < 10; wind_valid++) {
-    // '<S1>:1:63'
     // '<S1>:1:64'
+    // '<S1>:1:65'
     rtb_path[wind_valid + 101] = ((102.0 + (real_T)wind_valid) - 101.0) *
       (rtb_path[100] - rtb_path[99]) + rtb_path[100];
 
-    // '<S1>:1:65'
+    // '<S1>:1:66'
     rtb_path[wind_valid + 212] = ((102.0 + (real_T)wind_valid) - 101.0) *
       (rtb_path[211] - rtb_path[210]) + rtb_path[211];
 
-    // '<S1>:1:63'
+    // '<S1>:1:64'
   }
 
   // MATLAB Function: '<Root>/MATLAB Function7' incorporates:
@@ -1764,23 +1974,23 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay14'
   //   UnitDelay: '<Root>/Unit Delay15'
 
-  // '<S1>:1:67'
   // '<S1>:1:68'
-  // MATLAB Function 'MATLAB Function7': '<S9>:1'
+  // '<S1>:1:69'
+  // MATLAB Function 'MATLAB Function7': '<S8>:1'
   // run period
-  // '<S9>:1:6'
+  // '<S8>:1:6'
   memset(&rtb_pos_history[0], 0, 300U * sizeof(real_T));
 
-  // '<S9>:1:7'
+  // '<S8>:1:7'
   rtb_pos_history[0] = rtb_CenterPosX;
   rtb_pos_history[100] = rtb_CenterPosY;
   rtb_pos_history[200] = collision_avoidance_U.Airmar_yaw;
 
-  // '<S9>:1:8'
+  // '<S8>:1:8'
   for (wind_valid = 0; wind_valid < (int32_T)
        (collision_avoidance_P.pos_history_len + -1.0); wind_valid++) {
-    // '<S9>:1:8'
-    // '<S9>:1:9'
+    // '<S8>:1:8'
+    // '<S8>:1:9'
     i_0 = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
     rtb_pos_history[wind_valid + 1] =
       collision_avoidance_DW.UnitDelay15_DSTATE[i_0 - 1];
@@ -1789,44 +1999,44 @@ void scanningModelClass::step()
     rtb_pos_history[wind_valid + 201] =
       collision_avoidance_DW.UnitDelay15_DSTATE[i_0 + 199];
 
-    // '<S9>:1:8'
+    // '<S8>:1:8'
   }
 
-  // '<S9>:1:11'
-  wall_angle = (rtb_pos_history[0] - rtb_pos_history[(int32_T)
-                collision_avoidance_P.pos_history_len - 1]) /
+  // '<S8>:1:11'
+  dis = (rtb_pos_history[0] - rtb_pos_history[(int32_T)
+         collision_avoidance_P.pos_history_len - 1]) /
     ((collision_avoidance_P.pos_history_len - 1.0) * 0.1);
 
-  // '<S9>:1:12'
+  // '<S8>:1:12'
   y_speed = (rtb_pos_history[100] - rtb_pos_history[(int32_T)
              collision_avoidance_P.pos_history_len + 99]) /
     ((collision_avoidance_P.pos_history_len - 1.0) * 0.1);
 
-  // '<S9>:1:13'
-  // '<S9>:1:14'
-  // '<S9>:1:15'
+  // '<S8>:1:13'
+  // '<S8>:1:14'
+  // '<S8>:1:15'
   memset(&collision_avoidance_B.ship_speed_history[0], 0, 800U * sizeof(real_T));
 
-  // '<S9>:1:16'
+  // '<S8>:1:16'
   collision_avoidance_B.ship_speed_history[0] = std::cos
-    (collision_avoidance_U.Airmar_yaw) * wall_angle + std::sin
+    (collision_avoidance_U.Airmar_yaw) * dis + std::sin
     (collision_avoidance_U.Airmar_yaw) * y_speed;
   collision_avoidance_B.ship_speed_history[400] = -std::sin
-    (collision_avoidance_U.Airmar_yaw) * wall_angle + std::cos
+    (collision_avoidance_U.Airmar_yaw) * dis + std::cos
     (collision_avoidance_U.Airmar_yaw) * y_speed;
 
-  // '<S9>:1:17'
+  // '<S8>:1:17'
   for (ixstart = 0; ixstart < (int32_T)
        (collision_avoidance_P.ship_speed_history_len + -1.0); ixstart++) {
-    // '<S9>:1:17'
-    // '<S9>:1:18'
+    // '<S8>:1:17'
+    // '<S8>:1:18'
     i_0 = (int32_T)((2.0 + (real_T)ixstart) - 1.0);
     collision_avoidance_B.ship_speed_history[ixstart + 1] =
       collision_avoidance_DW.UnitDelay14_DSTATE[i_0 - 1];
     collision_avoidance_B.ship_speed_history[ixstart + 401] =
       collision_avoidance_DW.UnitDelay14_DSTATE[i_0 + 399];
 
-    // '<S9>:1:17'
+    // '<S8>:1:17'
   }
 
   if (1.0 > collision_avoidance_P.ship_speed_history_len) {
@@ -1835,47 +2045,47 @@ void scanningModelClass::step()
     i_0 = (int32_T)collision_avoidance_P.ship_speed_history_len;
   }
 
-  // '<S9>:1:20'
+  // '<S8>:1:20'
   if (i_0 == 0) {
-    wall_angle = 0.0;
+    dis = 0.0;
   } else {
-    wall_angle = collision_avoidance_B.ship_speed_history[0];
+    dis = collision_avoidance_B.ship_speed_history[0];
     for (wind_valid = 2; wind_valid <= i_0; wind_valid++) {
-      wall_angle += collision_avoidance_B.ship_speed_history[wind_valid - 1];
+      dis += collision_avoidance_B.ship_speed_history[wind_valid - 1];
     }
   }
 
-  y_speed = wall_angle / (real_T)i_0;
+  y_speed = dis / (real_T)i_0;
   if (1.0 > collision_avoidance_P.ship_speed_history_len) {
     wind_valid = 0;
   } else {
     wind_valid = (int32_T)collision_avoidance_P.ship_speed_history_len;
   }
 
-  // '<S9>:1:21'
+  // '<S8>:1:21'
   if (wind_valid == 0) {
-    wall_angle = 0.0;
+    dis = 0.0;
   } else {
-    wall_angle = collision_avoidance_B.ship_speed_history[400];
+    dis = collision_avoidance_B.ship_speed_history[400];
     for (ixstart = 2; ixstart <= wind_valid; ixstart++) {
-      wall_angle += collision_avoidance_B.ship_speed_history[ixstart + 399];
+      dis += collision_avoidance_B.ship_speed_history[ixstart + 399];
     }
   }
 
-  wall_angle /= (real_T)wind_valid;
+  dis /= (real_T)wind_valid;
 
-  // '<S9>:1:22'
+  // '<S8>:1:22'
   if (std::abs(y_speed) < 0.1) {
-    // '<S9>:1:23'
-    // '<S9>:1:24'
+    // '<S8>:1:23'
+    // '<S8>:1:24'
     Horizontal_speed_angle = collision_avoidance_U.Airmar_yaw;
   } else {
-    // '<S9>:1:26'
+    // '<S8>:1:26'
     Horizontal_speed_angle = collision_avoidance_U.Airmar_yaw + rt_atan2d_snf
-      (wall_angle, y_speed);
+      (dis, y_speed);
   }
 
-  rtb_Horizontal_speed = std::sqrt(y_speed * y_speed + wall_angle * wall_angle);
+  rtb_Horizontal_speed = std::sqrt(y_speed * y_speed + dis * dis);
 
   // MATLAB Function: '<Root>/MATLAB Function6' incorporates:
   //   Constant: '<Root>/Airmar_X'
@@ -1889,20 +2099,21 @@ void scanningModelClass::step()
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay13'
 
-  // MATLAB Function 'MATLAB Function6': '<S8>:1'
-  // '<S8>:1:4'
-  // '<S8>:1:5'
-  // '<S8>:1:6'
-  real_wind_speed_x = std::cos(collision_avoidance_U.Airmar_wind_angle +
-    collision_avoidance_U.Airmar_yaw) * collision_avoidance_U.Airmar_wind_speed
-    - ((std::cos(collision_avoidance_U.Airmar_yaw + 1.5707963267948966) *
-        collision_avoidance_U.roll_rate * collision_avoidance_P.Airmar_Z_Value +
-        rtb_Horizontal_speed * std::cos(Horizontal_speed_angle)) + std::cos
-       (collision_avoidance_U.Airmar_yaw + 1.5707963267948966) *
-       collision_avoidance_U.yaw_rate * collision_avoidance_P.Airmar_X_Value);
+  // MATLAB Function 'MATLAB Function6': '<S7>:1'
+  // '<S7>:1:4'
+  // '<S7>:1:5'
+  // '<S7>:1:6'
+  long_side = std::cos(collision_avoidance_U.Airmar_wind_angle +
+                       collision_avoidance_U.Airmar_yaw) *
+    collision_avoidance_U.Airmar_wind_speed - ((std::cos
+    (collision_avoidance_U.Airmar_yaw + 1.5707963267948966) *
+    collision_avoidance_U.roll_rate * collision_avoidance_P.Airmar_Z_Value +
+    rtb_Horizontal_speed * std::cos(Horizontal_speed_angle)) + std::cos
+    (collision_avoidance_U.Airmar_yaw + 1.5707963267948966) *
+    collision_avoidance_U.yaw_rate * collision_avoidance_P.Airmar_X_Value);
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%
-  // '<S8>:1:7'
+  // '<S7>:1:7'
   real_wind_speed_y = std::sin(collision_avoidance_U.Airmar_wind_angle +
     collision_avoidance_U.Airmar_yaw) * collision_avoidance_U.Airmar_wind_speed
     - ((std::sin(collision_avoidance_U.Airmar_yaw + 1.5707963267948966) *
@@ -1912,32 +2123,32 @@ void scanningModelClass::step()
        collision_avoidance_U.yaw_rate * collision_avoidance_P.Airmar_X_Value);
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%
-  // '<S8>:1:9'
+  // '<S7>:1:9'
   if ((std::abs(collision_avoidance_U.roll) < 0.78539816339744828) && (std::abs
        (collision_avoidance_U.roll_rate) < 1.0471975511965976)) {
-    // '<S8>:1:12'
-    // '<S8>:1:13'
+    // '<S7>:1:12'
+    // '<S7>:1:13'
     wind_valid = 1;
   } else {
-    // '<S8>:1:15'
+    // '<S7>:1:15'
     wind_valid = 0;
   }
 
-  // '<S8>:1:17'
+  // '<S7>:1:17'
   memset(&collision_avoidance_B.real_wind_history[0], 0, 6000U * sizeof(real_T));
 
-  // '<S8>:1:18'
-  collision_avoidance_B.real_wind_history[0] = real_wind_speed_x;
+  // '<S7>:1:18'
+  collision_avoidance_B.real_wind_history[0] = long_side;
   collision_avoidance_B.real_wind_history[2000] = real_wind_speed_y;
   collision_avoidance_B.real_wind_history[4000] = wind_valid;
 
-  // '<S8>:1:20'
+  // '<S7>:1:20'
   y_speed = rt_roundd_snf(collision_avoidance_P.wind_mean_time / 0.1);
 
-  // '<S8>:1:20'
+  // '<S7>:1:20'
   for (wind_valid = 0; wind_valid < (int32_T)(y_speed + -1.0); wind_valid++) {
-    // '<S8>:1:20'
-    // '<S8>:1:21'
+    // '<S7>:1:20'
+    // '<S7>:1:21'
     i_0 = (int32_T)((2.0 + (real_T)wind_valid) - 1.0);
     collision_avoidance_B.real_wind_history[wind_valid + 1] =
       collision_avoidance_DW.UnitDelay13_DSTATE[i_0 - 1];
@@ -1946,75 +2157,75 @@ void scanningModelClass::step()
     collision_avoidance_B.real_wind_history[wind_valid + 4001] =
       collision_avoidance_DW.UnitDelay13_DSTATE[i_0 + 3999];
 
-    // '<S8>:1:20'
+    // '<S7>:1:20'
   }
 
-  // '<S8>:1:24'
-  wall_angle = 0.0;
+  // '<S7>:1:24'
+  dis = 0.0;
 
-  // '<S8>:1:25'
+  // '<S7>:1:25'
   y_speed = 0.0;
 
-  // '<S8>:1:26'
+  // '<S7>:1:26'
   accumulate_wind_speed = 0.0;
 
-  // '<S8>:1:27'
-  count_wind = 0.0;
+  // '<S7>:1:27'
+  short_side = 0.0;
 
-  // '<S8>:1:28'
+  // '<S7>:1:28'
   c = collision_avoidance_P.wind_mean_time / 0.1;
 
-  // '<S8>:1:28'
+  // '<S7>:1:28'
   for (ixstart = 0; ixstart < (int32_T)c; ixstart++) {
-    // '<S8>:1:28'
+    // '<S7>:1:28'
     if (collision_avoidance_B.real_wind_history[4000 + ixstart] > 0.5) {
-      // '<S8>:1:29'
-      // '<S8>:1:30'
-      wall_angle += collision_avoidance_B.real_wind_history[ixstart];
+      // '<S7>:1:29'
+      // '<S7>:1:30'
+      dis += collision_avoidance_B.real_wind_history[ixstart];
 
-      // '<S8>:1:31'
+      // '<S7>:1:31'
       y_speed += collision_avoidance_B.real_wind_history[2000 + ixstart];
 
-      // '<S8>:1:32'
+      // '<S7>:1:32'
       accumulate_wind_speed += std::sqrt
         (collision_avoidance_B.real_wind_history[2000 + ixstart] *
          collision_avoidance_B.real_wind_history[2000 + ixstart] +
          collision_avoidance_B.real_wind_history[ixstart] *
          collision_avoidance_B.real_wind_history[ixstart]);
 
-      // '<S8>:1:33'
-      count_wind++;
+      // '<S7>:1:33'
+      short_side++;
     }
 
-    // '<S8>:1:28'
+    // '<S7>:1:28'
   }
 
-  if (count_wind < 0.5) {
-    // '<S8>:1:36'
-    // '<S8>:1:37'
-    // '<S8>:1:38'
-    // '<S8>:1:39'
-    WindSpeed_mean = std::sqrt(real_wind_speed_x * real_wind_speed_x +
-      real_wind_speed_y * real_wind_speed_y);
+  if (short_side < 0.5) {
+    // '<S7>:1:36'
+    // '<S7>:1:37'
+    // '<S7>:1:38'
+    // '<S7>:1:39'
+    WindSpeed_mean = std::sqrt(long_side * long_side + real_wind_speed_y *
+      real_wind_speed_y);
   } else {
-    // '<S8>:1:41'
-    real_wind_speed_x = wall_angle / count_wind;
+    // '<S7>:1:41'
+    long_side = dis / short_side;
 
-    // '<S8>:1:42'
-    real_wind_speed_y = y_speed / count_wind;
+    // '<S7>:1:42'
+    real_wind_speed_y = y_speed / short_side;
 
-    // '<S8>:1:43'
-    WindSpeed_mean = accumulate_wind_speed / count_wind;
+    // '<S7>:1:43'
+    WindSpeed_mean = accumulate_wind_speed / short_side;
   }
 
-  if (std::abs(real_wind_speed_x) < 1.0E-5) {
-    // '<S8>:1:45'
-    // '<S8>:1:46'
-    real_wind_speed_x = 1.0E-5;
+  if (std::abs(long_side) < 1.0E-5) {
+    // '<S7>:1:45'
+    // '<S7>:1:46'
+    long_side = 1.0E-5;
   }
 
-  // '<S8>:1:48'
-  rtb_WindAngle_mean = rt_atan2d_snf(real_wind_speed_y, real_wind_speed_x);
+  // '<S7>:1:48'
+  rtb_WindAngle_mean = rt_atan2d_snf(real_wind_speed_y, long_side);
 
   // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function'
@@ -2022,38 +2233,38 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay16'
   //   UnitDelay: '<Root>/Unit Delay4'
 
-  b_R = collision_avoidance_P.R;
-  accumulate_wind_speed = collision_avoidance_DW.UnitDelay4_DSTATE;
+  long_side = collision_avoidance_P.R;
+  real_wind_speed_y = collision_avoidance_DW.UnitDelay4_DSTATE;
 
-  // MATLAB Function 'MATLAB Function3': '<S5>:1'
-  // '<S5>:1:4'
-  // '<S5>:1:5'
-  // '<S5>:1:6'
-  // '<S5>:1:7'
-  wall_angle = std::abs(collision_avoidance_AngleDiff_b
-                        (collision_avoidance_GetAngle_n(rtb_path[109] -
-    rtb_path[0], rtb_path[220] - rtb_path[111]), rtb_WindAngle_mean));
+  // MATLAB Function 'MATLAB Function3': '<S4>:1'
+  // '<S4>:1:4'
+  // '<S4>:1:5'
+  // '<S4>:1:6'
+  // '<S4>:1:7'
+  dis = std::abs(collision_avoidance_AngleDiff_b(collision_avoidance_GetAngle_n
+    (rtb_path[109] - rtb_path[0], rtb_path[220] - rtb_path[111]),
+    rtb_WindAngle_mean));
 
   //  if upwind_angle<pi/2 && upwind_angle>pi/6
   //      R=R+(pi/2-upwind_angle)*upwind_R_expand_ratio;
   //  elseif upwind_angle<=pi/6
   //      R=R+(pi/2-pi/6)*upwind_R_expand_ratio;
   //  end
-  if (wall_angle < 0.89759790102565518) {
-    // '<S5>:1:13'
-    // '<S5>:1:14'
-    b_R = (0.89759790102565518 - wall_angle) *
+  if (dis < 0.89759790102565518) {
+    // '<S4>:1:13'
+    // '<S4>:1:14'
+    long_side = (0.89759790102565518 - dis) *
       collision_avoidance_P.upwind_R_expand_ratio / 3.1415926535897931 * 3.5 +
       collision_avoidance_P.R;
   }
 
-  // '<S5>:1:17'
+  // '<S4>:1:17'
   begin = 0;
 
   // time from point to point
-  // '<S5>:1:19'
+  // '<S4>:1:19'
   // run period
-  // '<S5>:1:20'
+  // '<S4>:1:20'
   // 搜寻2*50个run period的时间范围
   //  if x_last~=x_set(1) || y_last~=y_set(1)%如路径变化，从头开始
   //      t=dt;
@@ -2061,62 +2272,62 @@ void scanningModelClass::step()
   //  else
   //      new_line=0;
   //  end
-  // '<S5>:1:28'
-  // '<S5>:1:29'
-  // '<S5>:1:30'
+  // '<S4>:1:28'
+  // '<S4>:1:29'
+  // '<S4>:1:30'
   // 世界时间
-  // '<S5>:1:32'
-  // '<S5>:1:37'
-  wall_angle = collision_avoidance_DW.UnitDelay1_DSTATE / 0.1;
+  // '<S4>:1:32'
+  // '<S4>:1:37'
+  dis = collision_avoidance_DW.UnitDelay1_DSTATE / 0.1;
 
-  // '<S5>:1:38'
-  y_speed = std::floor(wall_angle);
+  // '<S4>:1:38'
+  y_speed = std::floor(dis);
   if (y_speed <= 1.0) {
-    // '<S5>:1:39'
-    // '<S5>:1:40'
+    // '<S4>:1:39'
+    // '<S4>:1:40'
     y_speed = 1.0;
   }
 
-  // '<S5>:1:42'
+  // '<S4>:1:42'
   if (y_speed > 110.0) {
-    // '<S5>:1:43'
-    // '<S5>:1:45'
-    wall_angle = (wall_angle - y_speed) + 110.0;
+    // '<S4>:1:43'
+    // '<S4>:1:45'
+    dis = (dis - y_speed) + 110.0;
   }
 
-  if (wall_angle == 1.0) {
-    // '<S5>:1:47'
-    // '<S5>:1:48'
-    accumulate_wind_speed = 1.0;
+  if (dis == 1.0) {
+    // '<S4>:1:47'
+    // '<S4>:1:48'
+    real_wind_speed_y = 1.0;
   }
 
   //  find the nearest setpoint
-  // '<S5>:1:54'
+  // '<S4>:1:54'
   for (i_0 = 0; i_0 < 1000; i_0++) {
     collision_avoidance_B.Dis[i_0] = (rtInf);
   }
 
-  if (accumulate_wind_speed + 50.0 >= 110.0) {
-    // '<S5>:1:56'
-    if (accumulate_wind_speed > 50.0) {
-      // '<S5>:1:57'
-      // '<S5>:1:58'
-      for (ixstart = 0; ixstart < (int32_T)((51.0 - accumulate_wind_speed) +
-            110.0); ixstart++) {
-        // '<S5>:1:58'
-        // '<S5>:1:59'
-        wall_angle = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) +
-          accumulate_wind_speed) - 50.0) - 1.0) - 1] - rtb_CenterPosX;
+  if (real_wind_speed_y + 50.0 >= 110.0) {
+    // '<S4>:1:56'
+    if (real_wind_speed_y > 50.0) {
+      // '<S4>:1:57'
+      // '<S4>:1:58'
+      for (ixstart = 0; ixstart < (int32_T)((51.0 - real_wind_speed_y) + 110.0);
+           ixstart++) {
+        // '<S4>:1:58'
+        // '<S4>:1:59'
+        dis = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) + real_wind_speed_y)
+          - 50.0) - 1.0) - 1] - rtb_CenterPosX;
         y_speed = rtb_path[(int32_T)((((1.0 + (real_T)ixstart) +
-          accumulate_wind_speed) - 50.0) - 1.0) + 110] - rtb_CenterPosY;
-        collision_avoidance_B.Dis[ixstart] = std::sqrt(wall_angle * wall_angle +
-          y_speed * y_speed);
+          real_wind_speed_y) - 50.0) - 1.0) + 110] - rtb_CenterPosY;
+        collision_avoidance_B.Dis[ixstart] = std::sqrt(dis * dis + y_speed *
+          y_speed);
 
-        // '<S5>:1:58'
+        // '<S4>:1:58'
       }
 
       ixstart = 1;
-      wall_angle = collision_avoidance_B.Dis[0];
+      dis = collision_avoidance_B.Dis[0];
       ix = 1;
       if (rtIsNaN(collision_avoidance_B.Dis[0])) {
         itmp = 2;
@@ -2124,7 +2335,7 @@ void scanningModelClass::step()
         while ((!exitg1) && (itmp < 1001)) {
           ixstart = itmp;
           if (!rtIsNaN(collision_avoidance_B.Dis[itmp - 1])) {
-            wall_angle = collision_avoidance_B.Dis[itmp - 1];
+            dis = collision_avoidance_B.Dis[itmp - 1];
             ix = itmp;
             exitg1 = true;
           } else {
@@ -2135,8 +2346,8 @@ void scanningModelClass::step()
 
       if (ixstart < 1000) {
         while (ixstart + 1 < 1001) {
-          if (collision_avoidance_B.Dis[ixstart] < wall_angle) {
-            wall_angle = collision_avoidance_B.Dis[ixstart];
+          if (collision_avoidance_B.Dis[ixstart] < dis) {
+            dis = collision_avoidance_B.Dis[ixstart];
             ix = ixstart + 1;
           }
 
@@ -2144,24 +2355,24 @@ void scanningModelClass::step()
         }
       }
 
-      // '<S5>:1:61'
-      // '<S5>:1:62'
-      tn = (((real_T)ix + accumulate_wind_speed) - 50.0) - 1.0;
+      // '<S4>:1:61'
+      // '<S4>:1:62'
+      tn = (((real_T)ix + real_wind_speed_y) - 50.0) - 1.0;
     } else {
-      // '<S5>:1:64'
+      // '<S4>:1:64'
       for (wind_valid = 0; wind_valid < 110; wind_valid++) {
-        // '<S5>:1:64'
-        // '<S5>:1:65'
-        wall_angle = rtb_path[wind_valid] - rtb_CenterPosX;
+        // '<S4>:1:64'
+        // '<S4>:1:65'
+        dis = rtb_path[wind_valid] - rtb_CenterPosX;
         y_speed = rtb_path[111 + wind_valid] - rtb_CenterPosY;
-        collision_avoidance_B.Dis[wind_valid] = std::sqrt(wall_angle *
-          wall_angle + y_speed * y_speed);
+        collision_avoidance_B.Dis[wind_valid] = std::sqrt(dis * dis + y_speed *
+          y_speed);
 
-        // '<S5>:1:64'
+        // '<S4>:1:64'
       }
 
       ixstart = 1;
-      wall_angle = collision_avoidance_B.Dis[0];
+      dis = collision_avoidance_B.Dis[0];
       c_itmp = 1;
       if (rtIsNaN(collision_avoidance_B.Dis[0])) {
         ix = 2;
@@ -2169,7 +2380,7 @@ void scanningModelClass::step()
         while ((!exitg1) && (ix < 1001)) {
           ixstart = ix;
           if (!rtIsNaN(collision_avoidance_B.Dis[ix - 1])) {
-            wall_angle = collision_avoidance_B.Dis[ix - 1];
+            dis = collision_avoidance_B.Dis[ix - 1];
             c_itmp = ix;
             exitg1 = true;
           } else {
@@ -2180,8 +2391,8 @@ void scanningModelClass::step()
 
       if (ixstart < 1000) {
         while (ixstart + 1 < 1001) {
-          if (collision_avoidance_B.Dis[ixstart] < wall_angle) {
-            wall_angle = collision_avoidance_B.Dis[ixstart];
+          if (collision_avoidance_B.Dis[ixstart] < dis) {
+            dis = collision_avoidance_B.Dis[ixstart];
             c_itmp = ixstart + 1;
           }
 
@@ -2189,29 +2400,29 @@ void scanningModelClass::step()
         }
       }
 
-      // '<S5>:1:67'
+      // '<S4>:1:67'
       tn = c_itmp;
 
       // (1:Dislen)
     }
-  } else if (accumulate_wind_speed > 50.0) {
-    // '<S5>:1:70'
-    // '<S5>:1:71'
+  } else if (real_wind_speed_y > 50.0) {
+    // '<S4>:1:70'
+    // '<S4>:1:71'
     for (wind_valid = 0; wind_valid < 101; wind_valid++) {
-      // '<S5>:1:71'
-      // '<S5>:1:72'
-      wall_angle = rtb_path[(int32_T)((((1.0 + (real_T)wind_valid) +
-        accumulate_wind_speed) - 50.0) - 1.0) - 1] - rtb_CenterPosX;
-      y_speed = rtb_path[(int32_T)((((1.0 + (real_T)wind_valid) +
-        accumulate_wind_speed) - 50.0) - 1.0) + 110] - rtb_CenterPosY;
-      collision_avoidance_B.Dis[wind_valid] = std::sqrt(wall_angle * wall_angle
-        + y_speed * y_speed);
+      // '<S4>:1:71'
+      // '<S4>:1:72'
+      accumulate_wind_speed = rtb_path[(int32_T)((((1.0 + (real_T)wind_valid) +
+        real_wind_speed_y) - 50.0) - 1.0) - 1] - rtb_CenterPosX;
+      dis = rtb_path[(int32_T)((((1.0 + (real_T)wind_valid) + real_wind_speed_y)
+        - 50.0) - 1.0) + 110] - rtb_CenterPosY;
+      collision_avoidance_B.Dis[wind_valid] = std::sqrt(accumulate_wind_speed *
+        accumulate_wind_speed + dis * dis);
 
-      // '<S5>:1:71'
+      // '<S4>:1:71'
     }
 
     wind_valid = 1;
-    wall_angle = collision_avoidance_B.Dis[0];
+    dis = collision_avoidance_B.Dis[0];
     ixstart = 1;
     if (rtIsNaN(collision_avoidance_B.Dis[0])) {
       ix = 2;
@@ -2219,7 +2430,7 @@ void scanningModelClass::step()
       while ((!exitg1) && (ix < 1001)) {
         wind_valid = ix;
         if (!rtIsNaN(collision_avoidance_B.Dis[ix - 1])) {
-          wall_angle = collision_avoidance_B.Dis[ix - 1];
+          dis = collision_avoidance_B.Dis[ix - 1];
           ixstart = ix;
           exitg1 = true;
         } else {
@@ -2230,8 +2441,8 @@ void scanningModelClass::step()
 
     if (wind_valid < 1000) {
       while (wind_valid + 1 < 1001) {
-        if (collision_avoidance_B.Dis[wind_valid] < wall_angle) {
-          wall_angle = collision_avoidance_B.Dis[wind_valid];
+        if (collision_avoidance_B.Dis[wind_valid] < dis) {
+          dis = collision_avoidance_B.Dis[wind_valid];
           ixstart = wind_valid + 1;
         }
 
@@ -2239,25 +2450,25 @@ void scanningModelClass::step()
       }
     }
 
-    // '<S5>:1:74'
-    // '<S5>:1:75'
-    tn = (((real_T)ixstart + accumulate_wind_speed) - 50.0) - 1.0;
+    // '<S4>:1:74'
+    // '<S4>:1:75'
+    tn = (((real_T)ixstart + real_wind_speed_y) - 50.0) - 1.0;
   } else {
-    // '<S5>:1:77'
-    for (wind_valid = 0; wind_valid < (int32_T)(accumulate_wind_speed + 50.0);
+    // '<S4>:1:77'
+    for (wind_valid = 0; wind_valid < (int32_T)(real_wind_speed_y + 50.0);
          wind_valid++) {
-      // '<S5>:1:77'
-      // '<S5>:1:78'
-      wall_angle = rtb_path[wind_valid] - rtb_CenterPosX;
+      // '<S4>:1:77'
+      // '<S4>:1:78'
+      dis = rtb_path[wind_valid] - rtb_CenterPosX;
       y_speed = rtb_path[111 + wind_valid] - rtb_CenterPosY;
-      collision_avoidance_B.Dis[wind_valid] = std::sqrt(wall_angle * wall_angle
-        + y_speed * y_speed);
+      collision_avoidance_B.Dis[wind_valid] = std::sqrt(dis * dis + y_speed *
+        y_speed);
 
-      // '<S5>:1:77'
+      // '<S4>:1:77'
     }
 
     ixstart = 1;
-    wall_angle = collision_avoidance_B.Dis[0];
+    dis = collision_avoidance_B.Dis[0];
     itmp = 1;
     if (rtIsNaN(collision_avoidance_B.Dis[0])) {
       ix = 2;
@@ -2265,7 +2476,7 @@ void scanningModelClass::step()
       while ((!exitg1) && (ix < 1001)) {
         ixstart = ix;
         if (!rtIsNaN(collision_avoidance_B.Dis[ix - 1])) {
-          wall_angle = collision_avoidance_B.Dis[ix - 1];
+          dis = collision_avoidance_B.Dis[ix - 1];
           itmp = ix;
           exitg1 = true;
         } else {
@@ -2276,8 +2487,8 @@ void scanningModelClass::step()
 
     if (ixstart < 1000) {
       while (ixstart + 1 < 1001) {
-        if (collision_avoidance_B.Dis[ixstart] < wall_angle) {
-          wall_angle = collision_avoidance_B.Dis[ixstart];
+        if (collision_avoidance_B.Dis[ixstart] < dis) {
+          dis = collision_avoidance_B.Dis[ixstart];
           itmp = ixstart + 1;
         }
 
@@ -2285,262 +2496,259 @@ void scanningModelClass::step()
       }
     }
 
-    // '<S5>:1:80'
+    // '<S4>:1:80'
     tn = itmp;
   }
 
   // 得到tn是最近路径点
   // LOS algorithm
   if (tn > 110.0) {
-    // '<S5>:1:88'
-    // '<S5>:1:89'
+    // '<S4>:1:88'
+    // '<S4>:1:89'
     tn = 110.0;
   }
 
   if (tn <= 1.0) {
-    // '<S5>:1:91'
-    // '<S5>:1:92'
+    // '<S4>:1:91'
+    // '<S4>:1:92'
     tn = 2.0;
 
-    // '<S5>:1:93'
+    // '<S4>:1:93'
     begin = 1;
   }
 
-  if (wall_angle == 0.0) {
-    // '<S5>:1:95'
-    // '<S5>:1:96'
+  if (dis == 0.0) {
+    // '<S4>:1:95'
+    // '<S4>:1:96'
     wind_valid = 1;
   } else {
-    // '<S5>:1:98'
-    wall_angle = collision_avoidance_GetAngle_n(rtb_path[(int32_T)tn - 1] -
-      rtb_path[(int32_T)(tn - 1.0) - 1], rtb_path[(int32_T)tn + 110] - rtb_path
-      [(int32_T)(tn - 1.0) + 110]);
+    // '<S4>:1:98'
+    dis = collision_avoidance_GetAngle_n(rtb_path[(int32_T)tn - 1] - rtb_path
+      [(int32_T)(tn - 1.0) - 1], rtb_path[(int32_T)tn + 110] - rtb_path[(int32_T)
+      (tn - 1.0) + 110]);
 
-    // '<S5>:1:99'
+    // '<S4>:1:99'
     y_speed = collision_avoidance_GetAngle_n(rtb_path[(int32_T)(tn + 1.0) - 1] -
       rtb_path[(int32_T)tn - 1], rtb_path[(int32_T)(tn + 1.0) + 110] - rtb_path
       [(int32_T)tn + 110]);
-    if (wall_angle - y_speed > 3.1415926535897931) {
-      // '<S5>:1:100'
-      // '<S5>:1:101'
-      wall_angle -= 6.2831853071795862;
+    if (dis - y_speed > 3.1415926535897931) {
+      // '<S4>:1:100'
+      // '<S4>:1:101'
+      dis -= 6.2831853071795862;
     } else {
-      if (y_speed - wall_angle > 3.1415926535897931) {
-        // '<S5>:1:102'
-        // '<S5>:1:103'
+      if (y_speed - dis > 3.1415926535897931) {
+        // '<S4>:1:102'
+        // '<S4>:1:103'
         y_speed -= 6.2831853071795862;
       }
     }
 
-    // '<S5>:1:105'
+    // '<S4>:1:105'
     accumulate_wind_speed = collision_avoidance_GetAngle_n(rtb_CenterPosX -
       rtb_path[(int32_T)tn - 1], rtb_CenterPosY - rtb_path[(int32_T)tn + 110]);
 
-    // '<S5>:1:106'
-    count_wind = std::abs(collision_avoidance_AngleDiff_b(y_speed, wall_angle));
+    // '<S4>:1:106'
+    short_side = std::abs(collision_avoidance_AngleDiff_b(y_speed, dis));
 
-    // '<S5>:1:107'
-    wall_angle = (wall_angle + y_speed) / 2.0;
-    if (std::abs(collision_avoidance_AngleDiff_b(wall_angle,
-          accumulate_wind_speed)) < 1.5707963267948966 - count_wind / 2.0) {
-      // '<S5>:1:109'
-      // '<S5>:1:110'
+    // '<S4>:1:107'
+    dis = (dis + y_speed) / 2.0;
+    if (std::abs(collision_avoidance_AngleDiff_b(dis, accumulate_wind_speed)) <
+        1.5707963267948966 - short_side / 2.0) {
+      // '<S4>:1:109'
+      // '<S4>:1:110'
       wind_valid = 2;
-    } else if ((std::abs(collision_avoidance_AngleDiff_b(wall_angle,
-                  accumulate_wind_speed)) >= 1.5707963267948966 - count_wind /
-                2.0) && (std::abs(collision_avoidance_AngleDiff_b(wall_angle,
-                  accumulate_wind_speed)) <= count_wind / 2.0 +
+    } else if ((std::abs(collision_avoidance_AngleDiff_b(dis,
+                  accumulate_wind_speed)) >= 1.5707963267948966 - short_side /
+                2.0) && (std::abs(collision_avoidance_AngleDiff_b(dis,
+                  accumulate_wind_speed)) <= short_side / 2.0 +
                          1.5707963267948966)) {
-      // '<S5>:1:111'
-      // '<S5>:1:112'
+      // '<S4>:1:111'
+      // '<S4>:1:112'
       wind_valid = 1;
     } else {
       // if abs(alpha_now-alpha_edge)>(pi/2+angle_area/2)
-      // '<S5>:1:114'
+      // '<S4>:1:114'
       wind_valid = 0;
     }
   }
 
   if (tn >= 110.0) {
-    // '<S5>:1:119'
-    // '<S5>:1:120'
+    // '<S4>:1:119'
+    // '<S4>:1:120'
     tn = 109.0;
   }
 
   if (wind_valid == 0) {
-    // '<S5>:1:122'
-    // '<S5>:1:123'
+    // '<S4>:1:122'
+    // '<S4>:1:123'
     tn--;
   }
 
-  // '<S5>:1:125'
-  // '<S5>:1:126'
-  // '<S5>:1:127'
-  // '<S5>:1:128'
-  // '<S5>:1:131'
-  accumulate_wind_speed = rtb_path[(int32_T)tn + 110] - rtb_path[(int32_T)(tn +
-    1.0) + 110];
-  wall_angle = rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_path[(int32_T)tn - 1];
-  real_wind_speed_y = std::abs((((rtb_path[(int32_T)tn + 110] - rtb_path
-    [(int32_T)(tn + 1.0) + 110]) * rtb_CenterPosX + (rtb_path[(int32_T)(tn + 1.0)
-    - 1] - rtb_path[(int32_T)tn - 1]) * rtb_CenterPosY) - rtb_path[(int32_T)(tn
-    + 1.0) - 1] * rtb_path[(int32_T)tn + 110]) + rtb_path[(int32_T)(tn + 1.0) +
-    110] * rtb_path[(int32_T)tn - 1]) / std::sqrt(accumulate_wind_speed *
-    accumulate_wind_speed + wall_angle * wall_angle);
+  // '<S4>:1:125'
+  // '<S4>:1:126'
+  // '<S4>:1:127'
+  // '<S4>:1:128'
+  // '<S4>:1:131'
+  b_a = rtb_path[(int32_T)tn + 110] - rtb_path[(int32_T)(tn + 1.0) + 110];
+  real_wind_speed_y = rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_path[(int32_T)tn -
+    1];
+  short_side = std::abs((((rtb_path[(int32_T)tn + 110] - rtb_path[(int32_T)(tn +
+    1.0) + 110]) * rtb_CenterPosX + (rtb_path[(int32_T)(tn + 1.0) - 1] -
+    rtb_path[(int32_T)tn - 1]) * rtb_CenterPosY) - rtb_path[(int32_T)(tn + 1.0)
+    - 1] * rtb_path[(int32_T)tn + 110]) + rtb_path[(int32_T)(tn + 1.0) + 110] *
+                        rtb_path[(int32_T)tn - 1]) / std::sqrt(b_a * b_a +
+    real_wind_speed_y * real_wind_speed_y);
 
-  // '<S5>:1:132'
-  wall_angle = rtb_path[(int32_T)tn + 110] - rtb_CenterPosY;
-  y_speed = rtb_path[(int32_T)tn - 1] - rtb_CenterPosX;
-  accumulate_wind_speed = std::sqrt(wall_angle * wall_angle + y_speed * y_speed);
+  // '<S4>:1:132'
+  d_a = rtb_path[(int32_T)tn + 110] - rtb_CenterPosY;
+  dis = rtb_path[(int32_T)tn - 1] - rtb_CenterPosX;
+  y_speed = std::sqrt(d_a * d_a + dis * dis);
 
-  // '<S5>:1:133'
-  wall_angle = rtb_path[(int32_T)(tn + 1.0) + 110] - rtb_CenterPosY;
-  y_speed = rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_CenterPosX;
-  wall_angle = std::sqrt(wall_angle * wall_angle + y_speed * y_speed);
+  // '<S4>:1:133'
+  accumulate_wind_speed = rtb_path[(int32_T)(tn + 1.0) + 110] - rtb_CenterPosY;
+  dis = rtb_path[(int32_T)(tn + 1.0) - 1] - rtb_CenterPosX;
+  dis = std::sqrt(accumulate_wind_speed * accumulate_wind_speed + dis * dis);
   if (wind_valid == 1) {
-    // '<S5>:1:136'
-    // '<S5>:1:138'
-    wall_angle = rtb_path[(int32_T)tn - 1] - rtb_path[(int32_T)(tn + 1.0) - 1];
-    y_speed = rtb_path[(int32_T)tn + 110] - rtb_path[(int32_T)(tn + 1.0) + 110];
-    y_speed = std::sqrt(wall_angle * wall_angle + y_speed * y_speed);
+    // '<S4>:1:136'
+    // '<S4>:1:138'
+    accumulate_wind_speed = rtb_path[(int32_T)tn - 1] - rtb_path[(int32_T)(tn +
+      1.0) - 1];
+    dis = rtb_path[(int32_T)tn + 110] - rtb_path[(int32_T)(tn + 1.0) + 110];
+    y_speed = std::sqrt(accumulate_wind_speed * accumulate_wind_speed + dis *
+                        dis);
 
-    // '<S5>:1:139'
-    real_wind_speed_x = rtb_path[(int32_T)tn - 1];
+    // '<S4>:1:139'
+    real_wind_speed_y = rtb_path[(int32_T)tn - 1];
 
-    // '<S5>:1:140'
-    wall_angle = rtb_path[(int32_T)tn + 110];
+    // '<S4>:1:140'
+    dis = rtb_path[(int32_T)tn + 110];
   } else {
-    if (real_wind_speed_y > accumulate_wind_speed) {
-      // '<S5>:1:142'
-      // '<S5>:1:143'
-      real_wind_speed_y = accumulate_wind_speed;
+    if (short_side > y_speed) {
+      // '<S4>:1:142'
+      // '<S4>:1:143'
+      short_side = y_speed;
     }
 
-    if (real_wind_speed_y > wall_angle) {
-      // '<S5>:1:145'
-      // '<S5>:1:146'
-      real_wind_speed_y = wall_angle;
+    if (short_side > dis) {
+      // '<S4>:1:145'
+      // '<S4>:1:146'
+      short_side = dis;
     }
 
-    // '<S5>:1:148'
-    count_wind = std::sqrt(accumulate_wind_speed * accumulate_wind_speed -
-      real_wind_speed_y * real_wind_speed_y);
+    // '<S4>:1:148'
+    a = std::sqrt(y_speed * y_speed - short_side * short_side);
 
-    // '<S5>:1:149'
-    y_speed = std::sqrt(wall_angle * wall_angle - real_wind_speed_y *
-                        real_wind_speed_y);
+    // '<S4>:1:149'
+    y_speed = std::sqrt(dis * dis - short_side * short_side);
 
-    // '<S5>:1:150'
-    real_wind_speed_x = y_speed / (count_wind + y_speed) * rtb_path[(int32_T)tn
-      - 1] + count_wind / (count_wind + y_speed) * rtb_path[(int32_T)(tn + 1.0)
-      - 1];
+    // '<S4>:1:150'
+    real_wind_speed_y = y_speed / (a + y_speed) * rtb_path[(int32_T)tn - 1] + a /
+      (a + y_speed) * rtb_path[(int32_T)(tn + 1.0) - 1];
 
-    // '<S5>:1:151'
-    wall_angle = y_speed / (count_wind + y_speed) * rtb_path[(int32_T)tn + 110]
-      + count_wind / (count_wind + y_speed) * rtb_path[(int32_T)(tn + 1.0) + 110];
+    // '<S4>:1:151'
+    dis = y_speed / (a + y_speed) * rtb_path[(int32_T)tn + 110] + a / (a +
+      y_speed) * rtb_path[(int32_T)(tn + 1.0) + 110];
   }
 
   if (begin == 1) {
-    // '<S5>:1:154'
-    // '<S5>:1:155'
-    real_wind_speed_x = rtb_path[1];
+    // '<S4>:1:154'
+    // '<S4>:1:155'
+    real_wind_speed_y = rtb_path[1];
 
-    // '<S5>:1:156'
-    wall_angle = rtb_path[112];
+    // '<S4>:1:156'
+    dis = rtb_path[112];
   }
 
   // （sn_x,sn_y)是精确投影点
   // R=100+L/5;
-  if (!(b_R <= real_wind_speed_y)) {
-    // '<S5>:1:168'
-    real_wind_speed_y = std::sqrt(b_R * b_R - real_wind_speed_y *
-      real_wind_speed_y);
-    if (real_wind_speed_y <= y_speed) {
-      // '<S5>:1:169'
-      // '<S5>:1:170'
-      real_wind_speed_x += (rtb_path[(int32_T)(tn + 1.0) - 1] -
-                            real_wind_speed_x) * (real_wind_speed_y / y_speed);
+  if (!(long_side <= short_side)) {
+    // '<S4>:1:168'
+    long_side = std::sqrt(long_side * long_side - short_side * short_side);
+    if (long_side <= y_speed) {
+      // '<S4>:1:169'
+      // '<S4>:1:170'
+      real_wind_speed_y += (rtb_path[(int32_T)(tn + 1.0) - 1] -
+                            real_wind_speed_y) * (long_side / y_speed);
 
-      // '<S5>:1:171'
-      wall_angle += (rtb_path[(int32_T)(tn + 1.0) + 110] - wall_angle) *
-        (real_wind_speed_y / y_speed);
+      // '<S4>:1:171'
+      dis += (rtb_path[(int32_T)(tn + 1.0) + 110] - dis) * (long_side / y_speed);
     } else {
-      // '<S5>:1:173'
+      // '<S4>:1:173'
       i = tn;
 
-      // '<S5>:1:174'
-      real_wind_speed_y -= y_speed;
+      // '<S4>:1:174'
+      long_side -= y_speed;
 
       //              while GetDistance(x_set(i),y_set(i),x_set(i+1),y_set(i+1))==0 
       //                  i=i+1;
       //              end
-      while ((real_wind_speed_y >= 0.0) && (i < 110.0)) {
-        // '<S5>:1:178'
-        // '<S5>:1:179'
+      while ((long_side >= 0.0) && (i < 110.0)) {
+        // '<S4>:1:178'
+        // '<S4>:1:179'
         i++;
 
-        // '<S5>:1:180'
-        wall_angle = rtb_path[(int32_T)i - 1] - rtb_path[(int32_T)(i + 1.0) - 1];
-        y_speed = rtb_path[(int32_T)i + 110] - rtb_path[(int32_T)(i + 1.0) + 110];
-        real_wind_speed_y -= std::sqrt(wall_angle * wall_angle + y_speed *
-          y_speed);
+        // '<S4>:1:180'
+        y_speed = rtb_path[(int32_T)i - 1] - rtb_path[(int32_T)(i + 1.0) - 1];
+        accumulate_wind_speed = rtb_path[(int32_T)i + 110] - rtb_path[(int32_T)
+          (i + 1.0) + 110];
+        long_side -= std::sqrt(y_speed * y_speed + accumulate_wind_speed *
+          accumulate_wind_speed);
       }
 
       if (i >= 110.0) {
-        // '<S5>:1:182'
-        // '<S5>:1:183'
-        real_wind_speed_x = rtb_path[110];
+        // '<S4>:1:182'
+        // '<S4>:1:183'
+        real_wind_speed_y = rtb_path[110];
 
-        // '<S5>:1:184'
-        wall_angle = rtb_path[221];
+        // '<S4>:1:184'
+        dis = rtb_path[221];
       } else {
-        // '<S5>:1:186'
-        wall_angle = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
+        // '<S4>:1:186'
+        dis = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
         y_speed = rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)i + 110];
         accumulate_wind_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path
           [(int32_T)i - 1];
-        count_wind = rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)i +
+        short_side = rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)i +
           110];
-        real_wind_speed_x = (std::sqrt(wall_angle * wall_angle + y_speed *
-          y_speed) + real_wind_speed_y) / std::sqrt(accumulate_wind_speed *
-          accumulate_wind_speed + count_wind * count_wind) * (rtb_path[(int32_T)
+        real_wind_speed_y = (std::sqrt(dis * dis + y_speed * y_speed) +
+                             long_side) / std::sqrt(accumulate_wind_speed *
+          accumulate_wind_speed + short_side * short_side) * (rtb_path[(int32_T)
           (i + 1.0) - 1] - rtb_path[(int32_T)i - 1]) + rtb_path[(int32_T)i - 1];
 
-        // '<S5>:1:187'
-        wall_angle = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
+        // '<S4>:1:187'
+        dis = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path[(int32_T)i - 1];
         y_speed = rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)i + 110];
         accumulate_wind_speed = rtb_path[(int32_T)(i + 1.0) - 1] - rtb_path
           [(int32_T)i - 1];
-        count_wind = rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)i +
+        short_side = rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)i +
           110];
-        wall_angle = (std::sqrt(wall_angle * wall_angle + y_speed * y_speed) +
-                      real_wind_speed_y) / std::sqrt(accumulate_wind_speed *
-          accumulate_wind_speed + count_wind * count_wind) * (rtb_path[(int32_T)
-          (i + 1.0) + 110] - rtb_path[(int32_T)i + 110]) + rtb_path[(int32_T)i +
-          110];
+        dis = (std::sqrt(dis * dis + y_speed * y_speed) + long_side) / std::sqrt
+          (accumulate_wind_speed * accumulate_wind_speed + short_side *
+           short_side) * (rtb_path[(int32_T)(i + 1.0) + 110] - rtb_path[(int32_T)
+                          i + 110]) + rtb_path[(int32_T)i + 110];
       }
     }
   } else {
-    // '<S5>:1:164'
-    // '<S5>:1:165'
-    // '<S5>:1:166'
+    // '<S4>:1:164'
+    // '<S4>:1:165'
+    // '<S4>:1:166'
   }
 
   if (collision_avoidance_DW.UnitDelay16_DSTATE < 0.5) {
-    // '<S5>:1:191'
-    // '<S5>:1:192'
-    real_wind_speed_x = rtb_start_point_idx_0;
+    // '<S4>:1:191'
+    // '<S4>:1:192'
+    real_wind_speed_y = rtb_start_point_idx_0;
 
-    // '<S5>:1:193'
-    wall_angle = rtb_start_point_idx_1;
+    // '<S4>:1:193'
+    dis = rtb_start_point_idx_1;
   }
 
-  // '<S5>:1:195'
+  // '<S4>:1:195'
   // Heading_d=speed_angle_d-drift_angle;
   //  Saim_x
   //  Saim_y
-  GPS_data_idx_0 = collision_avoidance_GetAngle_n(real_wind_speed_x -
-    rtb_CenterPosX, wall_angle - rtb_CenterPosY);
+  end1_idx_1 = collision_avoidance_GetAngle_n(real_wind_speed_y - rtb_CenterPosX,
+    dis - rtb_CenterPosY);
 
   // Update for UnitDelay: '<Root>/Unit Delay1' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
@@ -2552,29 +2760,29 @@ void scanningModelClass::step()
   //   MATLAB Function: '<Root>/MATLAB Function'
   //   UnitDelay: '<Root>/Unit Delay10'
 
-  // MATLAB Function 'MATLAB Function4': '<S6>:1'
+  // MATLAB Function 'MATLAB Function4': '<S5>:1'
   if ((collision_avoidance_DW.UnitDelay10_DSTATE >
        collision_avoidance_P.tacking_time) && (rtb_Horizontal_speed >
        collision_avoidance_P.tacking_speed)) {
-    // '<S6>:1:8'
-    // '<S6>:1:9'
+    // '<S5>:1:8'
+    // '<S5>:1:9'
     rtb_tacking = 2.0;
   } else {
-    // '<S6>:1:11'
+    // '<S5>:1:11'
     rtb_tacking = collision_avoidance_DW.UnitDelay10_DSTATE + 1.0;
   }
 
   //  tacking=2;
   if (rtb_sail_safe > 0.5) {
-    // '<S6>:1:14'
-    // '<S6>:1:16'
+    // '<S5>:1:14'
+    // '<S5>:1:16'
     rtb_tacking = 1.0;
   }
 
-  // '<S6>:1:18'
-  if (rtb_Horizontal_speed > 0.8) {
-    // '<S6>:1:19'
-    // '<S6>:1:20'
+  // '<S5>:1:18'
+  if (rtb_Horizontal_speed > 1.0) {
+    // '<S5>:1:19'
+    // '<S5>:1:20'
     rtb_tacking = 2.0;
   }
 
@@ -2582,23 +2790,23 @@ void scanningModelClass::step()
   //   Inport: '<Root>/roll'
   //   UnitDelay: '<Root>/Unit Delay11'
 
-  // MATLAB Function 'MATLAB Function5': '<S7>:1'
+  // MATLAB Function 'MATLAB Function5': '<S6>:1'
   if (std::abs(collision_avoidance_U.roll) >
       collision_avoidance_P.max_roll_allowed) {
-    // '<S7>:1:2'
-    // '<S7>:1:3'
+    // '<S6>:1:2'
+    // '<S6>:1:3'
     loose_time = collision_avoidance_P.max_loose_time;
   } else {
-    // '<S7>:1:5'
+    // '<S6>:1:5'
     loose_time = collision_avoidance_DW.UnitDelay11_DSTATE - 1.0;
   }
 
   if (loose_time < 0.0) {
-    // '<S7>:1:7'
-    // '<S7>:1:8'
+    // '<S6>:1:7'
+    // '<S6>:1:8'
     rtb_sail_safe = 1;
   } else {
-    // '<S7>:1:10'
+    // '<S6>:1:10'
     rtb_sail_safe = 0;
   }
 
@@ -2612,11 +2820,12 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay9'
 
   heading = collision_avoidance_U.Airmar_yaw;
-  GPS_data_idx_1 = collision_avoidance_DW.UnitDelay7_DSTATE;
-  rtb_CenterPosX = collision_avoidance_DW.UnitDelay8_DSTATE;
-  end2_idx_0 = collision_avoidance_DW.UnitDelay9_DSTATE;
-  rtb_CenterPosY = collision_avoidance_P.tacking_force_discount;
-  end2_idx_1 = collision_avoidance_U.Airmar_wind_angle;
+  end2_idx_0 = collision_avoidance_DW.UnitDelay7_DSTATE;
+  end2_idx_1 = collision_avoidance_DW.UnitDelay8_DSTATE;
+  rtb_start_point_idx_0 = collision_avoidance_DW.UnitDelay9_DSTATE;
+  rtb_start_point_idx_1 = collision_avoidance_P.tacking_force_discount;
+  Airmar_wind_angle = collision_avoidance_U.Airmar_wind_angle;
+  b_obstacle_R = collision_avoidance_P.obstacle_R;
 
   // MATLAB Function 'MATLAB Function1': '<S2>:1'
   // yaw,yaw_rate,,attack_angle
@@ -2626,12 +2835,17 @@ void scanningModelClass::step()
   {
     // '<S2>:1:4'
     // '<S2>:1:5'
-    rtb_CenterPosY = collision_avoidance_P.tacking_force_discount - 0.2;
+    rtb_start_point_idx_1 = collision_avoidance_P.tacking_force_discount - 0.2;
   }
 
+  // '<S2>:1:7'
+  GPS_data[0] = rtb_CenterPosX;
+  GPS_data[1] = rtb_CenterPosY;
+
   // los_heading
+  //  obstacle=[0,0];
   // '<S2>:1:11'
-  length_sailangle = ((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
+  rtb_CenterPosX = ((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
     180.0) + 90.0) - (rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
     180.0) - 90.0)) + 1.0;
 
@@ -2639,38 +2853,36 @@ void scanningModelClass::step()
   memset(&collision_avoidance_B.price[0], 0, 760U * sizeof(real_T));
 
   // '<S2>:1:14'
-  rtb_start_point_idx_0 = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
-    180.0);
+  d_a = rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0);
 
   // '<S2>:1:14'
   i_0 = (int32_T)((rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 * 180.0)
-                   + 90.0) + (1.0 - (rtb_start_point_idx_0 - 90.0)));
+                   + 90.0) + (1.0 - (d_a - 90.0)));
 
   // '<S2>:1:14'
   for (begin = 0; begin < i_0; begin++) {
     // '<S2>:1:14'
-    rtb_start_point_idx_1 = (rtb_start_point_idx_0 - 90.0) + (real_T)begin;
+    a = (d_a - 90.0) + (real_T)begin;
 
     // '<S2>:1:15'
-    n = (rtb_start_point_idx_1 - (rt_roundd_snf(rtb_WindAngle_mean /
-           3.1415926535897931 * 180.0) - 90.0)) + 1.0;
-    collision_a_getSailForce_ground(rtb_WindAngle_mean, rtb_start_point_idx_1 /
-      180.0 * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y, &b_R,
-      &wall_angle);
+    end1_idx_0 = (a - (rt_roundd_snf(rtb_WindAngle_mean / 3.1415926535897931 *
+      180.0) - 90.0)) + 1.0;
+    collision_a_getSailForce_ground(rtb_WindAngle_mean, a / 180.0 *
+      3.1415926535897931, WindSpeed_mean, &long_side, &b_a, &dis);
 
     // '<S2>:1:26'
-    count_wind = (rt_roundd_snf((b_R + 1.3089969389957472) / 3.1415926535897931 *
-      180.0) - rt_roundd_snf((b_R - 1.3089969389957472) / 3.1415926535897931 *
-      180.0)) + 1.0;
+    real_wind_speed_y = (rt_roundd_snf((b_a + 1.3089969389957472) /
+      3.1415926535897931 * 180.0) - rt_roundd_snf((b_a - 1.3089969389957472) /
+      3.1415926535897931 * 180.0)) + 1.0;
 
     // '<S2>:1:27'
     memset(&collision_avoidance_B.price_fixSail[0], 0, 1140U * sizeof(real_T));
 
     // '<S2>:1:28'
-    c = rt_roundd_snf((b_R - 1.3089969389957472) / 3.1415926535897931 * 180.0);
+    c = rt_roundd_snf((b_a - 1.3089969389957472) / 3.1415926535897931 * 180.0);
 
     // '<S2>:1:28'
-    wind_valid = (int32_T)(rt_roundd_snf((b_R + 1.3089969389957472) /
+    wind_valid = (int32_T)(rt_roundd_snf((b_a + 1.3089969389957472) /
       3.1415926535897931 * 180.0) + (1.0 - c));
 
     // '<S2>:1:28'
@@ -2679,21 +2891,20 @@ void scanningModelClass::step()
       i = c + (real_T)ixstart;
 
       // '<S2>:1:31'
-      real_wind_speed_x = (i - rt_roundd_snf((b_R - 1.3089969389957472) /
+      short_side = (i - rt_roundd_snf((b_a - 1.3089969389957472) /
         3.1415926535897931 * 180.0)) + 1.0;
 
       // '<S2>:1:32'
-      wall_angle = i / 180.0 * 3.1415926535897931;
+      dis = i / 180.0 * 3.1415926535897931;
 
       // '<S2>:1:33'
-      y_speed = collision_avoid_HeadingDeadZone(wall_angle, rtb_WindAngle_mean,
-        rtb_start_point_idx_1 / 180.0 * 3.1415926535897931, rtb_tacking,
-        rtb_CenterPosX / 3.1415926535897931 * 180.0);
+      y_speed = collision_a_HeadingDeadZone_obs(dis, rtb_WindAngle_mean,
+        rtb_obs_pos, b_obstacle_R, a / 180.0 * 3.1415926535897931, rtb_tacking,
+        end2_idx_1 / 3.1415926535897931 * 180.0, GPS_data);
 
       // speed_angle=heading_check+AngleDiff(heading_check,SailForceAngle_ground)/5;%%%加漂角,漂角怎样得到？ 
       // '<S2>:1:35'
-      accumulate_wind_speed = collision_avoidance_AngleDiff_f(GPS_data_idx_0,
-        wall_angle);
+      accumulate_wind_speed = collision_avoidance_AngleDiff_f(end1_idx_1, dis);
       if ((y_speed > 0.5) && (y_speed < 1.5)) {
         // '<S2>:1:37'
         // '<S2>:1:38'
@@ -2704,39 +2915,34 @@ void scanningModelClass::step()
 
       // %%%
       // '<S2>:1:42'
-      collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x - 1] =
-        wall_angle;
+      collision_avoidance_B.price_fixSail[(int32_T)short_side - 1] = dis;
 
       // '<S2>:1:43'
-      collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 189] =
+      collision_avoidance_B.price_fixSail[(int32_T)short_side + 189] =
         accumulate_wind_speed;
 
       // '<S2>:1:44'
-      collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 379] =
-        b_R;
+      collision_avoidance_B.price_fixSail[(int32_T)short_side + 379] = b_a;
 
       // '<S2>:1:45'
-      collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 569] =
-        y_speed;
+      collision_avoidance_B.price_fixSail[(int32_T)short_side + 569] = y_speed;
       if (accumulate_wind_speed < 0.0) {
         // '<S2>:1:46'
         // '<S2>:1:47'
-        collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 759] =
-          100.0;
+        collision_avoidance_B.price_fixSail[(int32_T)short_side + 759] = 100.0;
       } else {
         // '<S2>:1:49'
-        collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 759] =
+        collision_avoidance_B.price_fixSail[(int32_T)short_side + 759] =
           accumulate_wind_speed;
       }
 
       if (accumulate_wind_speed > 0.0) {
         // '<S2>:1:51'
         // '<S2>:1:52'
-        collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 949] =
-          -100.0;
+        collision_avoidance_B.price_fixSail[(int32_T)short_side + 949] = -100.0;
       } else {
         // '<S2>:1:54'
-        collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 949] =
+        collision_avoidance_B.price_fixSail[(int32_T)short_side + 949] =
           accumulate_wind_speed;
       }
 
@@ -2745,14 +2951,14 @@ void scanningModelClass::step()
 
     // %%%
     // 正一个负一个
-    if (1.0 > count_wind) {
+    if (1.0 > real_wind_speed_y) {
       wind_valid = 0;
     } else {
-      wind_valid = (int32_T)count_wind;
+      wind_valid = (int32_T)real_wind_speed_y;
     }
 
     ixstart = 1;
-    wall_angle = collision_avoidance_B.price_fixSail[760];
+    dis = collision_avoidance_B.price_fixSail[760];
     c_itmp = 0;
     if (wind_valid > 1) {
       if (rtIsNaN(collision_avoidance_B.price_fixSail[760])) {
@@ -2761,7 +2967,7 @@ void scanningModelClass::step()
         while ((!exitg1) && (ix + 1 <= wind_valid)) {
           ixstart = ix + 1;
           if (!rtIsNaN(collision_avoidance_B.price_fixSail[760 + ix])) {
-            wall_angle = collision_avoidance_B.price_fixSail[760 + ix];
+            dis = collision_avoidance_B.price_fixSail[760 + ix];
             c_itmp = ix;
             exitg1 = true;
           } else {
@@ -2772,8 +2978,8 @@ void scanningModelClass::step()
 
       if (ixstart < wind_valid) {
         while (ixstart + 1 <= wind_valid) {
-          if (collision_avoidance_B.price_fixSail[760 + ixstart] < wall_angle) {
-            wall_angle = collision_avoidance_B.price_fixSail[760 + ixstart];
+          if (collision_avoidance_B.price_fixSail[760 + ixstart] < dis) {
+            dis = collision_avoidance_B.price_fixSail[760 + ixstart];
             c_itmp = ixstart;
           }
 
@@ -2782,14 +2988,14 @@ void scanningModelClass::step()
       }
     }
 
-    if (1.0 > count_wind) {
+    if (1.0 > real_wind_speed_y) {
       wind_valid = 0;
     } else {
-      wind_valid = (int32_T)count_wind;
+      wind_valid = (int32_T)real_wind_speed_y;
     }
 
     ixstart = 1;
-    wall_angle = collision_avoidance_B.price_fixSail[950];
+    dis = collision_avoidance_B.price_fixSail[950];
     ix = 0;
     if (wind_valid > 1) {
       if (rtIsNaN(collision_avoidance_B.price_fixSail[950])) {
@@ -2798,7 +3004,7 @@ void scanningModelClass::step()
         while ((!exitg1) && (itmp + 1 <= wind_valid)) {
           ixstart = itmp + 1;
           if (!rtIsNaN(collision_avoidance_B.price_fixSail[950 + itmp])) {
-            wall_angle = collision_avoidance_B.price_fixSail[950 + itmp];
+            dis = collision_avoidance_B.price_fixSail[950 + itmp];
             ix = itmp;
             exitg1 = true;
           } else {
@@ -2809,8 +3015,8 @@ void scanningModelClass::step()
 
       if (ixstart < wind_valid) {
         while (ixstart + 1 <= wind_valid) {
-          if (collision_avoidance_B.price_fixSail[950 + ixstart] > wall_angle) {
-            wall_angle = collision_avoidance_B.price_fixSail[950 + ixstart];
+          if (collision_avoidance_B.price_fixSail[950 + ixstart] > dis) {
+            dis = collision_avoidance_B.price_fixSail[950 + ixstart];
             ix = ixstart;
           }
 
@@ -2823,22 +3029,22 @@ void scanningModelClass::step()
     // '<S2>:1:63'
     // '<S2>:1:64'
     y_speed = std::cos(collision_avoidance_AngleDiff_f
-                       (collision_avoidance_B.price_fixSail[c_itmp], b_R)) *
-      real_wind_speed_y * std::cos(collision_avoidance_AngleDiff_f
-      (GPS_data_idx_0, collision_avoidance_B.price_fixSail[c_itmp]));
+                       (collision_avoidance_B.price_fixSail[c_itmp], b_a)) *
+      long_side * std::cos(collision_avoidance_AngleDiff_f(end1_idx_1,
+      collision_avoidance_B.price_fixSail[c_itmp]));
 
     // '<S2>:1:65'
-    wall_angle = std::cos(collision_avoidance_AngleDiff_f
-                          (collision_avoidance_B.price_fixSail[ix], b_R)) *
-      real_wind_speed_y * std::cos(collision_avoidance_AngleDiff_f
-      (GPS_data_idx_0, collision_avoidance_B.price_fixSail[ix]));
+    dis = std::cos(collision_avoidance_AngleDiff_f
+                   (collision_avoidance_B.price_fixSail[ix], b_a)) * long_side *
+      std::cos(collision_avoidance_AngleDiff_f(end1_idx_1,
+                collision_avoidance_B.price_fixSail[ix]));
 
     // '<S2>:1:66'
     // '<S2>:1:67'
     if (collision_avoidance_B.price_fixSail[570 + c_itmp] > 1.5) {
       // '<S2>:1:68'
       // '<S2>:1:69'
-      y_speed *= rtb_CenterPosY;
+      y_speed *= rtb_start_point_idx_1;
     }
 
     if ((collision_avoidance_B.price_fixSail[570 + c_itmp] < 1.5) &&
@@ -2851,51 +3057,51 @@ void scanningModelClass::step()
     if (collision_avoidance_B.price_fixSail[570 + ix] > 1.5) {
       // '<S2>:1:74'
       // '<S2>:1:75'
-      wall_angle *= rtb_CenterPosY;
+      dis *= rtb_start_point_idx_1;
     }
 
     if ((collision_avoidance_B.price_fixSail[570 + ix] < 1.5) &&
         (collision_avoidance_B.price_fixSail[570 + ix] > 0.5)) {
       // '<S2>:1:77'
       // '<S2>:1:78'
-      wall_angle = -100.0;
+      dis = -100.0;
     }
 
     // '<S2>:1:80'
-    collision_avoidance_B.price[(int32_T)n - 1] = rtb_start_point_idx_1;
-    if (y_speed > wall_angle) {
+    collision_avoidance_B.price[(int32_T)end1_idx_0 - 1] = a;
+    if (y_speed > dis) {
       // '<S2>:1:81'
       // '<S2>:1:82'
-      real_wind_speed_x = c_itmp + 1;
+      short_side = c_itmp + 1;
 
       // '<S2>:1:83'
-      wall_angle = y_speed;
+      dis = y_speed;
     } else {
       // '<S2>:1:85'
-      real_wind_speed_x = ix + 1;
+      short_side = ix + 1;
 
       // '<S2>:1:86'
     }
 
     // '<S2>:1:88'
-    collision_avoidance_B.price[(int32_T)n + 189] =
-      collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x - 1] /
+    collision_avoidance_B.price[(int32_T)end1_idx_0 + 189] =
+      collision_avoidance_B.price_fixSail[(int32_T)short_side - 1] /
       3.1415926535897931 * 180.0;
 
     // heading
     // '<S2>:1:89'
-    collision_avoidance_B.price[(int32_T)n + 379] = wall_angle;
+    collision_avoidance_B.price[(int32_T)end1_idx_0 + 379] = dis;
 
     // '<S2>:1:90'
-    collision_avoidance_B.price[(int32_T)n + 569] =
-      collision_avoidance_B.price_fixSail[(int32_T)real_wind_speed_x + 379];
+    collision_avoidance_B.price[(int32_T)end1_idx_0 + 569] =
+      collision_avoidance_B.price_fixSail[(int32_T)short_side + 379];
 
     // '<S2>:1:14'
   }
 
   // '<S2>:1:94'
-  wall_angle = WindSpeed_mean * std::cos(rtb_WindAngle_mean) +
-    rtb_Horizontal_speed * std::cos(Horizontal_speed_angle);
+  dis = WindSpeed_mean * std::cos(rtb_WindAngle_mean) + rtb_Horizontal_speed *
+    std::cos(Horizontal_speed_angle);
 
   // '<S2>:1:95'
   y_speed = WindSpeed_mean * std::sin(rtb_WindAngle_mean) + rtb_Horizontal_speed
@@ -2903,25 +3109,25 @@ void scanningModelClass::step()
 
   // WindAngle_ground=atan(relative_wind_E/relative_wind_N);
   // '<S2>:1:97'
-  real_wind_speed_y = std::sqrt(wall_angle * wall_angle + y_speed * y_speed);
+  long_side = std::sqrt(dis * dis + y_speed * y_speed);
 
   // '<S2>:1:98'
-  b_R = end2_idx_1 + heading;
+  b_a = Airmar_wind_angle + heading;
 
   // '<S2>:1:100'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
-  dead_sail_data[0] = (b_R / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
-  dead_sail_data[1] = (b_R / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-  if (end2_idx_0 > 1.5) {
+  dead_sail_data[0] = (b_a / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
+  dead_sail_data[1] = (b_a / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
+  if (rtb_start_point_idx_0 > 1.5) {
     // '<S2>:1:101'
     // '<S2>:1:102'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
-    dead_sail_data[0] = (b_R / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
-    dead_sail_data[1] = ((GPS_data_idx_1 + heading) + 90.0) + 720.0;
-    dead_sail_data[2] = (b_R / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
-    dead_sail_data[3] = ((GPS_data_idx_1 + heading) + 270.0) + 720.0;
+    dead_sail_data[0] = (b_a / 3.1415926535897931 * 180.0 - 7.0) + 720.0;
+    dead_sail_data[1] = ((end2_idx_0 + heading) + 90.0) + 720.0;
+    dead_sail_data[2] = (b_a / 3.1415926535897931 * 180.0 + 7.0) + 720.0;
+    dead_sail_data[3] = ((end2_idx_0 + heading) + 270.0) + 720.0;
   }
 
   //
@@ -2931,14 +3137,14 @@ void scanningModelClass::step()
   //          price(i,3)=-102;%-10002;
   //      end
   //  end
-  if (1.0 > length_sailangle) {
+  if (1.0 > rtb_CenterPosX) {
     wind_valid = 0;
   } else {
-    wind_valid = (int32_T)length_sailangle;
+    wind_valid = (int32_T)rtb_CenterPosX;
   }
 
   ixstart = 1;
-  wall_angle = collision_avoidance_B.price[380];
+  dis = collision_avoidance_B.price[380];
   itmp = 0;
   if (wind_valid > 1) {
     if (rtIsNaN(collision_avoidance_B.price[380])) {
@@ -2947,7 +3153,7 @@ void scanningModelClass::step()
       while ((!exitg1) && (ix <= wind_valid)) {
         ixstart = ix;
         if (!rtIsNaN(collision_avoidance_B.price[ix + 379])) {
-          wall_angle = collision_avoidance_B.price[ix + 379];
+          dis = collision_avoidance_B.price[ix + 379];
           itmp = ix - 1;
           exitg1 = true;
         } else {
@@ -2958,8 +3164,8 @@ void scanningModelClass::step()
 
     if (ixstart < wind_valid) {
       while (ixstart + 1 <= wind_valid) {
-        if (collision_avoidance_B.price[380 + ixstart] > wall_angle) {
-          wall_angle = collision_avoidance_B.price[380 + ixstart];
+        if (collision_avoidance_B.price[380 + ixstart] > dis) {
+          dis = collision_avoidance_B.price[380 + ixstart];
           itmp = ixstart;
         }
 
@@ -2975,25 +3181,25 @@ void scanningModelClass::step()
   }
 
   // '<S2>:1:126'
-  wall_angle = rt_roundd_snf(heading / 3.1415926535897931 * 180.0 - 90.0);
+  dis = rt_roundd_snf(heading / 3.1415926535897931 * 180.0 - 90.0);
 
   // '<S2>:1:126'
   ixstart = (int32_T)(rt_roundd_snf(heading / 3.1415926535897931 * 180.0 + 90.0)
-                      + (1.0 - wall_angle));
+                      + (1.0 - dis));
 
   // '<S2>:1:126'
   for (wind_valid = 0; wind_valid < ixstart; wind_valid++) {
     // '<S2>:1:126'
-    y_speed = wall_angle + (real_T)wind_valid;
-    collision_a_getSailForce_ground(b_R, y_speed / 180.0 * 3.1415926535897931,
-      real_wind_speed_y, &accumulate_wind_speed, &count_wind, &real_wind_speed_x);
+    y_speed = dis + (real_T)wind_valid;
+    collision_a_getSailForce_ground(b_a, y_speed / 180.0 * 3.1415926535897931,
+      long_side, &accumulate_wind_speed, &real_wind_speed_y, &short_side);
 
     // '<S2>:1:128'
     // '<S2>:1:129'
     i_0 = (int32_T)((y_speed - rt_roundd_snf(heading / 3.1415926535897931 *
       180.0 - 90.0)) + 1.0) - 1;
     drive_force[i_0] = accumulate_wind_speed * std::cos
-      (collision_avoidance_AngleDiff_f(count_wind, heading));
+      (collision_avoidance_AngleDiff_f(real_wind_speed_y, heading));
     drive_force[190 + i_0] = y_speed / 180.0 * 3.1415926535897931;
 
     // '<S2>:1:126'
@@ -3016,7 +3222,7 @@ void scanningModelClass::step()
   }
 
   wind_valid = 1;
-  wall_angle = drive_force[0];
+  dis = drive_force[0];
   ixstart = 0;
   if (rtIsNaN(drive_force[0])) {
     ix = 1;
@@ -3024,7 +3230,7 @@ void scanningModelClass::step()
     while ((!exitg1) && (ix + 1 < 191)) {
       wind_valid = ix + 1;
       if (!rtIsNaN(drive_force[ix])) {
-        wall_angle = drive_force[ix];
+        dis = drive_force[ix];
         ixstart = ix;
         exitg1 = true;
       } else {
@@ -3035,8 +3241,8 @@ void scanningModelClass::step()
 
   if (wind_valid < 190) {
     while (wind_valid + 1 < 191) {
-      if (drive_force[wind_valid] > wall_angle) {
-        wall_angle = drive_force[wind_valid];
+      if (drive_force[wind_valid] > dis) {
+        dis = drive_force[wind_valid];
         ixstart = wind_valid;
       }
 
@@ -3049,7 +3255,7 @@ void scanningModelClass::step()
   //  max_drive_force
   //  drive_force
   // '<S2>:1:147'
-  count_wind = collision_avoidance_AngleDiff_f(drive_force[190 + ixstart],
+  real_wind_speed_y = collision_avoidance_AngleDiff_f(drive_force[190 + ixstart],
     heading);
 
   //  if abs(attack_angle_d)<10/180*pi
@@ -3059,33 +3265,33 @@ void scanningModelClass::step()
   //  if abs(AngleDiff(heading,heading_d))>
   //
   //  end
-  if (std::abs(end2_idx_1) < 0.52359877559829882) {
+  if (std::abs(Airmar_wind_angle) < 0.52359877559829882) {
     // '<S2>:1:155'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
     // '<S2>:1:156'
-    count_wind = -end2_idx_1;
+    real_wind_speed_y = -Airmar_wind_angle;
   }
 
-  if (std::abs(count_wind) > 1.5707963267948966) {
+  if (std::abs(real_wind_speed_y) > 1.5707963267948966) {
     // '<S2>:1:160'
     // '<S2>:1:161'
-    if (count_wind < 0.0) {
-      count_wind = -1.0;
-    } else if (count_wind > 0.0) {
-      count_wind = 1.0;
+    if (real_wind_speed_y < 0.0) {
+      real_wind_speed_y = -1.0;
+    } else if (real_wind_speed_y > 0.0) {
+      real_wind_speed_y = 1.0;
     } else {
-      if (count_wind == 0.0) {
-        count_wind = 0.0;
+      if (real_wind_speed_y == 0.0) {
+        real_wind_speed_y = 0.0;
       }
     }
 
-    count_wind *= 1.5707963267948966;
+    real_wind_speed_y *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
     // '<S2>:1:163'
     // '<S2>:1:164'
-    count_wind = 1.5707963267948966;
+    real_wind_speed_y = 1.5707963267948966;
   }
 
   //  sail_d
@@ -3100,7 +3306,7 @@ void scanningModelClass::step()
   // Outport: '<Root>/max_drive_force' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  collision_avoidance_Y.max_drive_force = wall_angle;
+  collision_avoidance_Y.max_drive_force = dis;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/Airmar_yaw'
@@ -3111,100 +3317,99 @@ void scanningModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay6'
 
   heading = collision_avoidance_U.Airmar_yaw;
-  wall_angle = collision_avoidance_P.Kp;
+  dis = collision_avoidance_P.Kp;
   y_speed = collision_avoidance_P.Kd;
 
-  // MATLAB Function 'MATLAB Function2': '<S4>:1'
+  // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
   if (WindSpeed_mean > 3.0) {
-    // '<S4>:1:3'
-    // '<S4>:1:4'
-    wall_angle = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * collision_avoidance_P.Kp;
+    // '<S3>:1:3'
+    // '<S3>:1:4'
+    dis = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * collision_avoidance_P.Kp;
 
-    // '<S4>:1:5'
+    // '<S3>:1:5'
     y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * collision_avoidance_P.Kd;
   }
 
-  if (rtb_Horizontal_speed > 0.3) {
-    // '<S4>:1:8'
-    // '<S4>:1:9'
+  if (rtb_Horizontal_speed > 0.15) {
+    // '<S3>:1:8'
+    // '<S3>:1:9'
     heading = Horizontal_speed_angle;
   }
 
-  // '<S4>:1:12'
-  wall_angle = (collision_avoidance_AngleDiff_p
-                (collision_avoidance_DW.UnitDelay6_DSTATE, accumulate_wind_speed)
-                / collision_avoidance_P.run_period -
-                collision_avoidance_U.yaw_rate) * y_speed + wall_angle *
-    collision_avoidance_AngleDiff_p(heading, accumulate_wind_speed);
+  // '<S3>:1:12'
+  dis = (collision_avoidance_AngleDiff_p
+         (collision_avoidance_DW.UnitDelay6_DSTATE, accumulate_wind_speed) /
+         collision_avoidance_P.run_period - collision_avoidance_U.yaw_rate) *
+    y_speed + dis * collision_avoidance_AngleDiff_p(heading,
+    accumulate_wind_speed);
 
-  // '<S4>:1:13'
+  // '<S3>:1:13'
   if ((rtb_UnitDelay16 > 0.5) && (std::abs(collision_avoidance_AngleDiff_p
         (heading, accumulate_wind_speed)) > 0.69777777777777772)) {
-    // '<S4>:1:15'
-    // '<S4>:1:16'
-    GPS_data_idx_0 = collision_avoidance_AngleDiff_p(heading,
-      accumulate_wind_speed);
-    if (GPS_data_idx_0 < 0.0) {
-      GPS_data_idx_0 = -1.0;
-    } else if (GPS_data_idx_0 > 0.0) {
-      GPS_data_idx_0 = 1.0;
+    // '<S3>:1:15'
+    // '<S3>:1:16'
+    end1_idx_0 = collision_avoidance_AngleDiff_p(heading, accumulate_wind_speed);
+    if (end1_idx_0 < 0.0) {
+      end1_idx_0 = -1.0;
+    } else if (end1_idx_0 > 0.0) {
+      end1_idx_0 = 1.0;
     } else {
-      if (GPS_data_idx_0 == 0.0) {
-        GPS_data_idx_0 = 0.0;
+      if (end1_idx_0 == 0.0) {
+        end1_idx_0 = 0.0;
       }
     }
 
-    y_speed = collision_avoidance_DW.UnitDelay5_DSTATE + GPS_data_idx_0;
+    y_speed = collision_avoidance_DW.UnitDelay5_DSTATE + end1_idx_0;
   } else {
-    // '<S4>:1:18'
+    // '<S3>:1:18'
     y_speed = collision_avoidance_DW.UnitDelay5_DSTATE;
   }
 
   if (std::abs(collision_avoidance_AngleDiff_p(heading, accumulate_wind_speed)) <
       0.17453292519943295) {
-    // '<S4>:1:21'
-    // '<S4>:1:22'
+    // '<S3>:1:21'
+    // '<S3>:1:22'
     y_speed = 0.0;
   }
 
   if (y_speed > 80.0) {
-    // '<S4>:1:25'
-    // '<S4>:1:26'
-    wall_angle = -0.69813170079773179;
+    // '<S3>:1:25'
+    // '<S3>:1:26'
+    dis = -0.69813170079773179;
   } else {
     if (y_speed < -80.0) {
-      // '<S4>:1:27'
-      // '<S4>:1:28'
-      wall_angle = 0.69813170079773179;
+      // '<S3>:1:27'
+      // '<S3>:1:28'
+      dis = 0.69813170079773179;
     }
   }
 
-  if (std::abs(wall_angle) > 0.69813170079773179) {
-    // '<S4>:1:31'
-    // '<S4>:1:32'
-    if (wall_angle < 0.0) {
-      wall_angle = -1.0;
-    } else if (wall_angle > 0.0) {
-      wall_angle = 1.0;
+  if (std::abs(dis) > 0.69813170079773179) {
+    // '<S3>:1:31'
+    // '<S3>:1:32'
+    if (dis < 0.0) {
+      dis = -1.0;
+    } else if (dis > 0.0) {
+      dis = 1.0;
     } else {
-      if (wall_angle == 0.0) {
-        wall_angle = 0.0;
+      if (dis == 0.0) {
+        dis = 0.0;
       }
     }
 
-    wall_angle *= 0.69813170079773179;
+    dis *= 0.69813170079773179;
   }
 
   // Outport: '<Root>/rudder' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  collision_avoidance_Y.rudder = wall_angle;
+  collision_avoidance_Y.rudder = dis;
 
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  collision_avoidance_Y.sail = count_wind;
+  collision_avoidance_Y.sail = real_wind_speed_y;
 
   // Outport: '<Root>/ship_speed'
   collision_avoidance_Y.ship_speed = rtb_Horizontal_speed;
@@ -3226,26 +3431,15 @@ void scanningModelClass::step()
   // Outport: '<Root>/obstacle_judge' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function'
 
-  collision_avoidance_Y.obstacle_judge = rtb_obstacle_idx_0;
-
-  // Update for UnitDelay: '<Root>/Unit Delay18'
-  memcpy(&collision_avoidance_DW.UnitDelay18_DSTATE[0], &rtb_obstacle_his[0],
-         500U * sizeof(real_T));
-
-  // Update for UnitDelay: '<Root>/Unit Delay20' incorporates:
-  //   Inport: '<Root>/camera_confidence'
-
-  collision_avoidance_DW.UnitDelay20_DSTATE =
-    collision_avoidance_U.camera_confidence;
-
-  // Update for UnitDelay: '<Root>/Unit Delay12'
-  collision_avoidance_DW.UnitDelay12_DSTATE[0] = rtb_obstacle_idx_0;
-  collision_avoidance_DW.UnitDelay12_DSTATE[1] = rtb_obstacle_idx_1;
+  collision_avoidance_Y.obstacle_judge = rtb_obs_judgement_idx_0;
 
   // Update for UnitDelay: '<Root>/Unit Delay16' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function'
 
   collision_avoidance_DW.UnitDelay16_DSTATE = leg;
+
+  // Update for UnitDelay: '<Root>/Unit Delay12'
+  collision_avoidance_DW.UnitDelay12_DSTATE = rtb_UnitDelay16;
 
   // Update for UnitDelay: '<Root>/Unit Delay4' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function3'
@@ -3267,7 +3461,7 @@ void scanningModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  collision_avoidance_DW.UnitDelay7_DSTATE = count_wind;
+  collision_avoidance_DW.UnitDelay7_DSTATE = real_wind_speed_y;
 
   // Update for UnitDelay: '<Root>/Unit Delay8'
   collision_avoidance_DW.UnitDelay8_DSTATE = accumulate_wind_speed;
@@ -3319,28 +3513,17 @@ void scanningModelClass::initialize()
   (void) memset((void *)&collision_avoidance_Y, 0,
                 sizeof(ExtY_collision_avoidance_T));
 
-  // InitializeConditions for UnitDelay: '<Root>/Unit Delay17'
-  collision_avoidance_DW.UnitDelay17_DSTATE =
-    collision_avoidance_P.UnitDelay17_InitialCondition;
-
-  // InitializeConditions for UnitDelay: '<Root>/Unit Delay18'
-  memcpy(&collision_avoidance_DW.UnitDelay18_DSTATE[0],
-         &collision_avoidance_P.UnitDelay18_InitialCondition[0], 500U * sizeof
-         (real_T));
-
-  // InitializeConditions for UnitDelay: '<Root>/Unit Delay20'
-  collision_avoidance_DW.UnitDelay20_DSTATE =
-    collision_avoidance_P.UnitDelay20_InitialCondition;
-
-  // InitializeConditions for UnitDelay: '<Root>/Unit Delay12'
-  collision_avoidance_DW.UnitDelay12_DSTATE[0] =
-    collision_avoidance_P.UnitDelay12_InitialCondition[0];
-  collision_avoidance_DW.UnitDelay12_DSTATE[1] =
-    collision_avoidance_P.UnitDelay12_InitialCondition[1];
-
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay16'
   collision_avoidance_DW.UnitDelay16_DSTATE =
     collision_avoidance_P.UnitDelay16_InitialCondition;
+
+  // InitializeConditions for UnitDelay: '<Root>/Unit Delay12'
+  collision_avoidance_DW.UnitDelay12_DSTATE =
+    collision_avoidance_P.UnitDelay12_InitialCondition;
+
+  // InitializeConditions for MATLAB Function: '<Root>/MATLAB Function9'
+  memset(&collision_avoidance_DW.detect_input_his[0], 0, 400U * sizeof(real_T));
+  memset(&collision_avoidance_DW.inzone_num[0], 0, 300U * sizeof(real_T));
 
   // InitializeConditions for UnitDelay: '<Root>/Unit Delay4'
   collision_avoidance_DW.UnitDelay4_DSTATE =
@@ -3408,21 +3591,21 @@ scanningModelClass::scanningModelClass()
     0.0,
     0.3,
     10.0,
+    2.0,
     50.0,
-    3.0,
     50.0,
     1.0,
-    0.2,
+    10.0,
+    4.0,
 
-    { -25.5111717432, 95.6947446668, -14.5937270673, 106.38938435, 155.167985617,
-      66.8465422728, 170.663971491, 82.6830992716 },
+    { 20.0, 20.0, 0.0, 0.0, 0.0, 150.0, 0.0, 150.0 },
     3.0,
     0.1,
     40.0,
     1.0,
     2.0,
     0.6,
-    0.4,
+    0.1,
     40.0,
     20.0,
     3.0,
@@ -3430,44 +3613,6 @@ scanningModelClass::scanningModelClass()
     -0.61,
     0.8,
     0.0,
-
-    { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0 },
-    0.0,
-
-    { 0.0, 0.5 },
     0.0,
     0.5,
     1.0,

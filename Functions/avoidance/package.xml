@@ -46,12 +46,15 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>sailboat_message</build_depend>
   <build_depend>tld_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <run_depend>geometry_msgs</run_depend>
   <run_depend>tld_msgs</run_depend>
   <run_depend>sailboat_message</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
+  
 
 
   <!-- The export tag contains other, unspecified, tags -->

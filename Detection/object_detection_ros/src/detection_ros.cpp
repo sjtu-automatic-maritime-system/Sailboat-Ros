@@ -233,7 +233,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
             double x = object_pose_array.poseArray[i].x;  
             double y = object_pose_array.poseArray[i].y;  
             double num = object_pose_array.poseArray[i].probability;
-            if (num > 10){
+            if (num > 3){
                 geometry_msgs::Pose p;
                 p.position.x = x;
                 p.position.y = y;

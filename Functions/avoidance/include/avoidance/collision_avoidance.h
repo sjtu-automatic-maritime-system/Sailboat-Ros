@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'collision_avoidance'.
 //
-// Model version                  : 1.307
+// Model version                  : 1.343
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Thu Sep 07 12:12:58 2017
+// C/C++ source code generated on : Thu Jul 19 12:27:59 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -49,11 +49,8 @@ typedef struct {
 
 // Block states (auto storage) for system '<Root>'
 typedef struct {
-  real_T UnitDelay17_DSTATE;           // '<Root>/Unit Delay17'
-  real_T UnitDelay18_DSTATE[500];      // '<Root>/Unit Delay18'
-  real_T UnitDelay20_DSTATE;           // '<Root>/Unit Delay20'
-  real_T UnitDelay12_DSTATE[2];        // '<Root>/Unit Delay12'
   real_T UnitDelay16_DSTATE;           // '<Root>/Unit Delay16'
+  real_T UnitDelay12_DSTATE;           // '<Root>/Unit Delay12'
   real_T UnitDelay4_DSTATE;            // '<Root>/Unit Delay4'
   real_T UnitDelay1_DSTATE;            // '<Root>/Unit Delay1'
   real_T UnitDelay13_DSTATE[6000];     // '<Root>/Unit Delay13'
@@ -66,12 +63,14 @@ typedef struct {
   real_T UnitDelay11_DSTATE;           // '<Root>/Unit Delay11'
   real_T UnitDelay6_DSTATE;            // '<Root>/Unit Delay6'
   real_T UnitDelay5_DSTATE;            // '<Root>/Unit Delay5'
+  real_T detect_input_his[400];        // '<Root>/MATLAB Function9'
+  real_T inzone_num[300];              // '<Root>/MATLAB Function9'
 } DW_collision_avoidance_T;
 
 // External inputs (root inport signals with auto storage)
 typedef struct {
   real_T roll_rate;                    // '<Root>/roll_rate'
-  real_T camera_confidence;            // '<Root>/camera_confidence'
+  real_T camera_confidence[300];       // '<Root>/camera_confidence'
   real_T north;                        // '<Root>/north'
   real_T east;                         // '<Root>/east'
   real_T Airmar_yaw;                   // '<Root>/Airmar_yaw'
@@ -109,11 +108,11 @@ struct P_collision_avoidance_T_ {
   real_T R;                            // Variable: R
                                        //  Referenced by: '<Root>/MATLAB Function3'
 
+  real_T inzone_num_gate;              // Variable: inzone_num_gate
+                                       //  Referenced by: '<Root>/MATLAB Function9'
+
   real_T jibing_time;                  // Variable: jibing_time
                                        //  Referenced by: '<Root>/MATLAB Function4'
-
-  real_T judge_step;                   // Variable: judge_step
-                                       //  Referenced by: '<Root>/MATLAB Function10'
 
   real_T max_loose_time;               // Variable: max_loose_time
                                        //  Referenced by: '<Root>/MATLAB Function5'
@@ -121,11 +120,14 @@ struct P_collision_avoidance_T_ {
   real_T max_roll_allowed;             // Variable: max_roll_allowed
                                        //  Referenced by: '<Root>/MATLAB Function5'
 
-  real_T obstacle_proba_threshold;     // Variable: obstacle_proba_threshold
-                                       //  Referenced by: '<Root>/MATLAB Function10'
+  real_T obs_dis_gate;                 // Variable: obs_dis_gate
+                                       //  Referenced by: '<Root>/MATLAB Function9'
+
+  real_T obstacle_R;                   // Variable: obstacle_R
+                                       //  Referenced by: '<Root>/MATLAB Function1'
 
   real_T points[8];                    // Variable: points
-                                       //  Referenced by: '<Root>/MATLAB Function'
+                                       //  Referenced by: '<Root>/MATLAB Function9'
 
   real_T pos_history_len;              // Variable: pos_history_len
                                        //  Referenced by: '<Root>/MATLAB Function7'
@@ -166,20 +168,11 @@ struct P_collision_avoidance_T_ {
   real_T Airmar_Z_Value;               // Expression: 0.8
                                        //  Referenced by: '<Root>/Airmar_Z'
 
-  real_T UnitDelay17_InitialCondition; // Expression: 0
-                                       //  Referenced by: '<Root>/Unit Delay17'
-
-  real_T UnitDelay18_InitialCondition[500];// Expression: zeros([500,1])
-                                           //  Referenced by: '<Root>/Unit Delay18'
-
-  real_T UnitDelay20_InitialCondition; // Expression: 0
-                                       //  Referenced by: '<Root>/Unit Delay20'
-
-  real_T UnitDelay12_InitialCondition[2];// Expression: [0,0.5]
-                                         //  Referenced by: '<Root>/Unit Delay12'
-
   real_T UnitDelay16_InitialCondition; // Expression: 0
                                        //  Referenced by: '<Root>/Unit Delay16'
+
+  real_T UnitDelay12_InitialCondition; // Expression: 0
+                                       //  Referenced by: '<Root>/Unit Delay12'
 
   real_T UnitDelay19_InitialCondition; // Expression: 0.5
                                        //  Referenced by: '<Root>/Unit Delay19'
@@ -309,9 +302,10 @@ class scanningModelClass {
   void collision_a_getSailForce_ground(real_T WindAngle_ground, real_T
     SailAngle_ground, real_T WindSpeed, real_T *SailForce, real_T
     *SailForceAngle_ground, real_T *Attack_angle);
-  real_T collision_avoid_HeadingDeadZone(real_T heading_check, real_T
-    WindAngle_ground, real_T SailAngle_ground, real_T tacking, real_T
-    heading_d_last);
+  real_T collision_a_HeadingDeadZone_obs(real_T heading_check, real_T
+    WindAngle_ground, const real_T obstacle[15], real_T b_obstacle_R, real_T
+    SailAngle_ground, real_T tacking, real_T heading_d_last, const real_T
+    pos_ship[2]);
 };
 
 //-
@@ -331,14 +325,14 @@ class scanningModelClass {
 //  '<Root>' : 'collision_avoidance'
 //  '<S1>'   : 'collision_avoidance/MATLAB Function'
 //  '<S2>'   : 'collision_avoidance/MATLAB Function1'
-//  '<S3>'   : 'collision_avoidance/MATLAB Function10'
-//  '<S4>'   : 'collision_avoidance/MATLAB Function2'
-//  '<S5>'   : 'collision_avoidance/MATLAB Function3'
-//  '<S6>'   : 'collision_avoidance/MATLAB Function4'
-//  '<S7>'   : 'collision_avoidance/MATLAB Function5'
-//  '<S8>'   : 'collision_avoidance/MATLAB Function6'
-//  '<S9>'   : 'collision_avoidance/MATLAB Function7'
-//  '<S10>'  : 'collision_avoidance/MATLAB Function8'
+//  '<S3>'   : 'collision_avoidance/MATLAB Function2'
+//  '<S4>'   : 'collision_avoidance/MATLAB Function3'
+//  '<S5>'   : 'collision_avoidance/MATLAB Function4'
+//  '<S6>'   : 'collision_avoidance/MATLAB Function5'
+//  '<S7>'   : 'collision_avoidance/MATLAB Function6'
+//  '<S8>'   : 'collision_avoidance/MATLAB Function7'
+//  '<S9>'   : 'collision_avoidance/MATLAB Function8'
+//  '<S10>'  : 'collision_avoidance/MATLAB Function9'
 
 #endif                                 // RTW_HEADER_collision_avoidance_h_
 
