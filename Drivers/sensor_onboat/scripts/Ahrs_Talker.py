@@ -104,7 +104,7 @@ class AHRS():
         elif idx > 0:
             self.buf = self.buf[idx:]
             self.logger.info('ReadError: header not at start, discard bytes before header')
-            # return
+            return
         if len(self.buf) < 119:
             self.logger.info('ReadError: not enough data')
             return

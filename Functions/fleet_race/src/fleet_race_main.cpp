@@ -212,7 +212,7 @@ int_T main(int_T argc, char **argv) {
     f = boost::bind(&FleetraceCfgcallback, _1, _2);
     server.setCallback(f);
 
-    sub = nh.subscribe("sensor", 100, callback);
+    sub = nh.subscribe("sensor_kalman_msg", 100, callback);
 
     ros::Rate loop_rate(10);
     while (ros::ok()) {

@@ -247,7 +247,7 @@ int_T main(int_T argc, char **argv)
     f = boost::bind(&AvoidanceCfgcallback, _1, _2);
     server.setCallback(f);
 
-    sub = nh.subscribe("sensor", 100, callback);
+    sub = nh.subscribe("sensor_kalman_msg", 100, callback);
     subCamera = nh.subscribe("tld_tracked_object", 100, cameraCallback);
     subPose = nh.subscribe("/object/pose", 100, poseCallback);
 

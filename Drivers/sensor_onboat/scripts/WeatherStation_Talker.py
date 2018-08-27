@@ -25,9 +25,11 @@ INIT_COMMANDS = """$PAMTC,BAUD,38400
 """
 
 # lat/lon of original point, use to caculate posx/posy (north and east are positive)
+ORIGIN_LAT = 50.81907
+ORIGIN_LON = -1.30718
 
-ORIGIN_LAT = 31.0231632
-ORIGIN_LON = 121.4251289
+#ORIGIN_LAT = 31.0231632
+#ORIGIN_LON = 121.4251289
 
 #ORIGIN_LAT = 59.427139999999994
 #ORIGIN_LON = 10.466643333333332
@@ -203,7 +205,7 @@ class WTST:
 
 
             self.Latitude = self.gps_chang(self.latitude)
-            self.Longitude = self.gps_chang(self.longitude)
+            self.Longitude = -self.gps_chang(self.longitude)
             #
             self.PosX, self.PosY = self.w84_calc_ne(self.Latitude, self.Longitude)
             # Number of satellites in use, 0-12

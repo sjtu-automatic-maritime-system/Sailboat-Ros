@@ -7,7 +7,7 @@ nohup rosrun sensor_onboat Ahrs_Talker.py &
 sleep 5s
 nohup rosrun sensor_onboat WeatherStation_Talker.py &
 sleep 5s
-nohup rosrun mach_onboat dxl_driver.py &
+nohup rosrun mach_onboat dxl_driver_new2.py &
 sleep 5s
 nohup rosrun mach_onboat base_control &
 sleep 3s
