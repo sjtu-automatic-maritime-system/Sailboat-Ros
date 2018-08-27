@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'race_course'.
 //
-// Model version                  : 1.282
+// Model version                  : 1.285
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Sep 05 13:48:28 2017
+// C/C++ source code generated on : Mon Aug 27 15:48:55 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1225,23 +1225,22 @@ real_T race_courseModelClass::race_course_HeadingDeadZone(real_T heading_check,
   real_T heading;
   int32_T i;
 
+  // tacking=2代表可以有代价tacking
   // degree ;heading_d_last为角度
   memset(&dead_heading[0], 0, 9U * sizeof(real_T));
   dead_num = 2;
-  dead_heading[0] = (WindAngle_ground - 0.78539816339744828) +
-    12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 0.78539816339744828) +
-    12.566370614359172;
-  dead_heading[6] = 1.5707963267948966;
+  dead_heading[0] = (WindAngle_ground - 1.0471975511965976) + 12.566370614359172;
+  dead_heading[3] = (WindAngle_ground + 1.0471975511965976) + 12.566370614359172;
+  dead_heading[6] = 2.0943951023931953;
   dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
   dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
   dead_heading[7] = 3.1415926535897931;
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
+    dead_heading[2] = ((heading_d_last + 120.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
+    dead_heading[5] = (((heading_d_last - 120.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 3.246312408709453;
+    dead_heading[8] = 2.1991148575128552;
 
     // %%%%%dead_zone*2???
     dead_num = 3;
@@ -1312,6 +1311,7 @@ void race_courseModelClass::step()
   int32_T c_itmp;
   boolean_T exitg2;
   real_T rtb_WindAngle_mean;
+  real_T rtb_UnitDelay4;
   real_T rtb_UnitDelay10;
   real_T rtb_Horizontal_speed;
   real_T rtb_points_new[15];
@@ -1644,6 +1644,9 @@ void race_courseModelClass::step()
   }
 
   // End of MATLAB Function: '<Root>/MATLAB Function5'
+
+  // UnitDelay: '<Root>/Unit Delay4'
+  rtb_UnitDelay4 = race_course_DW.UnitDelay4_DSTATE;
 
   // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
   //   Inport: '<Root>/East'
@@ -2192,8 +2195,7 @@ void race_courseModelClass::step()
 
   // '<S1>:1:140'
   // '<S1>:1:143'
-  accumulate_wind_speed = race_course_AngleDiff(drive_force[190 + ixstart],
-    heading);
+  count_wind = race_course_AngleDiff(drive_force[190 + ixstart], heading);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -2206,32 +2208,33 @@ void race_courseModelClass::step()
     // '<S1>:1:151'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
     // '<S1>:1:152'
-    accumulate_wind_speed = -Airmar_wind_angle;
+    count_wind = -Airmar_wind_angle;
   }
 
-  if (std::abs(accumulate_wind_speed) > 1.5707963267948966) {
+  if (std::abs(count_wind) > 1.5707963267948966) {
     // '<S1>:1:156'
     // '<S1>:1:157'
-    if (accumulate_wind_speed < 0.0) {
-      accumulate_wind_speed = -1.0;
-    } else if (accumulate_wind_speed > 0.0) {
-      accumulate_wind_speed = 1.0;
+    if (count_wind < 0.0) {
+      count_wind = -1.0;
+    } else if (count_wind > 0.0) {
+      count_wind = 1.0;
     } else {
-      if (accumulate_wind_speed == 0.0) {
-        accumulate_wind_speed = 0.0;
+      if (count_wind == 0.0) {
+        count_wind = 0.0;
       }
     }
 
-    accumulate_wind_speed *= 1.5707963267948966;
+    count_wind *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
     // '<S1>:1:159'
     // '<S1>:1:160'
-    accumulate_wind_speed = 1.5707963267948966;
+    count_wind = 1.5707963267948966;
   }
 
-  y_speed = race_course_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+  accumulate_wind_speed = race_course_B.price[190 + itmp] / 180.0 *
+    3.1415926535897931;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/yaw'
@@ -2243,33 +2246,65 @@ void race_courseModelClass::step()
 
   heading = race_course_U.yaw;
   x_speed = race_course_P.Kp;
+  y_speed = race_course_P.Kd;
 
   // MATLAB Function 'MATLAB Function2': '<S2>:1'
   // 能不能输出首向转速
   if (WindSpeed_mean > 3.0) {
-    // '<S2>:1:2'
-    // '<S2>:1:3'
+    // '<S2>:1:4'
+    // '<S2>:1:5'
     x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * race_course_P.Kp;
+
+    // '<S2>:1:6'
+    y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * race_course_P.Kd;
   }
 
   if (rtb_Horizontal_speed > 0.3) {
-    // '<S2>:1:6'
-    // '<S2>:1:7'
+    // '<S2>:1:9'
+    // '<S2>:1:10'
     heading = Horizontal_speed_angle;
   }
 
-  // '<S2>:1:9'
-  x_speed = ((race_course_P.Ki * race_course_AngleDiff_k(heading, y_speed) *
-              race_course_P.run_period + race_course_DW.UnitDelay5_DSTATE) +
-             x_speed * race_course_AngleDiff_k(heading, y_speed)) +
-    (race_course_AngleDiff_k(race_course_DW.UnitDelay6_DSTATE, y_speed) /
-     race_course_P.run_period - race_course_U.yaw_rate) * race_course_P.Kd;
-
-  // '<S2>:1:12'
   // '<S2>:1:13'
+  x_speed = (race_course_AngleDiff_k(race_course_DW.UnitDelay6_DSTATE,
+              accumulate_wind_speed) / race_course_P.run_period -
+             race_course_U.yaw_rate) * y_speed + x_speed *
+    race_course_AngleDiff_k(heading, accumulate_wind_speed);
+
+  // '<S2>:1:14'
+  if ((rtb_UnitDelay4 > 0.5) && (std::abs(race_course_AngleDiff_k(heading,
+         accumulate_wind_speed)) > 0.69777777777777772)) {
+    // '<S2>:1:16'
+    // '<S2>:1:17'
+    y_speed = race_course_DW.UnitDelay5_DSTATE + race_course_AngleDiff_k(heading,
+      accumulate_wind_speed);
+  } else {
+    // '<S2>:1:19'
+    y_speed = race_course_DW.UnitDelay5_DSTATE;
+  }
+
+  if (std::abs(race_course_AngleDiff_k(heading, accumulate_wind_speed)) <
+      0.17453292519943295) {
+    // '<S2>:1:22'
+    // '<S2>:1:23'
+    y_speed = 0.0;
+  }
+
+  if (y_speed > 80.0) {
+    // '<S2>:1:26'
+    // '<S2>:1:27'
+    x_speed = -0.69813170079773179;
+  } else {
+    if (y_speed < -80.0) {
+      // '<S2>:1:28'
+      // '<S2>:1:29'
+      x_speed = 0.69813170079773179;
+    }
+  }
+
   if (std::abs(x_speed) > 0.69813170079773179) {
-    // '<S2>:1:14'
-    // '<S2>:1:15'
+    // '<S2>:1:32'
+    // '<S2>:1:33'
     if (x_speed < 0.0) {
       x_speed = -1.0;
     } else if (x_speed > 0.0) {
@@ -2291,10 +2326,10 @@ void race_courseModelClass::step()
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  race_course_Y.sail = accumulate_wind_speed;
+  race_course_Y.sail = count_wind;
 
   // Outport: '<Root>/speed_angle_d'
-  race_course_Y.speed_angle_d = y_speed;
+  race_course_Y.speed_angle_d = accumulate_wind_speed;
 
   // MATLAB Function: '<Root>/MATLAB Function4'
   // MATLAB Function 'MATLAB Function4': '<S4>:1'
@@ -2336,10 +2371,10 @@ void race_courseModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  race_course_DW.UnitDelay7_DSTATE = accumulate_wind_speed;
+  race_course_DW.UnitDelay7_DSTATE = count_wind;
 
   // Update for UnitDelay: '<Root>/Unit Delay8'
-  race_course_DW.UnitDelay8_DSTATE = y_speed;
+  race_course_DW.UnitDelay8_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay9' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
@@ -2357,14 +2392,12 @@ void race_courseModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  race_course_DW.UnitDelay6_DSTATE = y_speed;
+  race_course_DW.UnitDelay6_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   UnitDelay: '<Root>/Unit Delay5'
 
-  race_course_DW.UnitDelay5_DSTATE += race_course_P.Ki * race_course_AngleDiff_k
-    (heading, y_speed) * race_course_P.run_period;
+  race_course_DW.UnitDelay5_DSTATE = y_speed;
 }
 
 // Model initialize function

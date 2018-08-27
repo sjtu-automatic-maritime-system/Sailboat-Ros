@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.188
+// Model version                  : 1.194
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Sep 05 10:32:45 2017
+// C/C++ source code generated on : Mon Aug 27 16:19:58 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1224,23 +1224,22 @@ real_T keepingModelClass::keeping_HeadingDeadZone(real_T heading_check, real_T
   real_T heading;
   int32_T i;
 
+  // tacking=2代表可以有代价tacking
   // degree ;heading_d_last为角度
   memset(&dead_heading[0], 0, 9U * sizeof(real_T));
   dead_num = 2;
-  dead_heading[0] = (WindAngle_ground - 0.78539816339744828) +
-    12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 0.78539816339744828) +
-    12.566370614359172;
-  dead_heading[6] = 1.5707963267948966;
+  dead_heading[0] = (WindAngle_ground - 1.0471975511965976) + 12.566370614359172;
+  dead_heading[3] = (WindAngle_ground + 1.0471975511965976) + 12.566370614359172;
+  dead_heading[6] = 2.0943951023931953;
   dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
   dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
   dead_heading[7] = 3.1415926535897931;
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
+    dead_heading[2] = ((heading_d_last + 120.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
+    dead_heading[5] = (((heading_d_last - 120.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 3.246312408709453;
+    dead_heading[8] = 2.1991148575128552;
 
     // %%%%%dead_zone*2???
     dead_num = 3;
@@ -1628,7 +1627,8 @@ void keepingModelClass::step()
   //   UnitDelay: '<Root>/Unit Delay10'
 
   // MATLAB Function 'MATLAB Function4': '<S5>:1'
-  if (keeping_DW.UnitDelay10_DSTATE > keeping_P.tacking_time) {
+  if ((keeping_DW.UnitDelay10_DSTATE > keeping_P.tacking_time) &&
+      (rtb_Horizontal_speed > 0.15)) {
     // '<S5>:1:9'
     // '<S5>:1:10'
     rtb_tacking = 2.0;
@@ -1637,12 +1637,18 @@ void keepingModelClass::step()
     rtb_tacking = keeping_DW.UnitDelay10_DSTATE + 1.0;
   }
 
+  //  tacking=2;
+  // '<S5>:1:19'
+  if (rtb_Horizontal_speed > 1.0) {
+    // '<S5>:1:20'
+    // '<S5>:1:21'
+    rtb_tacking = 2.0;
+  }
+
   // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
   //   Inport: '<Root>/roll'
   //   UnitDelay: '<Root>/Unit Delay1'
 
-  //  tacking=2;
-  // '<S5>:1:19'
   // MATLAB Function 'MATLAB Function3': '<S4>:1'
   if (std::abs(keeping_U.roll) > keeping_P.max_roll_allowed) {
     // '<S4>:1:2'
@@ -2094,7 +2100,7 @@ void keepingModelClass::step()
 
   // '<S2>:1:141'
   // '<S2>:1:144'
-  accumulate_wind_speed = keeping_AngleDiff(drive_force[190 + ixstart], heading);
+  count_wind = keeping_AngleDiff(drive_force[190 + ixstart], heading);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -2107,35 +2113,36 @@ void keepingModelClass::step()
     // '<S2>:1:152'
     // %%%%%%%%%%%%%%%%%%%试验时去掉
     // '<S2>:1:153'
-    accumulate_wind_speed = -Airmar_wind_angle;
+    count_wind = -Airmar_wind_angle;
   }
 
-  if (std::abs(accumulate_wind_speed) > 1.5707963267948966) {
+  if (std::abs(count_wind) > 1.5707963267948966) {
     // '<S2>:1:157'
     // '<S2>:1:158'
-    if (accumulate_wind_speed < 0.0) {
-      accumulate_wind_speed = -1.0;
-    } else if (accumulate_wind_speed > 0.0) {
-      accumulate_wind_speed = 1.0;
+    if (count_wind < 0.0) {
+      count_wind = -1.0;
+    } else if (count_wind > 0.0) {
+      count_wind = 1.0;
     } else {
-      if (accumulate_wind_speed == 0.0) {
-        accumulate_wind_speed = 0.0;
+      if (count_wind == 0.0) {
+        count_wind = 0.0;
       }
     }
 
-    accumulate_wind_speed *= 1.5707963267948966;
+    count_wind *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
     // '<S2>:1:160'
     // '<S2>:1:161'
-    accumulate_wind_speed = 1.5707963267948966;
+    count_wind = 1.5707963267948966;
   }
 
-  y_speed = keeping_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+  accumulate_wind_speed = keeping_B.price[190 + itmp] / 180.0 *
+    3.1415926535897931;
 
   // Outport: '<Root>/speed_angle_d'
-  keeping_Y.speed_angle_d = y_speed;
+  keeping_Y.speed_angle_d = accumulate_wind_speed;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/yaw'
@@ -2147,33 +2154,64 @@ void keepingModelClass::step()
 
   heading = keeping_U.yaw;
   x_speed = keeping_P.Kp;
+  y_speed = keeping_P.Kd;
 
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
   if (WindSpeed_mean > 3.0) {
-    // '<S3>:1:2'
     // '<S3>:1:3'
+    // '<S3>:1:4'
     x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kp;
+
+    // '<S3>:1:5'
+    y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kd;
   }
 
   if (rtb_Horizontal_speed > 0.3) {
-    // '<S3>:1:5'
-    // '<S3>:1:6'
+    // '<S3>:1:8'
+    // '<S3>:1:9'
     heading = Horizontal_speed_angle;
   }
 
-  // '<S3>:1:10'
-  x_speed = ((keeping_P.Ki * keeping_AngleDiff_o(heading, y_speed) *
-              keeping_P.run_period + keeping_DW.UnitDelay5_DSTATE) + x_speed *
-             keeping_AngleDiff_o(heading, y_speed)) + (keeping_AngleDiff_o
-    (keeping_DW.UnitDelay6_DSTATE, y_speed) / keeping_P.run_period -
-    keeping_U.yaw_rate) * keeping_P.Kd;
+  // '<S3>:1:12'
+  x_speed = (keeping_AngleDiff_o(keeping_DW.UnitDelay6_DSTATE,
+              accumulate_wind_speed) / keeping_P.run_period - keeping_U.yaw_rate)
+    * y_speed + x_speed * keeping_AngleDiff_o(heading, accumulate_wind_speed);
 
   // '<S3>:1:13'
-  // '<S3>:1:14'
-  if (std::abs(x_speed) > 0.52359877559829882) {
+  if (std::abs(keeping_AngleDiff_o(heading, accumulate_wind_speed)) >
+      0.69777777777777772) {
     // '<S3>:1:15'
     // '<S3>:1:16'
+    y_speed = keeping_DW.UnitDelay5_DSTATE + keeping_AngleDiff_o(heading,
+      accumulate_wind_speed);
+  } else {
+    // '<S3>:1:18'
+    y_speed = keeping_DW.UnitDelay5_DSTATE;
+  }
+
+  if (std::abs(keeping_AngleDiff_o(heading, accumulate_wind_speed)) <
+      0.17453292519943295) {
+    // '<S3>:1:21'
+    // '<S3>:1:22'
+    y_speed = 0.0;
+  }
+
+  if (y_speed > 80.0) {
+    // '<S3>:1:25'
+    // '<S3>:1:26'
+    x_speed = -0.69813170079773179;
+  } else {
+    if (y_speed < -80.0) {
+      // '<S3>:1:27'
+      // '<S3>:1:28'
+      x_speed = 0.69813170079773179;
+    }
+  }
+
+  if (std::abs(x_speed) > 0.69813170079773179) {
+    // '<S3>:1:31'
+    // '<S3>:1:32'
     if (x_speed < 0.0) {
       x_speed = -1.0;
     } else if (x_speed > 0.0) {
@@ -2184,7 +2222,7 @@ void keepingModelClass::step()
       }
     }
 
-    x_speed *= 0.52359877559829882;
+    x_speed *= 0.69813170079773179;
   }
 
   // Outport: '<Root>/rudder' incorporates:
@@ -2195,7 +2233,7 @@ void keepingModelClass::step()
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  keeping_Y.sail = accumulate_wind_speed;
+  keeping_Y.sail = count_wind;
 
   // Update for UnitDelay: '<Root>/Unit Delay13'
   memcpy(&keeping_DW.UnitDelay13_DSTATE[0], &keeping_B.real_wind_history[0],
@@ -2212,10 +2250,10 @@ void keepingModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  keeping_DW.UnitDelay7_DSTATE = accumulate_wind_speed;
+  keeping_DW.UnitDelay7_DSTATE = count_wind;
 
   // Update for UnitDelay: '<Root>/Unit Delay8'
-  keeping_DW.UnitDelay8_DSTATE = y_speed;
+  keeping_DW.UnitDelay8_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay9' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
@@ -2233,14 +2271,12 @@ void keepingModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  keeping_DW.UnitDelay6_DSTATE = y_speed;
+  keeping_DW.UnitDelay6_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   UnitDelay: '<Root>/Unit Delay5'
 
-  keeping_DW.UnitDelay5_DSTATE += keeping_P.Ki * keeping_AngleDiff_o(heading,
-    y_speed) * keeping_P.run_period;
+  keeping_DW.UnitDelay5_DSTATE = y_speed;
 }
 
 // Model initialize function
