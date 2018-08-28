@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.194
+// Model version                  : 1.203
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Mon Aug 27 16:19:58 2018
+// C/C++ source code generated on : Tue Aug 28 09:18:42 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1228,18 +1228,20 @@ real_T keepingModelClass::keeping_HeadingDeadZone(real_T heading_check, real_T
   // degree ;heading_d_last为角度
   memset(&dead_heading[0], 0, 9U * sizeof(real_T));
   dead_num = 2;
-  dead_heading[0] = (WindAngle_ground - 1.0471975511965976) + 12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 1.0471975511965976) + 12.566370614359172;
-  dead_heading[6] = 2.0943951023931953;
+  dead_heading[0] = (WindAngle_ground - 0.87266462599716477) +
+    12.566370614359172;
+  dead_heading[3] = (WindAngle_ground + 0.87266462599716477) +
+    12.566370614359172;
+  dead_heading[6] = 1.7453292519943295;
   dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
   dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
   dead_heading[7] = 3.1415926535897931;
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 120.0) - 6.0) / 180.0 *
+    dead_heading[2] = ((heading_d_last + 100.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 120.0) + 6.0) + 360.0) / 180.0 *
+    dead_heading[5] = (((heading_d_last - 100.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 2.1991148575128552;
+    dead_heading[8] = 2.8972465583105871;
 
     // %%%%%dead_zone*2???
     dead_num = 3;
@@ -1435,7 +1437,7 @@ void keepingModelClass::step()
   x_speed /= (real_T)wind_valid;
 
   // '<S7>:1:22'
-  if (std::abs(y_speed) < 0.1) {
+  if (std::abs(y_speed) < 0.3) {
     // '<S7>:1:23'
     // '<S7>:1:24'
     Horizontal_speed_angle = keeping_U.yaw;
@@ -1952,27 +1954,27 @@ void keepingModelClass::step()
 
   // WindAngle_ground=atan(relative_wind_E/relative_wind_N);
   // '<S2>:1:95'
-  real_wind_speed_y = std::sqrt(y_speed * y_speed + x_speed * x_speed);
+  rtb_CenterPosX = std::sqrt(y_speed * y_speed + x_speed * x_speed);
 
   // '<S2>:1:96'
-  rtb_CenterPosX = Airmar_wind_angle + heading;
+  real_wind_speed_y = Airmar_wind_angle + heading;
 
   // '<S2>:1:98'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
-  dead_sail_data[0] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 - 7.0) +
+  dead_sail_data[0] = (real_wind_speed_y / 3.1415926535897931 * 180.0 - 7.0) +
     720.0;
-  dead_sail_data[1] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 + 7.0) +
+  dead_sail_data[1] = (real_wind_speed_y / 3.1415926535897931 * 180.0 + 7.0) +
     720.0;
   if (jibing > 1.5) {
     // '<S2>:1:99'
     // '<S2>:1:100'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
-    dead_sail_data[0] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 - 7.0) +
+    dead_sail_data[0] = (real_wind_speed_y / 3.1415926535897931 * 180.0 - 7.0) +
       720.0;
     dead_sail_data[1] = (sail_d_last + 90.0) + 720.0;
-    dead_sail_data[2] = (rtb_CenterPosX / 3.1415926535897931 * 180.0 + 7.0) +
+    dead_sail_data[2] = (real_wind_speed_y / 3.1415926535897931 * 180.0 + 7.0) +
       720.0;
     dead_sail_data[3] = (sail_d_last + 270.0) + 720.0;
   }
@@ -2038,8 +2040,8 @@ void keepingModelClass::step()
   for (ixstart = 0; ixstart < wind_valid; ixstart++) {
     // '<S2>:1:123'
     y_speed = x_speed + (real_T)ixstart;
-    keeping_getSailForce_ground(rtb_CenterPosX, y_speed / 180.0 *
-      3.1415926535897931, real_wind_speed_y, &accumulate_wind_speed, &count_wind,
+    keeping_getSailForce_ground(real_wind_speed_y, y_speed / 180.0 *
+      3.1415926535897931, rtb_CenterPosX, &accumulate_wind_speed, &count_wind,
       &real_wind_speed_x);
 
     // '<S2>:1:125'
@@ -2109,16 +2111,28 @@ void keepingModelClass::step()
   //  if abs(AngleDiff(heading,heading_d))>
   //
   //  end
-  if (std::abs(Airmar_wind_angle) < 0.52359877559829882) {
-    // '<S2>:1:152'
-    // %%%%%%%%%%%%%%%%%%%试验时去掉
-    // '<S2>:1:153'
-    count_wind = -Airmar_wind_angle;
+  //  if abs(Airmar_wind_angle)<pi/6%%%%%%%%%%%%%%%%%%%%试验时去掉
+  //      sail_d=-Airmar_wind_angle;
+  //  end
+  if (std::abs(count_wind) > 0.13962634015954636) {
+    // '<S2>:1:156'
+    // '<S2>:1:157'
+    if (count_wind < 0.0) {
+      rtb_CenterPosX = -1.0;
+    } else if (count_wind > 0.0) {
+      rtb_CenterPosX = 1.0;
+    } else if (count_wind == 0.0) {
+      rtb_CenterPosX = 0.0;
+    } else {
+      rtb_CenterPosX = count_wind;
+    }
+
+    count_wind = (std::abs(count_wind) - 0.13962634015954636) * rtb_CenterPosX;
   }
 
   if (std::abs(count_wind) > 1.5707963267948966) {
-    // '<S2>:1:157'
-    // '<S2>:1:158'
+    // '<S2>:1:159'
+    // '<S2>:1:160'
     if (count_wind < 0.0) {
       count_wind = -1.0;
     } else if (count_wind > 0.0) {
@@ -2133,8 +2147,8 @@ void keepingModelClass::step()
   }
 
   if (rtb_sail_safe < 0.5) {
-    // '<S2>:1:160'
-    // '<S2>:1:161'
+    // '<S2>:1:162'
+    // '<S2>:1:163'
     count_wind = 1.5707963267948966;
   }
 
@@ -2167,7 +2181,7 @@ void keepingModelClass::step()
     y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kd;
   }
 
-  if (rtb_Horizontal_speed > 0.3) {
+  if (rtb_Horizontal_speed > 0.5) {
     // '<S3>:1:8'
     // '<S3>:1:9'
     heading = Horizontal_speed_angle;
