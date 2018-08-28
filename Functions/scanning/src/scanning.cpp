@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.316
+// Model version                  : 1.322
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Aug 28 09:21:50 2018
+// C/C++ source code generated on : Tue Aug 28 11:20:35 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -3040,26 +3040,18 @@ void scanningModelClass::step()
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/Yaw'
   //   Inport: '<Root>/Yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function7'
   //   MATLAB Function: '<Root>/MATLAB Function8'
   //   UnitDelay: '<Root>/Unit Delay6'
   //   UnitDelay: '<Root>/Unit Delay7'
 
   point2_idx_0 = scanning_U.Yaw;
-  x_speed = scanning_P.Kp;
-  y_speed = scanning_P.Kd;
 
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
-  if (WindSpeed_mean > 3.0) {
-    // '<S3>:1:3'
-    // '<S3>:1:4'
-    x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * scanning_P.Kp;
-
-    // '<S3>:1:5'
-    y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * scanning_P.Kd;
-  }
-
+  //  if wind_speed>3
+  //      Kp=Kp*(1+(wind_speed-3)/6);
+  //      Kd=Kd*(1+(wind_speed-3)/6);
+  //  end
   if (rtb_Horizontal_speed > 0.5) {
     // '<S3>:1:8'
     // '<S3>:1:9'
@@ -3069,12 +3061,13 @@ void scanningModelClass::step()
   // '<S3>:1:12'
   y_speed = (scanning_AngleDiff_g(scanning_DW.UnitDelay7_DSTATE,
               accumulate_wind_speed) / scanning_P.run_period -
-             scanning_U.Yaw_rate) * y_speed + x_speed * scanning_AngleDiff_g
-    (point2_idx_0, accumulate_wind_speed);
+             scanning_U.Yaw_rate) * scanning_P.Kd + scanning_P.Kp *
+    scanning_AngleDiff_g(point2_idx_0, accumulate_wind_speed);
 
   // '<S3>:1:13'
   if ((rtb_UnitDelay > 0.5) && (fabs(scanning_AngleDiff_g(point2_idx_0,
-         accumulate_wind_speed)) > 0.69777777777777772)) {
+         accumulate_wind_speed)) > 0.87222222222222234) && (fabs
+       (scanning_DW.UnitDelay6_DSTATE) < 100.0)) {
     // '<S3>:1:15'
     // '<S3>:1:16'
     x_speed = scanning_DW.UnitDelay6_DSTATE + scanning_AngleDiff_g(point2_idx_0,
@@ -3085,18 +3078,18 @@ void scanningModelClass::step()
   }
 
   if (fabs(scanning_AngleDiff_g(point2_idx_0, accumulate_wind_speed)) <
-      0.17453292519943295) {
+      0.26179938779914941) {
     // '<S3>:1:21'
     // '<S3>:1:22'
     x_speed = 0.0;
   }
 
-  if (x_speed > 80.0) {
+  if (x_speed > 100.0) {
     // '<S3>:1:25'
     // '<S3>:1:26'
     y_speed = -0.69813170079773179;
   } else {
-    if (x_speed < -80.0) {
+    if (x_speed < -100.0) {
       // '<S3>:1:27'
       // '<S3>:1:28'
       y_speed = 0.69813170079773179;

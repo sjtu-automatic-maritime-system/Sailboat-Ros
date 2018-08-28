@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'race_course'.
 //
-// Model version                  : 1.294
+// Model version                  : 1.297
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Aug 28 09:15:48 2018
+// C/C++ source code generated on : Tue Aug 28 11:24:46 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -2252,26 +2252,18 @@ void race_courseModelClass::step()
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/yaw'
   //   Inport: '<Root>/yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function6'
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
   heading = race_course_U.yaw;
-  x_speed = race_course_P.Kp;
-  y_speed = race_course_P.Kd;
 
   // MATLAB Function 'MATLAB Function2': '<S2>:1'
   // 能不能输出首向转速
-  if (WindSpeed_mean > 3.0) {
-    // '<S2>:1:4'
-    // '<S2>:1:5'
-    x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * race_course_P.Kp;
-
-    // '<S2>:1:6'
-    y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * race_course_P.Kd;
-  }
-
+  //  if wind_speed>3
+  //      Kp=Kp*(1+(wind_speed-3)/6);
+  //      Kd=Kd*(1+(wind_speed-3)/6);
+  //  end
   if (rtb_Horizontal_speed > 1.0) {
     // '<S2>:1:9'
     // '<S2>:1:10'
@@ -2281,12 +2273,13 @@ void race_courseModelClass::step()
   // '<S2>:1:13'
   x_speed = (race_course_AngleDiff_k(race_course_DW.UnitDelay6_DSTATE,
               accumulate_wind_speed) / race_course_P.run_period -
-             race_course_U.yaw_rate) * y_speed + x_speed *
+             race_course_U.yaw_rate) * race_course_P.Kd + race_course_P.Kp *
     race_course_AngleDiff_k(heading, accumulate_wind_speed);
 
   // '<S2>:1:14'
   if ((rtb_UnitDelay4 > 0.5) && (std::abs(race_course_AngleDiff_k(heading,
-         accumulate_wind_speed)) > 0.69777777777777772)) {
+         accumulate_wind_speed)) > 0.87222222222222234) && (std::abs
+       (race_course_DW.UnitDelay5_DSTATE) < 100.0)) {
     // '<S2>:1:16'
     // '<S2>:1:17'
     y_speed = race_course_DW.UnitDelay5_DSTATE + race_course_AngleDiff_k(heading,
@@ -2297,18 +2290,18 @@ void race_courseModelClass::step()
   }
 
   if (std::abs(race_course_AngleDiff_k(heading, accumulate_wind_speed)) <
-      0.17453292519943295) {
+      0.26179938779914941) {
     // '<S2>:1:22'
     // '<S2>:1:23'
     y_speed = 0.0;
   }
 
-  if (y_speed > 80.0) {
+  if (y_speed > 100.0) {
     // '<S2>:1:26'
     // '<S2>:1:27'
     x_speed = -0.69813170079773179;
   } else {
-    if (y_speed < -80.0) {
+    if (y_speed < -100.0) {
       // '<S2>:1:28'
       // '<S2>:1:29'
       x_speed = 0.69813170079773179;

@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'keeping'.
 //
-// Model version                  : 1.203
+// Model version                  : 1.208
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Aug 28 09:18:42 2018
+// C/C++ source code generated on : Tue Aug 28 11:18:40 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -2161,26 +2161,18 @@ void keepingModelClass::step()
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/yaw'
   //   Inport: '<Root>/yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function6'
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
   heading = keeping_U.yaw;
-  x_speed = keeping_P.Kp;
-  y_speed = keeping_P.Kd;
 
   // MATLAB Function 'MATLAB Function2': '<S3>:1'
   // 能不能输出首向转速
-  if (WindSpeed_mean > 3.0) {
-    // '<S3>:1:3'
-    // '<S3>:1:4'
-    x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kp;
-
-    // '<S3>:1:5'
-    y_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * keeping_P.Kd;
-  }
-
+  //  if ship_speed>0.5
+  //      Kp=Kp*(1+(wind_speed-0.5)/2);
+  //      Kd=Kd*(1+(wind_speed-0.5)/2);
+  //  end
   if (rtb_Horizontal_speed > 0.5) {
     // '<S3>:1:8'
     // '<S3>:1:9'
@@ -2190,11 +2182,13 @@ void keepingModelClass::step()
   // '<S3>:1:12'
   x_speed = (keeping_AngleDiff_o(keeping_DW.UnitDelay6_DSTATE,
               accumulate_wind_speed) / keeping_P.run_period - keeping_U.yaw_rate)
-    * y_speed + x_speed * keeping_AngleDiff_o(heading, accumulate_wind_speed);
+    * keeping_P.Kd + keeping_P.Kp * keeping_AngleDiff_o(heading,
+    accumulate_wind_speed);
 
   // '<S3>:1:13'
-  if (std::abs(keeping_AngleDiff_o(heading, accumulate_wind_speed)) >
-      0.69777777777777772) {
+  if ((std::abs(keeping_AngleDiff_o(heading, accumulate_wind_speed)) >
+       0.87222222222222234) && (std::abs(keeping_DW.UnitDelay5_DSTATE) < 100.0))
+  {
     // '<S3>:1:15'
     // '<S3>:1:16'
     y_speed = keeping_DW.UnitDelay5_DSTATE + keeping_AngleDiff_o(heading,
@@ -2205,18 +2199,18 @@ void keepingModelClass::step()
   }
 
   if (std::abs(keeping_AngleDiff_o(heading, accumulate_wind_speed)) <
-      0.17453292519943295) {
+      0.26179938779914941) {
     // '<S3>:1:21'
     // '<S3>:1:22'
     y_speed = 0.0;
   }
 
-  if (y_speed > 80.0) {
+  if (y_speed > 100.0) {
     // '<S3>:1:25'
     // '<S3>:1:26'
     x_speed = -0.69813170079773179;
   } else {
-    if (y_speed < -80.0) {
+    if (y_speed < -100.0) {
       // '<S3>:1:27'
       // '<S3>:1:28'
       x_speed = 0.69813170079773179;

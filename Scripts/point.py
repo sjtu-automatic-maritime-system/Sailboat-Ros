@@ -25,9 +25,10 @@ def w84_calc_ne(lat2, lon2):
     print ('east',east)
     return north,east
 
-print ('B')
-w84_calc_ne(50.822000,-1.31188333)
-print('A')
-w84_calc_ne(50.821183,-1.3117666)
-print('C')
-w84_calc_ne(50.821116,-1.3106333)
+# print ('B')
+# w84_calc_ne(50.822000,-1.31188333)
+# print('A')
+# w84_calc_ne(50.821183,-1.3117666)
+# print('C')
+# w84_calc_ne(50.821116,-1.3106333)
+w84_calc_ne(50.82083333,	-1.310983333)
