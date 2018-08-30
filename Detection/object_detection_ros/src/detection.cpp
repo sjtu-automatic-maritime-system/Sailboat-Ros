@@ -13,8 +13,8 @@ cv::Mat edgeDetection(cv::Mat img_src, u_int8_t low_threshold=100, u_int8_t high
     cv::Mat gray, hsv;
     //imshow("src", img_src);
 
-    int iLowH = 156;
-    int iHighH = 180;
+    int iLowH = 0;
+    int iHighH = 34;
     int iLowS = 43;
     int iHighS = 255;
     int iLowV = 46;
