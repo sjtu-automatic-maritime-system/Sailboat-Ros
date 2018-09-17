@@ -122,7 +122,7 @@ void FleetraceCfgcallback(fleet_race::fleet_race_Config &config, uint32_t level)
 void getOutMachPut(sailboat_message::Mach_msg &msg) {
 
     msg.timestamp = ros::Time::now().toSec();
-    msg.motor = 0;
+    msg.motor = 50;
     msg.rudder = race_course_Obj.race_course_Y.rudder;
     msg.sail = race_course_Obj.race_course_Y.sail;
 
@@ -212,7 +212,7 @@ int_T main(int_T argc, char **argv) {
     f = boost::bind(&FleetraceCfgcallback, _1, _2);
     server.setCallback(f);
 
-    sub = nh.subscribe("sensor", 100, callback);
+    sub = nh.subscribe("sensor_kalman_msg", 100, callback);
 
     ros::Rate loop_rate(10);
     while (ros::ok()) {

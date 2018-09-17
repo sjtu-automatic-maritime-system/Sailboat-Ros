@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'race_course'.
 //
-// Model version                  : 1.282
+// Model version                  : 1.297
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Tue Sep 05 13:48:28 2017
+// C/C++ source code generated on : Tue Aug 28 11:24:46 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -1225,23 +1225,24 @@ real_T race_courseModelClass::race_course_HeadingDeadZone(real_T heading_check,
   real_T heading;
   int32_T i;
 
+  // tacking=2代表可以有代价tacking
   // degree ;heading_d_last为角度
   memset(&dead_heading[0], 0, 9U * sizeof(real_T));
   dead_num = 2;
-  dead_heading[0] = (WindAngle_ground - 0.78539816339744828) +
+  dead_heading[0] = (WindAngle_ground - 0.87266462599716477) +
     12.566370614359172;
-  dead_heading[3] = (WindAngle_ground + 0.78539816339744828) +
+  dead_heading[3] = (WindAngle_ground + 0.87266462599716477) +
     12.566370614359172;
-  dead_heading[6] = 1.5707963267948966;
+  dead_heading[6] = 1.7453292519943295;
   dead_heading[1] = (SailAngle_ground + 1.7453292519943295) + 12.566370614359172;
   dead_heading[4] = (SailAngle_ground + 4.5378560551852569) + 12.566370614359172;
   dead_heading[7] = 3.1415926535897931;
   if (tacking > 1.5) {
-    dead_heading[2] = ((heading_d_last + 90.0) - 6.0) / 180.0 *
+    dead_heading[2] = ((heading_d_last + 100.0) - 6.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[5] = (((heading_d_last - 90.0) + 6.0) + 360.0) / 180.0 *
+    dead_heading[5] = (((heading_d_last - 100.0) + 6.0) + 360.0) / 180.0 *
       3.1415926535897931 + 12.566370614359172;
-    dead_heading[8] = 3.246312408709453;
+    dead_heading[8] = 2.8972465583105871;
 
     // %%%%%dead_zone*2???
     dead_num = 3;
@@ -1294,7 +1295,7 @@ void race_courseModelClass::step()
   real_T x;
   real_T loose_time;
   real_T heading;
-  real_T WindAngle_ground;
+  real_T WindSpeed;
   real_T sail_d_last;
   real_T heading_d_last;
   real_T jibing;
@@ -1312,6 +1313,7 @@ void race_courseModelClass::step()
   int32_T c_itmp;
   boolean_T exitg2;
   real_T rtb_WindAngle_mean;
+  real_T rtb_UnitDelay4;
   real_T rtb_UnitDelay10;
   real_T rtb_Horizontal_speed;
   real_T rtb_points_new[15];
@@ -1437,7 +1439,7 @@ void race_courseModelClass::step()
   x_speed /= (real_T)wind_valid;
 
   // '<S7>:1:22'
-  if (std::abs(y_speed) < 0.1) {
+  if (std::abs(y_speed) < 0.3) {
     // '<S7>:1:23'
     // '<S7>:1:24'
     Horizontal_speed_angle = race_course_U.yaw;
@@ -1645,6 +1647,9 @@ void race_courseModelClass::step()
 
   // End of MATLAB Function: '<Root>/MATLAB Function5'
 
+  // UnitDelay: '<Root>/Unit Delay4'
+  rtb_UnitDelay4 = race_course_DW.UnitDelay4_DSTATE;
+
   // MATLAB Function: '<Root>/MATLAB Function3' incorporates:
   //   Inport: '<Root>/East'
   //   Inport: '<Root>/North'
@@ -1804,23 +1809,23 @@ void race_courseModelClass::step()
     n = (SailAngle_ground - (rt_roundd_snf(rtb_WindAngle_mean /
            3.1415926535897931 * 180.0) - 90.0)) + 1.0;
     race_course_getSailForce_ground(rtb_WindAngle_mean, SailAngle_ground / 180.0
-      * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y,
-      &WindAngle_ground, &x_speed);
+      * 3.1415926535897931, WindSpeed_mean, &real_wind_speed_y, &WindSpeed,
+      &x_speed);
 
     // '<S1>:1:28'
-    count_wind = (rt_roundd_snf((WindAngle_ground + 1.3089969389957472) /
-      3.1415926535897931 * 180.0) - rt_roundd_snf((WindAngle_ground -
+    count_wind = (rt_roundd_snf((WindSpeed + 1.3089969389957472) /
+      3.1415926535897931 * 180.0) - rt_roundd_snf((WindSpeed -
       1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
 
     // '<S1>:1:29'
     memset(&race_course_B.price_fixSail[0], 0, 1140U * sizeof(real_T));
 
     // '<S1>:1:30'
-    c = rt_roundd_snf((WindAngle_ground - 1.3089969389957472) /
-                      3.1415926535897931 * 180.0);
+    c = rt_roundd_snf((WindSpeed - 1.3089969389957472) / 3.1415926535897931 *
+                      180.0);
 
     // '<S1>:1:30'
-    ixstart = (int32_T)(rt_roundd_snf((WindAngle_ground + 1.3089969389957472) /
+    ixstart = (int32_T)(rt_roundd_snf((WindSpeed + 1.3089969389957472) /
       3.1415926535897931 * 180.0) + (1.0 - c));
 
     // '<S1>:1:30'
@@ -1829,7 +1834,7 @@ void race_courseModelClass::step()
       x_speed = c + (real_T)wind_valid;
 
       // '<S1>:1:33'
-      real_wind_speed_x = (x_speed - rt_roundd_snf((WindAngle_ground -
+      real_wind_speed_x = (x_speed - rt_roundd_snf((WindSpeed -
         1.3089969389957472) / 3.1415926535897931 * 180.0)) + 1.0;
 
       // '<S1>:1:34'
@@ -1860,8 +1865,7 @@ void race_courseModelClass::step()
         accumulate_wind_speed;
 
       // '<S1>:1:46'
-      race_course_B.price_fixSail[(int32_T)real_wind_speed_x + 379] =
-        WindAngle_ground;
+      race_course_B.price_fixSail[(int32_T)real_wind_speed_x + 379] = WindSpeed;
 
       // '<S1>:1:47'
       race_course_B.price_fixSail[(int32_T)real_wind_speed_x + 569] = y_speed;
@@ -1968,12 +1972,12 @@ void race_courseModelClass::step()
     // '<S1>:1:65'
     // '<S1>:1:66'
     y_speed = std::cos(race_course_AngleDiff(race_course_B.price_fixSail[c_itmp],
-      WindAngle_ground)) * real_wind_speed_y * std::cos(race_course_AngleDiff
+      WindSpeed)) * real_wind_speed_y * std::cos(race_course_AngleDiff
       (los_heading, race_course_B.price_fixSail[c_itmp]));
 
     // '<S1>:1:67'
     x_speed = std::cos(race_course_AngleDiff(race_course_B.price_fixSail[ix],
-      WindAngle_ground)) * real_wind_speed_y * std::cos(race_course_AngleDiff
+      WindSpeed)) * real_wind_speed_y * std::cos(race_course_AngleDiff
       (los_heading, race_course_B.price_fixSail[ix]));
 
     // '<S1>:1:68'
@@ -2045,27 +2049,27 @@ void race_courseModelClass::step()
 
   // WindAngle_ground=atan(relative_wind_E/relative_wind_N);
   // '<S1>:1:100'
-  real_wind_speed_y = std::sqrt(y_speed * y_speed + x_speed * x_speed);
+  WindSpeed = std::sqrt(y_speed * y_speed + x_speed * x_speed);
 
   // '<S1>:1:101'
-  WindAngle_ground = Airmar_wind_angle + heading;
+  real_wind_speed_y = Airmar_wind_angle + heading;
 
   // '<S1>:1:103'
   dead_sail_sizes[0] = 1;
   dead_sail_sizes[1] = 2;
-  dead_sail_data[0] = (WindAngle_ground / 3.1415926535897931 * 180.0 - 7.0) +
+  dead_sail_data[0] = (real_wind_speed_y / 3.1415926535897931 * 180.0 - 7.0) +
     720.0;
-  dead_sail_data[1] = (WindAngle_ground / 3.1415926535897931 * 180.0 + 7.0) +
+  dead_sail_data[1] = (real_wind_speed_y / 3.1415926535897931 * 180.0 + 7.0) +
     720.0;
   if (jibing > 1.5) {
     // '<S1>:1:104'
     // '<S1>:1:105'
     dead_sail_sizes[0] = 2;
     dead_sail_sizes[1] = 2;
-    dead_sail_data[0] = (WindAngle_ground / 3.1415926535897931 * 180.0 - 7.0) +
+    dead_sail_data[0] = (real_wind_speed_y / 3.1415926535897931 * 180.0 - 7.0) +
       720.0;
     dead_sail_data[1] = (sail_d_last + 90.0) + 720.0;
-    dead_sail_data[2] = (WindAngle_ground / 3.1415926535897931 * 180.0 + 7.0) +
+    dead_sail_data[2] = (real_wind_speed_y / 3.1415926535897931 * 180.0 + 7.0) +
       720.0;
     dead_sail_data[3] = (sail_d_last + 270.0) + 720.0;
   }
@@ -2130,8 +2134,8 @@ void race_courseModelClass::step()
   for (ixstart = 0; ixstart < wind_valid; ixstart++) {
     // '<S1>:1:122'
     y_speed = x_speed + (real_T)ixstart;
-    race_course_getSailForce_ground(WindAngle_ground, y_speed / 180.0 *
-      3.1415926535897931, real_wind_speed_y, &accumulate_wind_speed, &count_wind,
+    race_course_getSailForce_ground(real_wind_speed_y, y_speed / 180.0 *
+      3.1415926535897931, WindSpeed, &accumulate_wind_speed, &count_wind,
       &real_wind_speed_x);
 
     // '<S1>:1:124'
@@ -2192,8 +2196,7 @@ void race_courseModelClass::step()
 
   // '<S1>:1:140'
   // '<S1>:1:143'
-  accumulate_wind_speed = race_course_AngleDiff(drive_force[190 + ixstart],
-    heading);
+  count_wind = race_course_AngleDiff(drive_force[190 + ixstart], heading);
 
   //  if abs(attack_angle_d)<10/180*pi
   //      sail_d=sign(sail_d)*(abs(sail_d)-3/180*pi);
@@ -2202,74 +2205,112 @@ void race_courseModelClass::step()
   //  if abs(AngleDiff(heading,heading_d))>
   //
   //  end
-  if (std::abs(Airmar_wind_angle) < 0.52359877559829882) {
-    // '<S1>:1:151'
-    // %%%%%%%%%%%%%%%%%%%试验时去掉
-    // '<S1>:1:152'
-    accumulate_wind_speed = -Airmar_wind_angle;
+  //  if abs(Airmar_wind_angle)<pi/6%%%%%%%%%%%%%%%%%%%%试验时去掉
+  //      sail_d=-Airmar_wind_angle;
+  //  end
+  if (std::abs(count_wind) > 0.13962634015954636) {
+    // '<S1>:1:155'
+    // '<S1>:1:156'
+    if (count_wind < 0.0) {
+      x_speed = -1.0;
+    } else if (count_wind > 0.0) {
+      x_speed = 1.0;
+    } else if (count_wind == 0.0) {
+      x_speed = 0.0;
+    } else {
+      x_speed = count_wind;
+    }
+
+    count_wind = (std::abs(count_wind) - 0.13962634015954636) * x_speed;
   }
 
-  if (std::abs(accumulate_wind_speed) > 1.5707963267948966) {
-    // '<S1>:1:156'
-    // '<S1>:1:157'
-    if (accumulate_wind_speed < 0.0) {
-      accumulate_wind_speed = -1.0;
-    } else if (accumulate_wind_speed > 0.0) {
-      accumulate_wind_speed = 1.0;
+  if (std::abs(count_wind) > 1.5707963267948966) {
+    // '<S1>:1:158'
+    // '<S1>:1:159'
+    if (count_wind < 0.0) {
+      count_wind = -1.0;
+    } else if (count_wind > 0.0) {
+      count_wind = 1.0;
     } else {
-      if (accumulate_wind_speed == 0.0) {
-        accumulate_wind_speed = 0.0;
+      if (count_wind == 0.0) {
+        count_wind = 0.0;
       }
     }
 
-    accumulate_wind_speed *= 1.5707963267948966;
+    count_wind *= 1.5707963267948966;
   }
 
   if (rtb_sail_safe < 0.5) {
-    // '<S1>:1:159'
-    // '<S1>:1:160'
-    accumulate_wind_speed = 1.5707963267948966;
+    // '<S1>:1:161'
+    // '<S1>:1:162'
+    count_wind = 1.5707963267948966;
   }
 
-  y_speed = race_course_B.price[190 + itmp] / 180.0 * 3.1415926535897931;
+  accumulate_wind_speed = race_course_B.price[190 + itmp] / 180.0 *
+    3.1415926535897931;
 
   // MATLAB Function: '<Root>/MATLAB Function2' incorporates:
   //   Inport: '<Root>/yaw'
   //   Inport: '<Root>/yaw_rate'
-  //   MATLAB Function: '<Root>/MATLAB Function6'
   //   MATLAB Function: '<Root>/MATLAB Function7'
   //   UnitDelay: '<Root>/Unit Delay5'
   //   UnitDelay: '<Root>/Unit Delay6'
 
   heading = race_course_U.yaw;
-  x_speed = race_course_P.Kp;
 
   // MATLAB Function 'MATLAB Function2': '<S2>:1'
   // 能不能输出首向转速
-  if (WindSpeed_mean > 3.0) {
-    // '<S2>:1:2'
-    // '<S2>:1:3'
-    x_speed = ((WindSpeed_mean - 3.0) / 6.0 + 1.0) * race_course_P.Kp;
-  }
-
-  if (rtb_Horizontal_speed > 0.3) {
-    // '<S2>:1:6'
-    // '<S2>:1:7'
+  //  if wind_speed>3
+  //      Kp=Kp*(1+(wind_speed-3)/6);
+  //      Kd=Kd*(1+(wind_speed-3)/6);
+  //  end
+  if (rtb_Horizontal_speed > 1.0) {
+    // '<S2>:1:9'
+    // '<S2>:1:10'
     heading = Horizontal_speed_angle;
   }
 
-  // '<S2>:1:9'
-  x_speed = ((race_course_P.Ki * race_course_AngleDiff_k(heading, y_speed) *
-              race_course_P.run_period + race_course_DW.UnitDelay5_DSTATE) +
-             x_speed * race_course_AngleDiff_k(heading, y_speed)) +
-    (race_course_AngleDiff_k(race_course_DW.UnitDelay6_DSTATE, y_speed) /
-     race_course_P.run_period - race_course_U.yaw_rate) * race_course_P.Kd;
-
-  // '<S2>:1:12'
   // '<S2>:1:13'
+  x_speed = (race_course_AngleDiff_k(race_course_DW.UnitDelay6_DSTATE,
+              accumulate_wind_speed) / race_course_P.run_period -
+             race_course_U.yaw_rate) * race_course_P.Kd + race_course_P.Kp *
+    race_course_AngleDiff_k(heading, accumulate_wind_speed);
+
+  // '<S2>:1:14'
+  if ((rtb_UnitDelay4 > 0.5) && (std::abs(race_course_AngleDiff_k(heading,
+         accumulate_wind_speed)) > 0.87222222222222234) && (std::abs
+       (race_course_DW.UnitDelay5_DSTATE) < 100.0)) {
+    // '<S2>:1:16'
+    // '<S2>:1:17'
+    y_speed = race_course_DW.UnitDelay5_DSTATE + race_course_AngleDiff_k(heading,
+      accumulate_wind_speed);
+  } else {
+    // '<S2>:1:19'
+    y_speed = race_course_DW.UnitDelay5_DSTATE;
+  }
+
+  if (std::abs(race_course_AngleDiff_k(heading, accumulate_wind_speed)) <
+      0.26179938779914941) {
+    // '<S2>:1:22'
+    // '<S2>:1:23'
+    y_speed = 0.0;
+  }
+
+  if (y_speed > 100.0) {
+    // '<S2>:1:26'
+    // '<S2>:1:27'
+    x_speed = -0.69813170079773179;
+  } else {
+    if (y_speed < -100.0) {
+      // '<S2>:1:28'
+      // '<S2>:1:29'
+      x_speed = 0.69813170079773179;
+    }
+  }
+
   if (std::abs(x_speed) > 0.69813170079773179) {
-    // '<S2>:1:14'
-    // '<S2>:1:15'
+    // '<S2>:1:32'
+    // '<S2>:1:33'
     if (x_speed < 0.0) {
       x_speed = -1.0;
     } else if (x_speed > 0.0) {
@@ -2291,14 +2332,15 @@ void race_courseModelClass::step()
   // Outport: '<Root>/sail' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  race_course_Y.sail = accumulate_wind_speed;
+  race_course_Y.sail = count_wind;
 
   // Outport: '<Root>/speed_angle_d'
-  race_course_Y.speed_angle_d = y_speed;
+  race_course_Y.speed_angle_d = accumulate_wind_speed;
 
   // MATLAB Function: '<Root>/MATLAB Function4'
   // MATLAB Function 'MATLAB Function4': '<S4>:1'
-  if (rtb_UnitDelay10 > race_course_P.tacking_time) {
+  if ((rtb_UnitDelay10 > race_course_P.tacking_time) && (rtb_Horizontal_speed >
+       0.15)) {
     // '<S4>:1:8'
     // '<S4>:1:9'
     x_speed = 2.0;
@@ -2314,8 +2356,14 @@ void race_courseModelClass::step()
     x_speed = 1.0;
   }
 
-  // Update for UnitDelay: '<Root>/Unit Delay15'
   // '<S4>:1:18'
+  if (rtb_Horizontal_speed > 1.0) {
+    // '<S4>:1:19'
+    // '<S4>:1:20'
+    x_speed = 2.0;
+  }
+
+  // Update for UnitDelay: '<Root>/Unit Delay15'
   //  tacking
   memcpy(&race_course_DW.UnitDelay15_DSTATE[0], &rtb_pos_history[0], 300U *
          sizeof(real_T));
@@ -2336,10 +2384,10 @@ void race_courseModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay7' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function1'
 
-  race_course_DW.UnitDelay7_DSTATE = accumulate_wind_speed;
+  race_course_DW.UnitDelay7_DSTATE = count_wind;
 
   // Update for UnitDelay: '<Root>/Unit Delay8'
-  race_course_DW.UnitDelay8_DSTATE = y_speed;
+  race_course_DW.UnitDelay8_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay9' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function4'
@@ -2357,14 +2405,12 @@ void race_courseModelClass::step()
   // Update for UnitDelay: '<Root>/Unit Delay6' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
 
-  race_course_DW.UnitDelay6_DSTATE = y_speed;
+  race_course_DW.UnitDelay6_DSTATE = accumulate_wind_speed;
 
   // Update for UnitDelay: '<Root>/Unit Delay5' incorporates:
   //   MATLAB Function: '<Root>/MATLAB Function2'
-  //   UnitDelay: '<Root>/Unit Delay5'
 
-  race_course_DW.UnitDelay5_DSTATE += race_course_P.Ki * race_course_AngleDiff_k
-    (heading, y_speed) * race_course_P.run_period;
+  race_course_DW.UnitDelay5_DSTATE = y_speed;
 }
 
 // Model initialize function

@@ -14,11 +14,12 @@ cv::Mat cameraMatrix(3, 3, cv::DataType<double>::type); // Intrisic matrix;
 cv::Mat distCoeffs(5, 1, cv::DataType<double>::type);   // Distortion vector;
 
 
-DetectionRos::DetectionRos(double ballR, double fov,bool gmapping, bool simulation)
+DetectionRos::DetectionRos(double ballR, double fov,bool gmapping, bool simulation, bool show)
     // : nh(_comm_nh),
     : it(nh)
 {
     ROS_INFO("node init");
+    isShow = show;
     isSimulation = simulation;
     if (gmapping){
         sub_image = nh.subscribe("/camera/image_raw", 2, &DetectionRos::detection_gmapping_cb, this);
@@ -33,9 +34,11 @@ DetectionRos::DetectionRos(double ballR, double fov,bool gmapping, bool simulati
     laser_pub = nh.advertise<sensor_msgs::LaserScan>("/base_scan",2);
     
     tld_pub = nh.advertise<tld_msgs::BoundingBox>("/tld_tracked_object",2);
-
-    pub_img_edge = it.advertise("edges", 2);
-    pub_img_dst = it.advertise("dst_circles", 2);
+    if(isShow){
+        pub_img_edge = it.advertise("edges", 2);
+        pub_img_dst = it.advertise("dst_circles", 2);
+    }
+    
     
     posX = 0;
     posY = 0;
@@ -50,6 +53,8 @@ DetectionRos::DetectionRos(double ballR, double fov,bool gmapping, bool simulati
 
     particleFilter = new ParticleFilter();
     //average = new Average();
+
+    count = 0;
 
     get_camera_info();
 }
@@ -104,6 +109,13 @@ void DetectionRos::roll_pitch_yaw_to_R(Vector3d E,Matrix3d &R){
 
 void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
 {
+    if (count > 7){
+        count = 0;
+    }else{
+        count++;
+        return;
+    }
+    
     cv::Mat src_img;
     cv_bridge::toCvShare(img_in,"bgr8")->image.copyTo(src_img);
 
@@ -122,7 +134,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
         cv::Mat img_undistorted;
         cv::undistort(src_ROI, img_undistorted, cameraMatrix, distCoeffs);
         //cv::imshow("src", img_undistorted);
-        edge = detection::edgeDetection(img_undistorted, 150, 200);
+        edge = detection::edgeDetection(img_undistorted, 100, 200);
         circles = detection::circleDectection(img_undistorted, edge);
 
         edge_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", edge).toImageMsg();
@@ -141,9 +153,10 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
     if (Num_ball < circles.size()){
         Num_ball = circles.size();
     }
-
-    pub_img_edge.publish(edge_msg);
-    pub_img_dst.publish(dst_msg);
+    if (isShow){
+        pub_img_edge.publish(edge_msg);
+        pub_img_dst.publish(dst_msg);
+    }
 
     tld_msgs::BoundingBox tldMsg;
     if (circles.size()>0){
@@ -206,29 +219,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
             
             double ball_r_new = ball_r/distance_cal * distance;
             ROS_INFO("ball_r_new = %f",ball_r_new);
-            // cal angle
 
-            //cal distance funcation 2
-            /*
-            MatrixXd L_tmp(3,1);
-            L_tmp = L_world/f;
-            double Z = 0.2;
-            double X_cam = (Z)/L_tmp(2,0);
-            double X = X_cam*L_tmp(0,0);
-            double Y = X_cam*L_tmp(1,0);
-            
-            double Z_cal = distance_cal*L_tmp(2,0);
-            Z_cal = Z_cal / std::sqrt(std::pow(L_tmp(0,0),2)+std::pow(L_tmp(1,0),2));
-            std::cout << "Z_cal = " << Z_cal <<std::endl;
-            //double distance_2 = std::sqrt(std::pow(X,2)+std::pow(Y,2));
-            //std::cout << "distance_2 = " << distance_2 <<std::endl;
-            Vector3d E_tmp_2;
-            Matrix3d R_tmp_2;
-            E_tmp_2(0) = 0;
-            E_tmp_2(1) = 0;
-            E_tmp_2(2) = yaw;
-            roll_pitch_yaw_to_R(E_tmp_2,R_tmp_2); 
-            */
         }
 
         objectPoseArray object_pose_array;
@@ -242,7 +233,7 @@ void DetectionRos::detection_cb(const sensor_msgs::ImageConstPtr& img_in)
             double x = object_pose_array.poseArray[i].x;  
             double y = object_pose_array.poseArray[i].y;  
             double num = object_pose_array.poseArray[i].probability;
-            if (num > 10){
+            if (num > 3){
                 geometry_msgs::Pose p;
                 p.position.x = x;
                 p.position.y = y;

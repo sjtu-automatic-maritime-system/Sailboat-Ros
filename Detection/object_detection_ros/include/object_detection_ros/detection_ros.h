@@ -50,7 +50,7 @@ public:
     
 
     //DetectionRos(ros::NodeHandle _comm_nh);
-    DetectionRos(double ballR, double fov,bool gmapping, bool simulation);
+    DetectionRos(double ballR, double fov,bool gmapping, bool simulation, bool show);
     ~DetectionRos();
     void get_camera_info();
 
@@ -64,6 +64,8 @@ public:
 private:
     
     bool isSimulation;
+    bool isShow;
+    int count;
 
     double posX;
     double posY;

@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     ros::NodeHandle n;
     ros::Publisher joint_pub = n.advertise<sensor_msgs::JointState>("joint_states", 1);
     ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odometry", 1);
-    ros::Publisher path_pub = n.advertise<nav_msgs::Path>("path",2);
+    // ros::Publisher path_pub = n.advertise<nav_msgs::Path>("path",2);
     ros::Subscriber sensor_sub = n.subscribe("sensor", 2, &sensorCallback);
     ros::Subscriber mach_sub = n.subscribe("mach", 2, &machCallback);
     tf::TransformBroadcaster broadcaster;
@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
     geometry_msgs::TransformStamped odom_trans;
     sensor_msgs::JointState joint_state;
     nav_msgs::Odometry odometry;
-    nav_msgs::Path path;
+    //nav_msgs::Path path;
     odom_trans.header.frame_id = "odom";
     odom_trans.child_frame_id = "base_link";
 
@@ -108,27 +108,27 @@ int main(int argc, char** argv) {
         odometry.twist.twist.angular.z = wz;
 
 
-        path.header.stamp = ros::Time::now();
-        path.header.frame_id = "odom";
+        //path.header.stamp = ros::Time::now();
+        //path.header.frame_id = "odom";
 
-        geometry_msgs::PoseStamped this_pose_stamped;
-        this_pose_stamped.pose.position.x = Posx;
-        this_pose_stamped.pose.position.y = Posy;
+        // geometry_msgs::PoseStamped this_pose_stamped;
+        // this_pose_stamped.pose.position.x = Posx;
+        // this_pose_stamped.pose.position.y = Posy;
 
-        geometry_msgs::Quaternion goal_quat = tf::createQuaternionMsgFromRollPitchYaw(Roll, 0, Yaw);
-        this_pose_stamped.pose.orientation.x = goal_quat.x;
-        this_pose_stamped.pose.orientation.y = goal_quat.y;
-        this_pose_stamped.pose.orientation.z = goal_quat.z;
-        this_pose_stamped.pose.orientation.w = goal_quat.w;
+        // geometry_msgs::Quaternion goal_quat = tf::createQuaternionMsgFromRollPitchYaw(Roll, 0, Yaw);
+        // this_pose_stamped.pose.orientation.x = goal_quat.x;
+        // this_pose_stamped.pose.orientation.y = goal_quat.y;
+        // this_pose_stamped.pose.orientation.z = goal_quat.z;
+        // this_pose_stamped.pose.orientation.w = goal_quat.w;
 
-        this_pose_stamped.header.stamp=ros::Time::now();
-        this_pose_stamped.header.frame_id="odom";
-        path.poses.push_back(this_pose_stamped);
+        // this_pose_stamped.header.stamp=ros::Time::now();
+        // this_pose_stamped.header.frame_id="odom";
+        // path.poses.push_back(this_pose_stamped);
 
         //send the joint state and transform
         joint_pub.publish(joint_state);
         odom_pub.publish(odometry);
-        path_pub.publish(path);
+        // path_pub.publish(path);
         broadcaster.sendTransform(odom_trans);
 
         ros::spinOnce();

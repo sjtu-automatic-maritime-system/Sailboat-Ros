@@ -123,7 +123,7 @@ void callback(const sailboat_message::Sensor_msg::ConstPtr msg) {
 void getOutMachPut(sailboat_message::Mach_msg& msg){
 
     msg.timestamp = ros::Time::now().toSec();
-    msg.motor = 0;
+    msg.motor = 50;
     msg.rudder = station_keeping_Obj.keeping_Y.rudder;
     msg.sail = station_keeping_Obj.keeping_Y.sail;
 
@@ -210,7 +210,7 @@ int_T main(int_T argc, char **argv) {
 
 
     //todo
-    sub = nh.subscribe("sensor", 100, callback);
+    sub = nh.subscribe("sensor_kalman_msg", 100, callback);
 
     ros::Rate loop_rate(10);
     while (ros::ok()) {

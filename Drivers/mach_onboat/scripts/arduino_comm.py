@@ -4,6 +4,7 @@ from sailboat_message.msg import Mach_msg
 from sailboat_message.msg import Arduino_msg
 from sailboat_message.msg import Out_Time_msg
 from sailboat_message.srv import Self_Checking_srv
+from sailboat_message.srv import Self_Checking_srvResponse
 
 import struct
 import binascii
@@ -211,9 +212,9 @@ def machCallback(data):
     #print ('start')
     #rospy.loginfo("I heard %f", data.roll)
     motor = int(data.motor)
-    #max~min 40~-40 130~50
+    #max~min 40~-40
     rudder = int(data.rudder*57.3)
-    #max~min 90-0 77~50
+    #max~min 90-0
     sail = int(abs(data.sail)*57.3)
     pcCtrl = int(data.PCCtrl)
 

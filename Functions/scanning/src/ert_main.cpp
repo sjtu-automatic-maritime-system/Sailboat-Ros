@@ -3,9 +3,9 @@
 //
 // Code generated for Simulink model 'scanning'.
 //
-// Model version                  : 1.291
+// Model version                  : 1.328
 // Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
-// C/C++ source code generated on : Wed Sep 06 10:37:57 2017
+// C/C++ source code generated on : Wed Aug 29 10:45:19 2018
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: 32-bit Generic
@@ -16,7 +16,6 @@
 #include <stdio.h>                     // This ert_main.c example uses printf/fflush 
 #include "scanning.h"                  // Model's header file
 #include "rtwtypes.h"
-
 
 static scanningModelClass scanning_Obj;// Instance of model class
 
