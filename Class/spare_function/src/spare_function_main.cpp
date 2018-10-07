@@ -32,7 +32,7 @@
 static sailboat_ap_okModelClass rtObj; // Instance of model class
 
 int pcCtrl = 0;
-ros::Publisher spare_function_para_pub;
+
 
 //
 // Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -145,10 +145,11 @@ int_T main(int_T argc, char **argv)
   // Initialize model
   rtObj.initialize();
 
-  ros::init(argc, argv, "scanning");
+  ros::init(argc, argv, "spare");
   ros::NodeHandle nh;
   ros::Subscriber sub;
   ros::Publisher spare_function_pub;
+  ros::Publisher spare_function_para_pub;
 
   ros::Publisher mach_pub;
   spare_function_pub = nh.advertise<spare_function::spare_function_out>("spare_function_out", 2);

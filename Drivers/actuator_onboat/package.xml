@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>mach_onboat</name>
+  <name>actuator_onboat</name>
   <version>0.0.0</version>
-  <description>The mach_onboat package</description>
+  <description>The actuator_onboat package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

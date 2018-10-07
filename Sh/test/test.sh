@@ -7,5 +7,5 @@ nohup roslaunch sailboat_launch set_environment_onboat.launch &
 sleep 2s
 nohup roslaunch sailboat_launch start_drivers.launch &
 sleep 10s
-nohup roslaunch mach_onboat dynamixel_position_control.launch &
+nohup roslaunch actuator_onboat dynamixel_position_control.launch &
 sleep 5s

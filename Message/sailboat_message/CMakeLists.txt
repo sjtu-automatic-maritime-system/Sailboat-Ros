@@ -29,6 +29,7 @@ add_message_files(
         Sensor_msg.msg
         Arduino_msg.msg
         Radar_msg.msg
+        Pointinfo.msg
 
         Wind_Simulation_msg.msg
         Sailboat_Simulation_msg.msg
