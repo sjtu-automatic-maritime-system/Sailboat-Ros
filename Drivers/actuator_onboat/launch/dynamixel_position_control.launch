@@ -17,5 +17,5 @@
 
     <node name="position_control" pkg="dynamixel_workbench_controllers" type="position_control" required="true" output="screen"/>
 
-    <node name="base_control" pkg="mach_onboat" type="base_control" output="screen"/>
+    <node name="base_control" pkg="actuator_onboat" type="base_control" output="screen"/>
 </launch>

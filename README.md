@@ -8,7 +8,7 @@ Lab: https://github.com/sjtu-automatic-maritime-system/Sailboat-Lab
 mkdir -p ~/sailboat_ws/src
 cd ~/sailboat_ws/src
 git clone https://github.com/hywel1994/Sailboat-Ros.git
-cd ~/sailboat_ws/src/Sailboat-Ros/Sh/install
+cd ~/sailboat_ws/src/Sailboat-Ros/Doc/install
 ./install_ros.sh
 ```
 

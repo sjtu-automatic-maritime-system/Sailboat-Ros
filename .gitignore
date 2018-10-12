@@ -17,3 +17,4 @@ sailboat.files
 sailboat.includes
 sailboat.creator.user
 nohup.out
+*.DS_Store
