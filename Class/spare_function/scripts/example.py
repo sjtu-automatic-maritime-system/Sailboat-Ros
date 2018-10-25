@@ -51,7 +51,7 @@ def sensorCallback(msg): #sailboat_message::Sensor_msg
 
 
 def getConfigCallback(config, level): #spare_function::spare_function_Config
-    global sensor_submsg
+    global para_cfg
     if (config.PC_Ctrl == True):
         para_cfg[0] = 1
     else:
