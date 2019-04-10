@@ -23,7 +23,7 @@ catkin build
 4 启动船上程序(terminal1)
 ```
 cd ~/sailboat_ws/src/Sailboat-Ros/Sh/onboat
-./start_launch_onshore_driver.sh
+./start_launch_onboat_driver.sh
 ./start_launch_onboat.sh
 ```
 
