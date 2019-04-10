@@ -71,5 +71,10 @@ add_executable(astar_ros src/Astar.cpp src/main_ros.cpp)
 add_dependencies(astar_ros ${catkin_EXPORTED_TARGETS} path_planning_astar_gencfg)
 target_link_libraries(astar_ros ${catkin_LIBRARIES})
 
+
+add_executable(astar_ros_competition src/Astar.cpp src/main_ros_competition.cpp)
+add_dependencies(astar_ros_competition ${catkin_EXPORTED_TARGETS} path_planning_astar_gencfg)
+target_link_libraries(astar_ros_competition ${catkin_LIBRARIES})
+
 add_executable(astar_simulation_ros src/Astar.cpp src/main_simulation_ros.cpp)
 target_link_libraries(astar_simulation_ros ${catkin_LIBRARIES})
