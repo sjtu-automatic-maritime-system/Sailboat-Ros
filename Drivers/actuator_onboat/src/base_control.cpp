@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "sailboat_message/Mach_msg.h"
-#include "dynamixel_workbench_msgs/JointCommand.h"
+// #include "dynamixel_workbench_msgs/JointCommand.h"
 #include "sailboat_message/Dxl_Control_srv.h"
 #include "sailboat_message/Dxl_State_srv.h"
 #include "sailboat_message/Arduino_msg.h"
@@ -60,8 +60,8 @@ int main(int argc, char **argv)
     ros::Subscriber arduinoSub = n.subscribe("/arduino", 10, arduinoMachCallback);
 
     ros::Publisher baseMachPub = n.advertise<sailboat_message::Mach_msg>("/base/mach", 10);
-    ros::ServiceClient DyClient1 = n.serviceClient<dynamixel_workbench_msgs::JointCommand>("/joint_command");
-    ros::ServiceClient DyClient2 = n.serviceClient<sailboat_message::Dxl_Control_srv>("/dxl_control_srv");
+    // ros::ServiceClient DyClient1 = n.serviceClient<dynamixel_workbench_msgs::JointCommand>("/joint_command");
+    // ros::ServiceClient DyClient2 = n.serviceClient<sailboat_message::Dxl_Control_srv>("/dxl_control_srv");
     
 
     ros::Rate loop_rate(10);
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
         if (baseRudderAngle < -0.87){
             baseRudderAngle = -0.87;
         }
-        
+        /* 
         if (dxl_native){
             dynamixel_workbench_msgs::JointCommand srvSail;
             srvSail.request.unit = "rad";
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
                 ROS_ERROR("Failed to call service joint_command");
             }
         }
-        
+        */
 
         sailboat_message::Mach_msg base_mach;
         base_mach.header.stamp = ros::Time::now();

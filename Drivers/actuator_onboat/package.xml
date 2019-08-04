@@ -21,9 +21,6 @@
   <depend>sailboat_message</depend>
   <depend>std_msgs</depend>
 
-  <depend>dynamixel_workbench_msgs</depend>
-
-
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->

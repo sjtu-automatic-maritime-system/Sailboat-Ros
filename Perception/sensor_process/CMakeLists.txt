@@ -13,14 +13,10 @@ find_package(catkin REQUIRED COMPONENTS
         )
 
 catkin_package(
-        INCLUDE_DIRS include
-        LIBRARIES sensor_process
+        # INCLUDE_DIRS include
+        # LIBRARIES sensor_process
         CATKIN_DEPENDS roscpp rospy sailboat_message std_msgs message_filters
         #DEPENDS system_lib
 )
 
 
-include_directories(
-        include
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
-        ${catkin_INCLUDE_DIRS})

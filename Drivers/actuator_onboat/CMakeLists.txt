@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
         roscpp
         rospy
         sailboat_message
-        dynamixel_workbench_msgs
         std_msgs
         )
 
