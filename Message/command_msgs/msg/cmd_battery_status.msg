@@ -1,6 +1,0 @@
-float64 timestamp
-int8 battery_state
-float32 voltage_v_1
-float32 voltage_v_2
-float32 current_a_1
-float32 current_a_2

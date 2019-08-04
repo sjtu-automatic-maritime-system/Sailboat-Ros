@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <node pkg="autopilot" type="autopilot" name="autopilot"/>
-    <node pkg="environment_simulation" type="targetangle_simulation_pub" name="targetangle_simulation_pub" />
-</launch>

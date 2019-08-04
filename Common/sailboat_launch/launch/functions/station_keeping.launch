@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <node pkg="station_keeping" type="station_keeping" name="station_keeping"/>
-</launch>

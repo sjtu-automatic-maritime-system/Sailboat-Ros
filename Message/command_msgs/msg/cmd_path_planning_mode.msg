@@ -1,7 +1,0 @@
-float64 timestamp
-bool flag_planning_manual_enable
-bool flag_planning_astar_enable
-bool flag_planning_optimalSpeed_enable
-bool flag_planning_direct_enable
-bool flag_planning_avoidance_enable
-bool flag_planning_tack_enable

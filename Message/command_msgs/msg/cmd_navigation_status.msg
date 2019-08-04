@@ -1,3 +1,0 @@
-float64 timestamp
-int8 nav_state
-int8 nav_new_state
