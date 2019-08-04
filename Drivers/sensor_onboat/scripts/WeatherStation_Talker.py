@@ -6,7 +6,6 @@ import serial
 # import struct
 # import logging
 import time
-
 import rospy
 # from std_msgs.msg import String
 from sailboat_message.msg import WTST_msg
@@ -26,9 +25,11 @@ INIT_COMMANDS = """$PAMTC,BAUD,38400
 """
 
 # lat/lon of original point, use to caculate posx/posy (north and east are positive)
+ORIGIN_LAT = 50.81907
+ORIGIN_LON = -1.30718
 
-ORIGIN_LAT = 31.0231632
-ORIGIN_LON = 121.4251289
+#ORIGIN_LAT = 31.0231632
+#ORIGIN_LON = 121.4251289
 
 #ORIGIN_LAT = 59.427139999999994
 #ORIGIN_LON = 10.466643333333332
@@ -98,31 +99,42 @@ class WTST:
         time.sleep(2)
         #self.ser.write(self.cmds)
         rospy.loginfo('WTST send cmds')
-        self.ser.baudrate = 38400
+        self.ser.baudrate = BAUDRATE_change
         rospy.loginfo('WTST set 38400 baudrate')
 
 
     def update(self):
-        l = self.ser.readline()
-        #print l
-        if l == '':
-            rospy.logwarn('WTST timeout, reconnect')
-            self.close()
-            time.sleep(0.5)
-            self.open()
-        self.line = self.line + l
-        if self.line.endswith('\n'):
-            # a new line received
-            self.parse_line()
-            self.line = ''
+        n = 0
+        while self.ser.inWaiting()>0 :
+            time1 = time.clock()
+            l = self.ser.readline()
+            #print l
+            if l == '':
+                n += 1
+                rospy.logwarn('WTST timeout, reconnect')
+                if (n > 20):
+                    self.close()
+                    time.sleep(0.5)
+                    self.open()
+                    n = 0
+            self.line = self.line + l
+            time2 = time.clock()
+            print ("read line time :",time2 - time1) 
+            if self.line.endswith('\n'):
+                # a new line received
+                n = 0
+                self.parse_line()
+                self.line = ''
+                time3 = time.clock()
+                print ("parse line time :",time3 - time2) 
 
     def parse_line(self):
         if not self.line.startswith('$'):
             self.ser.flush()
             rospy.logwarn("header not started with '$'")
-            self.ser.close()
-            time.sleep(1)
-            self.ser.open()
+            # self.ser.close()
+            # time.sleep(1)
+            # self.ser.open()
             return
         self.line = self.line.rstrip('\r\n')
         # XOR checksum  
@@ -136,9 +148,9 @@ class WTST:
                 return
         except:
             rospy.logwarn('invalid novatel cksum error')
-            self.ser.close()
-            time.sleep(1)
-            self.ser.open()
+            # self.ser.close()
+            # time.sleep(1)
+            # self.ser.open()
         #print (self.line_list)
         #parse
         self.parse_content()
@@ -193,7 +205,7 @@ class WTST:
 
 
             self.Latitude = self.gps_chang(self.latitude)
-            self.Longitude = self.gps_chang(self.longitude)
+            self.Longitude = -self.gps_chang(self.longitude)
             #
             self.PosX, self.PosY = self.w84_calc_ne(self.Latitude, self.Longitude)
             # Number of satellites in use, 0-12
@@ -349,7 +361,7 @@ class dataWrapper:
     def pubData(self,msg,wtst):
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = 'WTST'
-        msg.timestamp = rospy.get_time()
+        #msg.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msg.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.UTCtime):
@@ -381,7 +393,7 @@ class dataWrapper:
     def pubProData(self,msgPro,wtst):
         msgPro.header.stamp = rospy.Time.now()
         msgPro.header.frame_id = 'WTST'
-        msgPro.timestamp = rospy.get_time()
+        #msgPro.timestamp = rospy.get_time()
         if wtst.isset(self.GPSIndicator):
             msgPro.GPSIndicator = wtst.GPSIndicator
         if wtst.isset(self.UTCtime):
@@ -446,12 +458,15 @@ class dataWrapper:
 
 
 
-def talker():  # ros message publish
+def talker(send_pro):  # ros message publish
+
+    rospy.init_node('wtst_talker', anonymous=True)
 
     pub = rospy.Publisher('wtst', WTST_msg, queue_size=1)
-    pub_pro = rospy.Publisher('wtst_pro', WTST_Pro_msg, queue_size=1)
-    rospy.init_node('wtst_talker', anonymous=True)
-    rate = rospy.Rate(20)  # 20hz
+    if send_pro:
+        pub_pro = rospy.Publisher('wtst_pro', WTST_Pro_msg, queue_size=1)
+    
+    rate = rospy.Rate(10)  # 20hz
 
     wtst = WTST(WTST_URL, BAUDRATE, TIMEOUT, INIT_COMMANDS)
     wtst.set_origin(ORIGIN_LAT, ORIGIN_LON)
@@ -461,22 +476,18 @@ def talker():  # ros message publish
     datawrapper = dataWrapper()
 
     try:
-        for ii in range(28):
+        for ii in range(4):
             wtst.update()
         while not rospy.is_shutdown():
             wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
-            wtst.update()
-
+            
             wtst_msg = datawrapper.pubData(msg,wtst)
-            wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
-
             pub.publish(wtst_msg)
-            pub_pro.publish(wtst_pro_msg)
+            
+            if send_pro:
+                wtst_pro_msg = datawrapper.pubProData(msgPro,wtst)
+                pub_pro.publish(wtst_pro_msg)
+
             rate.sleep()
     except rospy.ROSInterruptException as e:
         print(e)
@@ -486,5 +497,6 @@ def talker():  # ros message publish
 
 
 if __name__ == '__main__':
-    talker()
+    send_pro = False
+    talker(send_pro)
 

@@ -3,14 +3,17 @@
 import rospy
 from std_msgs.msg import String
 #include "sailboat_message/Mach_msg.h"
-from   sailboat_message.msg import Ahrs_msg
+from sailboat_message.msg import Ahrs_msg
 import serial
 import struct
 import logging
+import time
 
 Data_Show = False
 
+#ahrs_port = '/dev/ttyUSB0'
 ahrs_port = '/dev/ahrs'
+# ahrs_port='/dev/serial/by-id/usb-Silicon_Labs_SBG_Systems_-_UsbToUart_001000929-if00-port0'
 
 def hexShow(argv):
     result = ''
@@ -62,7 +65,7 @@ class AHRS():
         self.ser_open_flag = self.ser_open()
         self.DataShow_count = 0
         self.header = chr(0xff)+chr(0x02)
-        self.fst = struct.Struct("<9fH")
+        self.fst = struct.Struct("<22fL5f")
         self.buf = ''
         self.attrs = ['Roll', 'Pitch', 'Yaw', 'gx', 'gy', 'gz',
                       'ax', 'ay', 'az', 'devicestatus']
@@ -71,6 +74,7 @@ class AHRS():
         try:
             self.ahrs_ser = serial.Serial(ahrs_port, 115200, timeout=1)
             self.logger.info(self.ahrs_ser.portstr+' open successfully')
+            time.sleep(1)
             return True
         except(serial.serialutil.SerialException):
             self.logger.info('could not open port: '+ahrs_port)
@@ -84,8 +88,14 @@ class AHRS():
         self.DataInfoShow()
 
     def read_data(self):
-        self.buf += self.ahrs_ser.read(44-len(self.buf))
-        #print(self.buf)
+        #120*2-1 = 239
+        #2+3+112+2+1
+        n = self.ahrs_ser.inWaiting()
+        self.buf += self.ahrs_ser.read(n)
+        self.buf = self.buf[-239:]
+
+        # self.buf = self.ahrs_ser.read(120)
+        # print(self.buf)
         idx = self.buf.find(self.header)
         if idx < 0:
             self.buf = ''
@@ -95,47 +105,35 @@ class AHRS():
             self.buf = self.buf[idx:]
             self.logger.info('ReadError: header not at start, discard bytes before header')
             return
-        if len(self.buf) < 44:
+        if len(self.buf) < 119:
             self.logger.info('ReadError: not enough data')
             return
 
         #testBety = self.buf[0:9]
 
-        datas = self.fst.unpack(self.buf[5:43])
-        testCRC = crc16(self.buf[2:41])
-        testHexCRC = hex(testCRC)
-        HexCRC = hex(datas[9])
-        if len(testHexCRC) != 6 :
-            testHexCRC = testHexCRC[0:2]+'0'*(6-len(testHexCRC))+testHexCRC[2:len(testHexCRC)]
-        if len(HexCRC) != 6 :
-            HexCRC = HexCRC[0:2]+'0'*(6-len(HexCRC))+HexCRC[2:len(HexCRC)]
-        jugCRC = testHexCRC[0:2]+testHexCRC[4:6]+testHexCRC[2:4]
-        
-        #print ("jugCRC = ", testHexCRC)
-        #print (type(testHexCRC))
-        #print ("HexCRC = ", HexCRC)
-        if jugCRC  != HexCRC :
+        datas = self.fst.unpack(self.buf[5:117])
+        fff=struct.Struct(">H")
+        crcnum=fff.unpack(self.buf[117:119])
+        if crc16(self.buf[2:117])!=crcnum[0]:
             self.buf = self.buf[2:]
             self.logger.info('ReadError: ckcum error, discard first 2 bytes')
             return
         
-        self.Roll = datas[0]
-        self.Pitch = datas[1]
-        self.Yaw = datas[2]
-        self.gx = datas[3]
-        self.gy = datas[4]
-        self.gz = datas[5]
-        self.ax = datas[6]
-        self.ay = datas[7]
-        self.az = datas[8]
+        self.Roll = datas[4]
+        self.Pitch = datas[5]
+        self.Yaw = datas[6]
+        self.gx = datas[16]
+        self.gy = datas[17]
+        self.gz = datas[18]
+        self.ax = datas[19]
+        self.ay = datas[20]
+        self.az = datas[21]
+        self.heave=datas[27]
+        self.accuracy=datas[23]
         
-        #print (type(self.buf))
-        #print ('bety = ', testBety)
-        #print ('Roll = ', datas[0])
-        #abc = hex(datas[0])
-        #print ('Roll = ', abc)
-
-        self.buf = ''
+        self.buf = self.buf[120:]
+        # print(len(datas))
+        print(self.Roll,self.Pitch,self.Yaw,self.gx,self.gy,self.gz,self.ax,self.ay,self.az,self.heave,self.accuracy)
 
     def DataInfoShow(self):
         self.DataShow_count += 1
@@ -170,6 +168,8 @@ class dataWrapper:
         self.ax    = 'ax'
         self.ay    = 'ay'
         self.az    = 'az'
+        self.heave='heave'
+        self.accuracy='accuracy'
 
 
     def pubData(self,msg,ahrs):
@@ -194,13 +194,17 @@ class dataWrapper:
             msg.ay = ahrs.ay
         if ahrs.isset(self.az):
             msg.az = ahrs.az
+        if ahrs.isset(self.heave):
+            msg.heave = ahrs.heave
+        if ahrs.isset(self.accuracy):
+            msg.accuracy = ahrs.accuracy
         return msg
 
 
 def talker():#ros message publish
     pub = rospy.Publisher('ahrs', Ahrs_msg, queue_size=5)
     rospy.init_node('ahrs_talker', anonymous=True)
-    rate = rospy.Rate(20) # 10hzahrs_
+    rate = rospy.Rate(10) # 10hzahrs_
 
     ahrs = AHRS()
     msg = Ahrs_msg()

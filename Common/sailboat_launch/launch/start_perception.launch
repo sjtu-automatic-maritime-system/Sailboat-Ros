@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="sensor_process" type="sensor_process" name="Sensor_Process"/>
-    <node pkg="sensor_process" type="sensor_filters" name="Sensor_Filters"/>
+    <!-- <node pkg="sensor_process" type="kalman4.py" name="kalman" output="screen"/> -->
+    <node pkg="sensor_process" type="sensor_process" name="Sensor_Process" output="screen"/>
+    <node pkg="sensor_process" type="sensor_filters" name="Sensor_Filters" output="screen"/>
 </launch>

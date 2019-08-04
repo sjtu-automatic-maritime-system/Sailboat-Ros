@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="environment_simulation" type="wind_simulation_pub" name="wind_simulation_pub"/>
+    <node pkg="sailboat_simulation" type="sailboat_simulation_ver1" name="sailboat_simulation"/>
+    <!-- <node pkg="spare_function" type="spare_function" name="spare_function"/> -->
+</launch>

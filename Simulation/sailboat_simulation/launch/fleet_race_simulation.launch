@@ -1,7 +1,0 @@
-<launch>
-    <node pkg="environment_simulation" type="wind_simulation_pub" name="sind_simulation_pub"/>
-    <node pkg="fleet_race" type="fleet_race" name="fleet_race"/>
-    <node pkg="sailboat_simulation" type="sailboat_simulation_ver1" name="sailboat_simulation"/>
-    <!-- pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/-->
-    <!-- node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/WTST/PosX"/ -->
-</launch>

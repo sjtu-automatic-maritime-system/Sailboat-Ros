@@ -1,0 +1,4 @@
+int8 dxl_id
+float64 position
+---
+bool state

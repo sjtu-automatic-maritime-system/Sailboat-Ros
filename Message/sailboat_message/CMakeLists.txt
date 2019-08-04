@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(sailboat_message)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
+add_definitions(-std=c++11)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         rospy
@@ -21,6 +18,9 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
         FILES
 
+        #driver
+        Rudder_msg.msg
+        Sail_msg.msg
         Mach_msg.msg
         GPS_msg.msg
         Ahrs_msg.msg
@@ -28,6 +28,8 @@ add_message_files(
         WTST_Pro_msg.msg
         Sensor_msg.msg
         Arduino_msg.msg
+        Radar_msg.msg
+        Pointinfo.msg
 
         Wind_Simulation_msg.msg
         Sailboat_Simulation_msg.msg
@@ -48,20 +50,22 @@ add_message_files(
         Point.msg
         PointArray.msg
 
-        #cmd
-        cmd_battery_status.msg
-        cmd_camera_status.msg
-        cmd_commander_cfg_status.msg
-        cmd_commander_status.msg
-        cmd_communication_status.msg
-        cmd_home_position.msg
-        cmd_navigation_status.msg
-        cmd_path_planning_mode.msg
-        cmd_path_planning_status.msg
-        cmd_sensor_status.msg
-        cmd_vehicle_control_mode.msg
-        cmd_vehicle_control_status.msg
+	obs_msg.msg
+        obs_out.msg
 
+        Out_Time_msg.msg
+)
+
+add_service_files(
+  FILES
+  Mach_srv.srv
+  Control_srv.srv
+  Self_Checking_srv.srv
+  Out_Time_srv.srv
+  Dxl_Control_srv.srv
+  Dxl_State_srv.srv
+#   Service1.srv
+#   Service2.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -69,7 +73,6 @@ generate_messages(
         DEPENDENCIES
         std_msgs
 )
-
 
 catkin_package(
         # INCLUDE_DIRS include

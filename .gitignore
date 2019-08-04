@@ -1,11 +1,11 @@
 *~
 *.out
-test/
 *.pyc
 *.[oa]
 cmake-build-debug/*
 /CMakeLists.txt
 .idea/
+.vscode/
 SAILBOAT.config
 SAILBOAT.creator
 SAILBOAT.files
@@ -16,4 +16,5 @@ sailboat.creator
 sailboat.files
 sailboat.includes
 sailboat.creator.user
-
+nohup.out
+*.DS_Store

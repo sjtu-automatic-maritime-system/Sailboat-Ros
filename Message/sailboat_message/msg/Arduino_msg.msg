@@ -1,4 +1,4 @@
-float64 timestamp
+Header header
 float64 readMark
 float64 autoFlag
 float64 motor
