@@ -19,54 +19,16 @@ add_message_files(
         FILES
 
         #driver
-        Rudder_msg.msg
-        Sail_msg.msg
-        Mach_msg.msg
-        GPS_msg.msg
-        Ahrs_msg.msg
-        WTST_msg.msg
-        WTST_Pro_msg.msg
-        Sensor_msg.msg
         Arduino_msg.msg
-        Radar_msg.msg
-        Pointinfo.msg
-
-        Wind_Simulation_msg.msg
-        Sailboat_Simulation_msg.msg
-        Target_msg.msg
-
-        station_keeping_out.msg
-        fleet_race_out.msg
-        scanning_out.msg
-        avoidance_out.msg
-        station_keeping_para.msg
-        fleet_race_para.msg
-        scanning_para.msg
-        avoidance_para.msg
-
-        traj_following_para.msg
-        traj_following_out.msg
-
-        Point.msg
-        PointArray.msg
-
-	obs_msg.msg
-        obs_out.msg
-
-        Out_Time_msg.msg
+        WTST_Pro_msg.msg
+        Mach_msg.msg
+        Sensor_all_msg.msg
+        Sensor_msg.msg
+        WTST_msg.msg
+        Ahrs_msg.msg
 )
 
-add_service_files(
-  FILES
-  Mach_srv.srv
-  Control_srv.srv
-  Self_Checking_srv.srv
-  Out_Time_srv.srv
-  Dxl_Control_srv.srv
-  Dxl_State_srv.srv
-#   Service1.srv
-#   Service2.srv
-)
+
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(

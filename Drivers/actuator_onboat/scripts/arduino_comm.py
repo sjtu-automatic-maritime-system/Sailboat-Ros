@@ -2,9 +2,6 @@
 import rospy
 from sailboat_message.msg import Mach_msg
 from sailboat_message.msg import Arduino_msg
-from sailboat_message.msg import Out_Time_msg
-from sailboat_message.srv import Self_Checking_srv
-from sailboat_message.srv import Self_Checking_srvResponse
 
 import struct
 import binascii
@@ -128,26 +125,6 @@ class Arduino():
     def close(self):
         self.arduino_ser.close()
 
-def handleSelfChecking(data):
-    global all_result, waiting_for_checking
-    waiting_for_checking = 1
-    all_result = data.all_result
-    checkAHRS_param = data.checkAHRS_param
-    checkWTST_param = data.checkWTST_param
-    checkArduino_param = data.checkArduino_param
-    checkCamera_param = data.checkCamera_param
-    checkRadar_param = data.checkRadar_param
-    checkDynamixel_param = data.checkDynamixel_param
-    checkDisk_param = data.checkDisk_param
-    checkAHRS_result = data.checkAHRS_result
-    checkWTST_result = data.checkWTST_result
-    checkArduino_result = data.checkArduino_result
-    checkCamera_result = data.checkCamera_result
-    checkRadar_result = data.checkRadar_result
-    checkDynamixel_result = data.checkDynamixel_result
-    checkDisk_result = data.checkDisk_result
-    return Self_Checking_srvResponse(True)
-
 class SensorListener:
     def __init__(self,nodeName):
         self.NodeName = nodeName
@@ -159,7 +136,6 @@ class SensorListener:
         self.arduinomsg = Arduino_msg()
         rospy.Subscriber('/base/mach', Mach_msg, machCallback)
         rospy.Subscriber('/out_time', Mach_msg, outTimeCallback)
-        rospy.Service('self_checking_arduino_srv',Self_Checking_srv,handleSelfChecking)
         self.talker()
 
     def talker(self):
